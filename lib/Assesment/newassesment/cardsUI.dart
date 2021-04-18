@@ -11,6 +11,31 @@ import 'package:tryapp/Assesment/Forms/Patio/patiobase.dart';
 import 'package:async_button_builder/async_button_builder.dart';
 import '../Forms/LivingRoom/livingbase.dart';
 
+
+/// Frame of this page:
+///     There are certain functions defined to take care of things such as colour and border dimension
+///     of the linear progress bar
+/// 
+///     The main Build function:
+///       This fucntion contains following things:
+///           --All this under a Stack so that the submit assessment button can staty in the bottom.
+///           1)Appbar
+///           2)Arrangements Card
+///               a) Living Arrangements card(Mandatory). called the Cards fucntion described further in this doc.
+///           3) Available Rooms card:
+///           4)LISTVIEW to build the card based on number of rooms selected in last page(New Assessment Ui page).
+/// 
+///   
+
+
+
+
+
+
+
+
+
+
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
 class CardsUINew extends StatefulWidget {
@@ -64,6 +89,9 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
     });
   }
 
+  /// This fucntio will help us to get the width of the container.
+  /// with help of this we will be able to set the liner progress bar width
+
   void setWidth(GlobalKey key) {
     final RenderBox rend = key.currentContext.findRenderObject();
     widthh = rend.size.width;
@@ -78,6 +106,9 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
     }
   }
 
+
+  /// This function will help us to get the colour base on the count of completed
+  /// form fields.
   Color getcolor(innerlist, index) {
     Color colors = Colors.red;
 
@@ -97,6 +128,8 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
     return colors;
   }
 
+
+  /// This fucntion will help us to get border colour of our linear progress bar
   Color getbordercolor(innerlist, index) {
     Color bordercolor = Colors.red;
     if (innerlist['room$index']['complete'] >= 0 &&
@@ -113,6 +146,9 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
     return bordercolor;
   }
 
+
+  /// This will help us  get border radius. this have been included because wehen the count 
+  /// becomes equal to total question then th border radius changes.
   BorderRadius getborderradius(innerlist, index) {
     var bordertype = BorderRadius.only(
       // topRight: Radius.circular(20),
@@ -137,8 +173,6 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
           backgroundColor: _colorgreen,
         ),
         body: Stack(
-          //   color: Colors.pink,
-          //   height: double.infinity,
           children: [
             SingleChildScrollView(
               child: Container(
@@ -256,18 +290,6 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
                             j <= widget.wholelist[i]['count'];
                             j++) {
                           print(widget.wholelist[i]['count']);
-                          // if (widget.wholelist[i]['count'] > 0) {
-                          //   print(widget.wholelist[i]['room$j']);
-                          // }
-                          // if (widget.wholelist[i]['room${i + 1}']['complete'] !=
-                          //     widget.wholelist[i]['room${i + 1}']['total']) {
-                          //   showDialog(
-                          //       context: context,
-                          //       builder: (context) => CustomDialog(
-                          //           title: "Not Saved",
-                          //           description:
-                          //               "Please click cancel button to save the field"));
-                          // }
                         }
                       }
                     });
