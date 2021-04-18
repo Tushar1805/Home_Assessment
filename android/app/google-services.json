@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1006547057800",
+    "project_id": "prism-a797e",
+    "storage_bucket": "prism-a797e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1006547057800:android:361ea8e2e10a2c1941733d",
+        "android_client_info": {
+          "package_name": "com.health.prism"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1006547057800-vi9kovmcvfujuud2llntsit0gksei8bm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCZr-ZRUKz4VV5L67lA-GtuId3a5EmYDZI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1006547057800-vi9kovmcvfujuud2llntsit0gksei8bm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
