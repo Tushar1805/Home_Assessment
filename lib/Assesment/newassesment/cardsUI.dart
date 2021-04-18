@@ -11,12 +11,11 @@ import 'package:tryapp/Assesment/Forms/Patio/patiobase.dart';
 import 'package:async_button_builder/async_button_builder.dart';
 import '../Forms/LivingRoom/livingbase.dart';
 
-
 /// Frame of this page:
 ///     There are certain functions defined to take care of things such as colour and border dimension
 ///     of the linear progress bar
-/// 
-///     The main Build function:
+///
+///     *)The main Build function:
 ///       This fucntion contains following things:
 ///           --All this under a Stack so that the submit assessment button can staty in the bottom.
 ///           1)Appbar
@@ -24,17 +23,54 @@ import '../Forms/LivingRoom/livingbase.dart';
 ///               a) Living Arrangements card(Mandatory). called the Cards fucntion described further in this doc.
 ///           3) Available Rooms card:
 ///           4)LISTVIEW to build the card based on number of rooms selected in last page(New Assessment Ui page).
-/// 
-///   
-
-
-
-
-
-
-
-
-
+///
+///
+///     Explanation: Innerlist:
+///
+///         {
+///            'name': 'Pathway',
+///            'count': text, //the count from button will get saved here
+///            'completed': 7,
+///            'rooms1':{<---------------------------------- (INNERLIST REFERS TO THIS LIST)
+///                 name://This will help us to
+///                        save name of room.
+///                 complete: //This will help
+///                           us to save the numbers of
+///                           completed fields this
+///                           far and also help us
+///                           to calculate the linear
+///                           progress bar.
+///                 total: // This is the total number
+///                           of questions in
+///                           particular rooms..
+///                           This is Static.
+///                           We will get this data
+///                           from gettotal function
+///                           from the provider.
+///                 question: { //this is explained in getMaps function in provider.
+///                   rr1:{
+///                       Answer:,
+///                       Priority:,
+///                       Recommendation:,
+///                       Recommendationthera:,
+///                       additional:{},
+///                      }
+///                   }
+///             }
+///         },
+///
+///     *)The Cards fucntion:
+///       This fucntion takes(one room detail at a time called innerlist,index and key for individual card).
+///       This function contains following things:
+///            1) The outer frame to display each and ever room details.
+///            2) The linear progress bar to show the completed fields in each and individual fields.
+///
+///     *) The getRoute class:
+///        This fucntion takes (same innerlist,name of the room,the name of innerlist,index)
+///       This function is a helper fucntion to the cards function.
+///       It helps to decide which page ot which room to go.
+///
+///
 
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
@@ -106,7 +142,6 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
     }
   }
 
-
   /// This function will help us to get the colour base on the count of completed
   /// form fields.
   Color getcolor(innerlist, index) {
@@ -128,7 +163,6 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
     return colors;
   }
 
-
   /// This fucntion will help us to get border colour of our linear progress bar
   Color getbordercolor(innerlist, index) {
     Color bordercolor = Colors.red;
@@ -146,8 +180,7 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
     return bordercolor;
   }
 
-
-  /// This will help us  get border radius. this have been included because wehen the count 
+  /// This will help us  get border radius. this have been included because wehen the count
   /// becomes equal to total question then th border radius changes.
   BorderRadius getborderradius(innerlist, index) {
     var bordertype = BorderRadius.only(
@@ -328,6 +361,7 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
         ));
   }
 
+  /// This is the card function used to dispaly the card.
   Widget cards(Map<String, dynamic> innerlist, int index, key) {
     return Container(
       // width: double.infinity,
@@ -415,6 +449,7 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
     );
   }
 
+  /// This function decides which page to visit base upon the name.
   Widget getRoute(innerlist, roomname, accessname, index) {
     if (innerlist['name'] == 'Living Room') {
       Navigator.push(
