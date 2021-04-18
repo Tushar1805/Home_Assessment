@@ -19,148 +19,37 @@ class BathroomUI extends StatefulWidget {
 }
 
 class _BathroomUIState extends State<BathroomUI> {
-  final firestoreInstance = Firestore.instance;
-  FirebaseAuth _auth = FirebaseAuth.instance;
-  bool obstacle = false;
-  bool grabbarneeded = false;
-  stt.SpeechToText _speech;
-  bool _isListening = false;
-  double _confidence = 1.0;
-  int doorwidth = 0;
-  bool available = false;
-  Map<String, Color> colorsset = {};
-  Map<String, TextEditingController> _controllers = {};
-  Map<String, TextEditingController> _controllerstreco = {};
-  Map<String, bool> isListening = {};
-  bool cur = true;
-  String type;
-  Color colorb = Color.fromRGBO(10, 80, 106, 1);
+  // final firestoreInstance = Firestore.instance;
+  // FirebaseAuth _auth = FirebaseAuth.instance;
+  // bool obstacle = false;
+  // bool grabbarneeded = false;
+  // stt.SpeechToText _speech;
+  // bool _isListening = false;
+  // double _confidence = 1.0;
+  // int doorwidth = 0;
+  // bool available = false;
+  // Map<String, Color> colorsset = {};
+  // Map<String, TextEditingController> _controllers = {};
+  // Map<String, TextEditingController> _controllerstreco = {};
+  // Map<String, bool> isListening = {};
+  // bool cur = true;
+  // String type;
+  // Color colorb = Color.fromRGBO(10, 80, 106, 1);
   var test = TextEditingController();
   @override
   void initState() {
     super.initState();
-    _speech = stt.SpeechToText();
-    for (int i = 0;
-        i < widget.wholelist[5][widget.accessname]['question'].length;
-        i++) {
-      _controllers["field${i + 1}"] = TextEditingController();
-      _controllerstreco["field${i + 1}"] = TextEditingController();
-      isListening["field${i + 1}"] = false;
-      _controllers["field${i + 1}"].text = widget.wholelist[5]
-          [widget.accessname]['question'][i + 1]['Recommendation'];
-      _controllerstreco["field${i + 1}"].text =
-          '${widget.wholelist[5][widget.accessname]['question'][i + 1]['Recommendationthera']}';
-      colorsset["field${i + 1}"] = Color.fromRGBO(10, 80, 106, 1);
-    }
-    getRole();
-    setinitials();
   }
 
-  Future<void> setinitials() async {
-    if (widget.wholelist[5][widget.accessname]['question'][7]
-        .containsKey('doorwidth')) {
-    } else {
-      print('getting created');
-      widget.wholelist[5][widget.accessname]['question'][7]['doorwidth'] = 0;
-    }
-
-    if (widget.wholelist[5][widget.accessname]['question'][15]
-        .containsKey('ManageInOut')) {
-    } else {
-      widget.wholelist[5][widget.accessname]['question'][15]['ManageInOut'] =
-          '';
-    }
-
-    if (widget.wholelist[5][widget.accessname]['question'][16]
-        .containsKey('Grabbar')) {
-    } else {
-      widget.wholelist[5][widget.accessname]['question'][16]['Grabbar'] = {};
-    }
-
-    if (widget.wholelist[5][widget.accessname]['question'][17]
-        .containsKey('sidefentrance')) {
-    } else {
-      widget.wholelist[5][widget.accessname]['question'][17]['sidefentrance'] =
-          '';
-    }
-  }
-
-  Future<String> getRole() async {
-    final FirebaseUser useruid = await _auth.currentUser();
-    firestoreInstance.collection("users").document(useruid.uid).get().then(
-      (value) {
-        setState(() {
-          type = (value["role"].toString()).split(" ")[0];
-        });
-      },
-    );
-  }
-
-  // setdata(index, value) {
-  //   if (value.length == 0) {
-  //     if (widget.wholelist[5][widget.accessname]['question'][index]['Answer']
-  //             .length ==
-  //         0) {
-  //     } else {
+  // Future<String> getRole() async {
+  //   final FirebaseUser useruid = await _auth.currentUser();
+  //   firestoreInstance.collection("users").document(useruid.uid).get().then(
+  //     (value) {
   //       setState(() {
-  //         widget.wholelist[5][widget.accessname]['complete'] -= 1;
-  //         widget.wholelist[5][widget.accessname]['question'][index]['Answer'] =
-  //             value;
+  //         type = (value["role"].toString()).split(" ")[0];
   //       });
-  //     }
-  //   } else {
-  //     if (widget.wholelist[5][widget.accessname]['question'][index]['Answer']
-  //             .length ==
-  //         0) {
-  //       setState(() {
-  //         widget.wholelist[5][widget.accessname]['complete'] += 1;
-  //       });
-  //     }
-  //     setState(() {
-  //       widget.wholelist[5][widget.accessname]['question'][index]['Answer'] =
-  //           value;
-  //     });
-  //   }
-  // }
-
-  // setreco(index, value) {
-  //   setState(() {
-  //     widget.wholelist[5][widget.accessname]['question'][index]
-  //         ['Recommendation'] = value;
-  //   });
-  // }
-
-  // getvalue(index) {
-  //   return widget.wholelist[5][widget.accessname]['question'][index]['Answer'];
-  // }
-
-  // getreco(index) {
-  //   return widget.wholelist[5][widget.accessname]['question'][index]
-  //       ['Recommendation'];
-  // }
-
-  // setrecothera(index, value) {
-  //   setState(() {
-  //     widget.wholelist[5][widget.accessname]['question'][index]
-  //         ['Recommendationthera'] = value;
-  //   });
-  // }
-
-  // setprio(index, value) {
-  //   setState(() {
-  //     widget.wholelist[5][widget.accessname]['question'][index]['Priority'] =
-  //         value;
-  //   });
-  // }
-
-  // getprio(index) {
-  //   return widget.wholelist[5][widget.accessname]['question'][index]
-  //       ['Priority'];
-  // }
-
-  // getrecothera(index) {
-  //   return widget.wholelist[5][widget.accessname]['question'][index]
-  //       ['Recommendationthera'];
+  //     },
+  //   );
   // }
 
   @override
@@ -266,7 +155,7 @@ class _BathroomUIState extends State<BathroomUI> {
                         ),
                         (assesmentprovider.getvalue(1) != '0' &&
                                 assesmentprovider.getvalue(1) != '')
-                            ? getrecomain(
+                            ? assesmentprovider.getrecomain(
                                 assesmentprovider, 1, true, 'Comments (if any)')
                             : SizedBox(),
                         SizedBox(height: 15),
@@ -326,7 +215,7 @@ class _BathroomUIState extends State<BathroomUI> {
                           ],
                         ),
                         (assesmentprovider.getvalue(2).length > 0)
-                            ? getrecomain(
+                            ? assesmentprovider.getrecomain(
                                 assesmentprovider, 2, true, 'Comments (if any)')
                             : SizedBox(),
                         SizedBox(height: 15),
@@ -378,7 +267,7 @@ class _BathroomUIState extends State<BathroomUI> {
                         ),
                         (assesmentprovider.getvalue(3) != 'No covering' &&
                                 assesmentprovider.getvalue(3) != '')
-                            ? getrecomain(
+                            ? assesmentprovider.getrecomain(
                                 assesmentprovider, 3, true, 'Comments (if any)')
                             : SizedBox(),
                         SizedBox(height: 15),
@@ -426,7 +315,7 @@ class _BathroomUIState extends State<BathroomUI> {
                           ],
                         ),
                         (assesmentprovider.getvalue(4).length > 0)
-                            ? getrecomain(
+                            ? assesmentprovider.getrecomain(
                                 assesmentprovider, 4, true, 'Specify Type')
                             : SizedBox(),
                         SizedBox(height: 15),
@@ -475,7 +364,7 @@ class _BathroomUIState extends State<BathroomUI> {
                         ),
                         (assesmentprovider.getvalue(5) != 'No' &&
                                 assesmentprovider.getvalue(5) != '')
-                            ? getrecomain(
+                            ? assesmentprovider.getrecomain(
                                 assesmentprovider, 5, true, 'Comments(if any)')
                             : SizedBox(),
                         SizedBox(height: 15),
@@ -595,7 +484,7 @@ class _BathroomUIState extends State<BathroomUI> {
                                 widget.wholelist[5][widget.accessname]
                                         ['question'][7]['doorwidth'] !=
                                     '')
-                            ? getrecomain(
+                            ? assesmentprovider.getrecomain(
                                 assesmentprovider, 7, true, 'Comments (if any)')
                             : SizedBox(),
                         SizedBox(
@@ -642,7 +531,7 @@ class _BathroomUIState extends State<BathroomUI> {
                           ],
                         ),
                         (assesmentprovider.getvalue(8) == 'Yes')
-                            ? getrecomain(
+                            ? assesmentprovider.getrecomain(
                                 assesmentprovider, 8, true, 'Specify Clutter')
                             : SizedBox(),
                         SizedBox(height: 15),
@@ -684,7 +573,7 @@ class _BathroomUIState extends State<BathroomUI> {
                         ),
                         (assesmentprovider.getvalue(9) == 'No' &&
                                 assesmentprovider.getvalue(10) != '')
-                            ? getrecomain(
+                            ? assesmentprovider.getrecomain(
                                 assesmentprovider, 9, true, 'Comments (if any)')
                             : SizedBox(),
                         SizedBox(
@@ -727,8 +616,8 @@ class _BathroomUIState extends State<BathroomUI> {
                           ],
                         ),
                         (assesmentprovider.getvalue(10) == 'No')
-                            ? getrecomain(assesmentprovider, 10, true,
-                                'Comments (if any)')
+                            ? assesmentprovider.getrecomain(assesmentprovider,
+                                10, true, 'Comments (if any)')
                             : SizedBox(),
 
                         SizedBox(height: 15),
@@ -788,8 +677,8 @@ class _BathroomUIState extends State<BathroomUI> {
                         ),
                         (assesmentprovider.getvalue(11) != 'Fairy Well' &&
                                 assesmentprovider.getvalue(6) != '')
-                            ? getrecomain(assesmentprovider, 11, true,
-                                'Comments (if any)')
+                            ? assesmentprovider.getrecomain(assesmentprovider,
+                                11, true, 'Comments (if any)')
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -832,8 +721,8 @@ class _BathroomUIState extends State<BathroomUI> {
                           ],
                         ),
                         (assesmentprovider.getvalue(12) == 'No')
-                            ? getrecomain(assesmentprovider, 12, true,
-                                'Comments (if any)')
+                            ? assesmentprovider.getrecomain(assesmentprovider,
+                                12, true, 'Comments (if any)')
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -876,8 +765,8 @@ class _BathroomUIState extends State<BathroomUI> {
                           ],
                         ),
                         (assesmentprovider.getvalue(13) == 'No')
-                            ? getrecomain(assesmentprovider, 13, true,
-                                'Comments (if any)')
+                            ? assesmentprovider.getrecomain(assesmentprovider,
+                                13, true, 'Comments (if any)')
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -922,17 +811,20 @@ class _BathroomUIState extends State<BathroomUI> {
                         (assesmentprovider.getvalue(14) == 'Yes')
                             ? TextFormField(
                                 // null,
-                                controller: _controllers["field${14}"],
+                                controller:
+                                    assesmentprovider.controllers["field${14}"],
                                 decoration: InputDecoration(
                                     focusedBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
-                                          color: colorsset["field${14}"],
+                                          color: assesmentprovider
+                                              .colorsset["field${14}"],
                                           width: 1),
                                     ),
                                     enabledBorder: OutlineInputBorder(
                                       borderSide: BorderSide(
                                           width: 1,
-                                          color: colorsset["field${14}"]),
+                                          color: assesmentprovider
+                                              .colorsset["field${14}"]),
                                     ),
                                     suffix: Container(
                                       // color: Colors.red,
@@ -947,7 +839,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                           height: 60,
                                           margin: EdgeInsets.all(0),
                                           child: AvatarGlow(
-                                            animate: isListening['field${14}'],
+                                            animate: assesmentprovider
+                                                .isListening['field${14}'],
                                             glowColor:
                                                 Theme.of(context).primaryColor,
                                             endRadius: 500.0,
@@ -963,8 +856,9 @@ class _BathroomUIState extends State<BathroomUI> {
                                                 size: 20,
                                               ),
                                               onPressed: () {
-                                                _listen(14);
-                                                setdatalisten(14);
+                                                assesmentprovider.listen(14);
+                                                assesmentprovider
+                                                    .setdatalisten(14);
                                               },
                                             ),
                                           ),
@@ -1077,7 +971,10 @@ class _BathroomUIState extends State<BathroomUI> {
                                         ],
                                       ),
                                     ),
-                                    getrecomain(assesmentprovider, 15, true,
+                                    assesmentprovider.getrecomain(
+                                        assesmentprovider,
+                                        15,
+                                        true,
                                         'Comments (if any)')
                                   ],
                                 ),
@@ -1120,7 +1017,7 @@ class _BathroomUIState extends State<BathroomUI> {
                                 assesmentprovider.setdata(16, value);
                                 if (value == 'No') {
                                   setState(() {
-                                    grabbarneeded = false;
+                                    assesmentprovider.grabbarneeded = false;
                                   });
                                 }
                               },
@@ -1306,7 +1203,10 @@ class _BathroomUIState extends State<BathroomUI> {
                                           ],
                                         )
                                       : SizedBox(),
-                                  getrecomain(assesmentprovider, 16, true,
+                                  assesmentprovider.getrecomain(
+                                      assesmentprovider,
+                                      16,
+                                      true,
                                       'Comments (if any)')
                                 ],
                               )
@@ -1663,8 +1563,8 @@ class _BathroomUIState extends State<BathroomUI> {
                           ],
                         ),
                         (assesmentprovider.getvalue(23) == 'No')
-                            ? getrecomain(assesmentprovider, 23, true,
-                                'Comments (if any)')
+                            ? assesmentprovider.getrecomain(assesmentprovider,
+                                23, true, 'Comments (if any)')
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -1707,8 +1607,8 @@ class _BathroomUIState extends State<BathroomUI> {
                           ],
                         ),
                         (assesmentprovider.getvalue(24) == 'No')
-                            ? getrecomain(assesmentprovider, 24, true,
-                                'Comments (if any)')
+                            ? assesmentprovider.getrecomain(assesmentprovider,
+                                24, true, 'Comments (if any)')
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -1790,8 +1690,8 @@ class _BathroomUIState extends State<BathroomUI> {
                           ],
                         ),
                         (assesmentprovider.getvalue(26) == 'No')
-                            ? getrecomain(assesmentprovider, 26, true,
-                                'Comments (if any)')
+                            ? assesmentprovider.getrecomain(assesmentprovider,
+                                26, true, 'Comments (if any)')
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -1834,8 +1734,8 @@ class _BathroomUIState extends State<BathroomUI> {
                           ],
                         ),
                         (assesmentprovider.getvalue(27) == 'No')
-                            ? getrecomain(assesmentprovider, 27, true,
-                                'Comments (if any)')
+                            ? assesmentprovider.getrecomain(assesmentprovider,
+                                27, true, 'Comments (if any)')
                             : SizedBox(),
                         SizedBox(height: 15),
 
@@ -1890,7 +1790,7 @@ class _BathroomUIState extends State<BathroomUI> {
                       child: RaisedButton(
                     child: Text('Done'),
                     onPressed: () {
-                      listenbutton();
+                      listenbutton(assesmentprovider);
                     },
                   ))
                 ],
@@ -1902,279 +1802,282 @@ class _BathroomUIState extends State<BathroomUI> {
     );
   }
 
-  void listenbutton() {
+  void listenbutton(assesmentprovider) {
     var test = 0;
     for (int i = 0;
         i < widget.wholelist[5][widget.accessname]['question'].length;
         i++) {
-      setdatalisten(i + 1);
-      setdatalistenthera(i + 1);
+      assesmentprovider.setdatalisten(i + 1);
+      assesmentprovider.setdatalistenthera(i + 1);
     }
     if (test == 0) {
       Navigator.pop(context, widget.wholelist[5][widget.accessname]);
     }
   }
 
-  Widget getrecomain(
-      assesmentprovider, int index, bool isthera, String fieldlabel) {
-    return SingleChildScrollView(
-      // reverse: true,
-      child: Container(
-        // color: Colors.yellow,
-        child: Column(
-          children: [
-            SizedBox(height: 5),
-            Container(
-              child: TextFormField(
-                maxLines: null,
-                showCursor: cur,
-                controller: _controllers["field$index"],
-                decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: colorsset["field$index"], width: 1),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(width: 1, color: colorsset["field$index"]),
-                    ),
-                    suffix: Container(
-                      // color: Colors.red,
-                      width: 40,
-                      height: 30,
-                      padding: EdgeInsets.all(0),
-                      child: Row(children: [
-                        Container(
-                          // color: Colors.green,
-                          alignment: Alignment.center,
-                          width: 40,
-                          height: 60,
-                          margin: EdgeInsets.all(0),
-                          child: AvatarGlow(
-                            animate: isListening['field$index'],
-                            glowColor: Theme.of(context).primaryColor,
-                            endRadius: 500.0,
-                            duration: const Duration(milliseconds: 2000),
-                            repeatPauseDuration:
-                                const Duration(milliseconds: 100),
-                            repeat: true,
-                            child: FloatingActionButton(
-                              heroTag: "btn$index",
-                              child: Icon(
-                                Icons.mic,
-                                size: 20,
-                              ),
-                              onPressed: () {
-                                _listen(index);
-                                setdatalisten(index);
-                              },
-                            ),
-                          ),
-                        ),
-                      ]),
-                    ),
-                    labelText: fieldlabel),
-                onChanged: (value) {
-                  FocusScope.of(context).requestFocus();
-                  new TextEditingController().clear();
-                  // print(widget.accessname);
-                  assesmentprovider.setreco(index, value);
-                },
-              ),
-            ),
-            (type == 'Therapist' && isthera)
-                ? getrecowid(assesmentprovider, index)
-                : SizedBox(),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget getrecomain(
+  //     assesmentprovider, int index, bool isthera, String fieldlabel) {
+  //   return SingleChildScrollView(
+  //     // reverse: true,
+  //     child: Container(
+  //       // color: Colors.yellow,
+  //       child: Column(
+  //         children: [
+  //           SizedBox(height: 5),
+  //           Container(
+  //             child: TextFormField(
+  //               maxLines: null,
+  //               showCursor: assesmentprovider.cur,
+  //               controller: assesmentprovider.controllers["field$index"],
+  //               decoration: InputDecoration(
+  //                   focusedBorder: OutlineInputBorder(
+  //                     borderSide: BorderSide(
+  //                         color: assesmentprovider.colorsset["field$index"],
+  //                         width: 1),
+  //                   ),
+  //                   enabledBorder: OutlineInputBorder(
+  //                     borderSide: BorderSide(
+  //                         width: 1,
+  //                         color: assesmentprovider.colorsset["field$index"]),
+  //                   ),
+  //                   suffix: Container(
+  //                     // color: Colors.red,
+  //                     width: 40,
+  //                     height: 30,
+  //                     padding: EdgeInsets.all(0),
+  //                     child: Row(children: [
+  //                       Container(
+  //                         // color: Colors.green,
+  //                         alignment: Alignment.center,
+  //                         width: 40,
+  //                         height: 60,
+  //                         margin: EdgeInsets.all(0),
+  //                         child: AvatarGlow(
+  //                           animate:
+  //                               assesmentprovider.isListening['field$index'],
+  //                           glowColor: Theme.of(context).primaryColor,
+  //                           endRadius: 500.0,
+  //                           duration: const Duration(milliseconds: 2000),
+  //                           repeatPauseDuration:
+  //                               const Duration(milliseconds: 100),
+  //                           repeat: true,
+  //                           child: FloatingActionButton(
+  //                             heroTag: "btn$index",
+  //                             child: Icon(
+  //                               Icons.mic,
+  //                               size: 20,
+  //                             ),
+  //                             onPressed: () {
+  //                               _listen(index);
+  //                               setdatalisten(index);
+  //                             },
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ]),
+  //                   ),
+  //                   labelText: fieldlabel),
+  //               onChanged: (value) {
+  //                 FocusScope.of(context).requestFocus();
+  //                 new TextEditingController().clear();
+  //                 // print(widget.accessname);
+  //                 assesmentprovider.setreco(index, value);
+  //               },
+  //             ),
+  //           ),
+  //           (assesmentprovider.type == 'Therapist' && isthera)
+  //               ? getrecowid(assesmentprovider, index)
+  //               : SizedBox(),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Widget getrecowid(assesmentprovider, index) {
-    return Column(
-      children: [
-        SizedBox(height: 8),
-        TextFormField(
-          controller: _controllerstreco["field$index"],
-          decoration: InputDecoration(
-              focusedBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: Color.fromRGBO(10, 80, 106, 1), width: 1),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(width: 1),
-              ),
-              suffix: Container(
-                // color: Colors.red,
-                width: 40,
-                height: 30,
-                padding: EdgeInsets.all(0),
-                child: Row(children: [
-                  Container(
-                    // color: Colors.green,
-                    alignment: Alignment.center,
-                    width: 40,
-                    height: 60,
-                    margin: EdgeInsets.all(0),
-                    child: FloatingActionButton(
-                      heroTag: "btn${index + 1}",
-                      child: Icon(
-                        Icons.mic,
-                        size: 20,
-                      ),
-                      onPressed: () {
-                        _listenthera(index);
-                        setdatalistenthera(index);
-                      },
-                    ),
-                  ),
-                ]),
-              ),
-              labelText: 'Recomendation'),
-          onChanged: (value) {
-            FocusScope.of(context).requestFocus();
-            new TextEditingController().clear();
-            // print(widget.accessname);
-            assesmentprovider.setrecothera(index, value);
-            print('hejdfdf');
-          },
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Priority'),
-            Row(
-              children: [
-                Radio(
-                  value: '1',
-                  onChanged: (value) {
-                    assesmentprovider.setprio(index, value);
-                  },
-                  groupValue: assesmentprovider.getprio(index),
-                ),
-                Text('1'),
-                Radio(
-                  value: '2',
-                  onChanged: (value) {
-                    setState(() {
-                      assesmentprovider.setprio(index, value);
-                    });
-                  },
-                  groupValue: assesmentprovider.getprio(index),
-                ),
-                Text('2'),
-                Radio(
-                  value: '3',
-                  onChanged: (value) {
-                    setState(() {
-                      assesmentprovider.setprio(index, value);
-                    });
-                  },
-                  groupValue: assesmentprovider.getprio(index),
-                ),
-                Text('3'),
-              ],
-            )
-          ],
-        )
-      ],
-    );
-  }
+  // Widget getrecowid(assesmentprovider, index) {
+  //   return Column(
+  //     children: [
+  //       SizedBox(height: 8),
+  //       TextFormField(
+  //         controller: _controllerstreco["field$index"],
+  //         decoration: InputDecoration(
+  //             focusedBorder: OutlineInputBorder(
+  //               borderSide:
+  //                   BorderSide(color: Color.fromRGBO(10, 80, 106, 1), width: 1),
+  //             ),
+  //             enabledBorder: OutlineInputBorder(
+  //               borderSide: BorderSide(width: 1),
+  //             ),
+  //             suffix: Container(
+  //               // color: Colors.red,
+  //               width: 40,
+  //               height: 30,
+  //               padding: EdgeInsets.all(0),
+  //               child: Row(children: [
+  //                 Container(
+  //                   // color: Colors.green,
+  //                   alignment: Alignment.center,
+  //                   width: 40,
+  //                   height: 60,
+  //                   margin: EdgeInsets.all(0),
+  //                   child: FloatingActionButton(
+  //                     heroTag: "btn${index + 1}",
+  //                     child: Icon(
+  //                       Icons.mic,
+  //                       size: 20,
+  //                     ),
+  //                     onPressed: () {
+  //                       _listenthera(index);
+  //                       setdatalistenthera(index);
+  //                     },
+  //                   ),
+  //                 ),
+  //               ]),
+  //             ),
+  //             labelText: 'Recomendation'),
+  //         onChanged: (value) {
+  //           FocusScope.of(context).requestFocus();
+  //           new TextEditingController().clear();
+  //           // print(widget.accessname);
+  //           assesmentprovider.setrecothera(index, value);
+  //           print('hejdfdf');
+  //         },
+  //       ),
+  //       Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         children: [
+  //           Text('Priority'),
+  //           Row(
+  //             children: [
+  //               Radio(
+  //                 value: '1',
+  //                 onChanged: (value) {
+  //                   assesmentprovider.setprio(index, value);
+  //                 },
+  //                 groupValue: assesmentprovider.getprio(index),
+  //               ),
+  //               Text('1'),
+  //               Radio(
+  //                 value: '2',
+  //                 onChanged: (value) {
+  //                   setState(() {
+  //                     assesmentprovider.setprio(index, value);
+  //                   });
+  //                 },
+  //                 groupValue: assesmentprovider.getprio(index),
+  //               ),
+  //               Text('2'),
+  //               Radio(
+  //                 value: '3',
+  //                 onChanged: (value) {
+  //                   setState(() {
+  //                     assesmentprovider.setprio(index, value);
+  //                   });
+  //                 },
+  //                 groupValue: assesmentprovider.getprio(index),
+  //               ),
+  //               Text('3'),
+  //             ],
+  //           )
+  //         ],
+  //       )
+  //     ],
+  //   );
+  // }
 
-  void _listenthera(index) async {
-    if (!_isListening) {
-      bool available = await _speech.initialize(
-        onStatus: (val) {
-          print('onStatus: $val');
-          setState(() {
-            // _isListening = false;
-            //
-          });
-        },
-        onError: (val) => print('onError: $val'),
-      );
-      if (available) {
-        setState(() {
-          _isListening = true;
-          // colorsset["field$index"] = Colors.red;
-          isListening['field$index'] = true;
-        });
-        _speech.listen(
-          onResult: (val) => setState(() {
-            _controllerstreco["field$index"].text = widget.wholelist[5]
-                        [widget.accessname]['question'][index]
-                    ['Recommendationthera'] +
-                " " +
-                val.recognizedWords;
-          }),
-        );
-      }
-    } else {
-      setState(() {
-        _isListening = false;
-        isListening['field$index'] = false;
-        colorsset["field$index"] = Color.fromRGBO(10, 80, 106, 1);
-      });
-      _speech.stop();
-    }
-  }
+  // void _listenthera(index) async {
+  //   if (!_isListening) {
+  //     bool available = await _speech.initialize(
+  //       onStatus: (val) {
+  //         print('onStatus: $val');
+  //         setState(() {
+  //           // _isListening = false;
+  //           //
+  //         });
+  //       },
+  //       onError: (val) => print('onError: $val'),
+  //     );
+  //     if (available) {
+  //       setState(() {
+  //         _isListening = true;
+  //         // colorsset["field$index"] = Colors.red;
+  //         isListening['field$index'] = true;
+  //       });
+  //       _speech.listen(
+  //         onResult: (val) => setState(() {
+  //           _controllerstreco["field$index"].text = widget.wholelist[5]
+  //                       [widget.accessname]['question'][index]
+  //                   ['Recommendationthera'] +
+  //               " " +
+  //               val.recognizedWords;
+  //         }),
+  //       );
+  //     }
+  //   } else {
+  //     setState(() {
+  //       _isListening = false;
+  //       isListening['field$index'] = false;
+  //       colorsset["field$index"] = Color.fromRGBO(10, 80, 106, 1);
+  //     });
+  //     _speech.stop();
+  //   }
+  // }
 
-  setdatalistenthera(index) {
-    setState(() {
-      widget.wholelist[5][widget.accessname]['question'][index]
-          ['Recommendationthera'] = _controllerstreco["field$index"].text;
-      cur = !cur;
-    });
-  }
+  // setdatalistenthera(index) {
+  //   setState(() {
+  //     widget.wholelist[5][widget.accessname]['question'][index]
+  //         ['Recommendationthera'] = _controllerstreco["field$index"].text;
+  //     cur = !cur;
+  //   });
+  // }
 
-  void _listen(index) async {
-    if (!_isListening) {
-      bool available = await _speech.initialize(
-        onStatus: (val) {
-          print('onStatus: $val');
-          setState(() {
-            // _isListening = false;
-            //
-          });
-        },
-        onError: (val) => print('onError: $val'),
-      );
-      if (available) {
-        setState(() {
-          _isListening = true;
-          // colorsset["field$index"] = Colors.red;
-          isListening['field$index'] = true;
-        });
-        _speech.listen(
-          onResult: (val) => setState(() {
-            _controllers["field$index"].text = widget.wholelist[5]
-                    [widget.accessname]['question'][index]['Recommendation'] +
-                " " +
-                val.recognizedWords;
-            if (val.hasConfidenceRating && val.confidence > 0) {
-              _confidence = val.confidence;
-            }
-          }),
-        );
-      }
-    } else {
-      setState(() {
-        _isListening = false;
-        isListening['field$index'] = false;
-        colorsset["field$index"] = Color.fromRGBO(10, 80, 106, 1);
-      });
-      _speech.stop();
-    }
-  }
+  // void _listen(index) async {
+  //   if (!_isListening) {
+  //     bool available = await _speech.initialize(
+  //       onStatus: (val) {
+  //         print('onStatus: $val');
+  //         setState(() {
+  //           // _isListening = false;
+  //           //
+  //         });
+  //       },
+  //       onError: (val) => print('onError: $val'),
+  //     );
+  //     if (available) {
+  //       setState(() {
+  //         _isListening = true;
+  //         // colorsset["field$index"] = Colors.red;
+  //         isListening['field$index'] = true;
+  //       });
+  //       _speech.listen(
+  //         onResult: (val) => setState(() {
+  //           _controllers["field$index"].text = widget.wholelist[5]
+  //                   [widget.accessname]['question'][index]['Recommendation'] +
+  //               " " +
+  //               val.recognizedWords;
+  //           if (val.hasConfidenceRating && val.confidence > 0) {
+  //             _confidence = val.confidence;
+  //           }
+  //         }),
+  //       );
+  //     }
+  //   } else {
+  //     setState(() {
+  //       _isListening = false;
+  //       isListening['field$index'] = false;
+  //       colorsset["field$index"] = Color.fromRGBO(10, 80, 106, 1);
+  //     });
+  //     _speech.stop();
+  //   }
+  // }
 
-  setdatalisten(index) {
-    setState(() {
-      widget.wholelist[5][widget.accessname]['question'][index]
-          ['Recommendation'] = _controllers["field$index"].text;
-      cur = !cur;
-    });
-  }
+  // setdatalisten(index) {
+  //   setState(() {
+  //     widget.wholelist[5][widget.accessname]['question'][index]
+  //         ['Recommendation'] = _controllers["field$index"].text;
+  //     cur = !cur;
+  //   });
+  // }
 }
 
 class CustomDialog extends StatelessWidget {

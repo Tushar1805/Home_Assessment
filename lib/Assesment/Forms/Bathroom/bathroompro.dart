@@ -3,6 +3,7 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tryapp/Assesment/Forms/Formsrepo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:avatar_glow/avatar_glow.dart';
 
 class BathroomPro extends ChangeNotifier {
   String roomname;
@@ -18,8 +19,8 @@ class BathroomPro extends ChangeNotifier {
   int doorwidth = 0;
   bool available = false;
   Map<String, Color> colorsset = {};
-  Map<String, TextEditingController> _controllers = {};
-  Map<String, TextEditingController> _controllerstreco = {};
+  Map<String, TextEditingController> controllers = {};
+  Map<String, TextEditingController> controllerstreco = {};
   Map<String, bool> isListening = {};
   bool cur = true;
   String type;
@@ -31,12 +32,12 @@ class BathroomPro extends ChangeNotifier {
   BathroomPro(this.roomname, this.wholelist, this.accessname) {
     _speech = stt.SpeechToText();
     for (int i = 0; i < wholelist[5][accessname]['question'].length; i++) {
-      _controllers["field${i + 1}"] = TextEditingController();
-      _controllerstreco["field${i + 1}"] = TextEditingController();
+      controllers["field${i + 1}"] = TextEditingController();
+      controllerstreco["field${i + 1}"] = TextEditingController();
       isListening["field${i + 1}"] = false;
-      _controllers["field${i + 1}"].text =
+      controllers["field${i + 1}"].text =
           wholelist[5][accessname]['question'][i + 1]['Recommendation'];
-      _controllerstreco["field${i + 1}"].text =
+      controllerstreco["field${i + 1}"].text =
           '${wholelist[5][accessname]['question'][i + 1]['Recommendationthera']}';
       colorsset["field${i + 1}"] = Color.fromRGBO(10, 80, 106, 1);
     }
@@ -124,5 +125,256 @@ class BathroomPro extends ChangeNotifier {
 
   getrecothera(index) {
     return wholelist[5][accessname]['question'][index]['Recommendationthera'];
+  }
+
+  Widget getrecomain(
+      assesmentprovider, int index, bool isthera, String fieldlabel) {
+    return SingleChildScrollView(
+      // reverse: true,
+      child: Container(
+        // color: Colors.yellow,
+        child: Column(
+          children: [
+            SizedBox(height: 5),
+            Container(
+              child: TextFormField(
+                maxLines: null,
+                showCursor: assesmentprovider.cur,
+                controller: assesmentprovider.controllers["field$index"],
+                decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: assesmentprovider.colorsset["field$index"],
+                          width: 1),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          width: 1,
+                          color: assesmentprovider.colorsset["field$index"]),
+                    ),
+                    suffix: Container(
+                      // color: Colors.red,
+                      width: 40,
+                      height: 30,
+                      padding: EdgeInsets.all(0),
+                      child: Row(children: [
+                        Container(
+                          // color: Colors.green,
+                          alignment: Alignment.center,
+                          width: 40,
+                          height: 60,
+                          margin: EdgeInsets.all(0),
+                          child: AvatarGlow(
+                            animate:
+                                assesmentprovider.isListening['field$index'],
+                            // glowColor: Theme.of().primaryColor,
+                            endRadius: 500.0,
+                            duration: const Duration(milliseconds: 2000),
+                            repeatPauseDuration:
+                                const Duration(milliseconds: 100),
+                            repeat: true,
+                            child: FloatingActionButton(
+                              heroTag: "btn$index",
+                              child: Icon(
+                                Icons.mic,
+                                size: 20,
+                              ),
+                              onPressed: () {
+                                listen(index);
+                                setdatalisten(index);
+                              },
+                            ),
+                          ),
+                        ),
+                      ]),
+                    ),
+                    labelText: fieldlabel),
+                onChanged: (value) {
+                  // print(accessname);
+                  assesmentprovider.setreco(index, value);
+                },
+              ),
+            ),
+            (assesmentprovider.type == 'Therapist' && isthera)
+                ? getrecowid(assesmentprovider, index)
+                : SizedBox(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget getrecowid(assesmentprovider, index) {
+    return Column(
+      children: [
+        SizedBox(height: 8),
+        TextFormField(
+          controller: controllerstreco["field$index"],
+          decoration: InputDecoration(
+              focusedBorder: OutlineInputBorder(
+                borderSide:
+                    BorderSide(color: Color.fromRGBO(10, 80, 106, 1), width: 1),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(width: 1),
+              ),
+              suffix: Container(
+                // color: Colors.red,
+                width: 40,
+                height: 30,
+                padding: EdgeInsets.all(0),
+                child: Row(children: [
+                  Container(
+                    // color: Colors.green,
+                    alignment: Alignment.center,
+                    width: 40,
+                    height: 60,
+                    margin: EdgeInsets.all(0),
+                    child: FloatingActionButton(
+                      heroTag: "btn${index + 1}",
+                      child: Icon(
+                        Icons.mic,
+                        size: 20,
+                      ),
+                      onPressed: () {
+                        _listenthera(index);
+                        setdatalistenthera(index);
+                      },
+                    ),
+                  ),
+                ]),
+              ),
+              labelText: 'Recomendation'),
+          onChanged: (value) {
+            // print(accessname);
+            assesmentprovider.setrecothera(index, value);
+            print('hejdfdf');
+          },
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Priority'),
+            Row(
+              children: [
+                Radio(
+                  value: '1',
+                  onChanged: (value) {
+                    assesmentprovider.setprio(index, value);
+                  },
+                  groupValue: assesmentprovider.getprio(index),
+                ),
+                Text('1'),
+                Radio(
+                  value: '2',
+                  onChanged: (value) {
+                    assesmentprovider.setprio(index, value);
+                    notifyListeners();
+                  },
+                  groupValue: assesmentprovider.getprio(index),
+                ),
+                Text('2'),
+                Radio(
+                  value: '3',
+                  onChanged: (value) {
+                    assesmentprovider.setprio(index, value);
+                    notifyListeners();
+                  },
+                  groupValue: assesmentprovider.getprio(index),
+                ),
+                Text('3'),
+              ],
+            )
+          ],
+        )
+      ],
+    );
+  }
+
+  void _listenthera(index) async {
+    if (!_isListening) {
+      bool available = await _speech.initialize(
+        onStatus: (val) {
+          print('onStatus: $val');
+          // setState(() {
+          //   // _isListening = false;
+          //   //
+          // });
+        },
+        onError: (val) => print('onError: $val'),
+      );
+      if (available) {
+        _isListening = true;
+        // colorsset["field$index"] = Colors.red;
+        isListening['field$index'] = true;
+        notifyListeners();
+        _speech.listen(
+          onResult: (val) {
+            controllerstreco["field$index"].text = wholelist[5][accessname]
+                    ['question'][index]['Recommendationthera'] +
+                " " +
+                val.recognizedWords;
+            notifyListeners();
+          },
+        );
+      }
+    } else {
+      _isListening = false;
+      isListening['field$index'] = false;
+      colorsset["field$index"] = Color.fromRGBO(10, 80, 106, 1);
+      notifyListeners();
+      _speech.stop();
+    }
+  }
+
+  setdatalistenthera(index) {
+    wholelist[5][accessname]['question'][index]['Recommendationthera'] =
+        controllerstreco["field$index"].text;
+    cur = !cur;
+    notifyListeners();
+  }
+
+  void listen(index) async {
+    if (!_isListening) {
+      bool available = await _speech.initialize(
+        onStatus: (val) {
+          print('onStatus: $val');
+          // setState(() {
+          //   // _isListening = false;
+          //   //
+          // });
+        },
+        onError: (val) => print('onError: $val'),
+      );
+      if (available) {
+        _isListening = true;
+        // colorsset["field$index"] = Colors.red;
+        isListening['field$index'] = true;
+        notifyListeners();
+        _speech.listen(onResult: (val) {
+          controllers["field$index"].text = wholelist[5][accessname]['question']
+                  [index]['Recommendation'] +
+              " " +
+              val.recognizedWords;
+          if (val.hasConfidenceRating && val.confidence > 0) {
+            _confidence = val.confidence;
+          }
+          notifyListeners();
+        });
+      }
+    } else {
+      _isListening = false;
+      isListening['field$index'] = false;
+      colorsset["field$index"] = Color.fromRGBO(10, 80, 106, 1);
+      notifyListeners();
+      _speech.stop();
+    }
+  }
+
+  setdatalisten(index) {
+    wholelist[5][accessname]['question'][index]['Recommendation'] =
+        controllers["field$index"].text;
+    cur = !cur;
+    notifyListeners();
   }
 }
