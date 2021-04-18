@@ -4,6 +4,8 @@ import 'package:tryapp/Assesment/newassesment/newassesmentpro.dart';
 
 import 'package:provider/provider.dart';
 
+import 'laundrypro.dart';
+
 class Laundry extends StatelessWidget {
   String roomname;
   var accessname;
@@ -11,11 +13,17 @@ class Laundry extends StatelessWidget {
   Laundry(this.roomname, this.wholelist, this.accessname);
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Center(
-      child: ChangeNotifierProvider<NewAssesmentProvider>(
-          create: (_) => NewAssesmentProvider(""),
-          child: LaundryUI(roomname, wholelist, accessname)),
-    ));
+    return MultiProvider(providers: [
+      ChangeNotifierProvider<NewAssesmentProvider>(
+          create: (_) => NewAssesmentProvider("")),
+      ChangeNotifierProvider<LaundryPro>(create: (_) => LaundryPro())
+    ], child: LaundryUI(roomname, wholelist, accessname));
+
+    // return Scaffold(
+    //     body: Center(
+    //   child: ChangeNotifierProvider<NewAssesmentProvider>(
+    //       create: (_) => NewAssesmentProvider(""),
+    //       child: LaundryUI(roomname, wholelist, accessname)),
+    // ));
   }
 }

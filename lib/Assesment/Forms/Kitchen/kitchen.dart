@@ -11,11 +11,10 @@ class Kitchen extends StatelessWidget {
   Kitchen(this.roomname, this.wholelist, this.accessname);
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Center(
-      child: ChangeNotifierProvider<NewAssesmentProvider>(
-          create: (_) => NewAssesmentProvider(""),
-          child: KitchenUI(roomname, wholelist, accessname)),
-    ));
+    return MultiProvider(providers: [
+      ChangeNotifierProvider<NewAssesmentProvider>(
+          create: (_) => NewAssesmentProvider("")),
+      ChangeNotifierProvider<KitchenPro>(create: (_) => KitchenPro())
+    ], child: KitchenUI(roomname, wholelist, accessname));
   }
 }
