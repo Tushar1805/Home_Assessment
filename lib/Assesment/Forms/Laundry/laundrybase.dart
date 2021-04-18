@@ -16,7 +16,8 @@ class Laundry extends StatelessWidget {
     return MultiProvider(providers: [
       ChangeNotifierProvider<NewAssesmentProvider>(
           create: (_) => NewAssesmentProvider("")),
-      ChangeNotifierProvider<LaundryPro>(create: (_) => LaundryPro())
+      ChangeNotifierProvider<LaundryPro>(
+          create: (_) => LaundryPro(roomname, wholelist, accessname))
     ], child: LaundryUI(roomname, wholelist, accessname));
 
     // return Scaffold(
