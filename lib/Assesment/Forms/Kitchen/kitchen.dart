@@ -14,7 +14,8 @@ class Kitchen extends StatelessWidget {
     return MultiProvider(providers: [
       ChangeNotifierProvider<NewAssesmentProvider>(
           create: (_) => NewAssesmentProvider("")),
-      ChangeNotifierProvider<KitchenPro>(create: (_) => KitchenPro())
+      ChangeNotifierProvider<KitchenPro>(
+          create: (_) => KitchenPro(roomname, wholelist, accessname))
     ], child: KitchenUI(roomname, wholelist, accessname));
   }
 }
