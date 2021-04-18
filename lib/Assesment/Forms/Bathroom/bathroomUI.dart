@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tryapp/Assesment/Forms/Bathroom/bathroompro.dart';
 
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
@@ -94,75 +96,76 @@ class _BathroomUIState extends State<BathroomUI> {
     );
   }
 
-  setdata(index, value) {
-    if (value.length == 0) {
-      if (widget.wholelist[5][widget.accessname]['question'][index]['Answer']
-              .length ==
-          0) {
-      } else {
-        setState(() {
-          widget.wholelist[5][widget.accessname]['complete'] -= 1;
-          widget.wholelist[5][widget.accessname]['question'][index]['Answer'] =
-              value;
-        });
-      }
-    } else {
-      if (widget.wholelist[5][widget.accessname]['question'][index]['Answer']
-              .length ==
-          0) {
-        setState(() {
-          widget.wholelist[5][widget.accessname]['complete'] += 1;
-        });
-      }
-      setState(() {
-        widget.wholelist[5][widget.accessname]['question'][index]['Answer'] =
-            value;
-      });
-    }
-  }
+  // setdata(index, value) {
+  //   if (value.length == 0) {
+  //     if (widget.wholelist[5][widget.accessname]['question'][index]['Answer']
+  //             .length ==
+  //         0) {
+  //     } else {
+  //       setState(() {
+  //         widget.wholelist[5][widget.accessname]['complete'] -= 1;
+  //         widget.wholelist[5][widget.accessname]['question'][index]['Answer'] =
+  //             value;
+  //       });
+  //     }
+  //   } else {
+  //     if (widget.wholelist[5][widget.accessname]['question'][index]['Answer']
+  //             .length ==
+  //         0) {
+  //       setState(() {
+  //         widget.wholelist[5][widget.accessname]['complete'] += 1;
+  //       });
+  //     }
+  //     setState(() {
+  //       widget.wholelist[5][widget.accessname]['question'][index]['Answer'] =
+  //           value;
+  //     });
+  //   }
+  // }
 
-  setreco(index, value) {
-    setState(() {
-      widget.wholelist[5][widget.accessname]['question'][index]
-          ['Recommendation'] = value;
-    });
-  }
+  // setreco(index, value) {
+  //   setState(() {
+  //     widget.wholelist[5][widget.accessname]['question'][index]
+  //         ['Recommendation'] = value;
+  //   });
+  // }
 
-  getvalue(index) {
-    return widget.wholelist[5][widget.accessname]['question'][index]['Answer'];
-  }
+  // getvalue(index) {
+  //   return widget.wholelist[5][widget.accessname]['question'][index]['Answer'];
+  // }
 
-  getreco(index) {
-    return widget.wholelist[5][widget.accessname]['question'][index]
-        ['Recommendation'];
-  }
+  // getreco(index) {
+  //   return widget.wholelist[5][widget.accessname]['question'][index]
+  //       ['Recommendation'];
+  // }
 
-  setrecothera(index, value) {
-    setState(() {
-      widget.wholelist[5][widget.accessname]['question'][index]
-          ['Recommendationthera'] = value;
-    });
-  }
+  // setrecothera(index, value) {
+  //   setState(() {
+  //     widget.wholelist[5][widget.accessname]['question'][index]
+  //         ['Recommendationthera'] = value;
+  //   });
+  // }
 
-  setprio(index, value) {
-    setState(() {
-      widget.wholelist[5][widget.accessname]['question'][index]['Priority'] =
-          value;
-    });
-  }
+  // setprio(index, value) {
+  //   setState(() {
+  //     widget.wholelist[5][widget.accessname]['question'][index]['Priority'] =
+  //         value;
+  //   });
+  // }
 
-  getprio(index) {
-    return widget.wholelist[5][widget.accessname]['question'][index]
-        ['Priority'];
-  }
+  // getprio(index) {
+  //   return widget.wholelist[5][widget.accessname]['question'][index]
+  //       ['Priority'];
+  // }
 
-  getrecothera(index) {
-    return widget.wholelist[5][widget.accessname]['question'][index]
-        ['Recommendationthera'];
-  }
+  // getrecothera(index) {
+  //   return widget.wholelist[5][widget.accessname]['question'][index]
+  //       ['Recommendationthera'];
+  // }
 
   @override
   Widget build(BuildContext context) {
+    final assesmentprovider = Provider.of<BathroomPro>(context);
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -237,7 +240,7 @@ class _BathroomUIState extends State<BathroomUI> {
                             SizedBox(
                               width: MediaQuery.of(context).size.width * .3,
                               child: TextFormField(
-                                  initialValue: getvalue(1),
+                                  initialValue: assesmentprovider.getvalue(1),
                                   decoration: InputDecoration(
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
@@ -255,14 +258,16 @@ class _BathroomUIState extends State<BathroomUI> {
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
 
-                                    setdata(1, value);
-                                    // print(getvalue(1));
+                                    assesmentprovider.setdata(1, value);
+                                    // print(assesmentprovider.getvalue(1));
                                   }),
                             ),
                           ],
                         ),
-                        (getvalue(1) != '0' && getvalue(1) != '')
-                            ? getrecomain(1, true, 'Comments (if any)')
+                        (assesmentprovider.getvalue(1) != '0' &&
+                                assesmentprovider.getvalue(1) != '')
+                            ? getrecomain(
+                                assesmentprovider, 1, true, 'Comments (if any)')
                             : SizedBox(),
                         SizedBox(height: 15),
                         Row(
@@ -313,15 +318,16 @@ class _BathroomUIState extends State<BathroomUI> {
                                 onChanged: (value) {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
-                                  setdata(2, value);
+                                  assesmentprovider.setdata(2, value);
                                 },
-                                value: getvalue(2),
+                                value: assesmentprovider.getvalue(2),
                               ),
                             )
                           ],
                         ),
-                        (getvalue(2).length > 0)
-                            ? getrecomain(2, true, 'Comments (if any)')
+                        (assesmentprovider.getvalue(2).length > 0)
+                            ? getrecomain(
+                                assesmentprovider, 2, true, 'Comments (if any)')
                             : SizedBox(),
                         SizedBox(height: 15),
                         // Divider(
@@ -363,15 +369,17 @@ class _BathroomUIState extends State<BathroomUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(3, value);
+                                  assesmentprovider.setdata(3, value);
                                 },
-                                value: getvalue(3),
+                                value: assesmentprovider.getvalue(3),
                               ),
                             )
                           ],
                         ),
-                        (getvalue(3) != 'No covering' && getvalue(3) != '')
-                            ? getrecomain(3, true, 'Comments (if any)')
+                        (assesmentprovider.getvalue(3) != 'No covering' &&
+                                assesmentprovider.getvalue(3) != '')
+                            ? getrecomain(
+                                assesmentprovider, 3, true, 'Comments (if any)')
                             : SizedBox(),
                         SizedBox(height: 15),
                         // Divider(
@@ -410,15 +418,16 @@ class _BathroomUIState extends State<BathroomUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
 
-                                  setdata(4, value);
+                                  assesmentprovider.setdata(4, value);
                                 },
-                                value: getvalue(4),
+                                value: assesmentprovider.getvalue(4),
                               ),
                             )
                           ],
                         ),
-                        (getvalue(4).length > 0)
-                            ? getrecomain(4, true, 'Specify Type')
+                        (assesmentprovider.getvalue(4).length > 0)
+                            ? getrecomain(
+                                assesmentprovider, 4, true, 'Specify Type')
                             : SizedBox(),
                         SizedBox(height: 15),
                         // Divider(
@@ -457,15 +466,17 @@ class _BathroomUIState extends State<BathroomUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
 
-                                  setdata(5, value);
+                                  assesmentprovider.setdata(5, value);
                                 },
-                                value: getvalue(5),
+                                value: assesmentprovider.getvalue(5),
                               ),
                             ),
                           ],
                         ),
-                        (getvalue(5) != 'No' && getvalue(5) != '')
-                            ? getrecomain(5, true, 'Comments(if any)')
+                        (assesmentprovider.getvalue(5) != 'No' &&
+                                assesmentprovider.getvalue(5) != '')
+                            ? getrecomain(
+                                assesmentprovider, 5, true, 'Comments(if any)')
                             : SizedBox(),
                         SizedBox(height: 15),
 
@@ -520,9 +531,9 @@ class _BathroomUIState extends State<BathroomUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(6, value);
+                                  assesmentprovider.setdata(6, value);
                                 },
-                                value: getvalue(6),
+                                value: assesmentprovider.getvalue(6),
                               ),
                             ),
                           ],
@@ -542,7 +553,7 @@ class _BathroomUIState extends State<BathroomUI> {
                             SizedBox(
                               width: MediaQuery.of(context).size.width * .3,
                               child: TextFormField(
-                                  initialValue: getvalue(7),
+                                  initialValue: assesmentprovider.getvalue(7),
                                   decoration: InputDecoration(
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
@@ -559,7 +570,7 @@ class _BathroomUIState extends State<BathroomUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(7, value);
+                                    assesmentprovider.setdata(7, value);
                                     setState(() {
                                       widget.wholelist[5][widget.accessname]
                                           ['question'][7]['doorwidth'] = 0;
@@ -584,7 +595,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                 widget.wholelist[5][widget.accessname]
                                         ['question'][7]['doorwidth'] !=
                                     '')
-                            ? getrecomain(7, true, 'Comments (if any)')
+                            ? getrecomain(
+                                assesmentprovider, 7, true, 'Comments (if any)')
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -623,14 +635,15 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(8, value);
+                                assesmentprovider.setdata(8, value);
                               },
-                              value: getvalue(8),
+                              value: assesmentprovider.getvalue(8),
                             )
                           ],
                         ),
-                        (getvalue(8) == 'Yes')
-                            ? getrecomain(8, true, 'Specify Clutter')
+                        (assesmentprovider.getvalue(8) == 'Yes')
+                            ? getrecomain(
+                                assesmentprovider, 8, true, 'Specify Clutter')
                             : SizedBox(),
                         SizedBox(height: 15),
                         Row(
@@ -663,14 +676,16 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(9, value);
+                                assesmentprovider.setdata(9, value);
                               },
-                              value: getvalue(9),
+                              value: assesmentprovider.getvalue(9),
                             )
                           ],
                         ),
-                        (getvalue(9) == 'No' && getvalue(10) != '')
-                            ? getrecomain(9, true, 'Comments (if any)')
+                        (assesmentprovider.getvalue(9) == 'No' &&
+                                assesmentprovider.getvalue(10) != '')
+                            ? getrecomain(
+                                assesmentprovider, 9, true, 'Comments (if any)')
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -705,14 +720,15 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(10, value);
+                                assesmentprovider.setdata(10, value);
                               },
-                              value: getvalue(10),
+                              value: assesmentprovider.getvalue(10),
                             )
                           ],
                         ),
-                        (getvalue(10) == 'No')
-                            ? getrecomain(10, true, 'Comments (if any)')
+                        (assesmentprovider.getvalue(10) == 'No')
+                            ? getrecomain(assesmentprovider, 10, true,
+                                'Comments (if any)')
                             : SizedBox(),
 
                         SizedBox(height: 15),
@@ -764,14 +780,16 @@ class _BathroomUIState extends State<BathroomUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
 
-                                setdata(11, value);
+                                assesmentprovider.setdata(11, value);
                               },
-                              value: getvalue(11),
+                              value: assesmentprovider.getvalue(11),
                             )
                           ],
                         ),
-                        (getvalue(11) != 'Fairy Well' && getvalue(6) != '')
-                            ? getrecomain(11, true, 'Comments (if any)')
+                        (assesmentprovider.getvalue(11) != 'Fairy Well' &&
+                                assesmentprovider.getvalue(6) != '')
+                            ? getrecomain(assesmentprovider, 11, true,
+                                'Comments (if any)')
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -807,14 +825,15 @@ class _BathroomUIState extends State<BathroomUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
 
-                                setdata(12, value);
+                                assesmentprovider.setdata(12, value);
                               },
-                              value: getvalue(12),
+                              value: assesmentprovider.getvalue(12),
                             )
                           ],
                         ),
-                        (getvalue(12) == 'No')
-                            ? getrecomain(12, true, 'Comments (if any)')
+                        (assesmentprovider.getvalue(12) == 'No')
+                            ? getrecomain(assesmentprovider, 12, true,
+                                'Comments (if any)')
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -850,14 +869,15 @@ class _BathroomUIState extends State<BathroomUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
 
-                                setdata(13, value);
+                                assesmentprovider.setdata(13, value);
                               },
-                              value: getvalue(13),
+                              value: assesmentprovider.getvalue(13),
                             )
                           ],
                         ),
-                        (getvalue(13) == 'No')
-                            ? getrecomain(13, true, 'Comments (if any)')
+                        (assesmentprovider.getvalue(13) == 'No')
+                            ? getrecomain(assesmentprovider, 13, true,
+                                'Comments (if any)')
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -893,13 +913,13 @@ class _BathroomUIState extends State<BathroomUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
 
-                                setdata(14, value);
+                                assesmentprovider.setdata(14, value);
                               },
-                              value: getvalue(14),
+                              value: assesmentprovider.getvalue(14),
                             )
                           ],
                         ),
-                        (getvalue(14) == 'Yes')
+                        (assesmentprovider.getvalue(14) == 'Yes')
                             ? TextFormField(
                                 // null,
                                 controller: _controllers["field${14}"],
@@ -957,7 +977,7 @@ class _BathroomUIState extends State<BathroomUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setreco(14, value);
+                                  assesmentprovider.setreco(14, value);
                                 },
                               )
                             : SizedBox(),
@@ -995,14 +1015,14 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(15, value);
+                                assesmentprovider.setdata(15, value);
                               },
-                              value: getvalue(15),
+                              value: assesmentprovider.getvalue(15),
                             )
                           ],
                         ),
                         SizedBox(height: 5),
-                        (getvalue(15) == 'Yes')
+                        (assesmentprovider.getvalue(15) == 'Yes')
                             ? Container(
                                 child: Column(
                                   children: [
@@ -1057,7 +1077,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                         ],
                                       ),
                                     ),
-                                    getrecomain(15, true, 'Comments (if any)')
+                                    getrecomain(assesmentprovider, 15, true,
+                                        'Comments (if any)')
                                   ],
                                 ),
                               )
@@ -1096,18 +1117,18 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(16, value);
+                                assesmentprovider.setdata(16, value);
                                 if (value == 'No') {
                                   setState(() {
                                     grabbarneeded = false;
                                   });
                                 }
                               },
-                              value: getvalue(16),
+                              value: assesmentprovider.getvalue(16),
                             )
                           ],
                         ),
-                        (getvalue(16) == 'No')
+                        (assesmentprovider.getvalue(16) == 'No')
                             ? Column(
                                 children: [
                                   Container(
@@ -1285,7 +1306,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                           ],
                                         )
                                       : SizedBox(),
-                                  getrecomain(16, true, 'Comments (if any)')
+                                  getrecomain(assesmentprovider, 16, true,
+                                      'Comments (if any)')
                                 ],
                               )
                             : SizedBox(),
@@ -1327,14 +1349,14 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(17, value);
+                                assesmentprovider.setdata(17, value);
                               },
-                              value: getvalue(17),
+                              value: assesmentprovider.getvalue(17),
                             )
                           ],
                         ),
 
-                        (getvalue(17) != '')
+                        (assesmentprovider.getvalue(17) != '')
                             ? Container(
                                 child: Row(
                                   mainAxisAlignment:
@@ -1402,7 +1424,7 @@ class _BathroomUIState extends State<BathroomUI> {
                               SizedBox(
                                 width: MediaQuery.of(context).size.width * .3,
                                 child: TextFormField(
-                                  initialValue: getvalue(18),
+                                  initialValue: assesmentprovider.getvalue(18),
                                   decoration: InputDecoration(
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
@@ -1419,7 +1441,7 @@ class _BathroomUIState extends State<BathroomUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(18, value);
+                                    assesmentprovider.setdata(18, value);
                                   },
                                 ),
                               ),
@@ -1441,7 +1463,7 @@ class _BathroomUIState extends State<BathroomUI> {
                               SizedBox(
                                 width: MediaQuery.of(context).size.width * .3,
                                 child: TextFormField(
-                                  initialValue: getvalue(19),
+                                  initialValue: assesmentprovider.getvalue(19),
                                   decoration: InputDecoration(
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
@@ -1458,7 +1480,7 @@ class _BathroomUIState extends State<BathroomUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(19, value);
+                                    assesmentprovider.setdata(19, value);
                                   },
                                 ),
                               ),
@@ -1500,9 +1522,9 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(20, value);
+                                assesmentprovider.setdata(20, value);
                               },
-                              value: getvalue(20),
+                              value: assesmentprovider.getvalue(20),
                             )
                           ],
                         ),
@@ -1539,9 +1561,9 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(21, value);
+                                assesmentprovider.setdata(21, value);
                               },
-                              value: getvalue(21),
+                              value: assesmentprovider.getvalue(21),
                             )
                           ],
                         ),
@@ -1594,9 +1616,9 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(22, value);
+                                assesmentprovider.setdata(22, value);
                               },
-                              value: getvalue(22),
+                              value: assesmentprovider.getvalue(22),
                             )
                           ],
                         ),
@@ -1634,14 +1656,15 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(23, value);
+                                assesmentprovider.setdata(23, value);
                               },
-                              value: getvalue(23),
+                              value: assesmentprovider.getvalue(23),
                             )
                           ],
                         ),
-                        (getvalue(23) == 'No')
-                            ? getrecomain(23, true, 'Comments (if any)')
+                        (assesmentprovider.getvalue(23) == 'No')
+                            ? getrecomain(assesmentprovider, 23, true,
+                                'Comments (if any)')
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -1677,14 +1700,15 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(24, value);
+                                assesmentprovider.setdata(24, value);
                               },
-                              value: getvalue(24),
+                              value: assesmentprovider.getvalue(24),
                             )
                           ],
                         ),
-                        (getvalue(24) == 'No')
-                            ? getrecomain(24, true, 'Comments (if any)')
+                        (assesmentprovider.getvalue(24) == 'No')
+                            ? getrecomain(assesmentprovider, 24, true,
+                                'Comments (if any)')
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -1703,7 +1727,7 @@ class _BathroomUIState extends State<BathroomUI> {
                               SizedBox(
                                 width: MediaQuery.of(context).size.width * .3,
                                 child: TextFormField(
-                                  initialValue: getvalue(25),
+                                  initialValue: assesmentprovider.getvalue(25),
                                   decoration: InputDecoration(
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
@@ -1720,7 +1744,7 @@ class _BathroomUIState extends State<BathroomUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(25, value);
+                                    assesmentprovider.setdata(25, value);
                                   },
                                 ),
                               ),
@@ -1759,14 +1783,15 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(26, value);
+                                assesmentprovider.setdata(26, value);
                               },
-                              value: getvalue(26),
+                              value: assesmentprovider.getvalue(26),
                             )
                           ],
                         ),
-                        (getvalue(26) == 'No')
-                            ? getrecomain(26, true, 'Comments (if any)')
+                        (assesmentprovider.getvalue(26) == 'No')
+                            ? getrecomain(assesmentprovider, 26, true,
+                                'Comments (if any)')
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -1802,14 +1827,15 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(27, value);
+                                assesmentprovider.setdata(27, value);
                               },
-                              value: getvalue(27),
+                              value: assesmentprovider.getvalue(27),
                             )
                           ],
                         ),
-                        (getvalue(27) == 'No')
-                            ? getrecomain(27, true, 'Comments (if any)')
+                        (assesmentprovider.getvalue(27) == 'No')
+                            ? getrecomain(assesmentprovider, 27, true,
+                                'Comments (if any)')
                             : SizedBox(),
                         SizedBox(height: 15),
 
@@ -1836,7 +1862,7 @@ class _BathroomUIState extends State<BathroomUI> {
                         Container(
                             // height: 10000,
                             child: TextFormField(
-                          initialValue: getvalue(28),
+                          initialValue: assesmentprovider.getvalue(28),
                           maxLines: 6,
                           decoration: InputDecoration(
                             focusedBorder: OutlineInputBorder(
@@ -1854,7 +1880,7 @@ class _BathroomUIState extends State<BathroomUI> {
                             FocusScope.of(context).requestFocus();
                             new TextEditingController().clear();
                             // print(widget.accessname);
-                            setdata(28, value);
+                            assesmentprovider.setdata(28, value);
                           },
                         ))
                       ],
@@ -1889,7 +1915,8 @@ class _BathroomUIState extends State<BathroomUI> {
     }
   }
 
-  Widget getrecomain(int index, bool isthera, String fieldlabel) {
+  Widget getrecomain(
+      assesmentprovider, int index, bool isthera, String fieldlabel) {
     return SingleChildScrollView(
       // reverse: true,
       child: Container(
@@ -1951,18 +1978,20 @@ class _BathroomUIState extends State<BathroomUI> {
                   FocusScope.of(context).requestFocus();
                   new TextEditingController().clear();
                   // print(widget.accessname);
-                  setreco(index, value);
+                  assesmentprovider.setreco(index, value);
                 },
               ),
             ),
-            (type == 'Therapist' && isthera) ? getrecowid(index) : SizedBox(),
+            (type == 'Therapist' && isthera)
+                ? getrecowid(assesmentprovider, index)
+                : SizedBox(),
           ],
         ),
       ),
     );
   }
 
-  Widget getrecowid(index) {
+  Widget getrecowid(assesmentprovider, index) {
     return Column(
       children: [
         SizedBox(height: 8),
@@ -2007,7 +2036,7 @@ class _BathroomUIState extends State<BathroomUI> {
             FocusScope.of(context).requestFocus();
             new TextEditingController().clear();
             // print(widget.accessname);
-            setrecothera(index, value);
+            assesmentprovider.setrecothera(index, value);
             print('hejdfdf');
           },
         ),
@@ -2020,29 +2049,29 @@ class _BathroomUIState extends State<BathroomUI> {
                 Radio(
                   value: '1',
                   onChanged: (value) {
-                    setprio(index, value);
+                    assesmentprovider.setprio(index, value);
                   },
-                  groupValue: getprio(index),
+                  groupValue: assesmentprovider.getprio(index),
                 ),
                 Text('1'),
                 Radio(
                   value: '2',
                   onChanged: (value) {
                     setState(() {
-                      setprio(index, value);
+                      assesmentprovider.setprio(index, value);
                     });
                   },
-                  groupValue: getprio(index),
+                  groupValue: assesmentprovider.getprio(index),
                 ),
                 Text('2'),
                 Radio(
                   value: '3',
                   onChanged: (value) {
                     setState(() {
-                      setprio(index, value);
+                      assesmentprovider.setprio(index, value);
                     });
                   },
-                  groupValue: getprio(index),
+                  groupValue: assesmentprovider.getprio(index),
                 ),
                 Text('3'),
               ],
