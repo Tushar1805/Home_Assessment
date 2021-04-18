@@ -3,7 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import './garagepro.dart';
 
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
@@ -36,136 +38,11 @@ class _GarageUIState extends State<GarageUI> {
   @override
   void initState() {
     super.initState();
-    _speech = stt.SpeechToText();
-    for (int i = 0;
-        i < widget.wholelist[9][widget.accessname]['question'].length;
-        i++) {
-      _controllers["field${i + 1}"] = TextEditingController();
-      _controllerstreco["field${i + 1}"] = TextEditingController();
-      isListening["field${i + 1}"] = false;
-      _controllers["field${i + 1}"].text = widget.wholelist[9]
-          [widget.accessname]['question'][i + 1]['Recommendation'];
-      _controllerstreco["field${i + 1}"].text =
-          '${widget.wholelist[9][widget.accessname]['question'][i + 1]['Recommendationthera']}';
-      colorsset["field${i + 1}"] = Color.fromRGBO(10, 80, 106, 1);
-    }
-
-    setinitials();
-    getRole();
-  }
-
-  Future<void> setinitials() async {
-    if (widget.wholelist[9][widget.accessname]['question'][7]
-        .containsKey('doorwidth')) {
-    } else {
-      print('getting created');
-      widget.wholelist[9][widget.accessname]['question'][7]['doorwidth'] = 0;
-    }
-
-    if (widget.wholelist[9][widget.accessname]['question'][9]
-        .containsKey('MultipleStair')) {
-      if (widget.wholelist[9][widget.accessname]['question'][9]['MultipleStair']
-          .containsKey('count')) {
-        setState(() {
-          stepcount = widget.wholelist[9][widget.accessname]['question'][9]
-              ['MultipleStair']['count'];
-        });
-      }
-    } else {
-      print('creating!!!!!!');
-      widget.wholelist[9][widget.accessname]['question'][9]
-          ['MultipleStair'] = {};
-    }
-
-    if (widget.wholelist[9][widget.accessname]['question'][10]
-        .containsKey('Railling')) {
-    } else {
-      widget.wholelist[9][widget.accessname]['question'][10]['Railling'] = {
-        'OneSided': {},
-      };
-    }
-  }
-
-  Future<String> getRole() async {
-    final FirebaseUser useruid = await _auth.currentUser();
-    firestoreInstance.collection("users").document(useruid.uid).get().then(
-      (value) {
-        setState(() {
-          type = (value["role"].toString()).split(" ")[0];
-        });
-      },
-    );
-  }
-
-  setdata(index, value) {
-    if (value.length == 0) {
-      if (widget.wholelist[9][widget.accessname]['question'][index]['Answer']
-              .length ==
-          0) {
-      } else {
-        setState(() {
-          widget.wholelist[9][widget.accessname]['complete'] -= 1;
-          widget.wholelist[9][widget.accessname]['question'][index]['Answer'] =
-              value;
-        });
-      }
-    } else {
-      if (widget.wholelist[9][widget.accessname]['question'][index]['Answer']
-              .length ==
-          0) {
-        setState(() {
-          widget.wholelist[9][widget.accessname]['complete'] += 1;
-        });
-      }
-      setState(() {
-        widget.wholelist[9][widget.accessname]['question'][index]['Answer'] =
-            value;
-      });
-    }
-  }
-
-  setreco(index, value) {
-    setState(() {
-      widget.wholelist[9][widget.accessname]['question'][index]
-          ['Recommendation'] = value;
-    });
-  }
-
-  getvalue(index) {
-    return widget.wholelist[9][widget.accessname]['question'][index]['Answer'];
-  }
-
-  getreco(index) {
-    return widget.wholelist[9][widget.accessname]['question'][index]
-        ['Recommendation'];
-  }
-
-  setrecothera(index, value) {
-    setState(() {
-      widget.wholelist[9][widget.accessname]['question'][index]
-          ['Recommendationthera'] = value;
-    });
-  }
-
-  setprio(index, value) {
-    setState(() {
-      widget.wholelist[9][widget.accessname]['question'][index]['Priority'] =
-          value;
-    });
-  }
-
-  getprio(index) {
-    return widget.wholelist[9][widget.accessname]['question'][index]
-        ['Priority'];
-  }
-
-  getrecothera(index) {
-    return widget.wholelist[9][widget.accessname]['question'][index]
-        ['Recommendationthera'];
   }
 
   @override
   Widget build(BuildContext context) {
+    final assesmentprovider = Provider.of<GaragePro>(context);
     // final NewAssesmentProvider assesmentprovider = NewAssesmentProvider();
     return WillPopScope(
       onWillPop: () async => false,
@@ -260,14 +137,16 @@ class _GarageUIState extends State<GarageUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(1, value);
+                                    assesmentprovider.setdata(1, value);
                                   },
                                 ),
                               ),
                             ]),
 
-                        (getvalue(1) != '0' && getvalue(1) != '')
-                            ? getrecomain(1, true, 'Comments(if any)')
+                        (assesmentprovider.getvalue(1) != '0' &&
+                                assesmentprovider.getvalue(1) != '')
+                            ? assesmentprovider.getrecomain(
+                                assesmentprovider, 1, true, 'Comments(if any)')
                             : SizedBox(),
                         // Divider(
                         //   height: dividerheight,
@@ -321,15 +200,16 @@ class _GarageUIState extends State<GarageUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(2, value);
+                                  assesmentprovider.setdata(2, value);
                                 },
-                                value: getvalue(2),
+                                value: assesmentprovider.getvalue(2),
                               ),
                             )
                           ],
                         ),
-                        (getvalue(2).length > 0)
-                            ? getrecomain(2, true, 'Comments (if any)')
+                        (assesmentprovider.getvalue(2).length > 0)
+                            ? assesmentprovider.getrecomain(
+                                assesmentprovider, 2, true, 'Comments (if any)')
                             : SizedBox(),
                         SizedBox(height: 15),
                         // Divider(
@@ -371,15 +251,17 @@ class _GarageUIState extends State<GarageUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(3, value);
+                                  assesmentprovider.setdata(3, value);
                                 },
-                                value: getvalue(3),
+                                value: assesmentprovider.getvalue(3),
                               ),
                             )
                           ],
                         ),
-                        (getvalue(3) != 'No covering' && getvalue(3) != '')
-                            ? getrecomain(3, true, 'Comments (if any)')
+                        (assesmentprovider.getvalue(3) != 'No covering' &&
+                                assesmentprovider.getvalue(3) != '')
+                            ? assesmentprovider.getrecomain(
+                                assesmentprovider, 3, true, 'Comments (if any)')
                             : SizedBox(),
                         SizedBox(height: 15),
                         // Divider(
@@ -417,15 +299,16 @@ class _GarageUIState extends State<GarageUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(4, value);
+                                  assesmentprovider.setdata(4, value);
                                 },
-                                value: getvalue(4),
+                                value: assesmentprovider.getvalue(4),
                               ),
                             )
                           ],
                         ),
-                        (getvalue(4).length > 0)
-                            ? getrecomain(4, true, 'Specify Type')
+                        (assesmentprovider.getvalue(4).length > 0)
+                            ? assesmentprovider.getrecomain(
+                                assesmentprovider, 4, true, 'Specify Type')
                             : SizedBox(),
                         SizedBox(height: 15),
                         Row(
@@ -459,15 +342,17 @@ class _GarageUIState extends State<GarageUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(5, value);
+                                  assesmentprovider.setdata(5, value);
                                 },
-                                value: getvalue(5),
+                                value: assesmentprovider.getvalue(5),
                               ),
                             ),
                           ],
                         ),
-                        (getvalue(5) != 'No' && getvalue(5) != '')
-                            ? getrecomain(5, true, 'Comments(if any)')
+                        (assesmentprovider.getvalue(5) != 'No' &&
+                                assesmentprovider.getvalue(5) != '')
+                            ? assesmentprovider.getrecomain(
+                                assesmentprovider, 5, true, 'Comments(if any)')
                             : SizedBox(),
                         SizedBox(height: 15),
 
@@ -522,9 +407,9 @@ class _GarageUIState extends State<GarageUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(6, value);
+                                  assesmentprovider.setdata(6, value);
                                 },
-                                value: getvalue(6),
+                                value: assesmentprovider.getvalue(6),
                               ),
                             ),
                           ],
@@ -562,7 +447,7 @@ class _GarageUIState extends State<GarageUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(7, value);
+                                  assesmentprovider.setdata(7, value);
                                   setState(() {
                                     widget.wholelist[9][widget.accessname]
                                         ['question'][7]['doorwidth'] = 0;
@@ -588,7 +473,8 @@ class _GarageUIState extends State<GarageUI> {
                                 widget.wholelist[9][widget.accessname]
                                         ['question'][7]['doorwidth'] !=
                                     '')
-                            ? getrecomain(7, true, 'Comments (if any)')
+                            ? assesmentprovider.getrecomain(
+                                assesmentprovider, 7, true, 'Comments (if any)')
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -627,15 +513,16 @@ class _GarageUIState extends State<GarageUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(8, value);
+                                assesmentprovider.setdata(8, value);
                               },
-                              value: getvalue(8),
+                              value: assesmentprovider.getvalue(8),
                             )
                           ],
                         ),
 
-                        (getvalue(8) == 'Yes')
-                            ? getrecomain(8, true, 'Specify Clutter')
+                        (assesmentprovider.getvalue(8) == 'Yes')
+                            ? assesmentprovider.getrecomain(
+                                assesmentprovider, 8, true, 'Specify Clutter')
                             : SizedBox(),
                         SizedBox(height: 15),
                         Row(
@@ -674,15 +561,17 @@ class _GarageUIState extends State<GarageUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(9, value);
+                                  assesmentprovider.setdata(9, value);
                                 },
-                                value: getvalue(9),
+                                value: assesmentprovider.getvalue(9),
                               ),
                             ),
                           ],
                         ),
-                        (getvalue(9) != '' && getvalue(9) != 'N/A')
-                            ? (getvalue(9) == 'Single Dimension')
+                        (assesmentprovider.getvalue(9) != '' &&
+                                assesmentprovider.getvalue(9) != 'N/A')
+                            ? (assesmentprovider.getvalue(9) ==
+                                    'Single Dimension')
                                 ? SingleChildScrollView(
                                     // reverse: true,
                                     child: Container(
@@ -1061,15 +950,16 @@ class _GarageUIState extends State<GarageUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(10, value);
+                                assesmentprovider.setdata(10, value);
                               },
-                              value: getvalue(10),
+                              value: assesmentprovider.getvalue(10),
                             )
                           ],
                         ),
-                        (getvalue(10) == 'On Neither Side')
-                            ? getrecomain(10, true, 'Comments (if any)')
-                            : (getvalue(10) == 'One Side')
+                        (assesmentprovider.getvalue(10) == 'On Neither Side')
+                            ? assesmentprovider.getrecomain(assesmentprovider,
+                                10, true, 'Comments (if any)')
+                            : (assesmentprovider.getvalue(10) == 'One Side')
                                 ? Container(
                                     child: Column(
                                     children: [
@@ -1170,7 +1060,8 @@ class _GarageUIState extends State<GarageUI> {
                                         ),
                                       ),
                                       (type == 'Therapist')
-                                          ? getrecowid(10)
+                                          ? assesmentprovider.getrecowid(
+                                              assesmentprovider, 10)
                                           : SizedBox()
                                     ],
                                   ))
@@ -1209,14 +1100,15 @@ class _GarageUIState extends State<GarageUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(11, value);
+                                assesmentprovider.setdata(11, value);
                               },
-                              value: getvalue(11),
+                              value: assesmentprovider.getvalue(11),
                             )
                           ],
                         ),
-                        (getvalue(11) == 'No')
-                            ? getrecomain(11, true, 'Comments (if any)')
+                        (assesmentprovider.getvalue(11) == 'No')
+                            ? assesmentprovider.getrecomain(assesmentprovider,
+                                11, true, 'Comments (if any)')
                             : SizedBox(),
 
                         SizedBox(height: 15),
@@ -1258,7 +1150,7 @@ class _GarageUIState extends State<GarageUI> {
                             FocusScope.of(context).requestFocus();
                             new TextEditingController().clear();
                             // print(widget.accessname);
-                            setdata(12, value);
+                            assesmentprovider.setdata(12, value);
                           },
                         )),
                         SizedBox(
@@ -1300,7 +1192,7 @@ class _GarageUIState extends State<GarageUI> {
                             FocusScope.of(context).requestFocus();
                             new TextEditingController().clear();
                             // print(widget.accessname);
-                            setdata(13, value);
+                            assesmentprovider.setdata(13, value);
                           },
                         )),
                       ],
@@ -1316,8 +1208,8 @@ class _GarageUIState extends State<GarageUI> {
                               widget.wholelist[9][widget.accessname]['question']
                                   .length;
                           i++) {
-                        setdatalisten(i + 1);
-                        setdatalistenthera(i + 1);
+                        assesmentprovider.setdatalisten(i + 1);
+                        assesmentprovider.setdatalistenthera(i + 1);
                       }
                       if (test == 0) {
                         Navigator.pop(
@@ -1409,262 +1301,262 @@ class _GarageUIState extends State<GarageUI> {
     );
   }
 
-  Widget getrecomain(int index, bool isthera, String fieldlabel) {
-    return SingleChildScrollView(
-      // reverse: true,
-      child: Container(
-        // color: Colors.yellow,
-        child: Column(
-          children: [
-            SizedBox(height: 5),
-            Container(
-              child: TextFormField(
-                maxLines: null,
-                showCursor: cur,
-                controller: _controllers["field$index"],
-                decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: colorsset["field$index"], width: 1),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(width: 1, color: colorsset["field$index"]),
-                    ),
-                    suffix: Container(
-                      // color: Colors.red,
-                      width: 40,
-                      height: 30,
-                      padding: EdgeInsets.all(0),
-                      child: Row(children: [
-                        Container(
-                          // color: Colors.green,
-                          alignment: Alignment.center,
-                          width: 40,
-                          height: 60,
-                          margin: EdgeInsets.all(0),
-                          child: AvatarGlow(
-                            animate: isListening['field$index'],
-                            glowColor: Theme.of(context).primaryColor,
-                            endRadius: 500.0,
-                            duration: const Duration(milliseconds: 2000),
-                            repeatPauseDuration:
-                                const Duration(milliseconds: 100),
-                            repeat: true,
-                            child: FloatingActionButton(
-                              heroTag: "btn$index",
-                              child: Icon(
-                                Icons.mic,
-                                size: 20,
-                              ),
-                              onPressed: () {
-                                _listen(index);
-                                setdatalisten(index);
-                              },
-                            ),
-                          ),
-                        ),
-                      ]),
-                    ),
-                    labelText: fieldlabel),
-                onChanged: (value) {
-                  FocusScope.of(context).requestFocus();
-                  new TextEditingController().clear();
-                  // print(widget.accessname);
-                  setreco(index, value);
-                },
-              ),
-            ),
-            (type == 'Therapist' && isthera) ? getrecowid(index) : SizedBox(),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget assesmentprovider.getrecomain(assesmentprovider,int index, bool isthera, String fieldlabel) {
+  //   return SingleChildScrollView(
+  //     // reverse: true,
+  //     child: Container(
+  //       // color: Colors.yellow,
+  //       child: Column(
+  //         children: [
+  //           SizedBox(height: 5),
+  //           Container(
+  //             child: TextFormField(
+  //               maxLines: null,
+  //               showCursor: cur,
+  //               controller: _controllers["field$index"],
+  //               decoration: InputDecoration(
+  //                   focusedBorder: OutlineInputBorder(
+  //                     borderSide:
+  //                         BorderSide(color: colorsset["field$index"], width: 1),
+  //                   ),
+  //                   enabledBorder: OutlineInputBorder(
+  //                     borderSide:
+  //                         BorderSide(width: 1, color: colorsset["field$index"]),
+  //                   ),
+  //                   suffix: Container(
+  //                     // color: Colors.red,
+  //                     width: 40,
+  //                     height: 30,
+  //                     padding: EdgeInsets.all(0),
+  //                     child: Row(children: [
+  //                       Container(
+  //                         // color: Colors.green,
+  //                         alignment: Alignment.center,
+  //                         width: 40,
+  //                         height: 60,
+  //                         margin: EdgeInsets.all(0),
+  //                         child: AvatarGlow(
+  //                           animate: isListening['field$index'],
+  //                           glowColor: Theme.of(context).primaryColor,
+  //                           endRadius: 500.0,
+  //                           duration: const Duration(milliseconds: 2000),
+  //                           repeatPauseDuration:
+  //                               const Duration(milliseconds: 100),
+  //                           repeat: true,
+  //                           child: FloatingActionButton(
+  //                             heroTag: "btn$index",
+  //                             child: Icon(
+  //                               Icons.mic,
+  //                               size: 20,
+  //                             ),
+  //                             onPressed: () {
+  //                               _listen(index);
+  //                               setdatalisten(index);
+  //                             },
+  //                           ),
+  //                         ),
+  //                       ),
+  //                     ]),
+  //                   ),
+  //                   labelText: fieldlabel),
+  //               onChanged: (value) {
+  //                 FocusScope.of(context).requestFocus();
+  //                 new TextEditingController().clear();
+  //                 // print(widget.accessname);
+  //                 setreco(index, value);
+  //               },
+  //             ),
+  //           ),
+  //           (type == 'Therapist' && isthera) ? getrecowid(index) : SizedBox(),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Widget getrecowid(index) {
-    return Column(
-      children: [
-        SizedBox(height: 8),
-        TextFormField(
-          controller: _controllerstreco["field$index"],
-          decoration: InputDecoration(
-              focusedBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: Color.fromRGBO(10, 80, 106, 1), width: 1),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(width: 1),
-              ),
-              suffix: Container(
-                // color: Colors.red,
-                width: 40,
-                height: 30,
-                padding: EdgeInsets.all(0),
-                child: Row(children: [
-                  Container(
-                    // color: Colors.green,
-                    alignment: Alignment.center,
-                    width: 40,
-                    height: 60,
-                    margin: EdgeInsets.all(0),
-                    child: FloatingActionButton(
-                      heroTag: "btn${index + 1}",
-                      child: Icon(
-                        Icons.mic,
-                        size: 20,
-                      ),
-                      onPressed: () {
-                        _listenthera(index);
-                        setdatalistenthera(index);
-                      },
-                    ),
-                  ),
-                ]),
-              ),
-              labelText: 'Recomendation'),
-          onChanged: (value) {
-            FocusScope.of(context).requestFocus();
-            new TextEditingController().clear();
-            // print(widget.accessname);
-            setrecothera(index, value);
-          },
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Priority'),
-            Row(
-              children: [
-                Radio(
-                  value: '1',
-                  onChanged: (value) {
-                    setprio(index, value);
-                  },
-                  groupValue: getprio(index),
-                ),
-                Text('1'),
-                Radio(
-                  value: '2',
-                  onChanged: (value) {
-                    setState(() {
-                      setprio(index, value);
-                    });
-                  },
-                  groupValue: getprio(index),
-                ),
-                Text('2'),
-                Radio(
-                  value: '3',
-                  onChanged: (value) {
-                    setState(() {
-                      setprio(index, value);
-                    });
-                  },
-                  groupValue: getprio(index),
-                ),
-                Text('3'),
-              ],
-            )
-          ],
-        )
-      ],
-    );
-  }
+  // Widget getrecowid(index) {
+  //   return Column(
+  //     children: [
+  //       SizedBox(height: 8),
+  //       TextFormField(
+  //         controller: _controllerstreco["field$index"],
+  //         decoration: InputDecoration(
+  //             focusedBorder: OutlineInputBorder(
+  //               borderSide:
+  //                   BorderSide(color: Color.fromRGBO(10, 80, 106, 1), width: 1),
+  //             ),
+  //             enabledBorder: OutlineInputBorder(
+  //               borderSide: BorderSide(width: 1),
+  //             ),
+  //             suffix: Container(
+  //               // color: Colors.red,
+  //               width: 40,
+  //               height: 30,
+  //               padding: EdgeInsets.all(0),
+  //               child: Row(children: [
+  //                 Container(
+  //                   // color: Colors.green,
+  //                   alignment: Alignment.center,
+  //                   width: 40,
+  //                   height: 60,
+  //                   margin: EdgeInsets.all(0),
+  //                   child: FloatingActionButton(
+  //                     heroTag: "btn${index + 1}",
+  //                     child: Icon(
+  //                       Icons.mic,
+  //                       size: 20,
+  //                     ),
+  //                     onPressed: () {
+  //                       _listenthera(index);
+  //                       setdatalistenthera(index);
+  //                     },
+  //                   ),
+  //                 ),
+  //               ]),
+  //             ),
+  //             labelText: 'Recomendation'),
+  //         onChanged: (value) {
+  //           FocusScope.of(context).requestFocus();
+  //           new TextEditingController().clear();
+  //           // print(widget.accessname);
+  //           setrecothera(index, value);
+  //         },
+  //       ),
+  //       Row(
+  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //         children: [
+  //           Text('Priority'),
+  //           Row(
+  //             children: [
+  //               Radio(
+  //                 value: '1',
+  //                 onChanged: (value) {
+  //                   setprio(index, value);
+  //                 },
+  //                 groupValue: getprio(index),
+  //               ),
+  //               Text('1'),
+  //               Radio(
+  //                 value: '2',
+  //                 onChanged: (value) {
+  //                   setState(() {
+  //                     setprio(index, value);
+  //                   });
+  //                 },
+  //                 groupValue: getprio(index),
+  //               ),
+  //               Text('2'),
+  //               Radio(
+  //                 value: '3',
+  //                 onChanged: (value) {
+  //                   setState(() {
+  //                     setprio(index, value);
+  //                   });
+  //                 },
+  //                 groupValue: getprio(index),
+  //               ),
+  //               Text('3'),
+  //             ],
+  //           )
+  //         ],
+  //       )
+  //     ],
+  //   );
+  // }
 
-  void _listenthera(index) async {
-    if (!_isListening) {
-      bool available = await _speech.initialize(
-        onStatus: (val) {
-          print('onStatus: $val');
-          setState(() {
-            // _isListening = false;
-            //
-          });
-        },
-        onError: (val) => print('onError: $val'),
-      );
-      if (available) {
-        setState(() {
-          _isListening = true;
-          // colorsset["field$index"] = Colors.red;
-          isListening['field$index'] = true;
-        });
-        _speech.listen(
-          onResult: (val) => setState(() {
-            _controllerstreco["field$index"].text = widget.wholelist[9]
-                        [widget.accessname]['question'][index]
-                    ['Recommendationthera'] +
-                " " +
-                val.recognizedWords;
-          }),
-        );
-      }
-    } else {
-      setState(() {
-        _isListening = false;
-        isListening['field$index'] = false;
-        colorsset["field$index"] = Color.fromRGBO(10, 80, 106, 1);
-      });
-      _speech.stop();
-    }
-  }
+  // void _listenthera(index) async {
+  //   if (!_isListening) {
+  //     bool available = await _speech.initialize(
+  //       onStatus: (val) {
+  //         print('onStatus: $val');
+  //         setState(() {
+  //           // _isListening = false;
+  //           //
+  //         });
+  //       },
+  //       onError: (val) => print('onError: $val'),
+  //     );
+  //     if (available) {
+  //       setState(() {
+  //         _isListening = true;
+  //         // colorsset["field$index"] = Colors.red;
+  //         isListening['field$index'] = true;
+  //       });
+  //       _speech.listen(
+  //         onResult: (val) => setState(() {
+  //           _controllerstreco["field$index"].text = widget.wholelist[9]
+  //                       [widget.accessname]['question'][index]
+  //                   ['Recommendationthera'] +
+  //               " " +
+  //               val.recognizedWords;
+  //         }),
+  //       );
+  //     }
+  //   } else {
+  //     setState(() {
+  //       _isListening = false;
+  //       isListening['field$index'] = false;
+  //       colorsset["field$index"] = Color.fromRGBO(10, 80, 106, 1);
+  //     });
+  //     _speech.stop();
+  //   }
+  // }
 
-  setdatalistenthera(index) {
-    setState(() {
-      widget.wholelist[9][widget.accessname]['question'][index]
-          ['Recommendationthera'] = _controllerstreco["field$index"].text;
-      cur = !cur;
-    });
-  }
+  // setdatalistenthera(index) {
+  //   setState(() {
+  //     widget.wholelist[9][widget.accessname]['question'][index]
+  //         ['Recommendationthera'] = _controllerstreco["field$index"].text;
+  //     cur = !cur;
+  //   });
+  // }
 
-  void _listen(index) async {
-    if (!_isListening) {
-      bool available = await _speech.initialize(
-        onStatus: (val) {
-          print('onStatus: $val');
-          setState(() {
-            // _isListening = false;
-            //
-          });
-        },
-        onError: (val) => print('onError: $val'),
-      );
-      if (available) {
-        setState(() {
-          _isListening = true;
-          colorsset["field$index"] = Colors.red;
-          isListening['field$index'] = true;
-        });
-        _speech.listen(
-          onResult: (val) => setState(() {
-            _controllers["field$index"].text = widget.wholelist[9]
-                    [widget.accessname]['question'][index]['Recommendation'] +
-                " " +
-                val.recognizedWords;
-            if (val.hasConfidenceRating && val.confidence > 0) {
-              _confidence = val.confidence;
-            }
-          }),
-        );
-      }
-    } else {
-      setState(() {
-        _isListening = false;
-        isListening['field$index'] = false;
-        colorsset["field$index"] = Color.fromRGBO(10, 80, 106, 1);
-      });
-      _speech.stop();
-    }
-  }
+  // void _listen(index) async {
+  //   if (!_isListening) {
+  //     bool available = await _speech.initialize(
+  //       onStatus: (val) {
+  //         print('onStatus: $val');
+  //         setState(() {
+  //           // _isListening = false;
+  //           //
+  //         });
+  //       },
+  //       onError: (val) => print('onError: $val'),
+  //     );
+  //     if (available) {
+  //       setState(() {
+  //         _isListening = true;
+  //         colorsset["field$index"] = Colors.red;
+  //         isListening['field$index'] = true;
+  //       });
+  //       _speech.listen(
+  //         onResult: (val) => setState(() {
+  //           _controllers["field$index"].text = widget.wholelist[9]
+  //                   [widget.accessname]['question'][index]['Recommendation'] +
+  //               " " +
+  //               val.recognizedWords;
+  //           if (val.hasConfidenceRating && val.confidence > 0) {
+  //             _confidence = val.confidence;
+  //           }
+  //         }),
+  //       );
+  //     }
+  //   } else {
+  //     setState(() {
+  //       _isListening = false;
+  //       isListening['field$index'] = false;
+  //       colorsset["field$index"] = Color.fromRGBO(10, 80, 106, 1);
+  //     });
+  //     _speech.stop();
+  //   }
+  // }
 
-  setdatalisten(index) {
-    setState(() {
-      widget.wholelist[9][widget.accessname]['question'][index]
-          ['Recommendation'] = _controllers["field$index"].text;
-      cur = !cur;
-    });
-  }
+  // setdatalisten(index) {
+  //   setState(() {
+  //     widget.wholelist[9][widget.accessname]['question'][index]
+  //         ['Recommendation'] = _controllers["field$index"].text;
+  //     cur = !cur;
+  //   });
+  // }
 }
 
 class CustomDialog extends StatelessWidget {

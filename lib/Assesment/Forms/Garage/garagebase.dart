@@ -16,7 +16,8 @@ class Garage extends StatelessWidget {
     return MultiProvider(providers: [
       ChangeNotifierProvider<NewAssesmentProvider>(
           create: (_) => NewAssesmentProvider("")),
-      ChangeNotifierProvider<GaragePro>(create: (_) => GaragePro())
+      ChangeNotifierProvider<GaragePro>(
+          create: (_) => GaragePro(roomname, wholelist, accessname))
     ], child: GarageUI(roomname, wholelist, accessname));
 
     // return Scaffold(
