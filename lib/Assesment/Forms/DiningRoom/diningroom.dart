@@ -15,7 +15,8 @@ class DiningRoom extends StatelessWidget {
     return MultiProvider(providers: [
       ChangeNotifierProvider<NewAssesmentProvider>(
           create: (_) => NewAssesmentProvider("")),
-      ChangeNotifierProvider<DiningPro>(create: (_) => DiningPro())
+      ChangeNotifierProvider<DiningPro>(
+          create: (_) => DiningPro(roomname, wholelist, accessname))
     ], child: DiningRoomUI(roomname, wholelist, accessname));
     // return Scaffold(
     //     body: Center(
