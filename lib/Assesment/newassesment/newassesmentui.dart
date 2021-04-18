@@ -1,10 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:tryapp/Assesment/oldassessments/oldassessmentsbase.dart';
 import 'package:tryapp/Assesment/oldassessments/oldassessmentspro.dart';
-// import 'package:tryapp/Assesment/assesmentpro.dart';
 import 'newassesmentpro.dart';
 import 'cardsUI.dart';
 import 'package:provider/provider.dart';
+
+/// This page is about chosing the areas of home available
+
+/// Frame of this page:
+///
+/// main build fucntion:
+///     this fucntion contains
+///         1)the appbar
+///         2)AREAS OF HOME AVAILABLE CARD:
+///         3)LISTVIEW which hepls in building the outer card:
+///                    roomOuterCard()
+///         4)The next button to call the Cards UI page with provider link.
+///
+///
+/// roomOuterCard(takes provider link, Index from listview):
+///     this function cotains:
+///         1) the head class name
+///         2) counter button to increase and decrease the room count (NumericStepButton) class
+///         3) LISTVIEW which helps in building the inner text fields to
+///             where we can write the name of individual rooms
+
+/// NumericStepButton class
+///   this class is sperately created to build the button to increase and decrease the couunter..
 
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
@@ -18,6 +40,8 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
   Widget build(BuildContext context) {
     final assesmentprovider = Provider.of<NewAssesmentProvider>(context);
     return WillPopScope(
+      /// This will give a pop up whenever we try to get back from the
+      /// areas of room available.
       onWillPop: () {
         showDialog(
           context: context,
@@ -85,6 +109,11 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         itemCount: assesmentprovider.getlistdata().length,
+
+                        /// This is the itembuilder to call and hence create the cards for each room
+                        /// In this we exclude the LIVING ARRANGEMENTS
+                        ///  reason:(Prachi's Suggestion)
+                        /// This Living Arrangements will be taken care when we click on next button.
                         itemBuilder: (context, index) {
                           if (assesmentprovider.getlistdata()[index]['name'] ==
                               'Living Arrangements') {
@@ -112,6 +141,10 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                                 child: Icon(Icons.arrow_forward,
                                     color: Colors.white)),
                             onTap: () {
+                              /// This is the next button.
+                              /// As said earlier we do skip the living Arrangements card so here
+                              /// it is taken care of. we do create only a single room for living arrangements
+
                               assesmentprovider.setassessmainstatus();
                               for (int i = 0;
                                   i < assesmentprovider.listofRooms.length;
@@ -133,14 +166,14 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                                 }
                               }
 
-                              // print(assesmentprovider.getlistdata());
+                              /// Here we are calling the Cards UI page where each and every rooms created
+                              /// will be displayed but we are also passing the provider link. Because the same data
+                              /// will be needing rthe rooms data in further pages.
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => CardsUINew(
                                           assesmentprovider.getlistdata())));
-                              // Text('Karan')));
-                              // print(assesmentprovider.listofRooms);
                             },
                           ),
                         ),
@@ -152,6 +185,7 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
     );
   }
 
+  /// This function is responsible to  create the cards
   Widget roomOuterCard(NewAssesmentProvider prov, int index) {
     return Card(
       margin: EdgeInsets.fromLTRB(0, 20, 0, 5),
@@ -160,6 +194,7 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
           width: double.infinity,
           child: Column(
             children: [
+              /// this field will display the head name of the card.
               Container(
                   padding: EdgeInsets.all(12),
                   width: double.infinity,
@@ -191,18 +226,57 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                           SizedBox(
                             width: 20,
                           ),
+
+                          /// Here we are calling the NumericStepButton class present at the bottom of this
+                          /// page. this helps to get the data and here we are using it to create the
+                          /// text fields.
                           Expanded(
                             child: NumericStepButton(
                               maxValue: 20,
                               onChanged: (text) {
+                                /// Note: Read this to understand below code.
+                                /// as we get number count from the numeric button.
+                                ///
+                                /// Our current frame is(list of rooms):
+                                ///         {
+                                ///            'name': 'Pathway',
+                                ///            'count': 0,
+                                ///            'completed': 7,
+                                ///         },
+                                ///
+                                /// What below lines will do:
+                                ///   This will make the above frame as:
+                                ///
+                                ///         {
+                                ///            'name': 'Pathway',
+                                ///            'count': text, //the count from button will get saved here
+                                ///            'completed': 7,
+                                ///            'rooms1':{
+                                ///                 name://This will help us to save name of room.
+                                ///                 complete: //This will help us to save the numbers of
+                                ///                           completed fields this far and also help us
+                                ///                            to calculate the linear progress bar.
+                                ///                 total: // This is the total number of questions in
+                                ///                           particular rooms.. This is Static.
+                                ///                           We will get this data from gettotal function
+                                ///                           from the provider.
+                                ///                 question: { //this is explained in getMaps function in provider.
+                                ///                   rr1:{
+                                ///                       Answer:,
+                                ///                       Priority:,
+                                ///                       Recommendation:,
+                                ///                       Recommendationthera:,
+                                ///                       additional:{},
+                                ///                      }
+                                ///                   }
+                                ///             }
+                                ///         },
+                                ///
+                                ///
+                                ///
                                 setState(
                                   () {
-                                    // roomdata['count'] = text;
                                     if (text > 0) {
-                                      //   widget.count = int.parse(text.toString());
-                                      //   widget.obstacle = true;
-                                      //
-
                                       prov.listofRooms[index]['count'] = text;
                                       prov.listofRooms[index]['room$text'] = {
                                         'name':
@@ -214,6 +288,8 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                                             prov.getlistdata()[index]['name']),
                                       };
 
+                                      // This will help us to  remove rooms when we reduce the number
+                                      // of rooms.
                                       if (prov.listofRooms[index].containsKey(
                                           'room${prov.listofRooms[index]['count'] + 1}')) {
                                         prov.listofRooms[index].remove(

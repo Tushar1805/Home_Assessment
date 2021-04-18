@@ -10,6 +10,8 @@ class NewAssesmentProvider extends ChangeNotifier {
   var assessmentdatalist;
   var assessmentdoc;
 
+  ///This function is actual local map where all the data of
+  ///asssessment form is saved.
   NewAssesmentProvider(this.assessmentdoc) {
     this.listofRooms = [
       {
@@ -75,6 +77,8 @@ class NewAssesmentProvider extends ChangeNotifier {
     ];
   }
 
+  /// This is a normal getter function to get the list
+  /// of rooms
   List<Map<String, dynamic>> getlistdata() {
     return listofRooms;
   }
@@ -89,6 +93,10 @@ class NewAssesmentProvider extends ChangeNotifier {
   }
 }
 
+///This function is to get how many quetions are there
+///in a particular room. This helps in areas where we need
+///to calculate linear progress bar and create a format which
+///is specified in below function
 gettotal(String classname) {
   if (classname == 'Garage') {
     return 13;
@@ -117,14 +125,26 @@ gettotal(String classname) {
   }
 }
 
+/// This fucntion is used to dynamically create a frame in
+/// the list of rooms list/map. As specified in gettotal function
+/// it takes number of total questions form that function and
+/// creates the frame shown below.
 getMaps(String classname) {
   int total = gettotal(classname);
   Map rr = {};
   for (int i = 1; i <= total; i++) {
+    /// i stands for the rooms count which we will get from the
+    /// gettotal fucntion.
     rr[i] = {
       'Answer': '',
       'Priority': '1',
+      //The data from comments field will get saves here.
+      //
+      //NOTE/WARNING: dont change this name.. It have been used
+      //a lot of area ans is highly dependent.
       'Recommendation': '',
+
+      /// This is the recommendation in therapist form.
       'Recommendationthera': '',
       'additional': {}
     };
@@ -132,6 +152,9 @@ getMaps(String classname) {
   return rr;
 }
 
+/// This is the informational icons prachi asked to take care of
+/// For now its just a text. you can change it from here it
+/// will changed in every spot.
 Widget getinfo() {
   return Text(
     '?',
@@ -141,6 +164,8 @@ Widget getinfo() {
   );
 }
 
+/// This fucntion is used to capitalize every initial
+/// of any string feeded as name of the room.
 String capitalize(String s) {
   var parts = s.split(' ');
   print(parts);
