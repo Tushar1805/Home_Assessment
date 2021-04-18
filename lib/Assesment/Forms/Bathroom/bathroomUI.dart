@@ -19,38 +19,11 @@ class BathroomUI extends StatefulWidget {
 }
 
 class _BathroomUIState extends State<BathroomUI> {
-  // final firestoreInstance = Firestore.instance;
-  // FirebaseAuth _auth = FirebaseAuth.instance;
-  // bool obstacle = false;
-  // bool grabbarneeded = false;
-  // stt.SpeechToText _speech;
-  // bool _isListening = false;
-  // double _confidence = 1.0;
-  // int doorwidth = 0;
-  // bool available = false;
-  // Map<String, Color> colorsset = {};
-  // Map<String, TextEditingController> _controllers = {};
-  // Map<String, TextEditingController> _controllerstreco = {};
-  // Map<String, bool> isListening = {};
-  // bool cur = true;
-  // String type;
-  // Color colorb = Color.fromRGBO(10, 80, 106, 1);
   var test = TextEditingController();
   @override
   void initState() {
     super.initState();
   }
-
-  // Future<String> getRole() async {
-  //   final FirebaseUser useruid = await _auth.currentUser();
-  //   firestoreInstance.collection("users").document(useruid.uid).get().then(
-  //     (value) {
-  //       setState(() {
-  //         type = (value["role"].toString()).split(" ")[0];
-  //       });
-  //     },
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {

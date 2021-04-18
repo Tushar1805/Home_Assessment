@@ -16,7 +16,8 @@ class Bedroom extends StatelessWidget {
     return MultiProvider(providers: [
       ChangeNotifierProvider<NewAssesmentProvider>(
           create: (_) => NewAssesmentProvider("")),
-      ChangeNotifierProvider<BedroomPro>(create: (_) => BedroomPro())
+      ChangeNotifierProvider<BedroomPro>(
+          create: (_) => BedroomPro(roomname, wholelist, accessname))
     ], child: BedroomUI(roomname, wholelist, accessname));
     // return Scaffold(
     //     body: Center(
