@@ -17,6 +17,7 @@ import 'package:provider/provider.dart';
 ///             a)the set function requires value and index to work
 ///             b)the get fucntion requires only index of the question to get the
 ///               data.
+///       UI for the whole page.
 
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
@@ -71,6 +72,8 @@ class _PathwayUIState extends State<PathwayUI> {
     setinitials();
   }
 
+  /// This fucntion helps us to create such fields which will be needed to fill extra
+  /// data sunch as fields generated dynamically.
   setinitials() {
     if (widget.wholelist[0][widget.accessname]['question'][8]
         .containsKey('Railling')) {
@@ -96,6 +99,7 @@ class _PathwayUIState extends State<PathwayUI> {
         widget.wholelist[0][widget.accessname]['question'][7]['MultipleStair']);
   }
 
+  /// This fucntion will help us to get role of the logged in user
   Future<String> getRole() async {
     final FirebaseUser useruid = await _auth.currentUser();
     firestoreInstance.collection("users").document(useruid.uid).get().then(
@@ -107,6 +111,8 @@ class _PathwayUIState extends State<PathwayUI> {
     );
   }
 
+// This function is used to set data i.e to take data from thr field and feed it in
+// map.
   setdata(index, value) {
     if (value.length == 0) {
       if (widget.wholelist[0][widget.accessname]['question'][index]['Answer']
@@ -134,6 +140,7 @@ class _PathwayUIState extends State<PathwayUI> {
     }
   }
 
+  /// This function helps us to set the recommendation
   setreco(index, value) {
     setState(() {
       widget.wholelist[0][widget.accessname]['question'][index]
@@ -141,15 +148,18 @@ class _PathwayUIState extends State<PathwayUI> {
     });
   }
 
+  /// This function helps us to get value form the map
   getvalue(index) {
     return widget.wholelist[0][widget.accessname]['question'][index]['Answer'];
   }
 
+  /// This function helps us to get recommendation value form the map
   getreco(index) {
     return widget.wholelist[0][widget.accessname]['question'][index]
         ['Recommendation'];
   }
 
+// This fucntion helps us to set the priority of the fields.
   setprio(index, value) {
     setState(() {
       widget.wholelist[0][widget.accessname]['question'][index]['Priority'] =
@@ -157,11 +167,13 @@ class _PathwayUIState extends State<PathwayUI> {
     });
   }
 
+// This fucntion helps us to get the priority of the fields.
   getprio(index) {
     return widget.wholelist[0][widget.accessname]['question'][index]
         ['Priority'];
   }
 
+// This fucntion helps us to set the recommendation from the therapist.
   setrecothera(index, value) {
     setState(() {
       widget.wholelist[0][widget.accessname]['question'][index]
@@ -169,6 +181,9 @@ class _PathwayUIState extends State<PathwayUI> {
     });
   }
 
+// This function is used to control and camera button
+//
+//  Note: Image picker do not work with speech_to_text.
   Future getImage(bool isCamera) async {
     // File image;
     // if (isCamera) {
@@ -183,6 +198,7 @@ class _PathwayUIState extends State<PathwayUI> {
     // });
   }
 
+// UI
   @override
   Widget build(BuildContext context) {
     final pathwaypro = Provider.of<PathwayPro>(context);
@@ -1272,6 +1288,7 @@ class _PathwayUIState extends State<PathwayUI> {
     );
   }
 
+  /// this fucntion helps us to listent to hte done button at the bottom
   void listenbutton() {
     var test = 0;
     for (int i = 0;
@@ -1293,6 +1310,8 @@ class _PathwayUIState extends State<PathwayUI> {
     }
   }
 
+  /// This fucntion is to take care of speeck to text mic button and place the text in
+  /// the particular field.
   void _listen(index) async {
     if (!isListening['field$index']) {
       bool available = await _speech.initialize(
@@ -1345,6 +1364,7 @@ class _PathwayUIState extends State<PathwayUI> {
     _speech.stop();
   }
 
+  /// This function is a helper function of the listen fucntion.
   setdatalisten(index) {
     setState(() {
       widget.wholelist[0][widget.accessname]['question'][index]
@@ -1353,6 +1373,8 @@ class _PathwayUIState extends State<PathwayUI> {
     });
   }
 
+  /// This is a widget function which returns is the recommendation fields and the
+  /// priority field.
   Widget getrecomain(int index) {
     return SingleChildScrollView(
       // reverse: true,
@@ -1490,6 +1512,8 @@ class _PathwayUIState extends State<PathwayUI> {
     );
   }
 
+  /// This function is specific for the pathwayui. this is used to generate the
+  /// steps field based on dynamic and multiple stairs to store data of each stair
   Widget stepcountswid(index) {
     return Container(
       child: Column(

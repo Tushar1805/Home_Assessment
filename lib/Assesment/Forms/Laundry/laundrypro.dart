@@ -5,6 +5,17 @@ import 'package:tryapp/Assesment/Forms/Formsrepo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 
+///Frame of this page:
+///       contructor function:
+///         1) this function helps to generate fields which are not needed previously
+///            but will be needed to fill future fields
+///
+///       function which help to set and get data from the field and maps.
+///             a)the set function requires value and index to work
+///             b)the get fucntion requires only index of the question to get the
+///               data.
+///
+///       fucntion which helps to control speech to text.
 class LaundryPro extends ChangeNotifier {
   String roomname;
   var accessname;
@@ -46,6 +57,8 @@ class LaundryPro extends ChangeNotifier {
     doorwidth = int.tryParse('$getvalue(7)');
   }
 
+  /// This fucntion helps us to create such fields which will be needed to fill extra
+  /// data sunch as fields generated dynamically.
   Future<void> setinitials() async {
     if (wholelist[7][accessname]['question'][7].containsKey('doorwidth')) {
     } else {
@@ -69,6 +82,8 @@ class LaundryPro extends ChangeNotifier {
     }
   }
 
+  /// This fucntion will help us to get role of the logged in user
+
   Future<String> getRole() async {
     final FirebaseUser useruid = await _auth.currentUser();
     firestoreInstance.collection("users").document(useruid.uid).get().then(
@@ -79,6 +94,8 @@ class LaundryPro extends ChangeNotifier {
     );
   }
 
+  ///This function is used to set data i.e to take data from thr field and feed it in
+// map.
   setdata(index, value) {
     if (value.length == 0) {
       if (wholelist[7][accessname]['question'][index]['Answer'].length == 0) {
@@ -97,14 +114,18 @@ class LaundryPro extends ChangeNotifier {
     }
   }
 
+  /// This function helps us to set the recommendation
   setreco(index, value) {
     wholelist[7][accessname]['question'][index]['Recommendation'] = value;
     notifyListeners();
   }
 
+  /// This function helps us to get value form the map
   getvalue(index) {
     return wholelist[7][accessname]['question'][index]['Answer'];
   }
+
+  /// This function helps us to get recommendation value form the map
 
   getreco(index) {
     return wholelist[7][accessname]['question'][index]['Recommendation'];
@@ -114,12 +135,14 @@ class LaundryPro extends ChangeNotifier {
     wholelist[7][accessname]['question'][index]['Recommendationthera'] = value;
     notifyListeners();
   }
+// This fucntion helps us to set the priority of the fields.
 
   setprio(index, value) {
     wholelist[7][accessname]['question'][index]['Priority'] = value;
     notifyListeners();
   }
 
+// This fucntion helps us to get the priority of the fields.
   getprio(index) {
     return wholelist[7][accessname]['question'][index]['Priority'];
   }
@@ -128,6 +151,7 @@ class LaundryPro extends ChangeNotifier {
     return wholelist[7][accessname]['question'][index]['Recommendationthera'];
   }
 
+  // This fucntion helps us to set the recommendation from the therapist.
   Widget getrecomain(
       assesmentprovider, int index, bool isthera, String fieldlabel) {
     return SingleChildScrollView(
