@@ -8,6 +8,16 @@ import 'dart:io';
 import 'package:tryapp/Assesment/Forms/Pathway/pathwaypro.dart';
 import 'package:provider/provider.dart';
 
+///Frame of this page:
+///       init function:
+///         1) this function helps to generate fields which are not needed previously
+///            but will be needed to fill future fields
+///
+///       function which help to set and get data from the field and maps.
+///             a)the set function requires value and index to work
+///             b)the get fucntion requires only index of the question to get the
+///               data.
+
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
 class PathwayUI extends StatefulWidget {
@@ -22,7 +32,6 @@ class PathwayUI extends StatefulWidget {
 
 class _PathwayUIState extends State<PathwayUI> {
   stt.SpeechToText _speech;
-  PathwayPro pathpro = PathwayPro();
   FirebaseAuth _auth = FirebaseAuth.instance;
   bool available = false;
   int threeshold = 0;
@@ -59,6 +68,10 @@ class _PathwayUIState extends State<PathwayUI> {
     }
     getRole();
 
+    setinitials();
+  }
+
+  setinitials() {
     if (widget.wholelist[0][widget.accessname]['question'][8]
         .containsKey('Railling')) {
     } else {

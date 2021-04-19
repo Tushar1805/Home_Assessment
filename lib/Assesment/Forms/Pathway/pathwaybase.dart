@@ -14,7 +14,8 @@ class Pathway extends StatelessWidget {
     return MultiProvider(providers: [
       ChangeNotifierProvider<NewAssesmentProvider>(
           create: (_) => NewAssesmentProvider("")),
-      ChangeNotifierProvider<PathwayPro>(create: (_) => PathwayPro())
+      ChangeNotifierProvider<PathwayPro>(
+          create: (_) => PathwayPro(roomname, wholelist, accessname))
     ], child: PathwayUI(roomname, wholelist, accessname));
     // return Scaffold(
     //     body: Center(

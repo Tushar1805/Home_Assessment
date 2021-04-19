@@ -17,7 +17,7 @@ class LivingArrangements extends StatelessWidget {
       ChangeNotifierProvider<NewAssesmentProvider>(
           create: (_) => NewAssesmentProvider("")),
       ChangeNotifierProvider<LivingArrangementsProvider>(
-          create: (_) => LivingArrangementsProvider())
+          create: (_) => LivingArrangementsProvider(roomname, wholelist, accessname))
     ], child: LivingArrangementsUI(roomname, wholelist, accessname));
 
     // return Scaffold(
