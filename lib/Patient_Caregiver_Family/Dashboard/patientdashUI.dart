@@ -1,6 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tryapp/Patient_Caregiver_Family/Dashboard/homeAddress.dart';
+import 'package:tryapp/Patient_Caregiver_Family/Dashboard/reportbase.dart';
+import 'package:tryapp/Patient_Caregiver_Family/Dashboard/requestAssessment.dart';
 import '../../splash/assesment.dart';
 import '../../Assesment/newassesment/newassesmentbase.dart';
 import '../../login/login.dart';
@@ -115,7 +118,12 @@ class _PatientUIState extends State<PatientUI> {
                         'Home Addresses',
                         style: TextStyle(fontSize: 18),
                       ),
-                      onTap: () => {Navigator.of(context).pop()},
+                      onTap: () => {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => HomeAddress()))
+                      },
                     ),
                     ListTile(
                       leading: Icon(Icons.assessment, color: Colors.green),
@@ -127,7 +135,7 @@ class _PatientUIState extends State<PatientUI> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => AssesmentSplashScreen()))
+                                builder: (context) => RequestAssessment()))
                       },
                     ),
                     ListTile(
@@ -149,7 +157,12 @@ class _PatientUIState extends State<PatientUI> {
                         'View Report',
                         style: TextStyle(fontSize: 18),
                       ),
-                      onTap: () => {Navigator.of(context).pop()},
+                      onTap: () => {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ReportBase()))
+                      },
                     ),
                   ],
                 ),

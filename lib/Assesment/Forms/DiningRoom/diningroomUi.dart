@@ -10,10 +10,10 @@ import 'package:tryapp/Assesment/Forms/DiningRoom/diningroompro.dart';
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
 class DiningRoomUI extends StatefulWidget {
-  String roomname;
+  String roomname, docID;
   var accessname;
   List<Map<String, dynamic>> wholelist;
-  DiningRoomUI(this.roomname, this.wholelist, this.accessname);
+  DiningRoomUI(this.roomname, this.wholelist, this.accessname, this.docID);
   @override
   _DiningRoomUIState createState() => _DiningRoomUIState();
 }
@@ -554,10 +554,10 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                     assesmentprovider.setdata(7, value);
                                     setState(() {
                                       widget.wholelist[4][widget.accessname]
-                                          ['question'][7]['doorwidth'] = 0;
+                                          ['question']["7"]['doorwidth'] = 0;
 
                                       widget.wholelist[4][widget.accessname]
-                                              ['question'][7]['doorwidth'] =
+                                              ['question']["7"]['doorwidth'] =
                                           int.parse(value);
                                     });
                                   }),
@@ -567,14 +567,14 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                         SizedBox(
                           height: 5,
                         ),
-                        (widget.wholelist[4][widget.accessname]['question'][7]
+                        (widget.wholelist[4][widget.accessname]['question']["7"]
                                         ['doorwidth'] <
                                     30 &&
                                 widget.wholelist[4][widget.accessname]
-                                        ['question'][7]['doorwidth'] >
+                                        ['question']["7"]['doorwidth'] >
                                     0 &&
                                 widget.wholelist[4][widget.accessname]
-                                        ['question'][7]['doorwidth'] !=
+                                        ['question']["7"]['doorwidth'] !=
                                     '')
                             ? assesmentprovider.getrecomain(
                                 assesmentprovider, 7, true, 'Comments (if any)')
@@ -839,19 +839,21 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                                 // print(widget.accessname);
                                                 widget.wholelist[4]
                                                             [widget.accessname]
-                                                        ['question'][11]
+                                                        ['question']["11"]
                                                     ['chairtype'] = value;
                                               },
                                               value: widget.wholelist[4]
-                                                      [widget.accessname]
-                                                  ['question'][11]['chairtype'],
+                                                          [widget.accessname]
+                                                      ['question']["11"]
+                                                  ['chairtype'],
                                             ),
                                           ),
                                         ],
                                       ),
                                     ),
                                     (widget.wholelist[4][widget.accessname]
-                                                ['question'][11]['chairtype'] ==
+                                                    ['question']["11"]
+                                                ['chairtype'] ==
                                             'Rolling')
                                         ? assesmentprovider.getrecomain(
                                             assesmentprovider,

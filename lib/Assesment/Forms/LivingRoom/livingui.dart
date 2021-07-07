@@ -6,10 +6,10 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
 class LivingRoomUI extends StatefulWidget {
-  String roomname;
+  String roomname, docID;
   var accessname;
   List<Map<String, dynamic>> wholelist;
-  LivingRoomUI(this.roomname, this.wholelist, this.accessname);
+  LivingRoomUI(this.roomname, this.wholelist, this.accessname, this.docID);
   @override
   _LivingRoomUIState createState() => _LivingRoomUIState();
 }
@@ -34,7 +34,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
       _controllers["field${i + 1}"] = TextEditingController();
       isListening["field${i + 1}"] = false;
       _controllers["field${i + 1}"].text = widget.wholelist[2]
-          [widget.accessname]['question'][i + 1]['Recommendation'];
+          [widget.accessname]['question']["${i + 1}"]['Recommendation'];
       colorsset["field${i + 1}"] = Color.fromRGBO(10, 80, 106, 1);
     }
   }
@@ -119,7 +119,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                 width: MediaQuery.of(context).size.width * .3,
                                 child: TextFormField(
                                     initialValue: widget.wholelist[2]
-                                            [widget.accessname]['question'][1]
+                                            [widget.accessname]['question']["1"]
                                         ['Answer'],
                                     decoration: InputDecoration(
                                         focusedBorder: OutlineInputBorder(
@@ -141,7 +141,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                       if (value.length == 0) {
                                         if (widget
                                                 .wholelist[2][widget.accessname]
-                                                    ['question'][1]['Answer']
+                                                    ['question']["1"]['Answer']
                                                 .length ==
                                             0) {
                                         } else {
@@ -151,14 +151,14 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                                 ['complete'] -= 1;
                                             widget.wholelist[2]
                                                         [widget.accessname]
-                                                    ['question'][1]['Answer'] =
-                                                value;
+                                                    ['question']["1"]
+                                                ['Answer'] = value;
                                           });
                                         }
                                       } else {
                                         if (widget
                                                 .wholelist[2][widget.accessname]
-                                                    ['question'][1]['Answer']
+                                                    ['question']["1"]['Answer']
                                                 .length ==
                                             0) {
                                           setState(() {
@@ -169,7 +169,8 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                         }
                                         setState(() {
                                           widget.wholelist[2][widget.accessname]
-                                              ['question'][1]['Answer'] = value;
+                                                  ['question']["1"]['Answer'] =
+                                              value;
                                         });
                                       }
                                       // print(widget.wholelist[2]
@@ -221,7 +222,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                   if (value.length == 0) {
                                     if (widget
                                             .wholelist[2][widget.accessname]
-                                                ['question'][2]['Answer']
+                                                ['question']["2"]['Answer']
                                             .length ==
                                         0) {
                                     } else {
@@ -229,13 +230,13 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                         widget.wholelist[2][widget.accessname]
                                             ['complete'] -= 1;
                                         widget.wholelist[2][widget.accessname]
-                                            ['question'][2]['Answer'] = value;
+                                            ['question']["2"]['Answer'] = value;
                                       });
                                     }
                                   } else {
                                     if (widget
                                             .wholelist[2][widget.accessname]
-                                                ['question'][2]['Answer']
+                                                ['question']["2"]['Answer']
                                             .length ==
                                         0) {
                                       setState(() {
@@ -245,19 +246,19 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                     }
                                     setState(() {
                                       widget.wholelist[2][widget.accessname]
-                                          ['question'][2]['Answer'] = value;
+                                          ['question']["2"]['Answer'] = value;
                                     });
                                   }
                                 },
                                 value: widget.wholelist[2][widget.accessname]
-                                    ['question'][2]['Answer'],
+                                    ['question']["2"]['Answer'],
                               ),
                             )
                           ],
                         ),
                         (widget
                                     .wholelist[2][widget.accessname]['question']
-                                        [2]['Answer']
+                                        ["2"]['Answer']
                                     .length >
                                 0)
                             ? TextFormField(
@@ -314,8 +315,8 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
 
                                   setState(() {
                                     widget.wholelist[2][widget.accessname]
-                                            ['question'][2]['Recommendation'] =
-                                        value;
+                                            ['question']["2"]
+                                        ['Recommendation'] = value;
                                   });
                                 },
                               )
@@ -368,7 +369,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                   if (value.length == 0) {
                                     if (widget
                                             .wholelist[2][widget.accessname]
-                                                ['question'][3]['Answer']
+                                                ['question']["3"]['Answer']
                                             .length ==
                                         0) {
                                     } else {
@@ -376,13 +377,13 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                         widget.wholelist[2][widget.accessname]
                                             ['complete'] -= 1;
                                         widget.wholelist[2][widget.accessname]
-                                            ['question'][3]['Answer'] = value;
+                                            ['question']["3"]['Answer'] = value;
                                       });
                                     }
                                   } else {
                                     if (widget
                                             .wholelist[2][widget.accessname]
-                                                ['question'][3]['Answer']
+                                                ['question']["3"]['Answer']
                                             .length ==
                                         0) {
                                       setState(() {
@@ -392,19 +393,19 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                     }
                                     setState(() {
                                       widget.wholelist[2][widget.accessname]
-                                          ['question'][3]['Answer'] = value;
+                                          ['question']["3"]['Answer'] = value;
                                     });
                                   }
                                 },
                                 value: widget.wholelist[2][widget.accessname]
-                                    ['question'][3]['Answer'],
+                                    ['question']['3']['Answer'],
                               ),
                             )
                           ],
                         ),
                         (widget
                                     .wholelist[2][widget.accessname]['question']
-                                        [3]['Answer']
+                                        ["3"]['Answer']
                                     .length >
                                 0)
                             ? TextFormField(
@@ -461,8 +462,8 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
 
                                   setState(() {
                                     widget.wholelist[2][widget.accessname]
-                                            ['question'][3]['Recommendation'] =
-                                        value;
+                                            ['question']["3"]
+                                        ['Recommendation'] = value;
 
                                     // print(assesmentprovider.listofRooms[2]);
                                     // print(
@@ -523,7 +524,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                   if (value.length == 0) {
                                     if (widget
                                             .wholelist[2][widget.accessname]
-                                                ['question'][4]['Answer']
+                                                ['question']["4"]['Answer']
                                             .length ==
                                         0) {
                                     } else {
@@ -531,13 +532,13 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                         widget.wholelist[2][widget.accessname]
                                             ['complete'] -= 1;
                                         widget.wholelist[2][widget.accessname]
-                                            ['question'][4]['Answer'] = value;
+                                            ['question']["4"]['Answer'] = value;
                                       });
                                     }
                                   } else {
                                     if (widget
                                             .wholelist[2][widget.accessname]
-                                                ['question'][4]['Answer']
+                                                ['question']["4"]['Answer']
                                             .length ==
                                         0) {
                                       setState(() {
@@ -547,19 +548,19 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                     }
                                     setState(() {
                                       widget.wholelist[2][widget.accessname]
-                                          ['question'][4]['Answer'] = value;
+                                          ['question']['4']['Answer'] = value;
                                     });
                                   }
                                 },
                                 value: widget.wholelist[2][widget.accessname]
-                                    ['question'][4]['Answer'],
+                                    ['question']["4"]['Answer'],
                               ),
                             )
                           ],
                         ),
                         (widget
                                     .wholelist[2][widget.accessname]['question']
-                                        [4]['Answer']
+                                        ["4"]['Answer']
                                     .length >
                                 0)
                             ? TextFormField(
@@ -616,8 +617,8 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
 
                                   setState(() {
                                     widget.wholelist[2][widget.accessname]
-                                            ['question'][4]['Recommendation'] =
-                                        value;
+                                            ['question']["4"]
+                                        ['Recommendation'] = value;
                                   });
                                 },
                               )
@@ -662,7 +663,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                   if (value.length == 0) {
                                     if (widget
                                             .wholelist[2][widget.accessname]
-                                                ['question'][5]['Answer']
+                                                ['question']["5"]['Answer']
                                             .length ==
                                         0) {
                                     } else {
@@ -670,13 +671,13 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                         widget.wholelist[2][widget.accessname]
                                             ['complete'] -= 1;
                                         widget.wholelist[2][widget.accessname]
-                                            ['question'][5]['Answer'] = value;
+                                            ['question']["5"]['Answer'] = value;
                                       });
                                     }
                                   } else {
                                     if (widget
                                             .wholelist[2][widget.accessname]
-                                                ['question'][5]['Answer']
+                                                ['question']["5"]['Answer']
                                             .length ==
                                         0) {
                                       setState(() {
@@ -686,12 +687,12 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                     }
                                     setState(() {
                                       widget.wholelist[2][widget.accessname]
-                                          ['question'][5]['Answer'] = value;
+                                          ['question']["5"]['Answer'] = value;
                                     });
                                   }
                                 },
                                 value: widget.wholelist[2][widget.accessname]
-                                    ['question'][5]['Answer'],
+                                    ['question']["5"]['Answer'],
                               ),
                             ),
                           ],
@@ -741,7 +742,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                   if (value.length == 0) {
                                     if (widget
                                             .wholelist[2][widget.accessname]
-                                                ['question'][6]['Answer']
+                                                ['question']["6"]['Answer']
                                             .length ==
                                         0) {
                                     } else {
@@ -749,13 +750,13 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                         widget.wholelist[2][widget.accessname]
                                             ['complete'] -= 1;
                                         widget.wholelist[2][widget.accessname]
-                                            ['question'][6]['Answer'] = value;
+                                            ['question']["6"]['Answer'] = value;
                                       });
                                     }
                                   } else {
                                     if (widget
                                             .wholelist[2][widget.accessname]
-                                                ['question'][6]['Answer']
+                                                ['question']["6"]['Answer']
                                             .length ==
                                         0) {
                                       setState(() {
@@ -765,19 +766,19 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                     }
                                     setState(() {
                                       widget.wholelist[2][widget.accessname]
-                                          ['question'][6]['Answer'] = value;
+                                          ['question']["6"]['Answer'] = value;
                                     });
                                   }
                                 },
                                 value: widget.wholelist[2][widget.accessname]
-                                    ['question'][6]['Answer'],
+                                    ['question']["6"]['Answer'],
                               ),
                             ),
                           ],
                         ),
                         (widget
                                     .wholelist[2][widget.accessname]['question']
-                                        [6]['Answer']
+                                        ["6"]['Answer']
                                     .length >
                                 0)
                             ? TextFormField(
@@ -834,8 +835,8 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
 
                                   setState(() {
                                     widget.wholelist[2][widget.accessname]
-                                            ['question'][6]['Recommendation'] =
-                                        value;
+                                            ['question']["6"]
+                                        ['Recommendation'] = value;
                                   });
                                 },
                               )
@@ -856,7 +857,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                               width: MediaQuery.of(context).size.width * .3,
                               child: TextFormField(
                                   initialValue: widget.wholelist[2]
-                                          [widget.accessname]['question'][7]
+                                          [widget.accessname]['question']["7"]
                                       ['Answer'],
                                   decoration: InputDecoration(
                                       focusedBorder: OutlineInputBorder(
@@ -878,7 +879,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                     if (value.length == 0) {
                                       if (widget
                                               .wholelist[2][widget.accessname]
-                                                  ['question'][7]['Answer']
+                                                  ['question']["7"]['Answer']
                                               .length ==
                                           0) {
                                       } else {
@@ -886,13 +887,14 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                           widget.wholelist[7][widget.accessname]
                                               ['complete'] -= 1;
                                           widget.wholelist[2][widget.accessname]
-                                              ['question'][7]['Answer'] = value;
+                                                  ['question']["7"]['Answer'] =
+                                              value;
                                         });
                                       }
                                     } else {
                                       if (widget
                                               .wholelist[2][widget.accessname]
-                                                  ['question'][7]['Answer']
+                                                  ['question']['7']['Answer']
                                               .length ==
                                           0) {
                                         setState(() {
@@ -902,7 +904,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                       }
                                       setState(() {
                                         widget.wholelist[2][widget.accessname]
-                                            ['question'][7]['Answer'] = value;
+                                            ['question']["7"]['Answer'] = value;
                                       });
                                     }
                                     // print(widget.wholelist[8]
@@ -970,8 +972,8 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
 
                                   setState(() {
                                     widget.wholelist[2][widget.accessname]
-                                            ['question'][7]['Recommendation'] =
-                                        value;
+                                            ['question']["7"]
+                                        ['Recommendation'] = value;
                                   });
                                 },
                               )
@@ -1017,7 +1019,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                 if (value.length == 0) {
                                   if (widget
                                           .wholelist[2][widget.accessname]
-                                              ['question'][8]['Answer']
+                                              ['question']["8"]['Answer']
                                           .length ==
                                       0) {
                                   } else {
@@ -1025,13 +1027,13 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                       widget.wholelist[2][widget.accessname]
                                           ['complete'] -= 1;
                                       widget.wholelist[2][widget.accessname]
-                                          ['question'][8]['Answer'] = value;
+                                          ['question']["8"]['Answer'] = value;
                                     });
                                   }
                                 } else {
                                   if (widget
                                           .wholelist[2][widget.accessname]
-                                              ['question'][8]['Answer']
+                                              ['question']["8"]['Answer']
                                           .length ==
                                       0) {
                                     setState(() {
@@ -1041,16 +1043,16 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                   }
                                   setState(() {
                                     widget.wholelist[2][widget.accessname]
-                                        ['question'][8]['Answer'] = value;
+                                        ['question']["8"]['Answer'] = value;
                                   });
                                 }
                               },
                               value: widget.wholelist[2][widget.accessname]
-                                  ['question'][8]['Answer'],
+                                  ['question']["8"]['Answer'],
                             )
                           ],
                         ),
-                        (widget.wholelist[2][widget.accessname]['question'][8]
+                        (widget.wholelist[2][widget.accessname]['question']["8"]
                                     ['Answer'] ==
                                 'Yes')
                             ? TextFormField(
@@ -1107,8 +1109,8 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
 
                                   setState(() {
                                     widget.wholelist[2][widget.accessname]
-                                            ['question'][8]['Recommendation'] =
-                                        value;
+                                            ['question']["8"]
+                                        ['Recommendation'] = value;
                                   });
                                 },
                               )
@@ -1148,7 +1150,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                 if (value.length == 0) {
                                   if (widget
                                           .wholelist[2][widget.accessname]
-                                              ['question'][9]['Answer']
+                                              ['question']["9"]['Answer']
                                           .length ==
                                       0) {
                                   } else {
@@ -1156,13 +1158,13 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                       widget.wholelist[2][widget.accessname]
                                           ['complete'] -= 1;
                                       widget.wholelist[2][widget.accessname]
-                                          ['question'][9]['Answer'] = value;
+                                          ['question']["9"]['Answer'] = value;
                                     });
                                   }
                                 } else {
                                   if (widget
                                           .wholelist[2][widget.accessname]
-                                              ['question'][9]['Answer']
+                                              ['question']["9"]['Answer']
                                           .length ==
                                       0) {
                                     setState(() {
@@ -1172,16 +1174,16 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                   }
                                   setState(() {
                                     widget.wholelist[2][widget.accessname]
-                                        ['question'][9]['Answer'] = value;
+                                        ['question']["9"]['Answer'] = value;
                                   });
                                 }
                               },
                               value: widget.wholelist[2][widget.accessname]
-                                  ['question'][9]['Answer'],
+                                  ['question']["9"]['Answer'],
                             )
                           ],
                         ),
-                        (widget.wholelist[2][widget.accessname]['question'][9]
+                        (widget.wholelist[2][widget.accessname]['question']["9"]
                                     ['Answer'] ==
                                 'Yes')
                             ? TextFormField(
@@ -1238,8 +1240,8 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
 
                                   setState(() {
                                     widget.wholelist[2][widget.accessname]
-                                            ['question'][9]['Recommendation'] =
-                                        value;
+                                            ['question']["9"]
+                                        ['Recommendation'] = value;
                                   });
                                 },
                               )
@@ -1281,7 +1283,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                 if (value.length == 0) {
                                   if (widget
                                           .wholelist[2][widget.accessname]
-                                              ['question'][10]['Answer']
+                                              ['question']["10"]['Answer']
                                           .length ==
                                       0) {
                                   } else {
@@ -1289,13 +1291,13 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                       widget.wholelist[2][widget.accessname]
                                           ['complete'] -= 1;
                                       widget.wholelist[2][widget.accessname]
-                                          ['question'][10]['Answer'] = value;
+                                          ['question']["10"]['Answer'] = value;
                                     });
                                   }
                                 } else {
                                   if (widget
                                           .wholelist[2][widget.accessname]
-                                              ['question'][10]['Answer']
+                                              ['question']['10']['Answer']
                                           .length ==
                                       0) {
                                     setState(() {
@@ -1305,17 +1307,17 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                   }
                                   setState(() {
                                     widget.wholelist[2][widget.accessname]
-                                        ['question'][10]['Answer'] = value;
+                                        ['question']["10"]['Answer'] = value;
                                   });
                                 }
                               },
                               value: widget.wholelist[2][widget.accessname]
-                                  ['question'][10]['Answer'],
+                                  ['question']["10"]['Answer'],
                             )
                           ],
                         ),
-                        (widget.wholelist[2][widget.accessname]['question'][10]
-                                    ['Answer'] ==
+                        (widget.wholelist[2][widget.accessname]['question']
+                                    ["10"]['Answer'] ==
                                 'Yes')
                             ? TextFormField(
                                 maxLines: null,
@@ -1371,8 +1373,8 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
 
                                   setState(() {
                                     widget.wholelist[2][widget.accessname]
-                                            ['question'][10]['Recommendation'] =
-                                        value;
+                                            ['question']["10"]
+                                        ['Recommendation'] = value;
                                   });
                                 },
                               )
@@ -1399,7 +1401,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                             // height: 10000,
                             child: TextFormField(
                           initialValue: widget.wholelist[2][widget.accessname]
-                              ['question'][11]['Answer'],
+                              ['question']['11']['Answer'],
                           maxLines: 6,
                           decoration: InputDecoration(
                             focusedBorder: OutlineInputBorder(
@@ -1421,7 +1423,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                             if (value.length == 0) {
                               if (widget
                                       .wholelist[2][widget.accessname]
-                                          ['question'][11]['Answer']
+                                          ['question']['11']['Answer']
                                       .length ==
                                   0) {
                               } else {
@@ -1429,13 +1431,13 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                   widget.wholelist[2][widget.accessname]
                                       ['complete'] -= 1;
                                   widget.wholelist[2][widget.accessname]
-                                      ['question'][11]['Answer'] = value;
+                                      ['question']["11"]['Answer'] = value;
                                 });
                               }
                             } else {
                               if (widget
                                       .wholelist[2][widget.accessname]
-                                          ['question'][11]['Answer']
+                                          ['question']["11"]['Answer']
                                       .length ==
                                   0) {
                                 setState(() {
@@ -1445,7 +1447,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                               }
                               setState(() {
                                 widget.wholelist[2][widget.accessname]
-                                    ['question'][11]['Answer'] = value;
+                                    ['question']["11"]['Answer'] = value;
                               });
                             }
                           },
@@ -1510,7 +1512,8 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
         _speech.listen(
           onResult: (val) => setState(() {
             _controllers["field$index"].text = widget.wholelist[2]
-                    [widget.accessname]['question'][index]['Recommendation'] +
+                        [widget.accessname]['question']["$index"]
+                    ['Recommendation'] +
                 " " +
                 val.recognizedWords;
             if (val.hasConfidenceRating && val.confidence > 0) {
@@ -1531,7 +1534,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
 
   setdatalisten(index) {
     setState(() {
-      widget.wholelist[2][widget.accessname]['question'][index]
+      widget.wholelist[2][widget.accessname]['question']["$index"]
           ['Recommendation'] = _controllers["field$index"].text;
       cur = !cur;
     });

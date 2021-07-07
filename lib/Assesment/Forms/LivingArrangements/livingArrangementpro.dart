@@ -38,9 +38,9 @@ class LivingArrangementsProvider extends ChangeNotifier {
       _controllerstreco["field${i + 1}"] = TextEditingController();
       isListening["field${i + 1}"] = false;
       _controllers["field${i + 1}"].text =
-          wholelist[1][accessname]['question'][i + 1]['Recommendation'];
+          wholelist[1][accessname]['question']["${i + 1}"]['Recommendation'];
       _controllerstreco["field${i + 1}"].text =
-          '${wholelist[1][accessname]['question'][i + 1]['Recommendationthera']}';
+          '${wholelist[1][accessname]['question']["${i + 1}"]['Recommendationthera']}';
       colorsset["field${i + 1}"] = Color.fromRGBO(10, 80, 106, 1);
     }
     getRole();
@@ -52,7 +52,7 @@ class LivingArrangementsProvider extends ChangeNotifier {
 
     if (picked1 != null) {
       time1 = picked1;
-      wholelist[1][accessname]['question'][4]['Alone']['From'] = time1;
+      wholelist[1][accessname]['question']["4"]['Alone']['From'] = time1;
       notifyListeners();
     }
   }
@@ -62,56 +62,56 @@ class LivingArrangementsProvider extends ChangeNotifier {
 
     if (picked2 != null) {
       time2 = picked2;
-      wholelist[1][accessname]['question'][4]['Alone']['Till'] = time2;
+      wholelist[1][accessname]['question']["4"]['Alone']['Till'] = time2;
       notifyListeners();
     }
   }
 
   Future<void> setinitialsdata() async {
-    if (wholelist[1][accessname]['question'][2].containsKey('Modetrnas')) {
+    if (wholelist[1][accessname]['question']["2"].containsKey('Modetrnas')) {
     } else {
-      wholelist[1][accessname]['question'][2]['Modetrnas'] = '';
-      wholelist[1][accessname]['question'][2]['Modetrnasother'] = '';
+      wholelist[1][accessname]['question']["2"]['Modetrnas'] = '';
+      wholelist[1][accessname]['question']["2"]['Modetrnasother'] = '';
       notifyListeners();
     }
 
-    if (wholelist[1][accessname]['question'][4].containsKey('Alone')) {
-      if (wholelist[1][accessname]['question'][4]['Alone']
+    if (wholelist[1][accessname]['question']["4"].containsKey('Alone')) {
+      if (wholelist[1][accessname]['question']["4"]['Alone']
           .containsKey('From')) {
-        time1 = wholelist[1][accessname]['question'][4]['Alone']['From'];
+        time1 = wholelist[1][accessname]['question']['4']['Alone']['From'];
       }
-      if (wholelist[1][accessname]['question'][4]['Alone']
+      if (wholelist[1][accessname]['question']["4"]['Alone']
           .containsKey('Till')) {
-        time2 = wholelist[1][accessname]['question'][4]['Alone']['Till'];
+        time2 = wholelist[1][accessname]['question']["4"]['Alone']['Till'];
       }
       notifyListeners();
     } else {
-      wholelist[1][accessname]['question'][4]['Alone'] = {};
+      wholelist[1][accessname]['question']["4"]['Alone'] = {};
       notifyListeners();
     }
 
-    if (wholelist[1][accessname]['question'][5].containsKey('Roomate')) {
-      if (wholelist[1][accessname]['question'][5]['Roomate']
+    if (wholelist[1][accessname]['question']["5"].containsKey('Roomate')) {
+      if (wholelist[1][accessname]['question']["5"]['Roomate']
           .containsKey('count')) {
         roomatecount =
-            wholelist[1][accessname]['question'][5]['Roomate']['count'];
+            wholelist[1][accessname]['question']["5"]['Roomate']['count'];
         notifyListeners();
       }
     } else {
       print('Yes,it is');
 
-      wholelist[1][accessname]['question'][5]['Roomate'] = {};
+      wholelist[1][accessname]['question']["5"]['Roomate'] = {};
       notifyListeners();
     }
 
-    if (wholelist[1][accessname]['question'][11].containsKey('Flights')) {
+    if (wholelist[1][accessname]['question']["11"].containsKey('Flights')) {
       flightcount =
-          wholelist[1][accessname]['question'][11]['Flights']['count'];
+          wholelist[1][accessname]['question']["11"]['Flights']['count'];
       notifyListeners();
     } else {
       print('hello');
 
-      wholelist[1][accessname]['question'][11]['Flights'] = {};
+      wholelist[1][accessname]['question']["11"]['Flights'] = {};
       notifyListeners();
     }
   }
@@ -131,51 +131,55 @@ class LivingArrangementsProvider extends ChangeNotifier {
 
   setdata(index, value) {
     if (value.length == 0) {
-      if (wholelist[1][accessname]['question'][index]['Answer'].length == 0) {
+      if (wholelist[1][accessname]['question']["$index"]['Answer'].length ==
+          0) {
       } else {
         wholelist[1][accessname]['complete'] -= 1;
-        wholelist[1][accessname]['question'][index]['Answer'] = value;
+        wholelist[1][accessname]['question']["$index"]['Answer'] = value;
         notifyListeners();
       }
     } else {
-      if (wholelist[1][accessname]['question'][index]['Answer'].length == 0) {
+      if (wholelist[1][accessname]['question']["$index"]['Answer'].length ==
+          0) {
         wholelist[1][accessname]['complete'] += 1;
         notifyListeners();
       }
 
-      wholelist[1][accessname]['question'][index]['Answer'] = value;
+      wholelist[1][accessname]['question']["$index"]['Answer'] = value;
       notifyListeners();
     }
   }
 
   setreco(index, value) {
-    wholelist[1][accessname]['question'][index]['Recommendation'] = value;
+    wholelist[1][accessname]['question']["$index"]['Recommendation'] = value;
     notifyListeners();
   }
 
   getvalue(index) {
-    return wholelist[1][accessname]['question'][index]['Answer'];
+    return wholelist[1][accessname]['question']["$index"]['Answer'];
   }
 
   getreco(index) {
-    return wholelist[1][accessname]['question'][index]['Recommendation'];
+    return wholelist[1][accessname]['question']["$index"]['Recommendation'];
   }
 
   setprio(index, value) {
-    wholelist[1][accessname]['question'][index]['Priority'] = value;
+    wholelist[1][accessname]['question']["$index"]['Priority'] = value;
     notifyListeners();
   }
 
   getprio(index) {
-    return wholelist[1][accessname]['question'][index]['Priority'];
+    return wholelist[1][accessname]['question']["$index"]['Priority'];
   }
 
   setrecothera(index, value) {
-    wholelist[1][accessname]['question'][index]['Recommendationthera'] = value;
+    wholelist[1][accessname]['question']["$index"]['Recommendationthera'] =
+        value;
     notifyListeners();
   }
 
   getrecothera(index) {
-    return wholelist[1][accessname]['question'][index]['Recommendationthera'];
+    return wholelist[1][accessname]['question']["$index"]
+        ['Recommendationthera'];
   }
 }

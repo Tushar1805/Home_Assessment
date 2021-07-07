@@ -16,11 +16,11 @@ class LoginProvider extends ChangeNotifier {
 
   Future<Widget> getUserType(type) async {
     switch (type) {
-      case 'Nurse':
+      case 'nurse/casemanager':
         return Nurse();
-      case 'Therapist':
+      case 'therapist':
         return Therapist();
-      case 'Patient':
+      case 'patient':
         return Patient();
       default:
         return Nurse();

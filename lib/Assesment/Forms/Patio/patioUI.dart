@@ -7,10 +7,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
 class PatioUI extends StatefulWidget {
-  String roomname;
+  String roomname, docID;
   var accessname;
   List<Map<String, dynamic>> wholelist;
-  PatioUI(this.roomname, this.wholelist, this.accessname);
+  PatioUI(this.roomname, this.wholelist, this.accessname, this.docID);
   @override
   _PatioUIState createState() => _PatioUIState();
 }
@@ -43,7 +43,7 @@ class _PatioUIState extends State<PatioUI> {
       _controllerstreco["field${i + 1}"] = TextEditingController();
       isListening["field${i + 1}"] = false;
       _controllers["field${i + 1}"].text = widget.wholelist[8]
-          [widget.accessname]['question'][i + 1]['Recommendation'];
+          [widget.accessname]['question']["${i + 1}"]['Recommendation'];
       colorsset["field${i + 1}"] = Color.fromRGBO(10, 80, 106, 1);
     }
     getRole();
@@ -51,16 +51,17 @@ class _PatioUIState extends State<PatioUI> {
   }
 
   Future<void> setinitials() async {
-    if (widget.wholelist[8][widget.accessname]['question'][7]
+    if (widget.wholelist[8][widget.accessname]['question']["7"]
         .containsKey('doorwidth')) {
     } else {
       print('getting created');
-      widget.wholelist[8][widget.accessname]['question'][7]['doorwidth'] = 0;
+      widget.wholelist[8][widget.accessname]['question']["7"]['doorwidth'] = 0;
     }
 
-    if (widget.wholelist[8][widget.accessname]['question'][9]
+    if (widget.wholelist[8][widget.accessname]['question']["9"]
         .containsKey('MultipleStair')) {
-      if (widget.wholelist[8][widget.accessname]['question'][9]['MultipleStair']
+      if (widget.wholelist[8][widget.accessname]['question']["9"]
+              ['MultipleStair']
           .containsKey('count')) {
         setState(() {
           stepcount = widget.wholelist[8][widget.accessname]['question'][9]
@@ -69,14 +70,14 @@ class _PatioUIState extends State<PatioUI> {
       }
     } else {
       print('creating!!!!!!');
-      widget.wholelist[8][widget.accessname]['question'][9]
+      widget.wholelist[8][widget.accessname]['question']["9"]
           ['MultipleStair'] = {};
     }
 
-    if (widget.wholelist[8][widget.accessname]['question'][10]
+    if (widget.wholelist[8][widget.accessname]['question']["10"]
         .containsKey('Railling')) {
     } else {
-      widget.wholelist[8][widget.accessname]['question'][10]['Railling'] = {
+      widget.wholelist[8][widget.accessname]['question']["10"]['Railling'] = {
         'OneSided': {},
       };
     }
@@ -95,18 +96,18 @@ class _PatioUIState extends State<PatioUI> {
 
   setdata(index, value) {
     if (value.length == 0) {
-      if (widget.wholelist[8][widget.accessname]['question'][index]['Answer']
+      if (widget.wholelist[8][widget.accessname]['question']["$index"]['Answer']
               .length ==
           0) {
       } else {
         setState(() {
           widget.wholelist[8][widget.accessname]['complete'] -= 1;
-          widget.wholelist[8][widget.accessname]['question'][index]['Answer'] =
-              value;
+          widget.wholelist[8][widget.accessname]['question']["$index"]
+              ['Answer'] = value;
         });
       }
     } else {
-      if (widget.wholelist[8][widget.accessname]['question'][index]['Answer']
+      if (widget.wholelist[8][widget.accessname]['question']["$index"]['Answer']
               .length ==
           0) {
         setState(() {
@@ -114,7 +115,7 @@ class _PatioUIState extends State<PatioUI> {
         });
       }
       setState(() {
-        widget.wholelist[8][widget.accessname]['question'][index]['Answer'] =
+        widget.wholelist[8][widget.accessname]['question']["$index"]['Answer'] =
             value;
       });
     }
@@ -122,41 +123,42 @@ class _PatioUIState extends State<PatioUI> {
 
   setreco(index, value) {
     setState(() {
-      widget.wholelist[8][widget.accessname]['question'][index]
+      widget.wholelist[8][widget.accessname]['question']["$index"]
           ['Recommendation'] = value;
     });
   }
 
   getvalue(index) {
-    return widget.wholelist[8][widget.accessname]['question'][index]['Answer'];
+    return widget.wholelist[8][widget.accessname]['question']["$index"]
+        ['Answer'];
   }
 
   getreco(index) {
-    return widget.wholelist[8][widget.accessname]['question'][index]
+    return widget.wholelist[8][widget.accessname]['question']["$index"]
         ['Recommendation'];
   }
 
   setrecothera(index, value) {
     setState(() {
-      widget.wholelist[8][widget.accessname]['question'][index]
+      widget.wholelist[8][widget.accessname]['question']["$index"]
           ['Recommendationthera'] = value;
     });
   }
 
   setprio(index, value) {
     setState(() {
-      widget.wholelist[8][widget.accessname]['question'][index]['Priority'] =
+      widget.wholelist[8][widget.accessname]['question']["$index"]['Priority'] =
           value;
     });
   }
 
   getprio(index) {
-    return widget.wholelist[8][widget.accessname]['question'][index]
+    return widget.wholelist[8][widget.accessname]['question']["$index"]
         ['Priority'];
   }
 
   getrecothera(index) {
-    return widget.wholelist[8][widget.accessname]['question'][index]
+    return widget.wholelist[8][widget.accessname]['question']["$index"]
         ['Recommendationthera'];
   }
 
@@ -237,7 +239,7 @@ class _PatioUIState extends State<PatioUI> {
                                 width: MediaQuery.of(context).size.width * .3,
                                 child: TextFormField(
                                   initialValue: widget.wholelist[8]
-                                          [widget.accessname]['question'][1]
+                                          [widget.accessname]['question']["1"]
                                       ['Answer'],
                                   decoration: InputDecoration(
                                       focusedBorder: OutlineInputBorder(
@@ -532,7 +534,7 @@ class _PatioUIState extends State<PatioUI> {
                               width: MediaQuery.of(context).size.width * .3,
                               child: TextFormField(
                                 initialValue: widget.wholelist[8]
-                                        [widget.accessname]['question'][7]
+                                        [widget.accessname]['question']["7"]
                                     ['Answer'],
                                 decoration: InputDecoration(
                                     focusedBorder: OutlineInputBorder(
@@ -552,10 +554,10 @@ class _PatioUIState extends State<PatioUI> {
                                   setdata(7, value);
                                   setState(() {
                                     widget.wholelist[8][widget.accessname]
-                                        ['question'][7]['doorwidth'] = 0;
+                                        ['question']["7"]['doorwidth'] = 0;
 
                                     widget.wholelist[8][widget.accessname]
-                                            ['question'][7]['doorwidth'] =
+                                            ['question']["7"]['doorwidth'] =
                                         int.parse(value);
                                   });
                                 },
@@ -566,14 +568,14 @@ class _PatioUIState extends State<PatioUI> {
                         SizedBox(
                           height: 5,
                         ),
-                        (widget.wholelist[8][widget.accessname]['question'][7]
+                        (widget.wholelist[8][widget.accessname]['question']["7"]
                                         ['doorwidth'] <
                                     30 &&
                                 widget.wholelist[8][widget.accessname]
-                                        ['question'][7]['doorwidth'] >
+                                        ['question']["7"]['doorwidth'] >
                                     0 &&
                                 widget.wholelist[8][widget.accessname]
-                                        ['question'][7]['doorwidth'] !=
+                                        ['question']["7"]['doorwidth'] !=
                                     '')
                             ? getrecomain(7, true, 'Comments (if any)')
                             : SizedBox(),
@@ -700,12 +702,14 @@ class _PatioUIState extends State<PatioUI> {
                                                           .width *
                                                       .3,
                                                   child: TextFormField(
-                                                      initialValue: widget
-                                                                      .wholelist[8][
+                                                      initialValue: widget.wholelist[
+                                                                      8]
+                                                                  [
                                                                   widget
                                                                       .accessname]
-                                                              ['question'][9][
-                                                          'Recommendation'],
+                                                              [
+                                                              'question']['9']
+                                                          ['Recommendation'],
                                                       decoration:
                                                           InputDecoration(
                                                               focusedBorder:
@@ -735,7 +739,7 @@ class _PatioUIState extends State<PatioUI> {
                                                           widget.wholelist[8][widget
                                                                       .accessname]
                                                                   [
-                                                                  'question'][9]
+                                                                  'question']["9"]
                                                               [
                                                               'Recommendation'] = value;
                                                         });
@@ -763,7 +767,7 @@ class _PatioUIState extends State<PatioUI> {
                                                                   [
                                                                   widget
                                                                       .accessname]
-                                                              ['question'][9]
+                                                              ['question']["9"]
                                                           ['Single Step Width'],
                                                       keyboardType:
                                                           TextInputType.phone,
@@ -790,7 +794,7 @@ class _PatioUIState extends State<PatioUI> {
                                                           widget.wholelist[8][widget
                                                                       .accessname]
                                                                   [
-                                                                  'question'][9]
+                                                                  'question']["9"]
                                                               [
                                                               'Single Step Width'] = value;
                                                         });
@@ -798,7 +802,7 @@ class _PatioUIState extends State<PatioUI> {
                                                                     8][
                                                                 widget
                                                                     .accessname]
-                                                            ['question'][9]);
+                                                            ['question']["9"]);
                                                       },
                                                     ),
                                                   ),
@@ -814,7 +818,7 @@ class _PatioUIState extends State<PatioUI> {
                                                                   [
                                                                   widget
                                                                       .accessname]
-                                                              ['question'][9][
+                                                              ['question']["9"][
                                                           'Single Step Height'],
                                                       keyboardType:
                                                           TextInputType.phone,
@@ -841,7 +845,7 @@ class _PatioUIState extends State<PatioUI> {
                                                           widget.wholelist[8][widget
                                                                       .accessname]
                                                                   [
-                                                                  'question'][9]
+                                                                  'question']["9"]
                                                               [
                                                               'Single Step Height'] = value;
                                                         });
@@ -891,13 +895,15 @@ class _PatioUIState extends State<PatioUI> {
                                                         widget.wholelist[8][widget
                                                                         .accessname]
                                                                     [
-                                                                    'question'][9]
+                                                                    'question']["9"]
                                                                 [
                                                                 'MultipleStair']
                                                             ['count'] = value;
                                                         widget.wholelist[8][widget
                                                                     .accessname]
-                                                                ['question'][9][
+                                                                [
+                                                                'question']["9"]
+                                                            [
                                                             'Recommendationthera'] = value;
 
                                                         stepcount = widget
@@ -905,13 +911,15 @@ class _PatioUIState extends State<PatioUI> {
                                                                     [
                                                                     widget
                                                                         .accessname]
-                                                                ['question'][9][
+                                                                [
+                                                                'question']["9"]
+                                                            [
                                                             'Recommendationthera'];
                                                         if (value > 0) {
                                                           widget.wholelist[8][widget
                                                                           .accessname]
                                                                       [
-                                                                      'question'][9]
+                                                                      'question']["9"]
                                                                   [
                                                                   'MultipleStair']
                                                               ['step$value'] = {
@@ -924,7 +932,7 @@ class _PatioUIState extends State<PatioUI> {
                                                                   widget
                                                                       .accessname]
                                                                   ['question']
-                                                                  [9][
+                                                                  ["9"][
                                                                   'MultipleStair']
                                                               .containsKey(
                                                                   'step${value + 1}')) {
@@ -932,7 +940,7 @@ class _PatioUIState extends State<PatioUI> {
                                                                     widget
                                                                         .accessname]
                                                                     ['question']
-                                                                    [9][
+                                                                    ["9"][
                                                                     'MultipleStair']
                                                                 .remove(
                                                                     'step${value + 1}');
@@ -943,7 +951,7 @@ class _PatioUIState extends State<PatioUI> {
                                                                   widget
                                                                       .accessname]
                                                                   ['question']
-                                                                  [9][
+                                                                  ["9"][
                                                                   'MultipleStair']
                                                               .containsKey(
                                                                   'step${value + 1}')) {
@@ -951,7 +959,7 @@ class _PatioUIState extends State<PatioUI> {
                                                                     widget
                                                                         .accessname]
                                                                     ['question']
-                                                                    [9][
+                                                                    ["9"][
                                                                     'MultipleStair']
                                                                 .remove(
                                                                     'step${value + 1}');
@@ -1079,13 +1087,13 @@ class _PatioUIState extends State<PatioUI> {
                                               onChanged: (value) {
                                                 widget.wholelist[8][widget
                                                                 .accessname]
-                                                            ['question'][10]
+                                                            ['question']["10"]
                                                         ['Railling']['OneSided']
                                                     ['GoingUp'] = value;
                                               },
                                               value: widget.wholelist[8][
                                                               widget.accessname]
-                                                          ['question'][10]
+                                                          ['question']["10"]
                                                       ['Railling']['OneSided']
                                                   ['GoingUp'],
                                             )
@@ -1127,13 +1135,13 @@ class _PatioUIState extends State<PatioUI> {
                                               onChanged: (value) {
                                                 widget.wholelist[8][widget
                                                                 .accessname]
-                                                            ['question'][10]
+                                                            ['question']["10"]
                                                         ['Railling']['OneSided']
                                                     ['GoingDown'] = value;
                                               },
                                               value: widget.wholelist[8][
                                                               widget.accessname]
-                                                          ['question'][10]
+                                                          ['question']["10"]
                                                       ['Railling']['OneSided']
                                                   ['GoingDown'],
                                             )
@@ -1211,7 +1219,7 @@ class _PatioUIState extends State<PatioUI> {
                           // height: 10000,
                           child: TextFormField(
                             initialValue: widget.wholelist[8][widget.accessname]
-                                ['question'][12]['Answer'],
+                                ['question']["12"]['Answer'],
                             maxLines: 6,
                             decoration: InputDecoration(
                               focusedBorder: OutlineInputBorder(
@@ -1434,7 +1442,7 @@ class _PatioUIState extends State<PatioUI> {
                   width: MediaQuery.of(context).size.width * .35,
                   child: TextFormField(
                     initialValue: widget.wholelist[8][widget.accessname]
-                            ['question'][9]['MultipleStair']['step$index']
+                            ['question']["9"]['MultipleStair']['step$index']
                         ['stepwidth'],
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
@@ -1449,7 +1457,7 @@ class _PatioUIState extends State<PatioUI> {
                         labelText: 'Step Width$index:'),
                     onChanged: (value) {
                       setState(() {
-                        widget.wholelist[8][widget.accessname]['question'][9]
+                        widget.wholelist[8][widget.accessname]['question']["9"]
                                 ['MultipleStair']['step$index']['stepwidth'] =
                             value;
                       });
@@ -1462,7 +1470,7 @@ class _PatioUIState extends State<PatioUI> {
                   width: MediaQuery.of(context).size.width * .35,
                   child: TextFormField(
                     initialValue: widget.wholelist[8][widget.accessname]
-                            ['question'][9]['MultipleStair']['step$index']
+                            ['question']["9"]['MultipleStair']['step$index']
                         ['stepheight'],
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
@@ -1477,7 +1485,7 @@ class _PatioUIState extends State<PatioUI> {
                         labelText: 'Step Height$index:'),
                     onChanged: (value) {
                       setState(() {
-                        widget.wholelist[8][widget.accessname]['question'][9]
+                        widget.wholelist[8][widget.accessname]['question']["9"]
                                 ['MultipleStair']['step$index']['stepheight'] =
                             value;
                       });
@@ -1516,7 +1524,7 @@ class _PatioUIState extends State<PatioUI> {
         _speech.listen(
           onResult: (val) => setState(() {
             _controllerstreco["field$index"].text = widget.wholelist[8]
-                        [widget.accessname]['question'][index]
+                        [widget.accessname]['question']["$index"]
                     ['Recommendationthera'] +
                 " " +
                 val.recognizedWords;
@@ -1535,7 +1543,7 @@ class _PatioUIState extends State<PatioUI> {
 
   setdatalistenthera(index) {
     setState(() {
-      widget.wholelist[8][widget.accessname]['question'][index]
+      widget.wholelist[8][widget.accessname]['question']["$index"]
           ['Recommendationthera'] = _controllerstreco["field$index"].text;
       cur = !cur;
     });
@@ -1571,7 +1579,8 @@ class _PatioUIState extends State<PatioUI> {
         _speech.listen(
           onResult: (val) => setState(() {
             _controllers["field$index"].text = widget.wholelist[8]
-                    [widget.accessname]['question'][index]['Recommendation'] +
+                        [widget.accessname]['question']["$index"]
+                    ['Recommendation'] +
                 " " +
                 val.recognizedWords;
             if (val.hasConfidenceRating && val.confidence > 0) {
@@ -1592,7 +1601,7 @@ class _PatioUIState extends State<PatioUI> {
 
   setdatalisten(index) {
     setState(() {
-      widget.wholelist[8][widget.accessname]['question'][index]
+      widget.wholelist[8][widget.accessname]['question']["$index"]
           ['Recommendation'] = _controllers["field$index"].text;
       cur = !cur;
     });

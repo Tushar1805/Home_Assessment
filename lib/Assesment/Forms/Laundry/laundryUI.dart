@@ -10,10 +10,10 @@ import 'package:tryapp/Assesment/Forms/Laundry/laundrypro.dart';
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
 class LaundryUI extends StatefulWidget {
-  String roomname;
+  String roomname, docID;
   var accessname;
   List<Map<String, dynamic>> wholelist;
-  LaundryUI(this.roomname, this.wholelist, this.accessname);
+  LaundryUI(this.roomname, this.wholelist, this.accessname, this.docID);
   @override
   _LaundryUIState createState() => _LaundryUIState();
 }
@@ -116,7 +116,7 @@ class _LaundryUIState extends State<LaundryUI> {
                                 width: MediaQuery.of(context).size.width * .3,
                                 child: TextFormField(
                                   initialValue: widget.wholelist[7]
-                                          [widget.accessname]['question'][1]
+                                          [widget.accessname]['question']["1"]
                                       ['Answer'],
                                   decoration: InputDecoration(
                                       focusedBorder: OutlineInputBorder(
@@ -426,7 +426,7 @@ class _LaundryUIState extends State<LaundryUI> {
                               width: MediaQuery.of(context).size.width * .3,
                               child: TextFormField(
                                 initialValue: widget.wholelist[7]
-                                        [widget.accessname]['question'][7]
+                                        [widget.accessname]['question']["7"]
                                     ['Answer'],
                                 decoration: InputDecoration(
                                     focusedBorder: OutlineInputBorder(
@@ -446,10 +446,10 @@ class _LaundryUIState extends State<LaundryUI> {
                                   assesmentprovider.setdata(7, value);
                                   setState(() {
                                     widget.wholelist[7][widget.accessname]
-                                        ['question'][7]['doorwidth'] = 0;
+                                        ['question']["7"]['doorwidth'] = 0;
 
                                     widget.wholelist[7][widget.accessname]
-                                            ['question'][7]['doorwidth'] =
+                                            ['question']["7"]['doorwidth'] =
                                         int.parse(value);
                                   });
                                 },
@@ -460,14 +460,14 @@ class _LaundryUIState extends State<LaundryUI> {
                         SizedBox(
                           height: 5,
                         ),
-                        (widget.wholelist[7][widget.accessname]['question'][7]
+                        (widget.wholelist[7][widget.accessname]['question']["7"]
                                         ['doorwidth'] <
                                     30 &&
                                 widget.wholelist[7][widget.accessname]
-                                        ['question'][7]['doorwidth'] >
+                                        ['question']["7"]['doorwidth'] >
                                     0 &&
                                 widget.wholelist[7][widget.accessname]
-                                        ['question'][7]['doorwidth'] !=
+                                        ['question']["7"]['doorwidth'] !=
                                     '')
                             ? assesmentprovider.getrecomain(
                                 assesmentprovider, 7, true, 'Comments (if any)')
@@ -772,7 +772,7 @@ class _LaundryUIState extends State<LaundryUI> {
                             // height: 10000,
                             child: TextFormField(
                           initialValue: widget.wholelist[7][widget.accessname]
-                              ['question'][14]['Answer'],
+                              ['question']['14']['Answer'],
                           maxLines: 6,
                           decoration: InputDecoration(
                             focusedBorder: OutlineInputBorder(
@@ -794,7 +794,7 @@ class _LaundryUIState extends State<LaundryUI> {
                             if (value.length == 0) {
                               if (widget
                                       .wholelist[7][widget.accessname]
-                                          ['question'][14]['Answer']
+                                          ['question']["14"]['Answer']
                                       .length ==
                                   0) {
                               } else {
@@ -802,13 +802,13 @@ class _LaundryUIState extends State<LaundryUI> {
                                   widget.wholelist[7][widget.accessname]
                                       ['complete'] -= 1;
                                   widget.wholelist[7][widget.accessname]
-                                      ['question'][14]['Answer'] = value;
+                                      ['question']["14"]['Answer'] = value;
                                 });
                               }
                             } else {
                               if (widget
                                       .wholelist[7][widget.accessname]
-                                          ['question'][14]['Answer']
+                                          ['question']["14"]['Answer']
                                       .length ==
                                   0) {
                                 setState(() {
@@ -818,7 +818,7 @@ class _LaundryUIState extends State<LaundryUI> {
                               }
                               setState(() {
                                 widget.wholelist[7][widget.accessname]
-                                    ['question'][14]['Answer'] = value;
+                                    ['question']["14"]['Answer'] = value;
                               });
                             }
                           },

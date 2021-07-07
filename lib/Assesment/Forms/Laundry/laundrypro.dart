@@ -47,9 +47,9 @@ class LaundryPro extends ChangeNotifier {
       controllerstreco["field${i + 1}"] = TextEditingController();
       isListening["field${i + 1}"] = false;
       controllers["field${i + 1}"].text =
-          wholelist[7][accessname]['question'][i + 1]['Recommendation'];
+          wholelist[7][accessname]['question']["${i + 1}"]['Recommendation'];
       controllerstreco["field${i + 1}"].text =
-          '${wholelist[7][accessname]['question'][i + 1]['Recommendationthera']}';
+          '${wholelist[7][accessname]['question']["${i + 1}"]['Recommendationthera']}';
       colorsset["field${i + 1}"] = Color.fromRGBO(10, 80, 106, 1);
     }
     getRole();
@@ -60,25 +60,26 @@ class LaundryPro extends ChangeNotifier {
   /// This fucntion helps us to create such fields which will be needed to fill extra
   /// data sunch as fields generated dynamically.
   Future<void> setinitials() async {
-    if (wholelist[7][accessname]['question'][7].containsKey('doorwidth')) {
+    if (wholelist[7][accessname]['question']["7"].containsKey('doorwidth')) {
     } else {
       print('getting created');
-      wholelist[7][accessname]['question'][7]['doorwidth'] = 0;
+      wholelist[7][accessname]['question']["7"]['doorwidth'] = 0;
     }
 
-    if (wholelist[7][accessname]['question'][15].containsKey('ManageInOut')) {
+    if (wholelist[7][accessname]['question']["15"].containsKey('ManageInOut')) {
     } else {
-      wholelist[7][accessname]['question'][15]['ManageInOut'] = '';
+      wholelist[7][accessname]['question']["15"]['ManageInOut'] = '';
     }
 
-    if (wholelist[7][accessname]['question'][16].containsKey('Grabbar')) {
+    if (wholelist[7][accessname]['question']["16"].containsKey('Grabbar')) {
     } else {
-      wholelist[7][accessname]['question'][16]['Grabbar'] = {};
+      wholelist[7][accessname]['question']["16"]['Grabbar'] = {};
     }
 
-    if (wholelist[7][accessname]['question'][17].containsKey('sidefentrance')) {
+    if (wholelist[7][accessname]['question']["17"]
+        .containsKey('sidefentrance')) {
     } else {
-      wholelist[7][accessname]['question'][17]['sidefentrance'] = '';
+      wholelist[7][accessname]['question']["17"]['sidefentrance'] = '';
     }
   }
 
@@ -98,57 +99,61 @@ class LaundryPro extends ChangeNotifier {
 // map.
   setdata(index, value) {
     if (value.length == 0) {
-      if (wholelist[7][accessname]['question'][index]['Answer'].length == 0) {
+      if (wholelist[7][accessname]['question']["$index"]['Answer'].length ==
+          0) {
       } else {
         wholelist[7][accessname]['complete'] -= 1;
-        wholelist[7][accessname]['question'][index]['Answer'] = value;
+        wholelist[7][accessname]['question']["$_speech"]['Answer'] = value;
         notifyListeners();
       }
     } else {
-      if (wholelist[7][accessname]['question'][index]['Answer'].length == 0) {
+      if (wholelist[7][accessname]['question']["$index"]['Answer'].length ==
+          0) {
         wholelist[7][accessname]['complete'] += 1;
         notifyListeners();
       }
-      wholelist[7][accessname]['question'][index]['Answer'] = value;
+      wholelist[7][accessname]['question']["$index"]['Answer'] = value;
       notifyListeners();
     }
   }
 
   /// This function helps us to set the recommendation
   setreco(index, value) {
-    wholelist[7][accessname]['question'][index]['Recommendation'] = value;
+    wholelist[7][accessname]['question']["$index"]['Recommendation'] = value;
     notifyListeners();
   }
 
   /// This function helps us to get value form the map
   getvalue(index) {
-    return wholelist[7][accessname]['question'][index]['Answer'];
+    return wholelist[7][accessname]['question']["$index"]['Answer'];
   }
 
   /// This function helps us to get recommendation value form the map
 
   getreco(index) {
-    return wholelist[7][accessname]['question'][index]['Recommendation'];
+    return wholelist[7][accessname]['question']["$index"]['Recommendation'];
   }
 
   setrecothera(index, value) {
-    wholelist[7][accessname]['question'][index]['Recommendationthera'] = value;
+    wholelist[7][accessname]['question']["$index"]['Recommendationthera'] =
+        value;
     notifyListeners();
   }
 // This fucntion helps us to set the priority of the fields.
 
   setprio(index, value) {
-    wholelist[7][accessname]['question'][index]['Priority'] = value;
+    wholelist[7][accessname]['question']["$index"]['Priority'] = value;
     notifyListeners();
   }
 
 // This fucntion helps us to get the priority of the fields.
   getprio(index) {
-    return wholelist[7][accessname]['question'][index]['Priority'];
+    return wholelist[7][accessname]['question']["$index"]['Priority'];
   }
 
   getrecothera(index) {
-    return wholelist[7][accessname]['question'][index]['Recommendationthera'];
+    return wholelist[7][accessname]['question']["$index"]
+        ['Recommendationthera'];
   }
 
   // This fucntion helps us to set the recommendation from the therapist.
@@ -336,7 +341,7 @@ class LaundryPro extends ChangeNotifier {
         _speech.listen(
           onResult: (val) {
             controllerstreco["field$index"].text = wholelist[7][accessname]
-                    ['question'][index]['Recommendationthera'] +
+                    ['question']["$index"]['Recommendationthera'] +
                 " " +
                 val.recognizedWords;
             notifyListeners();
@@ -353,7 +358,7 @@ class LaundryPro extends ChangeNotifier {
   }
 
   setdatalistenthera(index) {
-    wholelist[7][accessname]['question'][index]['Recommendationthera'] =
+    wholelist[7][accessname]['question']["$index"]['Recommendationthera'] =
         controllerstreco["field$index"].text;
     cur = !cur;
     notifyListeners();
@@ -378,7 +383,7 @@ class LaundryPro extends ChangeNotifier {
         notifyListeners();
         _speech.listen(onResult: (val) {
           controllers["field$index"].text = wholelist[7][accessname]['question']
-                  [index]['Recommendation'] +
+                  ["$index"]['Recommendation'] +
               " " +
               val.recognizedWords;
           if (val.hasConfidenceRating && val.confidence > 0) {
@@ -397,7 +402,7 @@ class LaundryPro extends ChangeNotifier {
   }
 
   setdatalisten(index) {
-    wholelist[7][accessname]['question'][index]['Recommendation'] =
+    wholelist[7][accessname]['question']["$index"]['Recommendation'] =
         controllers["field$index"].text;
     cur = !cur;
     notifyListeners();

@@ -62,7 +62,7 @@ class _SplashScreenState extends State<SplashScreen> {
       // var page = await LoginProvider.getUserType(type);
     });
     var page = await LoginProvider().getUserType(type);
-    if (newuser) {
+    if (newuser ?? false) {
       // rolesave.setString('role', type);
       Navigator.pushReplacement(
           context,

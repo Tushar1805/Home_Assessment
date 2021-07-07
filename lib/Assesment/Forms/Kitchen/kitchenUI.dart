@@ -10,10 +10,10 @@ import 'package:tryapp/Assesment/Forms/Kitchen/kitchenpro.dart';
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
 class KitchenUI extends StatefulWidget {
-  String roomname;
+  String roomname, docID;
   var accessname;
   List<Map<String, dynamic>> wholelist;
-  KitchenUI(this.roomname, this.wholelist, this.accessname);
+  KitchenUI(this.roomname, this.wholelist, this.accessname, this.docID);
   @override
   _KitchenUIState createState() => _KitchenUIState();
 }
@@ -446,10 +446,10 @@ class _KitchenUIState extends State<KitchenUI> {
                                     assesmentprovider.setdata(7, value);
                                     setState(() {
                                       widget.wholelist[3][widget.accessname]
-                                          ['question'][7]['doorwidth'] = 0;
+                                          ['question']["7"]['doorwidth'] = 0;
 
                                       widget.wholelist[3][widget.accessname]
-                                              ['question'][7]['doorwidth'] =
+                                              ['question']["7"]['doorwidth'] =
                                           int.parse(value);
                                     });
                                   }),
@@ -459,14 +459,14 @@ class _KitchenUIState extends State<KitchenUI> {
                         SizedBox(
                           height: 5,
                         ),
-                        (widget.wholelist[3][widget.accessname]['question'][7]
+                        (widget.wholelist[3][widget.accessname]['question']["7"]
                                         ['doorwidth'] <
                                     30 &&
                                 widget.wholelist[3][widget.accessname]
-                                        ['question'][7]['doorwidth'] >
+                                        ['question']["7"]['doorwidth'] >
                                     0 &&
                                 widget.wholelist[3][widget.accessname]
-                                        ['question'][7]['doorwidth'] !=
+                                        ['question']["7"]['doorwidth'] !=
                                     '')
                             ? assesmentprovider.getrecomain(
                                 assesmentprovider, 7, true, 'Comments (if any)')

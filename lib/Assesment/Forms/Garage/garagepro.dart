@@ -36,9 +36,9 @@ class GaragePro extends ChangeNotifier {
       controllerstreco["field${i + 1}"] = TextEditingController();
       isListening["field${i + 1}"] = false;
       controllers["field${i + 1}"].text =
-          wholelist[9][accessname]['question'][i + 1]['Recommendation'];
+          wholelist[9][accessname]['question']["${i + 1}"]['Recommendation'];
       controllerstreco["field${i + 1}"].text =
-          '${wholelist[9][accessname]['question'][i + 1]['Recommendationthera']}';
+          '${wholelist[9][accessname]['question']["${i + 1}"]['Recommendationthera']}';
       colorsset["field${i + 1}"] = Color.fromRGBO(10, 80, 106, 1);
     }
     getRole();
@@ -46,25 +46,26 @@ class GaragePro extends ChangeNotifier {
   }
 
   Future<void> setinitials() async {
-    if (wholelist[9][accessname]['question'][7].containsKey('doorwidth')) {
+    if (wholelist[9][accessname]['question']["7"].containsKey('doorwidth')) {
     } else {
       print('getting created');
-      wholelist[9][accessname]['question'][7]['doorwidth'] = 0;
+      wholelist[9][accessname]['question']["7"]['doorwidth'] = 0;
     }
 
-    if (wholelist[9][accessname]['question'][15].containsKey('ManageInOut')) {
+    if (wholelist[9][accessname]['question']["15"].containsKey('ManageInOut')) {
     } else {
-      wholelist[9][accessname]['question'][15]['ManageInOut'] = '';
+      wholelist[9][accessname]['question']["15"]['ManageInOut'] = '';
     }
 
-    if (wholelist[9][accessname]['question'][16].containsKey('Grabbar')) {
+    if (wholelist[9][accessname]['question']["16"].containsKey('Grabbar')) {
     } else {
-      wholelist[9][accessname]['question'][16]['Grabbar'] = {};
+      wholelist[9][accessname]['question']['16']['Grabbar'] = {};
     }
 
-    if (wholelist[9][accessname]['question'][17].containsKey('sidefentrance')) {
+    if (wholelist[9][accessname]['question']['17']
+        .containsKey('sidefentrance')) {
     } else {
-      wholelist[9][accessname]['question'][17]['sidefentrance'] = '';
+      wholelist[9][accessname]['question']['17']['sidefentrance'] = '';
     }
   }
 
@@ -80,51 +81,55 @@ class GaragePro extends ChangeNotifier {
 
   setdata(index, value) {
     if (value.length == 0) {
-      if (wholelist[9][accessname]['question'][index]['Answer'].length == 0) {
+      if (wholelist[9][accessname]['question']['$index']['Answer'].length ==
+          0) {
       } else {
         wholelist[9][accessname]['complete'] -= 1;
-        wholelist[9][accessname]['question'][index]['Answer'] = value;
+        wholelist[9][accessname]['question']["$index"]['Answer'] = value;
         notifyListeners();
       }
     } else {
-      if (wholelist[9][accessname]['question'][index]['Answer'].length == 0) {
+      if (wholelist[9][accessname]['question']["$index"]['Answer'].length ==
+          0) {
         wholelist[9][accessname]['complete'] += 1;
         notifyListeners();
       }
-      wholelist[9][accessname]['question'][index]['Answer'] = value;
+      wholelist[9][accessname]['question']["$index"]['Answer'] = value;
       notifyListeners();
     }
   }
 
   setreco(index, value) {
-    wholelist[9][accessname]['question'][index]['Recommendation'] = value;
+    wholelist[9][accessname]['question']["$index"]['Recommendation'] = value;
     notifyListeners();
   }
 
   getvalue(index) {
-    return wholelist[9][accessname]['question'][index]['Answer'];
+    return wholelist[9][accessname]['question']["$index"]['Answer'];
   }
 
   getreco(index) {
-    return wholelist[9][accessname]['question'][index]['Recommendation'];
+    return wholelist[9][accessname]['question']["$index"]['Recommendation'];
   }
 
   setrecothera(index, value) {
-    wholelist[9][accessname]['question'][index]['Recommendationthera'] = value;
+    wholelist[9][accessname]['question']["$index"]['Recommendationthera'] =
+        value;
     notifyListeners();
   }
 
   setprio(index, value) {
-    wholelist[9][accessname]['question'][index]['Priority'] = value;
+    wholelist[9][accessname]['question']["$index"]['Priority'] = value;
     notifyListeners();
   }
 
   getprio(index) {
-    return wholelist[9][accessname]['question'][index]['Priority'];
+    return wholelist[9][accessname]['question']["$index"]['Priority'];
   }
 
   getrecothera(index) {
-    return wholelist[9][accessname]['question'][index]['Recommendationthera'];
+    return wholelist[9][accessname]['question']["$index"]
+        ['Recommendationthera'];
   }
 
   Widget getrecomain(
@@ -311,7 +316,7 @@ class GaragePro extends ChangeNotifier {
         _speech.listen(
           onResult: (val) {
             controllerstreco["field$index"].text = wholelist[9][accessname]
-                    ['question'][index]['Recommendationthera'] +
+                    ['question']["$index"]['Recommendationthera'] +
                 " " +
                 val.recognizedWords;
             notifyListeners();
@@ -328,7 +333,7 @@ class GaragePro extends ChangeNotifier {
   }
 
   setdatalistenthera(index) {
-    wholelist[9][accessname]['question'][index]['Recommendationthera'] =
+    wholelist[9][accessname]['question']["$index"]['Recommendationthera'] =
         controllerstreco["field$index"].text;
     cur = !cur;
     notifyListeners();
@@ -353,7 +358,7 @@ class GaragePro extends ChangeNotifier {
         notifyListeners();
         _speech.listen(onResult: (val) {
           controllers["field$index"].text = wholelist[9][accessname]['question']
-                  [index]['Recommendation'] +
+                  ["$index"]['Recommendation'] +
               " " +
               val.recognizedWords;
           if (val.hasConfidenceRating && val.confidence > 0) {
@@ -372,7 +377,7 @@ class GaragePro extends ChangeNotifier {
   }
 
   setdatalisten(index) {
-    wholelist[9][accessname]['question'][index]['Recommendation'] =
+    wholelist[9][accessname]['question']["$index"]['Recommendation'] =
         controllers["field$index"].text;
     cur = !cur;
     notifyListeners();

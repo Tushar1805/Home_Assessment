@@ -7,10 +7,10 @@ import 'package:provider/provider.dart';
 import 'garagepro.dart';
 
 class Garage extends StatelessWidget {
-  String roomname;
+  String roomname, docID;
   var accessname;
   List<Map<String, dynamic>> wholelist;
-  Garage(this.roomname, this.wholelist, this.accessname);
+  Garage(this.roomname, this.wholelist, this.accessname, this.docID);
   @override
   Widget build(BuildContext context) {
     return MultiProvider(providers: [
@@ -18,7 +18,7 @@ class Garage extends StatelessWidget {
           create: (_) => NewAssesmentProvider("")),
       ChangeNotifierProvider<GaragePro>(
           create: (_) => GaragePro(roomname, wholelist, accessname))
-    ], child: GarageUI(roomname, wholelist, accessname));
+    ], child: GarageUI(roomname, wholelist, accessname, docID));
 
     // return Scaffold(
     //     body: Center(

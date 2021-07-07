@@ -10,10 +10,10 @@ import 'package:tryapp/Assesment/Forms/Bedroom/bedroompro.dart';
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
 class BedroomUI extends StatefulWidget {
-  String roomname;
+  String roomname, docID;
   var accessname;
   List<Map<String, dynamic>> wholelist;
-  BedroomUI(this.roomname, this.wholelist, this.accessname);
+  BedroomUI(this.roomname, this.wholelist, this.accessname, this.docID);
   @override
   _BedroomUIState createState() => _BedroomUIState();
 }
@@ -219,7 +219,7 @@ class _BedroomUIState extends State<BedroomUI> {
                                 width: MediaQuery.of(context).size.width * .3,
                                 child: TextFormField(
                                   initialValue: widget.wholelist[6]
-                                          [widget.accessname]['question'][1]
+                                          [widget.accessname]['question']["1"]
                                       ['Answer'],
                                   decoration: InputDecoration(
                                       focusedBorder: OutlineInputBorder(
@@ -529,7 +529,7 @@ class _BedroomUIState extends State<BedroomUI> {
                                 width: MediaQuery.of(context).size.width * .3,
                                 child: TextFormField(
                                   initialValue: widget.wholelist[6]
-                                          [widget.accessname]['question'][7]
+                                          [widget.accessname]['question']["7"]
                                       ['Answer'],
                                   decoration: InputDecoration(
                                       focusedBorder: OutlineInputBorder(
@@ -550,10 +550,10 @@ class _BedroomUIState extends State<BedroomUI> {
                                     assesmentprovider.setdata(7, value);
                                     setState(() {
                                       widget.wholelist[6][widget.accessname]
-                                          ['question'][7]['doorwidth'] = 0;
+                                          ['question']["7"]['doorwidth'] = 0;
 
                                       widget.wholelist[6][widget.accessname]
-                                              ['question'][7]['doorwidth'] =
+                                              ['question']["7"]['doorwidth'] =
                                           int.parse(value);
                                     });
                                   },
@@ -563,14 +563,14 @@ class _BedroomUIState extends State<BedroomUI> {
                         SizedBox(
                           height: 5,
                         ),
-                        (widget.wholelist[6][widget.accessname]['question'][7]
+                        (widget.wholelist[6][widget.accessname]['question']["7"]
                                         ['doorwidth'] <
                                     30 &&
                                 widget.wholelist[6][widget.accessname]
-                                        ['question'][7]['doorwidth'] >
+                                        ['question']["7"]['doorwidth'] >
                                     0 &&
                                 widget.wholelist[6][widget.accessname]
-                                        ['question'][7]['doorwidth'] !=
+                                        ['question']["7"]['doorwidth'] !=
                                     '')
                             ? assesmentprovider.getrecomain(
                                 assesmentprovider, 7, true, 'Comments (if any)')
@@ -1044,7 +1044,7 @@ class _BedroomUIState extends State<BedroomUI> {
                             // height: 10000,
                             child: TextFormField(
                           initialValue: widget.wholelist[6][widget.accessname]
-                              ['question'][18]['Answer'],
+                              ['question']["18"]['Answer'],
                           maxLines: 6,
                           decoration: InputDecoration(
                             focusedBorder: OutlineInputBorder(
@@ -1066,7 +1066,7 @@ class _BedroomUIState extends State<BedroomUI> {
                             if (value.length == 0) {
                               if (widget
                                       .wholelist[6][widget.accessname]
-                                          ['question'][18]['Answer']
+                                          ['question']["18"]['Answer']
                                       .length ==
                                   0) {
                               } else {
@@ -1074,13 +1074,13 @@ class _BedroomUIState extends State<BedroomUI> {
                                   widget.wholelist[6][widget.accessname]
                                       ['complete'] -= 1;
                                   widget.wholelist[6][widget.accessname]
-                                      ['question'][18]['Answer'] = value;
+                                      ['question']["18"]['Answer'] = value;
                                 });
                               }
                             } else {
                               if (widget
                                       .wholelist[6][widget.accessname]
-                                          ['question'][18]['Answer']
+                                          ['question']["18"]['Answer']
                                       .length ==
                                   0) {
                                 setState(() {
@@ -1090,7 +1090,7 @@ class _BedroomUIState extends State<BedroomUI> {
                               }
                               setState(() {
                                 widget.wholelist[6][widget.accessname]
-                                    ['question'][18]['Answer'] = value;
+                                    ['question']["18"]['Answer'] = value;
                               });
                             }
                           },

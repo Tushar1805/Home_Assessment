@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'dart:io';
 import 'package:tryapp/Assesment/Forms/Pathway/pathwaypro.dart';
 import 'package:provider/provider.dart';
+import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
 
 ///Frame of this page:
 ///       init function:
@@ -22,11 +23,11 @@ import 'package:provider/provider.dart';
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
 class PathwayUI extends StatefulWidget {
-  String roomname;
+  String roomname, docID;
 
   var accessname;
   List<Map<String, dynamic>> wholelist;
-  PathwayUI(this.roomname, this.wholelist, this.accessname);
+  PathwayUI(this.roomname, this.wholelist, this.accessname, this.docID);
   @override
   _PathwayUIState createState() => _PathwayUIState();
 }
@@ -53,8 +54,8 @@ class _PathwayUIState extends State<PathwayUI> {
   void initState() {
     super.initState();
     _speech = stt.SpeechToText();
-    _textfield.text =
-        widget.wholelist[0][widget.accessname]['question'][1]['Recommendation'];
+    _textfield.text = widget.wholelist[0][widget.accessname]['question']["1"]
+        ['Recommendation'];
     for (int i = 0;
         i < widget.wholelist[0][widget.accessname]['question'].length;
         i++) {
@@ -62,9 +63,9 @@ class _PathwayUIState extends State<PathwayUI> {
       _controllerstreco["field${i + 1}"] = TextEditingController();
       isListening["field${i + 1}"] = false;
       _controllers["field${i + 1}"].text = widget.wholelist[0]
-          [widget.accessname]['question'][i + 1]['Recommendation'];
+          [widget.accessname]['question']["${i + 1}"]['Recommendation'];
       _controllerstreco["field${i + 1}"].text =
-          '${widget.wholelist[0][widget.accessname]['question'][i + 1]['Recommendationthera']}';
+          '${widget.wholelist[0][widget.accessname]['question']["${i + 1}"]['Recommendationthera']}';
       colorsset["field${i + 1}"] = Color.fromRGBO(10, 80, 106, 1);
     }
     getRole();
@@ -75,28 +76,29 @@ class _PathwayUIState extends State<PathwayUI> {
   /// This fucntion helps us to create such fields which will be needed to fill extra
   /// data sunch as fields generated dynamically.
   setinitials() {
-    if (widget.wholelist[0][widget.accessname]['question'][8]
+    if (widget.wholelist[0][widget.accessname]['question']["8"]
         .containsKey('Railling')) {
     } else {
-      widget.wholelist[0][widget.accessname]['question'][8]['Railling'] = {
+      widget.wholelist[0][widget.accessname]['question']["8"]['Railling'] = {
         'OneSided': {},
       };
     }
-    if (widget.wholelist[0][widget.accessname]['question'][7]
+    if (widget.wholelist[0][widget.accessname]['question']["7"]
         .containsKey('MultipleStair')) {
-      if (widget.wholelist[0][widget.accessname]['question'][7]['MultipleStair']
+      if (widget.wholelist[0][widget.accessname]['question']["7"]
+              ['MultipleStair']
           .containsKey('count')) {
         setState(() {
-          stepcount = widget.wholelist[0][widget.accessname]['question'][7]
+          stepcount = widget.wholelist[0][widget.accessname]['question']["7"]
               ['MultipleStair']['count'];
         });
       }
     } else {
-      widget.wholelist[0][widget.accessname]['question'][7]
+      widget.wholelist[0][widget.accessname]['question']["7"]
           ['MultipleStair'] = {};
     }
-    print(
-        widget.wholelist[0][widget.accessname]['question'][7]['MultipleStair']);
+    print(widget.wholelist[0][widget.accessname]['question']["7"]
+        ['MultipleStair']);
   }
 
   /// This fucntion will help us to get role of the logged in user
@@ -115,18 +117,18 @@ class _PathwayUIState extends State<PathwayUI> {
 // map.
   setdata(index, value) {
     if (value.length == 0) {
-      if (widget.wholelist[0][widget.accessname]['question'][index]['Answer']
+      if (widget.wholelist[0][widget.accessname]['question']["$index"]['Answer']
               .length ==
           0) {
       } else {
         setState(() {
           widget.wholelist[0][widget.accessname]['complete'] -= 1;
-          widget.wholelist[0][widget.accessname]['question'][index]['Answer'] =
-              value;
+          widget.wholelist[0][widget.accessname]['question']["$index"]
+              ['Answer'] = value;
         });
       }
     } else {
-      if (widget.wholelist[0][widget.accessname]['question'][index]['Answer']
+      if (widget.wholelist[0][widget.accessname]['question']["$index"]['Answer']
               .length ==
           0) {
         setState(() {
@@ -134,7 +136,7 @@ class _PathwayUIState extends State<PathwayUI> {
         });
       }
       setState(() {
-        widget.wholelist[0][widget.accessname]['question'][index]['Answer'] =
+        widget.wholelist[0][widget.accessname]['question']["$index"]['Answer'] =
             value;
       });
     }
@@ -143,40 +145,41 @@ class _PathwayUIState extends State<PathwayUI> {
   /// This function helps us to set the recommendation
   setreco(index, value) {
     setState(() {
-      widget.wholelist[0][widget.accessname]['question'][index]
+      widget.wholelist[0][widget.accessname]['question']["$index"]
           ['Recommendation'] = value;
     });
   }
 
   /// This function helps us to get value form the map
   getvalue(index) {
-    return widget.wholelist[0][widget.accessname]['question'][index]['Answer'];
+    return widget.wholelist[0][widget.accessname]['question']["$index"]
+        ['Answer'];
   }
 
   /// This function helps us to get recommendation value form the map
   getreco(index) {
-    return widget.wholelist[0][widget.accessname]['question'][index]
+    return widget.wholelist[0][widget.accessname]['question']["$index"]
         ['Recommendation'];
   }
 
 // This fucntion helps us to set the priority of the fields.
   setprio(index, value) {
     setState(() {
-      widget.wholelist[0][widget.accessname]['question'][index]['Priority'] =
+      widget.wholelist[0][widget.accessname]['question']["$index"]['Priority'] =
           value;
     });
   }
 
 // This fucntion helps us to get the priority of the fields.
   getprio(index) {
-    return widget.wholelist[0][widget.accessname]['question'][index]
+    return widget.wholelist[0][widget.accessname]['question']["$index"]
         ['Priority'];
   }
 
 // This fucntion helps us to set the recommendation from the therapist.
   setrecothera(index, value) {
     setState(() {
-      widget.wholelist[0][widget.accessname]['question'][index]
+      widget.wholelist[0][widget.accessname]['question']["$index"]
           ['Recommendationthera'] = value;
     });
   }
@@ -226,7 +229,7 @@ class _PathwayUIState extends State<PathwayUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                                width: MediaQuery.of(context).size.width / 1.5,
+                                width: MediaQuery.of(context).size.width / 1.6,
                                 child: Text(
                                   '${widget.roomname} Details:',
                                   style: TextStyle(
@@ -600,12 +603,14 @@ class _PathwayUIState extends State<PathwayUI> {
                                                           .width *
                                                       .3,
                                                   child: TextFormField(
-                                                      initialValue: widget
-                                                                      .wholelist[0][
+                                                      initialValue: widget.wholelist[
+                                                                      0]
+                                                                  [
                                                                   widget
                                                                       .accessname]
-                                                              ['question'][7][
-                                                          'Recommendation'],
+                                                              [
+                                                              'question']["7"]
+                                                          ['Recommendation'],
                                                       decoration:
                                                           InputDecoration(
                                                               focusedBorder:
@@ -635,7 +640,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                           widget.wholelist[0][widget
                                                                       .accessname]
                                                                   [
-                                                                  'question'][7]
+                                                                  'question']["7"]
                                                               [
                                                               'Recommendation'] = value;
                                                         });
@@ -668,7 +673,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                                   [
                                                                   widget
                                                                       .accessname]
-                                                              ['question'][7]
+                                                              ['question']["7"]
                                                           ['Single Step Width'],
                                                       keyboardType:
                                                           TextInputType.phone,
@@ -695,7 +700,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                           widget.wholelist[0][widget
                                                                       .accessname]
                                                                   [
-                                                                  'question'][7]
+                                                                  'question']["7"]
                                                               [
                                                               'Single Step Width'] = value;
                                                         });
@@ -703,7 +708,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                                     0][
                                                                 widget
                                                                     .accessname]
-                                                            ['question'][7]);
+                                                            ['question']["7"]);
                                                       },
                                                     ),
                                                   ),
@@ -719,7 +724,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                                   [
                                                                   widget
                                                                       .accessname]
-                                                              ['question'][7][
+                                                              ['question']["7"][
                                                           'Single Step Height'],
                                                       keyboardType:
                                                           TextInputType.phone,
@@ -746,7 +751,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                           widget.wholelist[0][widget
                                                                       .accessname]
                                                                   [
-                                                                  'question'][7]
+                                                                  'question']["7"]
                                                               [
                                                               'Single Step Height'] = value;
                                                         });
@@ -754,7 +759,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                                     0][
                                                                 widget
                                                                     .accessname]
-                                                            ['question'][7]);
+                                                            ['question']["7"]);
                                                       },
                                                     ),
                                                   ),
@@ -801,13 +806,15 @@ class _PathwayUIState extends State<PathwayUI> {
                                                         widget.wholelist[0][widget
                                                                         .accessname]
                                                                     [
-                                                                    'question'][7]
+                                                                    'question']["7"]
                                                                 [
                                                                 'MultipleStair']
                                                             ['count'] = value;
                                                         widget.wholelist[0][widget
                                                                     .accessname]
-                                                                ['question'][7][
+                                                                [
+                                                                'question']["7"]
+                                                            [
                                                             'Recommendationthera'] = value;
 
                                                         stepcount = widget
@@ -815,13 +822,15 @@ class _PathwayUIState extends State<PathwayUI> {
                                                                     [
                                                                     widget
                                                                         .accessname]
-                                                                ['question'][7][
+                                                                [
+                                                                'question']["7"]
+                                                            [
                                                             'Recommendationthera'];
                                                         if (value > 0) {
                                                           widget.wholelist[0][widget
                                                                           .accessname]
                                                                       [
-                                                                      'question'][7]
+                                                                      'question']["7"]
                                                                   [
                                                                   'MultipleStair']
                                                               ['step$value'] = {
@@ -834,7 +843,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                                   widget
                                                                       .accessname]
                                                                   ['question']
-                                                                  [7][
+                                                                  ["7"][
                                                                   'MultipleStair']
                                                               .containsKey(
                                                                   'step${value + 1}')) {
@@ -842,7 +851,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                                     widget
                                                                         .accessname]
                                                                     ['question']
-                                                                    [7][
+                                                                    ["7"][
                                                                     'MultipleStair']
                                                                 .remove(
                                                                     'step${value + 1}');
@@ -853,7 +862,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                                   widget
                                                                       .accessname]
                                                                   ['question']
-                                                                  [7][
+                                                                  ["7"][
                                                                   'MultipleStair']
                                                               .containsKey(
                                                                   'step${value + 1}')) {
@@ -861,7 +870,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                                     widget
                                                                         .accessname]
                                                                     ['question']
-                                                                    [7][
+                                                                    ["7"][
                                                                     'MultipleStair']
                                                                 .remove(
                                                                     'step${value + 1}');
@@ -872,7 +881,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                       print(widget.wholelist[0][
                                                                   widget
                                                                       .accessname]
-                                                              ['question'][7]
+                                                              ['question']["7"]
                                                           ['MultipleStair']);
                                                     },
                                                   ),
@@ -995,14 +1004,15 @@ class _PathwayUIState extends State<PathwayUI> {
                                               onChanged: (value) {
                                                 widget.wholelist[0][widget
                                                                 .accessname]
-                                                            ['question'][8]
+                                                            ['question']["8"]
                                                         ['Railling']['OneSided']
                                                     ['GoingUp'] = value;
                                               },
-                                              value: widget.wholelist[0]
-                                                          [widget.accessname][
-                                                      'question'][8]['Railling']
-                                                  ['OneSided']['GoingUp'],
+                                              value: widget.wholelist[0][
+                                                              widget.accessname]
+                                                          ['question']["8"]
+                                                      ['Railling']['OneSided']
+                                                  ['GoingUp'],
                                             )
                                           ],
                                         ),
@@ -1042,14 +1052,15 @@ class _PathwayUIState extends State<PathwayUI> {
                                               onChanged: (value) {
                                                 widget.wholelist[0][widget
                                                                 .accessname]
-                                                            ['question'][8]
+                                                            ['question']["8"]
                                                         ['Railling']['OneSided']
                                                     ['GoingDown'] = value;
                                               },
-                                              value: widget.wholelist[0]
-                                                          [widget.accessname][
-                                                      'question'][8]['Railling']
-                                                  ['OneSided']['GoingDown'],
+                                              value: widget.wholelist[0][
+                                                              widget.accessname]
+                                                          ['question']["8"]
+                                                      ['Railling']['OneSided']
+                                                  ['GoingDown'],
                                             )
                                           ],
                                         ),
@@ -1276,7 +1287,10 @@ class _PathwayUIState extends State<PathwayUI> {
                     onPressed: () async {
                       listenbutton();
 
-                      print(await pathwaypro.getRole());
+                      // print(await pathwaypro.getRole());
+                      NewAssesmentRepository().updateLatestChangeDate(
+                          Timestamp.now(), widget.docID);
+                      print("docid: " + widget.docID);
                     },
                   ))
                 ],
@@ -1334,7 +1348,8 @@ class _PathwayUIState extends State<PathwayUI> {
         _speech.listen(
           onResult: (val) => setState(() {
             _controllers["field$index"].text = widget.wholelist[0]
-                    [widget.accessname]['question'][index]['Recommendation'] +
+                        [widget.accessname]['question']["$index"]
+                    ['Recommendation'] +
                 " " +
                 val.recognizedWords;
             // if (val.hasConfidenceRating && val.confidence > 0) {
@@ -1367,7 +1382,7 @@ class _PathwayUIState extends State<PathwayUI> {
   /// This function is a helper function of the listen fucntion.
   setdatalisten(index) {
     setState(() {
-      widget.wholelist[0][widget.accessname]['question'][index]
+      widget.wholelist[0][widget.accessname]['question']["$index"]
           ['Recommendation'] = _controllers["field$index"].text;
       cur = !cur;
     });
@@ -1528,7 +1543,7 @@ class _PathwayUIState extends State<PathwayUI> {
                   width: MediaQuery.of(context).size.width * .35,
                   child: TextFormField(
                     initialValue: widget.wholelist[0][widget.accessname]
-                            ['question'][7]['MultipleStair']['step$index']
+                            ['question']["7"]['MultipleStair']['step$index']
                         ['stepwidth'],
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
@@ -1543,7 +1558,7 @@ class _PathwayUIState extends State<PathwayUI> {
                         labelText: 'Step Width$index:'),
                     onChanged: (value) {
                       setState(() {
-                        widget.wholelist[0][widget.accessname]['question'][7]
+                        widget.wholelist[0][widget.accessname]['question']["7"]
                                 ['MultipleStair']['step$index']['stepwidth'] =
                             value;
                       });
@@ -1556,7 +1571,7 @@ class _PathwayUIState extends State<PathwayUI> {
                   width: MediaQuery.of(context).size.width * .35,
                   child: TextFormField(
                     initialValue: widget.wholelist[0][widget.accessname]
-                            ['question'][7]['MultipleStair']['step$index']
+                            ['question']["7"]['MultipleStair']['step$index']
                         ['stepheight'],
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
@@ -1571,7 +1586,7 @@ class _PathwayUIState extends State<PathwayUI> {
                         labelText: 'Step Height$index:'),
                     onChanged: (value) {
                       setState(() {
-                        widget.wholelist[0][widget.accessname]['question'][7]
+                        widget.wholelist[0][widget.accessname]['question']["7"]
                                 ['MultipleStair']['step$index']['stepheight'] =
                             value;
                       });

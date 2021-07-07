@@ -6,14 +6,15 @@ import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tryapp/Assesment/Forms/Bathroom/bathroompro.dart';
+import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
 
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
 class BathroomUI extends StatefulWidget {
-  String roomname;
+  String roomname, docID;
   var accessname;
   List<Map<String, dynamic>> wholelist;
-  BathroomUI(this.roomname, this.wholelist, this.accessname);
+  BathroomUI(this.roomname, this.wholelist, this.accessname, this.docID);
   @override
   _BathroomUIState createState() => _BathroomUIState();
 }
@@ -435,10 +436,10 @@ class _BathroomUIState extends State<BathroomUI> {
                                     assesmentprovider.setdata(7, value);
                                     setState(() {
                                       widget.wholelist[5][widget.accessname]
-                                          ['question'][7]['doorwidth'] = 0;
+                                          ['question']["7"]['doorwidth'] = 0;
 
                                       widget.wholelist[5][widget.accessname]
-                                              ['question'][7]['doorwidth'] =
+                                              ['question']["7"]['doorwidth'] =
                                           int.parse(value);
                                     });
                                   }),
@@ -448,14 +449,14 @@ class _BathroomUIState extends State<BathroomUI> {
                         SizedBox(
                           height: 5,
                         ),
-                        (widget.wholelist[5][widget.accessname]['question'][7]
+                        (widget.wholelist[5][widget.accessname]['question']["7"]
                                         ['doorwidth'] <
                                     30 &&
                                 widget.wholelist[5][widget.accessname]
-                                        ['question'][7]['doorwidth'] >
+                                        ['question']["7"]['doorwidth'] >
                                     0 &&
                                 widget.wholelist[5][widget.accessname]
-                                        ['question'][7]['doorwidth'] !=
+                                        ['question']["7"]['doorwidth'] !=
                                     '')
                             ? assesmentprovider.getrecomain(
                                 assesmentprovider, 7, true, 'Comments (if any)')
@@ -934,12 +935,13 @@ class _BathroomUIState extends State<BathroomUI> {
                                             onChanged: (value) {
                                               widget.wholelist[5]
                                                           [widget.accessname]
-                                                      ['question'][15]
+                                                      ['question']["15"]
                                                   ['ManageInOut'] = value;
                                             },
                                             value: widget.wholelist[5]
-                                                    [widget.accessname]
-                                                ['question'][15]['ManageInOut'],
+                                                        [widget.accessname]
+                                                    ['question']["15"]
+                                                ['ManageInOut'],
                                           )
                                         ],
                                       ),
@@ -1035,22 +1037,23 @@ class _BathroomUIState extends State<BathroomUI> {
                                           ],
                                           onChanged: (value) {
                                             setState(() {
-                                              widget.wholelist[5]
-                                                          [widget.accessname][
-                                                      'question'][16]['Grabbar']
+                                              widget.wholelist[5][
+                                                              widget.accessname]
+                                                          ['question']["16"]
+                                                      ['Grabbar']
                                                   ['Grabneeded'] = value;
                                             });
                                           },
                                           value: widget.wholelist[5]
                                                       [widget.accessname]
-                                                  ['question'][16]['Grabbar']
+                                                  ['question']["16"]['Grabbar']
                                               ['Grabneeded'],
                                         )
                                       ],
                                     ),
                                   ),
                                   (widget.wholelist[5][widget.accessname]
-                                                  ['question'][16]['Grabbar']
+                                                  ['question']["16"]['Grabbar']
                                               ['Grabneeded'] ==
                                           'Yes')
                                       ? Column(
@@ -1105,14 +1108,16 @@ class _BathroomUIState extends State<BathroomUI> {
                                                         widget.wholelist[5][widget
                                                                         .accessname]
                                                                     ['question']
-                                                                [16]['Grabbar'][
+                                                                [
+                                                                "16"]['Grabbar']
+                                                            [
                                                             'Grabbartype'] = value;
                                                       });
                                                     },
                                                     value: widget.wholelist[5][
                                                                 widget
                                                                     .accessname]
-                                                            ['question'][16][
+                                                            ['question']["16"][
                                                         'Grabbar']['Grabbartype'],
                                                   )
                                                 ],
@@ -1159,15 +1164,17 @@ class _BathroomUIState extends State<BathroomUI> {
                                                         widget.wholelist[5][widget
                                                                         .accessname]
                                                                     ['question']
-                                                                [16]['Grabbar'][
+                                                                [
+                                                                "16"]['Grabbar']
+                                                            [
                                                             'Grabattachment'] = value;
                                                       });
                                                     },
                                                     value: widget.wholelist[5][
                                                                     widget
                                                                         .accessname]
-                                                                ['question'][16]
-                                                            ['Grabbar']
+                                                                ['question']
+                                                            ["16"]['Grabbar']
                                                         ['Grabattachment'],
                                                   )
                                                 ],
@@ -1267,13 +1274,13 @@ class _BathroomUIState extends State<BathroomUI> {
                                         // print(widget.accessname);
                                         setState(() {
                                           widget.wholelist[5][widget.accessname]
-                                                  ['question'][17]
+                                                  ['question']["17"]
                                               ['sidefentrance'] = value;
                                         });
                                       },
                                       value: widget.wholelist[5]
                                               [widget.accessname]['question']
-                                          [17]['sidefentrance'],
+                                          ["17"]['sidefentrance'],
                                     )
                                   ],
                                 ),
@@ -1764,6 +1771,8 @@ class _BathroomUIState extends State<BathroomUI> {
                     child: Text('Done'),
                     onPressed: () {
                       listenbutton(assesmentprovider);
+                      NewAssesmentRepository().updateLatestChangeDate(
+                          Timestamp.now(), widget.docID);
                     },
                   ))
                 ],

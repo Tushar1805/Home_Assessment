@@ -32,15 +32,16 @@ class PathwayPro extends ChangeNotifier {
 
   PathwayPro(this.roomname, this.wholelist, this.accessname) {
     _speech = stt.SpeechToText();
-    _textfield.text = wholelist[0][accessname]['question'][1]['Recommendation'];
+    _textfield.text =
+        wholelist[0][accessname]['question']["1"]['Recommendation'];
     for (int i = 0; i < wholelist[0][accessname]['question'].length; i++) {
       _controllers["field${i + 1}"] = TextEditingController();
       _controllerstreco["field${i + 1}"] = TextEditingController();
       isListening["field${i + 1}"] = false;
       _controllers["field${i + 1}"].text =
-          wholelist[0][accessname]['question'][i + 1]['Recommendation'];
+          wholelist[0][accessname]['question']["${i + 1}"]['Recommendation'];
       _controllerstreco["field${i + 1}"].text =
-          '${wholelist[0][accessname]['question'][i + 1]['Recommendationthera']}';
+          '${wholelist[0][accessname]['question']["${i + 1}"]['Recommendationthera']}';
       colorsset["field${i + 1}"] = Color.fromRGBO(10, 80, 106, 1);
     }
     getRole();
@@ -48,23 +49,24 @@ class PathwayPro extends ChangeNotifier {
   }
 
   setinitials() {
-    if (wholelist[0][accessname]['question'][8].containsKey('Railling')) {
+    if (wholelist[0][accessname]['question']["8"].containsKey('Railling')) {
     } else {
-      wholelist[0][accessname]['question'][8]['Railling'] = {
+      wholelist[0][accessname]['question']["8"]['Railling'] = {
         'OneSided': {},
       };
     }
-    if (wholelist[0][accessname]['question'][7].containsKey('MultipleStair')) {
-      if (wholelist[0][accessname]['question'][7]['MultipleStair']
+    if (wholelist[0][accessname]['question']["7"]
+        .containsKey('MultipleStair')) {
+      if (wholelist[0][accessname]['question']["7"]['MultipleStair']
           .containsKey('count')) {
         stepcount =
-            wholelist[0][accessname]['question'][7]['MultipleStair']['count'];
+            wholelist[0][accessname]['question']["7"]['MultipleStair']['count'];
         notifyListeners();
       }
     } else {
-      wholelist[0][accessname]['question'][7]['MultipleStair'] = {};
+      wholelist[0][accessname]['question']["7"]['MultipleStair'] = {};
     }
-    print(wholelist[0][accessname]['question'][7]['MultipleStair']);
+    print(wholelist[0][accessname]['question']["7"]['MultipleStair']);
   }
 
   Future<String> getRole() async {
@@ -79,46 +81,49 @@ class PathwayPro extends ChangeNotifier {
 
   setdata(index, value) {
     if (value.length == 0) {
-      if (wholelist[0][accessname]['question'][index]['Answer'].length == 0) {
+      if (wholelist[0][accessname]['question']["$index"]['Answer'].length ==
+          0) {
       } else {
         wholelist[0][accessname]['complete'] -= 1;
-        wholelist[0][accessname]['question'][index]['Answer'] = value;
+        wholelist[0][accessname]['question']["$_speech"]['Answer'] = value;
         notifyListeners();
       }
     } else {
-      if (wholelist[0][accessname]['question'][index]['Answer'].length == 0) {
+      if (wholelist[0][accessname]['question']["$index"]['Answer'].length ==
+          0) {
         wholelist[0][accessname]['complete'] += 1;
         notifyListeners();
       }
-      wholelist[0][accessname]['question'][index]['Answer'] = value;
+      wholelist[0][accessname]['question']["$index"]['Answer'] = value;
       notifyListeners();
     }
   }
 
   setreco(index, value) {
-    wholelist[0][accessname]['question'][index]['Recommendation'] = value;
+    wholelist[0][accessname]['question']["$index"]['Recommendation'] = value;
     notifyListeners();
   }
 
   getvalue(index) {
-    return wholelist[0][accessname]['question'][index]['Answer'];
+    return wholelist[0][accessname]['question']["$index"]['Answer'];
   }
 
   getreco(index) {
-    return wholelist[0][accessname]['question'][index]['Recommendation'];
+    return wholelist[0][accessname]['question']["$index"]['Recommendation'];
   }
 
   setprio(index, value) {
-    wholelist[0][accessname]['question'][index]['Priority'] = value;
+    wholelist[0][accessname]['question']["$index"]['Priority'] = value;
     notifyListeners();
   }
 
   getprio(index) {
-    return wholelist[0][accessname]['question'][index]['Priority'];
+    return wholelist[0][accessname]['question']["$index"]['Priority'];
   }
 
   setrecothera(index, value) {
-    wholelist[0][accessname]['question'][index]['Recommendationthera'] = value;
+    wholelist[0][accessname]['question']["$index"]['Recommendationthera'] =
+        value;
     notifyListeners();
   }
 
@@ -156,7 +161,7 @@ class PathwayPro extends ChangeNotifier {
         _speech.listen(
           onResult: (val) {
             _controllers["field$index"].text = wholelist[0][accessname]
-                    ['question'][index]['Recommendation'] +
+                    ['question']["$index"]['Recommendation'] +
                 " " +
                 val.recognizedWords;
             // if (val.hasConfidenceRating && val.confidence > 0) {
@@ -186,7 +191,7 @@ class PathwayPro extends ChangeNotifier {
   }
 
   setdatalisten(index) {
-    wholelist[0][accessname]['question'][index]['Recommendation'] =
+    wholelist[0][accessname]['question']["$index"]['Recommendation'] =
         _controllers["field$index"].text;
     cur = !cur;
     notifyListeners();

@@ -10,10 +10,10 @@ import './garagepro.dart';
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
 class GarageUI extends StatefulWidget {
-  String roomname;
+  String roomname, docID;
   var accessname;
   List<Map<String, dynamic>> wholelist;
-  GarageUI(this.roomname, this.wholelist, this.accessname);
+  GarageUI(this.roomname, this.wholelist, this.accessname, this.docID);
   @override
   _GarageUIState createState() => _GarageUIState();
 }
@@ -119,7 +119,7 @@ class _GarageUIState extends State<GarageUI> {
                                 width: MediaQuery.of(context).size.width * .3,
                                 child: TextFormField(
                                   initialValue: widget.wholelist[9]
-                                          [widget.accessname]['question'][1]
+                                          [widget.accessname]['question']["1"]
                                       ['Answer'],
                                   decoration: InputDecoration(
                                       focusedBorder: OutlineInputBorder(
@@ -430,7 +430,7 @@ class _GarageUIState extends State<GarageUI> {
                               width: MediaQuery.of(context).size.width * .3,
                               child: TextFormField(
                                 initialValue: widget.wholelist[9]
-                                        [widget.accessname]['question'][7]
+                                        [widget.accessname]['question']["7"]
                                     ['Answer'],
                                 decoration: InputDecoration(
                                     focusedBorder: OutlineInputBorder(
@@ -450,10 +450,10 @@ class _GarageUIState extends State<GarageUI> {
                                   assesmentprovider.setdata(7, value);
                                   setState(() {
                                     widget.wholelist[9][widget.accessname]
-                                        ['question'][7]['doorwidth'] = 0;
+                                        ['question']["7"]['doorwidth'] = 0;
 
                                     widget.wholelist[9][widget.accessname]
-                                            ['question'][7]['doorwidth'] =
+                                            ['question']["7"]['doorwidth'] =
                                         int.parse(value);
                                   });
                                 },
@@ -464,14 +464,14 @@ class _GarageUIState extends State<GarageUI> {
                         SizedBox(
                           height: 5,
                         ),
-                        (widget.wholelist[9][widget.accessname]['question'][7]
+                        (widget.wholelist[9][widget.accessname]['question']["7"]
                                         ['doorwidth'] <
                                     30 &&
                                 widget.wholelist[9][widget.accessname]
-                                        ['question'][7]['doorwidth'] >
+                                        ['question']["7"]['doorwidth'] >
                                     0 &&
                                 widget.wholelist[9][widget.accessname]
-                                        ['question'][7]['doorwidth'] !=
+                                        ['question']["7"]['doorwidth'] !=
                                     '')
                             ? assesmentprovider.getrecomain(
                                 assesmentprovider, 7, true, 'Comments (if any)')
@@ -603,12 +603,14 @@ class _GarageUIState extends State<GarageUI> {
                                                           .width *
                                                       .3,
                                                   child: TextFormField(
-                                                      initialValue: widget
-                                                                      .wholelist[9][
+                                                      initialValue: widget.wholelist[
+                                                                      9]
+                                                                  [
                                                                   widget
                                                                       .accessname]
-                                                              ['question'][9][
-                                                          'Recommendation'],
+                                                              [
+                                                              'question']["9"]
+                                                          ['Recommendation'],
                                                       decoration:
                                                           InputDecoration(
                                                               focusedBorder:
@@ -638,7 +640,7 @@ class _GarageUIState extends State<GarageUI> {
                                                           widget.wholelist[9][widget
                                                                       .accessname]
                                                                   [
-                                                                  'question'][9]
+                                                                  'question']["9"]
                                                               [
                                                               'Recommendation'] = value;
                                                         });
@@ -671,7 +673,7 @@ class _GarageUIState extends State<GarageUI> {
                                                                   [
                                                                   widget
                                                                       .accessname]
-                                                              ['question'][9]
+                                                              ['question']["9"]
                                                           ['Single Step Width'],
                                                       keyboardType:
                                                           TextInputType.phone,
@@ -698,7 +700,7 @@ class _GarageUIState extends State<GarageUI> {
                                                           widget.wholelist[9][widget
                                                                       .accessname]
                                                                   [
-                                                                  'question'][9]
+                                                                  'question']["9"]
                                                               [
                                                               'Single Step Width'] = value;
                                                         });
@@ -706,7 +708,7 @@ class _GarageUIState extends State<GarageUI> {
                                                                     9][
                                                                 widget
                                                                     .accessname]
-                                                            ['question'][9]);
+                                                            ['question']["9"]);
                                                       },
                                                     ),
                                                   ),
@@ -722,7 +724,7 @@ class _GarageUIState extends State<GarageUI> {
                                                                   [
                                                                   widget
                                                                       .accessname]
-                                                              ['question'][9][
+                                                              ['question']["9"][
                                                           'Single Step Height'],
                                                       keyboardType:
                                                           TextInputType.phone,
@@ -749,7 +751,7 @@ class _GarageUIState extends State<GarageUI> {
                                                           widget.wholelist[9][widget
                                                                       .accessname]
                                                                   [
-                                                                  'question'][9]
+                                                                  'question']["9"]
                                                               [
                                                               'Single Step Height'] = value;
                                                         });
@@ -757,7 +759,7 @@ class _GarageUIState extends State<GarageUI> {
                                                                     9][
                                                                 widget
                                                                     .accessname]
-                                                            ['question'][9]);
+                                                            ['question']["9"]);
                                                       },
                                                     ),
                                                   ),
@@ -804,13 +806,15 @@ class _GarageUIState extends State<GarageUI> {
                                                         widget.wholelist[9][widget
                                                                         .accessname]
                                                                     [
-                                                                    'question'][9]
+                                                                    'question']["9"]
                                                                 [
                                                                 'MultipleStair']
                                                             ['count'] = value;
                                                         widget.wholelist[9][widget
                                                                     .accessname]
-                                                                ['question'][9][
+                                                                [
+                                                                'question']["9"]
+                                                            [
                                                             'Recommendationthera'] = value;
 
                                                         stepcount = widget
@@ -818,13 +822,15 @@ class _GarageUIState extends State<GarageUI> {
                                                                     [
                                                                     widget
                                                                         .accessname]
-                                                                ['question'][9][
+                                                                [
+                                                                'question']["9"]
+                                                            [
                                                             'Recommendationthera'];
                                                         if (value > 0) {
                                                           widget.wholelist[9][widget
                                                                           .accessname]
                                                                       [
-                                                                      'question'][9]
+                                                                      'question']["9"]
                                                                   [
                                                                   'MultipleStair']
                                                               ['step$value'] = {
@@ -837,7 +843,7 @@ class _GarageUIState extends State<GarageUI> {
                                                                   widget
                                                                       .accessname]
                                                                   ['question']
-                                                                  [9][
+                                                                  ["9"][
                                                                   'MultipleStair']
                                                               .containsKey(
                                                                   'step${value + 1}')) {
@@ -845,7 +851,7 @@ class _GarageUIState extends State<GarageUI> {
                                                                     widget
                                                                         .accessname]
                                                                     ['question']
-                                                                    [9][
+                                                                    ["9"][
                                                                     'MultipleStair']
                                                                 .remove(
                                                                     'step${value + 1}');
@@ -856,7 +862,7 @@ class _GarageUIState extends State<GarageUI> {
                                                                   widget
                                                                       .accessname]
                                                                   ['question']
-                                                                  [9][
+                                                                  ["9"][
                                                                   'MultipleStair']
                                                               .containsKey(
                                                                   'step${value + 1}')) {
@@ -864,7 +870,7 @@ class _GarageUIState extends State<GarageUI> {
                                                                     widget
                                                                         .accessname]
                                                                     ['question']
-                                                                    [9][
+                                                                    ["9"][
                                                                     'MultipleStair']
                                                                 .remove(
                                                                     'step${value + 1}');
@@ -875,7 +881,7 @@ class _GarageUIState extends State<GarageUI> {
                                                       print(widget.wholelist[9][
                                                                   widget
                                                                       .accessname]
-                                                              ['question'][9]
+                                                              ['question']["9"]
                                                           ['MultipleStair']);
                                                     },
                                                   ),
@@ -998,13 +1004,13 @@ class _GarageUIState extends State<GarageUI> {
                                               onChanged: (value) {
                                                 widget.wholelist[9][widget
                                                                 .accessname]
-                                                            ['question'][10]
+                                                            ['question']["10"]
                                                         ['Railling']['OneSided']
                                                     ['GoingUp'] = value;
                                               },
                                               value: widget.wholelist[9][
                                                               widget.accessname]
-                                                          ['question'][10]
+                                                          ['question']["10"]
                                                       ['Railling']['OneSided']
                                                   ['GoingUp'],
                                             )
@@ -1046,13 +1052,13 @@ class _GarageUIState extends State<GarageUI> {
                                               onChanged: (value) {
                                                 widget.wholelist[9][widget
                                                                 .accessname]
-                                                            ['question'][10]
+                                                            ['question']["10"]
                                                         ['Railling']['OneSided']
                                                     ['GoingDown'] = value;
                                               },
                                               value: widget.wholelist[9][
                                                               widget.accessname]
-                                                          ['question'][10]
+                                                          ['question']["10"]
                                                       ['Railling']['OneSided']
                                                   ['GoingDown'],
                                             )
@@ -1132,7 +1138,7 @@ class _GarageUIState extends State<GarageUI> {
                             // height: 10000,
                             child: TextFormField(
                           initialValue: widget.wholelist[9][widget.accessname]
-                              ['question'][12]['Answer'],
+                              ['question']["12"]['Answer'],
                           maxLines: 6,
                           decoration: InputDecoration(
                             focusedBorder: OutlineInputBorder(
@@ -1175,7 +1181,7 @@ class _GarageUIState extends State<GarageUI> {
                           enableInteractiveSelection: false,
                           focusNode: new AlwaysDisabledFocusNode(),
                           initialValue: widget.wholelist[9][widget.accessname]
-                              ['question'][13]['Answer'],
+                              ['question']["13"]['Answer'],
                           decoration: InputDecoration(
                               focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
@@ -1240,7 +1246,7 @@ class _GarageUIState extends State<GarageUI> {
                   width: MediaQuery.of(context).size.width * .35,
                   child: TextFormField(
                     initialValue: widget.wholelist[9][widget.accessname]
-                            ['question'][9]['MultipleStair']['step$index']
+                            ['question']["9"]['MultipleStair']['step$index']
                         ['stepwidth'],
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
@@ -1255,7 +1261,7 @@ class _GarageUIState extends State<GarageUI> {
                         labelText: 'Step Width$index:'),
                     onChanged: (value) {
                       setState(() {
-                        widget.wholelist[9][widget.accessname]['question'][9]
+                        widget.wholelist[9][widget.accessname]['question']["9"]
                                 ['MultipleStair']['step$index']['stepwidth'] =
                             value;
                       });
@@ -1268,7 +1274,7 @@ class _GarageUIState extends State<GarageUI> {
                   width: MediaQuery.of(context).size.width * .35,
                   child: TextFormField(
                     initialValue: widget.wholelist[9][widget.accessname]
-                            ['question'][9]['MultipleStair']['step$index']
+                            ['question']["9"]['MultipleStair']['step$index']
                         ['stepheight'],
                     keyboardType: TextInputType.phone,
                     decoration: InputDecoration(
@@ -1283,7 +1289,7 @@ class _GarageUIState extends State<GarageUI> {
                         labelText: 'Step Height$index:'),
                     onChanged: (value) {
                       setState(() {
-                        widget.wholelist[9][widget.accessname]['question'][9]
+                        widget.wholelist[9][widget.accessname]['question']["9"]
                                 ['MultipleStair']['step$index']['stepheight'] =
                             value;
                       });

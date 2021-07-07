@@ -31,6 +31,8 @@ import 'package:provider/provider.dart';
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
 class NewAssesmentUI extends StatefulWidget {
+  String docID;
+  NewAssesmentUI(this.docID);
   @override
   _NewAssesmentUIState createState() => _NewAssesmentUIState();
 }
@@ -173,7 +175,8 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => CardsUINew(
-                                          assesmentprovider.getlistdata())));
+                                          assesmentprovider.getlistdata(),
+                                          widget.docID)));
                             },
                           ),
                         ),

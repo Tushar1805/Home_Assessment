@@ -181,7 +181,7 @@ class _LoginFormState extends State<LoginForm> {
                                       .document(result)
                                       .get()
                                       .then((value) {
-                                    return value.data['role'];
+                                    return value.data['role'] ?? "therapist";
                                   });
                                   var name = await Firestore.instance
                                       .collection('users')
@@ -200,7 +200,7 @@ class _LoginFormState extends State<LoginForm> {
                                   print(newuser);
                                   var page =
                                       await loginProvider.getUserType(type);
-                                  if (newuser) {
+                                  if (newuser ?? false) {
                                     setState(() {
                                       loading = false;
                                     });

@@ -6,7 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 
 class BathroomPro extends ChangeNotifier {
-  String roomname;
+  String roomname, docID;
   var accessname;
   List<Map<String, dynamic>> wholelist;
   final firestoreInstance = Firestore.instance;
@@ -29,16 +29,16 @@ class BathroomPro extends ChangeNotifier {
   final FormsRepository formsRepository = FormsRepository();
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-  BathroomPro(this.roomname, this.wholelist, this.accessname) {
+  BathroomPro(this.roomname, this.wholelist, this.accessname, this.docID) {
     _speech = stt.SpeechToText();
     for (int i = 0; i < wholelist[5][accessname]['question'].length; i++) {
       controllers["field${i + 1}"] = TextEditingController();
       controllerstreco["field${i + 1}"] = TextEditingController();
       isListening["field${i + 1}"] = false;
       controllers["field${i + 1}"].text =
-          wholelist[5][accessname]['question'][i + 1]['Recommendation'];
+          wholelist[5][accessname]['question']["${i + 1}"]['Recommendation'];
       controllerstreco["field${i + 1}"].text =
-          '${wholelist[5][accessname]['question'][i + 1]['Recommendationthera']}';
+          '${wholelist[5][accessname]['question']["${i + 1}"]['Recommendationthera']}';
       colorsset["field${i + 1}"] = Color.fromRGBO(10, 80, 106, 1);
     }
     getRole();
@@ -46,25 +46,26 @@ class BathroomPro extends ChangeNotifier {
   }
 
   Future<void> setinitials() async {
-    if (wholelist[5][accessname]['question'][7].containsKey('doorwidth')) {
+    if (wholelist[5][accessname]['question']["7"].containsKey('doorwidth')) {
     } else {
       print('getting created');
-      wholelist[5][accessname]['question'][7]['doorwidth'] = 0;
+      wholelist[5][accessname]['question']["7"]['doorwidth'] = 0;
     }
 
-    if (wholelist[5][accessname]['question'][15].containsKey('ManageInOut')) {
+    if (wholelist[5][accessname]['question']["15"].containsKey('ManageInOut')) {
     } else {
-      wholelist[5][accessname]['question'][15]['ManageInOut'] = '';
+      wholelist[5][accessname]['question']["15"]['ManageInOut'] = '';
     }
 
-    if (wholelist[5][accessname]['question'][16].containsKey('Grabbar')) {
+    if (wholelist[5][accessname]['question']["16"].containsKey('Grabbar')) {
     } else {
-      wholelist[5][accessname]['question'][16]['Grabbar'] = {};
+      wholelist[5][accessname]['question']["16"]['Grabbar'] = {};
     }
 
-    if (wholelist[5][accessname]['question'][17].containsKey('sidefentrance')) {
+    if (wholelist[5][accessname]['question']["17"]
+        .containsKey('sidefentrance')) {
     } else {
-      wholelist[5][accessname]['question'][17]['sidefentrance'] = '';
+      wholelist[5][accessname]['question']["17"]['sidefentrance'] = '';
     }
   }
 
@@ -80,51 +81,55 @@ class BathroomPro extends ChangeNotifier {
 
   setdata(index, value) {
     if (value.length == 0) {
-      if (wholelist[5][accessname]['question'][index]['Answer'].length == 0) {
+      if (wholelist[5][accessname]['question']["$index"]['Answer'].length ==
+          0) {
       } else {
         wholelist[5][accessname]['complete'] -= 1;
-        wholelist[5][accessname]['question'][index]['Answer'] = value;
+        wholelist[5][accessname]['question']["$index"]['Answer'] = value;
         notifyListeners();
       }
     } else {
-      if (wholelist[5][accessname]['question'][index]['Answer'].length == 0) {
+      if (wholelist[5][accessname]['question']["$index"]['Answer'].length ==
+          0) {
         wholelist[5][accessname]['complete'] += 1;
         notifyListeners();
       }
-      wholelist[5][accessname]['question'][index]['Answer'] = value;
+      wholelist[5][accessname]['question']["$index"]['Answer'] = value;
       notifyListeners();
     }
   }
 
   setreco(index, value) {
-    wholelist[5][accessname]['question'][index]['Recommendation'] = value;
+    wholelist[5][accessname]['question']["$index"]['Recommendation'] = value;
     notifyListeners();
   }
 
   getvalue(index) {
-    return wholelist[5][accessname]['question'][index]['Answer'];
+    return wholelist[5][accessname]['question']["$index"]['Answer'];
   }
 
   getreco(index) {
-    return wholelist[5][accessname]['question'][index]['Recommendation'];
+    return wholelist[5][accessname]['question']["$index"]['Recommendation'];
   }
 
   setrecothera(index, value) {
-    wholelist[5][accessname]['question'][index]['Recommendationthera'] = value;
+    wholelist[5][accessname]['question']["$index"]['Recommendationthera'] =
+        value;
     notifyListeners();
   }
 
   setprio(index, value) {
-    wholelist[5][accessname]['question'][index]['Priority'] = value;
+    wholelist[5][accessname]['question']["$index"]['Priority'] = value;
     notifyListeners();
   }
 
   getprio(index) {
-    return wholelist[5][accessname]['question'][index]['Priority'];
+    return wholelist[5][accessname]['question']["$index"]['Priority'];
   }
 
   getrecothera(index) {
-    return wholelist[5][accessname]['question'][index]['Recommendationthera'];
+    return wholelist[5][accessname]['question']["$index"]
+        ['Recommendationthera'];
   }
 
   Widget getrecomain(
@@ -311,7 +316,7 @@ class BathroomPro extends ChangeNotifier {
         _speech.listen(
           onResult: (val) {
             controllerstreco["field$index"].text = wholelist[5][accessname]
-                    ['question'][index]['Recommendationthera'] +
+                    ['question']["$index"]['Recommendationthera'] +
                 " " +
                 val.recognizedWords;
             notifyListeners();
@@ -328,7 +333,7 @@ class BathroomPro extends ChangeNotifier {
   }
 
   setdatalistenthera(index) {
-    wholelist[5][accessname]['question'][index]['Recommendationthera'] =
+    wholelist[5][accessname]['question']["$index"]['Recommendationthera'] =
         controllerstreco["field$index"].text;
     cur = !cur;
     notifyListeners();
@@ -353,7 +358,7 @@ class BathroomPro extends ChangeNotifier {
         notifyListeners();
         _speech.listen(onResult: (val) {
           controllers["field$index"].text = wholelist[5][accessname]['question']
-                  [index]['Recommendation'] +
+                  ["$index"]['Recommendation'] +
               " " +
               val.recognizedWords;
           if (val.hasConfidenceRating && val.confidence > 0) {
@@ -372,7 +377,7 @@ class BathroomPro extends ChangeNotifier {
   }
 
   setdatalisten(index) {
-    wholelist[5][accessname]['question'][index]['Recommendation'] =
+    wholelist[5][accessname]['question']["$index"]['Recommendation'] =
         controllers["field$index"].text;
     cur = !cur;
     notifyListeners();

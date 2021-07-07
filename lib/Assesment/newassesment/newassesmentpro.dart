@@ -9,10 +9,11 @@ class NewAssesmentProvider extends ChangeNotifier {
   List<Map<String, dynamic>> listofRooms = [];
   var assessmentdatalist;
   var assessmentdoc;
+  var docID;
 
   ///This function is actual local map where all the data of
   ///asssessment form is saved.
-  NewAssesmentProvider(this.assessmentdoc) {
+  NewAssesmentProvider(this.docID) {
     this.listofRooms = [
       {
         'name': 'Pathway',
@@ -135,7 +136,7 @@ getMaps(String classname) {
   for (int i = 1; i <= total; i++) {
     /// i stands for the rooms count which we will get from the
     /// gettotal fucntion.
-    rr[i] = {
+    rr["$i"] = {
       'Answer': '',
       'Priority': '1',
       //The data from comments field will get saves here.

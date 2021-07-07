@@ -7,18 +7,20 @@ import 'package:tryapp/Assesment/newassesment/newassesmentpro.dart';
 import 'livingArrangementpro.dart';
 
 class LivingArrangements extends StatelessWidget {
-  String roomname;
+  String roomname, docID;
   var accessname;
   List<Map<String, dynamic>> wholelist;
-  LivingArrangements(this.roomname, this.wholelist, this.accessname);
+  LivingArrangements(
+      this.roomname, this.wholelist, this.accessname, this.docID);
   @override
   Widget build(BuildContext context) {
     return MultiProvider(providers: [
       ChangeNotifierProvider<NewAssesmentProvider>(
           create: (_) => NewAssesmentProvider("")),
       ChangeNotifierProvider<LivingArrangementsProvider>(
-          create: (_) => LivingArrangementsProvider(roomname, wholelist, accessname))
-    ], child: LivingArrangementsUI(roomname, wholelist, accessname));
+          create: (_) =>
+              LivingArrangementsProvider(roomname, wholelist, accessname))
+    ], child: LivingArrangementsUI(roomname, wholelist, accessname, docID));
 
     // return Scaffold(
     //     body: Center(

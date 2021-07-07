@@ -3,14 +3,16 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
 
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
 class LivingArrangementsUI extends StatefulWidget {
-  String roomname;
+  String roomname, docID;
   var accessname;
   List<Map<String, dynamic>> wholelist;
-  LivingArrangementsUI(this.roomname, this.wholelist, this.accessname);
+  LivingArrangementsUI(
+      this.roomname, this.wholelist, this.accessname, this.docID);
   @override
   _LivingArrangementsUIState createState() => _LivingArrangementsUIState();
 }
@@ -48,9 +50,9 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
       _controllerstreco["field${i + 1}"] = TextEditingController();
       isListening["field${i + 1}"] = false;
       _controllers["field${i + 1}"].text = widget.wholelist[1]
-          [widget.accessname]['question'][i + 1]['Recommendation'];
+          [widget.accessname]['question']["${i + 1}"]['Recommendation'];
       _controllerstreco["field${i + 1}"].text =
-          '${widget.wholelist[1][widget.accessname]['question'][i + 1]['Recommendationthera']}';
+          '${widget.wholelist[1][widget.accessname]['question']["${i + 1}"]['Recommendationthera']}';
       colorsset["field${i + 1}"] = Color.fromRGBO(10, 80, 106, 1);
     }
     getRole();
@@ -63,8 +65,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
     if (picked1 != null) {
       setState(() {
         time1 = picked1;
-        widget.wholelist[1][widget.accessname]['question'][4]['Alone']['From'] =
-            time1;
+        widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
+            ['From'] = time1;
       });
     }
   }
@@ -75,69 +77,71 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
     if (picked2 != null) {
       setState(() {
         time2 = picked2;
-        widget.wholelist[1][widget.accessname]['question'][4]['Alone']['Till'] =
-            time2;
+        widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
+            ['Till'] = time2;
       });
     }
   }
 
   Future<void> setinitialsdata() async {
-    if (widget.wholelist[1][widget.accessname]['question'][2]
+    if (widget.wholelist[1][widget.accessname]['question']["2"]
         .containsKey('Modetrnas')) {
     } else {
       setState(() {
-        widget.wholelist[1][widget.accessname]['question'][2]['Modetrnas'] = '';
-        widget.wholelist[1][widget.accessname]['question'][2]
+        widget.wholelist[1][widget.accessname]['question']["2"]['Modetrnas'] =
+            '';
+        widget.wholelist[1][widget.accessname]['question']["2"]
             ['Modetrnasother'] = '';
       });
     }
 
-    if (widget.wholelist[1][widget.accessname]['question'][4]
+    if (widget.wholelist[1][widget.accessname]['question']["4"]
         .containsKey('Alone')) {
       setState(() {
-        if (widget.wholelist[1][widget.accessname]['question'][4]['Alone']
+        if (widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
             .containsKey('From')) {
-          time1 = widget.wholelist[1][widget.accessname]['question'][4]['Alone']
-              ['From'];
+          time1 = widget.wholelist[1][widget.accessname]['question']["4"]
+              ['Alone']['From'];
         }
-        if (widget.wholelist[1][widget.accessname]['question'][4]['Alone']
+        if (widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
             .containsKey('Till')) {
-          time2 = widget.wholelist[1][widget.accessname]['question'][4]['Alone']
-              ['Till'];
+          time2 = widget.wholelist[1][widget.accessname]['question']["4"]
+              ['Alone']['Till'];
         }
       });
     } else {
       setState(() {
-        widget.wholelist[1][widget.accessname]['question'][4]['Alone'] = {};
+        widget.wholelist[1][widget.accessname]['question']["4"]['Alone'] = {};
       });
     }
 
-    if (widget.wholelist[1][widget.accessname]['question'][5]
+    if (widget.wholelist[1][widget.accessname]['question']["5"]
         .containsKey('Roomate')) {
-      if (widget.wholelist[1][widget.accessname]['question'][5]['Roomate']
+      if (widget.wholelist[1][widget.accessname]['question']["5"]['Roomate']
           .containsKey('count')) {
         setState(() {
-          roomatecount = widget.wholelist[1][widget.accessname]['question'][5]
+          roomatecount = widget.wholelist[1][widget.accessname]['question']["5"]
               ['Roomate']['count'];
         });
       }
     } else {
       print('Yes,it is');
       setState(() {
-        widget.wholelist[1][widget.accessname]['question'][5]['Roomate'] = {};
+        widget.wholelist[1][widget.accessname]['question']["5"]['Roomate'] = {};
       });
     }
 
-    if (widget.wholelist[1][widget.accessname]['question'][11]
+    if (widget.wholelist[1][widget.accessname]['question']["11"]
         .containsKey('Flights')) {
       setState(() {
-        flightcount = widget.wholelist[1][widget.accessname]['question'][11]
+        flightcount = widget.wholelist[1][widget.accessname]['question']["11"]
             ['Flights']['count'];
       });
     } else {
       print('hello');
       setState(() {
-        widget.wholelist[1][widget.accessname]['question'][11]['Flights'] = {};
+        widget.wholelist[1][widget.accessname]['question']["11"]
+            ['Flights'] = {};
       });
     }
   }
@@ -155,18 +159,18 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
 
   setdata(index, value) {
     if (value.length == 0) {
-      if (widget.wholelist[1][widget.accessname]['question'][index]['Answer']
+      if (widget.wholelist[1][widget.accessname]['question']["$index"]['Answer']
               .length ==
           0) {
       } else {
         setState(() {
           widget.wholelist[1][widget.accessname]['complete'] -= 1;
-          widget.wholelist[1][widget.accessname]['question'][index]['Answer'] =
-              value;
+          widget.wholelist[1][widget.accessname]['question']["$index"]
+              ['Answer'] = value;
         });
       }
     } else {
-      if (widget.wholelist[1][widget.accessname]['question'][index]['Answer']
+      if (widget.wholelist[1][widget.accessname]['question']["$index"]['Answer']
               .length ==
           0) {
         setState(() {
@@ -174,7 +178,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
         });
       }
       setState(() {
-        widget.wholelist[1][widget.accessname]['question'][index]['Answer'] =
+        widget.wholelist[1][widget.accessname]['question']["$index"]['Answer'] =
             value;
       });
     }
@@ -182,41 +186,42 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
 
   setreco(index, value) {
     setState(() {
-      widget.wholelist[1][widget.accessname]['question'][index]
+      widget.wholelist[1][widget.accessname]['question']["$index"]
           ['Recommendation'] = value;
     });
   }
 
   getvalue(index) {
-    return widget.wholelist[1][widget.accessname]['question'][index]['Answer'];
+    return widget.wholelist[1][widget.accessname]['question']["$index"]
+        ['Answer'];
   }
 
   getreco(index) {
-    return widget.wholelist[1][widget.accessname]['question'][index]
+    return widget.wholelist[1][widget.accessname]['question']["$index"]
         ['Recommendation'];
   }
 
   setprio(index, value) {
     setState(() {
-      widget.wholelist[1][widget.accessname]['question'][index]['Priority'] =
+      widget.wholelist[1][widget.accessname]['question']["$index"]['Priority'] =
           value;
     });
   }
 
   getprio(index) {
-    return widget.wholelist[1][widget.accessname]['question'][index]
+    return widget.wholelist[1][widget.accessname]['question']["$index"]
         ['Priority'];
   }
 
   setrecothera(index, value) {
     setState(() {
-      widget.wholelist[1][widget.accessname]['question'][index]
+      widget.wholelist[1][widget.accessname]['question']["$index"]
           ['Recommendationthera'] = value;
     });
   }
 
   getrecothera(index) {
-    return widget.wholelist[1][widget.accessname]['question'][index]
+    return widget.wholelist[1][widget.accessname]['question']["$index"]
         ['Recommendationthera'];
   }
 
@@ -247,7 +252,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width / 1.5,
+                              width: MediaQuery.of(context).size.width / 1.6,
                               child: Text(
                                 '${widget.roomname} Details:',
                                 style: TextStyle(
@@ -259,7 +264,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             ),
                             Container(
                               alignment: Alignment.topRight,
-                              width: 50,
+                              width: 42,
                               decoration: BoxDecoration(
                                   color: _colorgreen,
                                   // border: Border.all(
@@ -452,20 +457,21 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                               setState(() {
                                                 widget.wholelist[1]
                                                             [widget.accessname]
-                                                        ['question'][2]
+                                                        ['question']["2"]
                                                     ['Modetrnas'] = value;
                                               });
                                             },
                                             value: widget.wholelist[1]
                                                     [widget.accessname]
-                                                ['question'][2]['Modetrnas'],
+                                                ['question']["2"]['Modetrnas'],
                                           )
                                         ],
                                       ),
                                     ),
                                     SizedBox(height: 10),
                                     (widget.wholelist[1][widget.accessname]
-                                                ['question'][2]['Modetrnas'] ==
+                                                    ['question']["2"]
+                                                ['Modetrnas'] ==
                                             'Other')
                                         ? getrecomain(2, false)
                                         : SizedBox(),
@@ -792,21 +798,21 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                                   setState(() {
                                                     widget.wholelist[1][widget
                                                                     .accessname]
-                                                                ['question'][5]
-                                                            ['Roomate']
+                                                                ['question']
+                                                            ["5"]['Roomate']
                                                         ['count'] = value;
                                                     roomatecount = widget
                                                                     .wholelist[1]
                                                                 [
                                                                 widget
                                                                     .accessname]
-                                                            ['question'][5]
+                                                            ['question']["5"]
                                                         ['Roomate']['count'];
                                                     if (value > 0) {
                                                       widget.wholelist[1][widget
                                                                       .accessname]
                                                                   ['question']
-                                                              [5]['Roomate']
+                                                              ["5"]['Roomate']
                                                           ['roomate$value'] = {
                                                         'Relationship': '',
                                                         'FirstName': '',
@@ -815,30 +821,30 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
 
                                                       if (widget.wholelist[1][
                                                               widget.accessname]
-                                                              ['question'][5]
+                                                              ['question']["5"]
                                                               ['Roomate']
                                                           .containsKey(
                                                               'roomate${value + 1}')) {
                                                         widget.wholelist[1][
                                                                 widget
                                                                     .accessname]
-                                                                ['question'][5]
-                                                                ['Roomate']
+                                                                ['question']
+                                                                ["5"]['Roomate']
                                                             .remove(
                                                                 'roomate${value + 1}');
                                                       }
                                                     } else if (value == 0) {
                                                       if (widget.wholelist[1][
                                                               widget.accessname]
-                                                              ['question'][5]
+                                                              ['question']["5"]
                                                               ['Roomate']
                                                           .containsKey(
                                                               'roomate${value + 1}')) {
                                                         widget.wholelist[1][
                                                                 widget
                                                                     .accessname]
-                                                                ['question'][5]
-                                                                ['Roomate']
+                                                                ['question']
+                                                                ["5"]['Roomate']
                                                             .remove(
                                                                 'roomate${value + 1}');
                                                       }
@@ -847,7 +853,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
 
                                                   print(widget.wholelist[1][
                                                               widget.accessname]
-                                                          ['question'][5]
+                                                          ['question']["5"]
                                                       ['Roomate']);
                                                 },
                                               ),
@@ -1266,57 +1272,55 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                     )),
                               ),
                               SizedBox(
-                                width: MediaQuery.of(context).size.width * .3,
+                                width: MediaQuery.of(context).size.width * .35,
                                 child: NumericStepButton(
                                   counterval: flightcount,
                                   onChanged: (value) {
                                     setState(() {
                                       widget.wholelist[1][widget.accessname]
-                                              ['question'][11]['Flights']
+                                              ['question']["11"]['Flights']
                                           ['count'] = value;
                                       flightcount = widget.wholelist[1]
                                               [widget.accessname]['question']
-                                          [11]['Flights']['count'];
+                                          ["11"]['Flights']['count'];
                                       print(widget.wholelist[1]
                                               [widget.accessname]['question']
-                                          [11]['Flights']['count']);
+                                          ["11"]['Flights']['count']);
                                       if (value > 0) {
                                         widget.wholelist[1][widget.accessname]
-                                                ['question'][11]['Flights']
+                                                ['question']["11"]['Flights']
                                             ['flight$value'] = '';
 
                                         if (widget.wholelist[1]
                                                 [widget.accessname]['question']
-                                                [11]['Flights']
+                                                ["11"]['Flights']
                                             .containsKey(
                                                 'flight${value + 1}')) {
                                           widget.wholelist[1][widget.accessname]
-                                                  ['question'][11]['Flights']
+                                                  ['question']["11"]['Flights']
                                               .remove('flight${value + 1}');
                                         }
                                       } else if (value == 0) {
                                         if (widget.wholelist[1]
                                                 [widget.accessname]['question']
-                                                [11]['Flights']
+                                                ["11"]['Flights']
                                             .containsKey(
                                                 'flight${value + 1}')) {
                                           widget.wholelist[1][widget.accessname]
-                                                  ['question'][11]['Flights']
+                                                  ['question']["11"]['Flights']
                                               .remove('flight${value + 1}');
                                         }
                                       }
                                     });
 
                                     print(widget.wholelist[1][widget.accessname]
-                                        ['question'][11]['Flights']);
+                                        ['question']["11"]['Flights']);
                                   },
                                 ),
                               ),
                             ]),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        (flightcount > 0)
+
+                        (flightcount ?? 0 > 0)
                             ? Container(
                                 child: Padding(
                                   padding: EdgeInsets.all(10),
@@ -1488,6 +1492,9 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                         Navigator.pop(
                             context, widget.wholelist[1][widget.accessname]);
                       }
+                      NewAssesmentRepository().updateLatestChangeDate(
+                          Timestamp.now(), widget.docID);
+                      print(widget.docID);
                     },
                   ))
                 ],
@@ -1682,7 +1689,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
         _speech.listen(
           onResult: (val) => setState(() {
             _controllers["field$index"].text = widget.wholelist[1]
-                    [widget.accessname]['question'][index]['Recommendation'] +
+                        [widget.accessname]['question']["$index"]
+                    ['Recommendation'] +
                 " " +
                 val.recognizedWords;
           }),
@@ -1700,7 +1708,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
 
   setdatalisten(index) {
     setState(() {
-      widget.wholelist[1][widget.accessname]['question'][index]
+      widget.wholelist[1][widget.accessname]['question']["$index"]
           ['Recommendation'] = _controllers["field$index"].text;
       cur = !cur;
     });
@@ -1727,7 +1735,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
         _speech.listen(
           onResult: (val) => setState(() {
             _controllerstreco["field$index"].text = widget.wholelist[1]
-                        [widget.accessname]['question'][index]
+                        [widget.accessname]['question']["$index"]
                     ['Recommendationthera'] +
                 " " +
                 val.recognizedWords;
@@ -1746,7 +1754,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
 
   setdatalistenthera(index) {
     setState(() {
-      widget.wholelist[1][widget.accessname]['question'][index]
+      widget.wholelist[1][widget.accessname]['question']["$index"]
           ['Recommendationthera'] = _controllerstreco["field$index"].text;
       cur = !cur;
     });
@@ -1762,7 +1770,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
               // width: MediaQuery.of(context).size.width * .35,
               child: TextFormField(
                 initialValue: widget.wholelist[1][widget.accessname]['question']
-                    [11]['Flights']['flight$index'],
+                    ["11"]['Flights']['flight$index'],
                 keyboardType: TextInputType.phone,
                 decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
@@ -1776,7 +1784,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                     labelText: 'Number of steps in flight$index:'),
                 onChanged: (value) {
                   setState(() {
-                    widget.wholelist[1][widget.accessname]['question'][11]
+                    widget.wholelist[1][widget.accessname]['question']["11"]
                         ['Flights']['flight$index'] = value;
                   });
                   // print(widget.wholelist[0][widget.accessname]['question']
@@ -1875,13 +1883,13 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                       new TextEditingController().clear();
                       // print(widget.accessname);
                       setState(() {
-                        widget.wholelist[1][widget.accessname]['question'][5]
+                        widget.wholelist[1][widget.accessname]['question']["5"]
                                 ['Roomate']['roomate$index']['Relationship'] =
                             value;
                       });
                     },
-                    value: widget.wholelist[1][widget.accessname]['question'][5]
-                        ['Roomate']['roomate$index']['Relationship'])
+                    value: widget.wholelist[1][widget.accessname]['question']
+                        ["5"]['Roomate']['roomate$index']['Relationship'])
               ],
             ),
           ),
@@ -1896,7 +1904,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                       child: TextFormField(
                         showCursor: cur,
                         initialValue: widget.wholelist[1][widget.accessname]
-                                ['question'][5]['Roomate']['roomate$index']
+                                ['question']["5"]['Roomate']['roomate$index']
                             ['FirstName'],
                         decoration: InputDecoration(
                             focusedBorder: OutlineInputBorder(
@@ -1912,8 +1920,9 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           FocusScope.of(context).requestFocus();
                           new TextEditingController().clear();
                           // print(widget.accessname);
-                          widget.wholelist[1][widget.accessname]['question'][5]
-                              ['Roomate']['roomate$index']['FirstName'] = value;
+                          widget.wholelist[1][widget.accessname]['question']
+                                  ["5"]['Roomate']['roomate$index']
+                              ['FirstName'] = value;
                         },
                       ),
                     ),
@@ -1936,7 +1945,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                       child: TextFormField(
                         showCursor: cur,
                         initialValue: widget.wholelist[1][widget.accessname]
-                                ['question'][5]['Roomate']['roomate$index']
+                                ['question']["5"]['Roomate']['roomate$index']
                             ['LastName'],
                         decoration: InputDecoration(
                             focusedBorder: OutlineInputBorder(
@@ -1952,8 +1961,9 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           FocusScope.of(context).requestFocus();
                           new TextEditingController().clear();
                           // print(widget.accessname);
-                          widget.wholelist[1][widget.accessname]['question'][5]
-                              ['Roomate']['roomate$index']['LastName'] = value;
+                          widget.wholelist[1][widget.accessname]['question']
+                                  ["5"]['Roomate']['roomate$index']
+                              ['LastName'] = value;
                         },
                       ),
                     ),

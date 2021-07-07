@@ -6,10 +6,10 @@ import 'package:tryapp/Assesment/newassesment/newassesmentpro.dart';
 import 'package:provider/provider.dart';
 
 class DiningRoom extends StatelessWidget {
-  String roomname;
+  String roomname, docID;
   var accessname;
   List<Map<String, dynamic>> wholelist;
-  DiningRoom(this.roomname, this.wholelist, this.accessname);
+  DiningRoom(this.roomname, this.wholelist, this.accessname, this.docID);
   @override
   Widget build(BuildContext context) {
     return MultiProvider(providers: [
@@ -17,7 +17,7 @@ class DiningRoom extends StatelessWidget {
           create: (_) => NewAssesmentProvider("")),
       ChangeNotifierProvider<DiningPro>(
           create: (_) => DiningPro(roomname, wholelist, accessname))
-    ], child: DiningRoomUI(roomname, wholelist, accessname));
+    ], child: DiningRoomUI(roomname, wholelist, accessname, docID));
     // return Scaffold(
     //     body: Center(
     //   child: ChangeNotifierProvider<NewAssesmentProvider>(

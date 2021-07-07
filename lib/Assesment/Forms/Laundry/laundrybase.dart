@@ -7,10 +7,10 @@ import 'package:provider/provider.dart';
 import 'laundrypro.dart';
 
 class Laundry extends StatelessWidget {
-  String roomname;
+  String roomname, docID;
   var accessname;
   List<Map<String, dynamic>> wholelist;
-  Laundry(this.roomname, this.wholelist, this.accessname);
+  Laundry(this.roomname, this.wholelist, this.accessname, this.docID);
   @override
   Widget build(BuildContext context) {
     return MultiProvider(providers: [
@@ -18,7 +18,7 @@ class Laundry extends StatelessWidget {
           create: (_) => NewAssesmentProvider("")),
       ChangeNotifierProvider<LaundryPro>(
           create: (_) => LaundryPro(roomname, wholelist, accessname))
-    ], child: LaundryUI(roomname, wholelist, accessname));
+    ], child: LaundryUI(roomname, wholelist, accessname, docID));
 
     // return Scaffold(
     //     body: Center(
