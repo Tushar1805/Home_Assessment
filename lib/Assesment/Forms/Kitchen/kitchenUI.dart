@@ -133,7 +133,8 @@ class _KitchenUIState extends State<KitchenUI> {
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
 
-                                    assesmentprovider.setdata(1, value);
+                                    assesmentprovider.setdata(
+                                        1, value, 'Threshold to Kitchen');
                                   }),
                             ),
                           ],
@@ -190,7 +191,8 @@ class _KitchenUIState extends State<KitchenUI> {
                                 onChanged: (value) {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
-                                  assesmentprovider.setdata(2, value);
+                                  assesmentprovider.setdata(
+                                      2, value, 'Flooring Type');
                                 },
                                 value: assesmentprovider.getvalue(2),
                               ),
@@ -241,7 +243,8 @@ class _KitchenUIState extends State<KitchenUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(3, value);
+                                  assesmentprovider.setdata(
+                                      3, value, 'Floor Coverage');
                                 },
                                 value: assesmentprovider.getvalue(3),
                               ),
@@ -263,7 +266,7 @@ class _KitchenUIState extends State<KitchenUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Lighting Types:',
+                              child: Text('Lighting Types',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -290,7 +293,8 @@ class _KitchenUIState extends State<KitchenUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
 
-                                  assesmentprovider.setdata(4, value);
+                                  assesmentprovider.setdata(
+                                      4, value, 'Lighting Types:');
                                 },
                                 value: assesmentprovider.getvalue(4),
                               ),
@@ -311,7 +315,7 @@ class _KitchenUIState extends State<KitchenUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Switches: Client Able to Operate:',
+                              child: Text('Switches: Able to Operate',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -338,7 +342,8 @@ class _KitchenUIState extends State<KitchenUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
 
-                                  assesmentprovider.setdata(5, value);
+                                  assesmentprovider.setdata(
+                                      5, value, 'Switches: Able to Operate');
                                 },
                                 value: assesmentprovider.getvalue(5),
                               ),
@@ -358,7 +363,7 @@ class _KitchenUIState extends State<KitchenUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Switch Types:',
+                              child: Text('Switch Types',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -404,7 +409,8 @@ class _KitchenUIState extends State<KitchenUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(6, value);
+                                  assesmentprovider.setdata(
+                                      6, value, 'Switch Types');
                                 },
                                 value: assesmentprovider.getvalue(6),
                               ),
@@ -443,7 +449,8 @@ class _KitchenUIState extends State<KitchenUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    assesmentprovider.setdata(7, value);
+                                    assesmentprovider.setdata(
+                                        7, value, 'Door Width');
                                     setState(() {
                                       widget.wholelist[3][widget.accessname]
                                           ['question']["7"]['doorwidth'] = 0;
@@ -483,7 +490,7 @@ class _KitchenUIState extends State<KitchenUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Obstacle/Clutter Present?',
+                              child: Text('Obstacle/Clutter Present',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -508,7 +515,8 @@ class _KitchenUIState extends State<KitchenUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(8, value);
+                                assesmentprovider.setdata(
+                                    8, value, 'Obstacle/Clutter Present');
                               },
                               value: assesmentprovider.getvalue(8),
                             )
@@ -524,7 +532,7 @@ class _KitchenUIState extends State<KitchenUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Client is Able to Access Telephone?',
+                              child: Text('Is Able to Access Telephone',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -549,7 +557,8 @@ class _KitchenUIState extends State<KitchenUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(9, value);
+                                assesmentprovider.setdata(
+                                    9, value, 'Is Able to Access Telephone');
                               },
                               value: assesmentprovider.getvalue(9),
                             )
@@ -567,7 +576,7 @@ class _KitchenUIState extends State<KitchenUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Client is Able to Access Stove',
+                              child: Text('Is Able to Access Stove',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -592,7 +601,8 @@ class _KitchenUIState extends State<KitchenUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(10, value);
+                                assesmentprovider.setdata(
+                                    10, value, 'Is Able to Access Stove');
                               },
                               value: assesmentprovider.getvalue(10),
                             )
@@ -643,7 +653,8 @@ class _KitchenUIState extends State<KitchenUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(11, value);
+                                  assesmentprovider.setdata(
+                                      11, value, 'Stove Indicator Light');
                                 },
                                 value: assesmentprovider.getvalue(11),
                               ),
@@ -664,7 +675,7 @@ class _KitchenUIState extends State<KitchenUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Client is Able to Access Sink?',
+                              child: Text('Is Able to Access Sink',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -689,7 +700,8 @@ class _KitchenUIState extends State<KitchenUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(12, value);
+                                assesmentprovider.setdata(
+                                    12, value, 'Is Able to Access Sink');
                               },
                               value: assesmentprovider.getvalue(12),
                             )
@@ -703,7 +715,7 @@ class _KitchenUIState extends State<KitchenUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Client is Able to Access Dishwasher',
+                              child: Text('Is Able to Access Dishwasher',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -728,7 +740,8 @@ class _KitchenUIState extends State<KitchenUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(13, value);
+                                assesmentprovider.setdata(
+                                    13, value, 'Is Able to Access Dishwasher');
                               },
                               value: assesmentprovider.getvalue(13),
                             )
@@ -746,96 +759,7 @@ class _KitchenUIState extends State<KitchenUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child:
-                                  Text('Client is Able to Access Refrigerator?',
-                                      style: TextStyle(
-                                        color: Color.fromRGBO(10, 80, 106, 1),
-                                        fontSize: 20,
-                                      )),
-                            ),
-                            DropdownButton(
-                              items: [
-                                DropdownMenuItem(
-                                  child: Text('--'),
-                                  value: '',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Yes'),
-                                  value: 'Yes',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('No'),
-                                  value: 'No',
-                                ),
-                              ],
-                              onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                assesmentprovider.setdata(14, value);
-                              },
-                              value: assesmentprovider.getvalue(14),
-                            )
-                          ],
-                        ),
-                        (assesmentprovider.getvalue(14) == 'No')
-                            ? assesmentprovider.getrecomain(assesmentprovider,
-                                14, true, 'Comments (if any)')
-                            : SizedBox(),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * .4,
-                              child:
-                                  Text('Client is Able to Access High Cabinets',
-                                      style: TextStyle(
-                                        color: Color.fromRGBO(10, 80, 106, 1),
-                                        fontSize: 20,
-                                      )),
-                            ),
-                            DropdownButton(
-                              items: [
-                                DropdownMenuItem(
-                                  child: Text('--'),
-                                  value: '',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Yes'),
-                                  value: 'Yes',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('No'),
-                                  value: 'No',
-                                ),
-                              ],
-                              onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                assesmentprovider.setdata(15, value);
-                              },
-                              value: assesmentprovider.getvalue(15),
-                            )
-                          ],
-                        ),
-                        (assesmentprovider.getvalue(15) == 'No')
-                            ? assesmentprovider.getrecomain(assesmentprovider,
-                                15, true, 'Comments (if any)')
-                            : SizedBox(),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * .4,
-                              child: Text(
-                                  'Client is Able to Access Lower Cabinets',
+                              child: Text('Is Able to Access Refrigerator',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -860,7 +784,96 @@ class _KitchenUIState extends State<KitchenUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(16, value);
+                                assesmentprovider.setdata(14, value,
+                                    'Is Able to Access Refrigerator?');
+                              },
+                              value: assesmentprovider.getvalue(14),
+                            )
+                          ],
+                        ),
+                        (assesmentprovider.getvalue(14) == 'No')
+                            ? assesmentprovider.getrecomain(assesmentprovider,
+                                14, true, 'Comments (if any)')
+                            : SizedBox(),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * .4,
+                              child: Text('Is Able to Access High Cabinets',
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(10, 80, 106, 1),
+                                    fontSize: 20,
+                                  )),
+                            ),
+                            DropdownButton(
+                              items: [
+                                DropdownMenuItem(
+                                  child: Text('--'),
+                                  value: '',
+                                ),
+                                DropdownMenuItem(
+                                  child: Text('Yes'),
+                                  value: 'Yes',
+                                ),
+                                DropdownMenuItem(
+                                  child: Text('No'),
+                                  value: 'No',
+                                ),
+                              ],
+                              onChanged: (value) {
+                                FocusScope.of(context).requestFocus();
+                                new TextEditingController().clear();
+                                // print(widget.accessname);
+                                assesmentprovider.setdata(15, value,
+                                    'Is Able to Access High Cabinets');
+                              },
+                              value: assesmentprovider.getvalue(15),
+                            )
+                          ],
+                        ),
+                        (assesmentprovider.getvalue(15) == 'No')
+                            ? assesmentprovider.getrecomain(assesmentprovider,
+                                15, true, 'Comments (if any)')
+                            : SizedBox(),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * .4,
+                              child: Text('Is Able to Access Lower Cabinets',
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(10, 80, 106, 1),
+                                    fontSize: 20,
+                                  )),
+                            ),
+                            DropdownButton(
+                              items: [
+                                DropdownMenuItem(
+                                  child: Text('--'),
+                                  value: '',
+                                ),
+                                DropdownMenuItem(
+                                  child: Text('Yes'),
+                                  value: 'Yes',
+                                ),
+                                DropdownMenuItem(
+                                  child: Text('No'),
+                                  value: 'No',
+                                ),
+                              ],
+                              onChanged: (value) {
+                                FocusScope.of(context).requestFocus();
+                                new TextEditingController().clear();
+                                // print(widget.accessname);
+                                assesmentprovider.setdata(16, value,
+                                    'Is Able to Access Lower Cabinets');
                               },
                               value: assesmentprovider.getvalue(16),
                             )
@@ -905,7 +918,8 @@ class _KitchenUIState extends State<KitchenUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(17, value);
+                                assesmentprovider.setdata(
+                                    17, value, 'Smoke Detector?');
                               },
                               value: assesmentprovider.getvalue(17),
                             )
@@ -923,7 +937,7 @@ class _KitchenUIState extends State<KitchenUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Observations:',
+                              child: Text('Observations',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -955,7 +969,8 @@ class _KitchenUIState extends State<KitchenUI> {
                             FocusScope.of(context).requestFocus();
                             new TextEditingController().clear();
                             // print(widget.accessname);
-                            assesmentprovider.setdata(18, value);
+                            assesmentprovider.setdata(
+                                18, value, 'Observations');
                           },
                         ))
                       ],

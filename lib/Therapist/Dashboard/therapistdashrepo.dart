@@ -32,6 +32,11 @@ class TherapistRepository {
     return list;
   }
 
+  Future<String> getassessmentdocid(asessmentdoc) async {
+    return asessmentdoc.reference.documentID;
+    // dataset.documents.forEach((e) => print(e.reference.documentID));
+  }
+
   void getUserData() async {
     FirebaseUser firebaseUser = await FirebaseAuth.instance.currentUser();
     firestoreInstance

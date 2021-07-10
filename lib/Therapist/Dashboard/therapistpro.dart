@@ -102,10 +102,11 @@ class TherapistProvider extends ChangeNotifier {
   //   print(datasetmain);
   // }
 
-  // getdocref(asessmentdoc) async {
-  //   curretnassessmentdocref = await oldrepo.getassessmentdocid(asessmentdoc);
-  //   notifyListeners();
-  // }
+  getdocref(asessmentdoc) async {
+    curretnassessmentdocref =
+        await therapistRepository.getassessmentdocid(asessmentdoc);
+    notifyListeners();
+  }
 
   // getstatuspatient(type) {
   //   (type == 'new') ? assessdisplay = true : assessdisplay = false;

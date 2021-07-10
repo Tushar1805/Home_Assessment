@@ -80,13 +80,14 @@ class KitchenPro extends ChangeNotifier {
     );
   }
 
-  setdata(index, value) {
+  setdata(index, value, que) {
     if (value.length == 0) {
       if (wholelist[3][accessname]['question']["$index"]['Answer'].length ==
           0) {
       } else {
         wholelist[3][accessname]['complete'] -= 1;
         wholelist[3][accessname]['question']["$index"]['Answer'] = value;
+        wholelist[3][accessname]['question']["$index"]['Question'] = que;
         notifyListeners();
       }
     } else {
@@ -201,7 +202,7 @@ class KitchenPro extends ChangeNotifier {
                 },
               ),
             ),
-            (assesmentprovider.type == 'Therapist' && isthera)
+            (assesmentprovider.type == 'therapist' && isthera)
                 ? getrecowid(assesmentprovider, index)
                 : SizedBox(),
           ],

@@ -78,13 +78,14 @@ class BedroomPro extends ChangeNotifier {
     );
   }
 
-  setdata(index, value) {
+  setdata(index, value, que) {
     if (value.length == 0) {
       if (wholelist[6][accessname]['question']["$index"]['Answer'].length ==
           0) {
       } else {
         wholelist[6][accessname]['complete'] -= 1;
         wholelist[6][accessname]['question']["$index"]['Answer'] = value;
+        wholelist[6][accessname]['question']["$index"]['Question'] = que;
         notifyListeners();
       }
     } else {
@@ -199,7 +200,7 @@ class BedroomPro extends ChangeNotifier {
                 },
               ),
             ),
-            (assesmentprovider.type == 'Therapist' && isthera)
+            (assesmentprovider.type == 'therapist' && isthera)
                 ? getrecowid(assesmentprovider, index)
                 : SizedBox(),
           ],

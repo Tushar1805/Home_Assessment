@@ -3,6 +3,8 @@ import 'package:tryapp/Assesment/oldassessments/oldassessmentsbase.dart';
 import 'package:tryapp/splash/assesment.dart';
 
 class MidASSESS extends StatefulWidget {
+  String role;
+  MidASSESS(this.role);
   @override
   _MidASSESSState createState() => _MidASSESSState();
 }
@@ -41,7 +43,7 @@ class _MidASSESSState extends State<MidASSESS> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => OldAssessments()));
+                            builder: (context) => OldAssessments(widget.role)));
                   }),
             ),
             SizedBox(height: 20),
@@ -65,7 +67,8 @@ class _MidASSESSState extends State<MidASSESS> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => AssesmentSplashScreen()));
+                          builder: (context) =>
+                              AssesmentSplashScreen(widget.role)));
                 },
               ),
             )

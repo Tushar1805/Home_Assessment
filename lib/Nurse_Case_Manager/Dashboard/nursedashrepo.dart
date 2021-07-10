@@ -16,4 +16,29 @@ class NurseRepository {
       print(value.data);
     });
   }
+
+  Future<List> getassessments() async {
+    final FirebaseUser useruid = await _auth.currentUser();
+    // String uid;
+    //  await getcurrentuid().then((value) =>
+    //    setState(() {
+    //    if (value is String)
+    //         uid = value.toString(); //use toString to convert as String
+    // }););
+    List list = [];
+    var assess = firestoreInstance
+        .collection('assessments')
+        .where('assessor', isEqualTo: useruid.uid)
+        .getDocuments()
+        .then((value) => value.documents.forEach((element) {
+              list.add(element.data);
+            }));
+
+    return list;
+  }
+
+  Future<DocumentSnapshot> getfielddata(String uid) async {
+    var data = await firestoreInstance.collection('users').document(uid).get();
+    return data;
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tryapp/Assesment/Forms/Bathroom/bathroom.dart';
 import 'package:tryapp/Assesment/Forms/Bedroom/bedroombase.dart';
@@ -11,6 +12,9 @@ import 'package:tryapp/Assesment/Forms/Pathway/pathwaybase.dart';
 import 'package:tryapp/Assesment/Forms/Patio/patiobase.dart';
 import 'package:async_button_builder/async_button_builder.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
+import 'package:tryapp/Nurse_Case_Manager/Dashboard/nursedash.dart';
+import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdash.dart';
+import 'package:tryapp/Therapist/Dashboard/therapistdash.dart';
 import '../Forms/LivingRoom/livingbase.dart';
 
 /// Frame of this page:
@@ -100,6 +104,8 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
   bool sent = false;
   var docId;
   Color _color = Colors.lightBlue;
+  String role;
+  FirebaseAuth _auth = FirebaseAuth.instance;
 
   @override
   void initState() {
@@ -127,10 +133,22 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
         }
       });
     });
+    getRole();
+    print(role);
   }
 
   /// This fucntio will help us to get the width of the container.
   /// with help of this we will be able to set the liner progress bar width
+  getRole() async {
+    FirebaseUser user = await _auth.currentUser();
+    await Firestore.instance
+        .collection("users")
+        .document(user.uid)
+        .get()
+        .then((value) => setState(() {
+              role = value["role"];
+            }));
+  }
 
   void setWidth(GlobalKey key) {
     final RenderBox rend = key.currentContext.findRenderObject();
@@ -204,168 +222,201 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     // AssesmentProvider assesmentProvider = AssesmentProvider();
-    return Scaffold(
-        appBar: AppBar(
-          title: Text('Assessment'),
-          backgroundColor: _colorgreen,
-        ),
-        body: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Container(
-                  padding: EdgeInsets.all(10),
-                  child: Column(
-                    children: [
-                      Container(
-                          // height: MediaQuery.of(context).size.height / 8,
-                          width: double.infinity,
-                          child: Card(
-                            // key: c2,
-                            elevation: 8,
-                            child: Container(
-                              padding: EdgeInsets.all(20),
-                              child: Text(
-                                'ARRANGEMENTS:',
-                                style: TextStyle(
-                                    fontSize: 23,
-                                    fontWeight: FontWeight.bold,
-                                    color: _colorgreen),
-                                textAlign: TextAlign.left,
+    // ignore: missing_return
+    return WillPopScope(
+      // ignore: missing_return
+      onWillPop: () {
+        Navigator.pop(context);
+        if (role == 'therapist') {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => Therapist()));
+        } else if (role == 'patient') {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => Patient()));
+        } else if (role == 'nurse/case manager') {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => Nurse()));
+        }
+      },
+      child: Scaffold(
+          appBar: AppBar(
+            title: Text('Assessment'),
+            backgroundColor: _colorgreen,
+          ),
+          body: Stack(
+            children: [
+              SingleChildScrollView(
+                child: Container(
+                    padding: EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Container(
+                            // height: MediaQuery.of(context).size.height / 8,
+                            width: double.infinity,
+                            child: Card(
+                              // key: c2,
+                              elevation: 8,
+                              child: Container(
+                                padding: EdgeInsets.all(20),
+                                child: Text(
+                                  'ARRANGEMENTS:',
+                                  style: TextStyle(
+                                      fontSize: 23,
+                                      fontWeight: FontWeight.bold,
+                                      color: _colorgreen),
+                                  textAlign: TextAlign.left,
+                                ),
                               ),
-                            ),
-                          )),
-                      Container(
-                        child: cards(widget.wholelist[1], 1, widthh),
-                      ),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Container(
-                          // height: MediaQuery.of(context).size.height / 8,
-                          width: double.infinity,
-                          child: Card(
-                            key: c1,
-                            elevation: 8,
-                            child: Container(
-                              padding: EdgeInsets.all(20),
-                              child: Text(
-                                'AVAILABLE ROOMS:',
-                                style: TextStyle(
-                                    fontSize: 23,
-                                    fontWeight: FontWeight.bold,
-                                    color: _colorgreen),
-                                textAlign: TextAlign.left,
+                            )),
+                        Container(
+                          child: cards(widget.wholelist[1], 1, widthh),
+                        ),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Container(
+                            // height: MediaQuery.of(context).size.height / 8,
+                            width: double.infinity,
+                            child: Card(
+                              key: c1,
+                              elevation: 8,
+                              child: Container(
+                                padding: EdgeInsets.all(20),
+                                child: Text(
+                                  'ROOMS:',
+                                  style: TextStyle(
+                                      fontSize: 23,
+                                      fontWeight: FontWeight.bold,
+                                      color: _colorgreen),
+                                  textAlign: TextAlign.left,
+                                ),
                               ),
-                            ),
-                          )),
-                      Container(
-                        child: ConstrainedBox(
-                          constraints:
-                              BoxConstraints(maxHeight: 3000, minHeight: 0),
-                          child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: widget.wholelist.length,
-                              itemBuilder: (context, index) {
-                                if (widget.wholelist[index]['name'] ==
-                                    'Living Arrangements') {
-                                  return SizedBox();
-                                }
-                                return cards(
-                                    widget.wholelist[index], index, widthh);
-                              }),
+                            )),
+                        Container(
+                          child: ConstrainedBox(
+                            constraints:
+                                BoxConstraints(maxHeight: 3000, minHeight: 0),
+                            child: ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: widget.wholelist.length,
+                                itemBuilder: (context, index) {
+                                  if (widget.wholelist[index]['name'] ==
+                                      'Living Arrangements') {
+                                    return SizedBox();
+                                  }
+                                  return cards(
+                                      widget.wholelist[index], index, widthh);
+                                }),
+                          ),
+                        ),
+                        SizedBox(height: 30),
+                      ],
+                    )),
+              ),
+              Container(
+                child: Container(
+                  padding: EdgeInsets.all(15),
+                  alignment: Alignment.bottomRight,
+                  // height: double.infinity,
+                  child: AsyncButtonBuilder(
+                    child: Padding(
+                      // Value keys are important as otherwise our custom transitions
+                      // will have no way to differentiate between children.
+                      key: ValueKey('foo'),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16.0,
+                        vertical: 20.0,
+                      ),
+                      child: Text(
+                        'Submit Assessment Details',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    loadingWidget: Padding(
+                      key: ValueKey('bar'),
+                      padding: const EdgeInsets.all(17.0),
+                      child: SizedBox(
+                        height: 25.0,
+                        width: 25.0,
+                        child: CircularProgressIndicator(
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       ),
-                      SizedBox(height: 30),
-                    ],
-                  )),
-            ),
-            Container(
-              child: Container(
-                padding: EdgeInsets.all(15),
-                alignment: Alignment.bottomRight,
-                // height: double.infinity,
-                child: AsyncButtonBuilder(
-                  child: Padding(
-                    // Value keys are important as otherwise our custom transitions
-                    // will have no way to differentiate between children.
-                    key: ValueKey('foo'),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 20.0,
                     ),
-                    child: Text(
-                      'Submit Assessment Details',
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  loadingWidget: Padding(
-                    key: ValueKey('bar'),
-                    padding: const EdgeInsets.all(17.0),
-                    child: SizedBox(
-                      height: 25.0,
-                      width: 25.0,
-                      child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    successWidget: Padding(
+                      key: ValueKey('foobar'),
+                      padding: const EdgeInsets.all(17.5),
+                      child: Icon(
+                        Icons.check,
+                        color: Colors.white,
                       ),
                     ),
-                  ),
-                  successWidget: Padding(
-                    key: ValueKey('foobar'),
-                    padding: const EdgeInsets.all(17.5),
-                    child: Icon(
-                      Icons.check,
-                      color: Colors.white,
-                    ),
-                  ),
-                  onPressed: () async {
-                    await Future.delayed(const Duration(milliseconds: 1500),
-                        () {
-                      for (int i = 0; i < widget.wholelist.length; i++) {
-                        for (int j = 1;
-                            j <= widget.wholelist[i]['count'];
-                            j++) {
-                          print(widget.wholelist[i]['count']);
+                    onPressed: () async {
+                      await Future.delayed(const Duration(milliseconds: 1500),
+                          () {
+                        for (int i = 0; i < widget.wholelist.length; i++) {
+                          for (int j = 1;
+                              j <= widget.wholelist[i]['count'];
+                              j++) {
+                            print(widget.wholelist[i]['count']);
+                          }
                         }
+                      });
+                      // print(widget.wholelist);
+                      if (role == 'therapist') {
+                        NewAssesmentRepository().setAssessmentCurrentStatus(
+                            "Report Generated", widget.docID);
+                        NewAssesmentRepository().setStatus("old", widget.docID);
+                        NewAssesmentRepository()
+                            .setAssessmentCompletionDate(widget.docID);
+                      } else if (role == 'nurse/case manager') {
+                        NewAssesmentRepository().setAssessmentCurrentStatus(
+                            "Assessment Finished", widget.docID);
+                      } else if (role == "patient") {
+                        NewAssesmentRepository().setAssessmentCurrentStatus(
+                            "Assessment Finished", widget.docID);
                       }
-                    });
-                    print(widget.wholelist);
-                    NewAssesmentRepository()
-                        .updateForm(widget.wholelist, widget.docID);
-                    NewAssesmentRepository().updateStatus("old", widget.docID);
-                  },
-                  loadingSwitchInCurve: Curves.bounceInOut,
-                  loadingTransitionBuilder: (child, animation) {
-                    return SlideTransition(
-                      position: Tween<Offset>(
-                        begin: Offset(0, 1.0),
-                        end: Offset(0, 0),
-                      ).animate(animation),
-                      child: child,
-                    );
-                  },
-                  builder: (context, child, callback, state) {
-                    return Material(
-                      color: state.maybeWhen(
-                        success: () => Colors.green[600],
-                        orElse: () => Colors.blue,
-                      ),
-                      // This prevents the loading indicator showing below the
-                      // button
-                      clipBehavior: Clip.hardEdge,
-                      shape: StadiumBorder(),
-                      child: InkWell(
+                      NewAssesmentRepository()
+                          .setLatestChangeDate(widget.docID);
+
+                      NewAssesmentRepository()
+                          .setForm(widget.wholelist, widget.docID);
+                    },
+                    loadingSwitchInCurve: Curves.bounceInOut,
+                    loadingTransitionBuilder: (child, animation) {
+                      return SlideTransition(
+                        position: Tween<Offset>(
+                          begin: Offset(0, 1.0),
+                          end: Offset(0, 0),
+                        ).animate(animation),
                         child: child,
-                        onTap: callback,
-                      ),
-                    );
-                  },
+                      );
+                    },
+                    builder: (context, child, callback, state) {
+                      return Material(
+                        color: state.maybeWhen(
+                          success: () => Colors.green[600],
+                          orElse: () => Colors.blue,
+                        ),
+                        // This prevents the loading indicator showing below the
+                        // button
+                        clipBehavior: Clip.hardEdge,
+                        shape: StadiumBorder(),
+                        child: InkWell(
+                          child: child,
+                          onTap: callback,
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-          ],
-        ));
+            ],
+          )),
+    );
   }
 
   /// This is the card function used to dispaly the card.

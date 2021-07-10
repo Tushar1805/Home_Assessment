@@ -237,7 +237,8 @@ class _BedroomUIState extends State<BedroomUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    assesmentprovider.setdata(1, value);
+                                    assesmentprovider.setdata(
+                                        1, value, 'Threshold to Bedroom');
                                   },
                                 ),
                               ),
@@ -295,7 +296,8 @@ class _BedroomUIState extends State<BedroomUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(2, value);
+                                  assesmentprovider.setdata(
+                                      2, value, 'Flooring Type');
                                 },
                                 value: assesmentprovider.getvalue(2),
                               ),
@@ -346,7 +348,8 @@ class _BedroomUIState extends State<BedroomUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(3, value);
+                                  assesmentprovider.setdata(
+                                      3, value, 'Floor Coverage');
                                 },
                                 value: assesmentprovider.getvalue(3),
                               ),
@@ -368,7 +371,7 @@ class _BedroomUIState extends State<BedroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Lighting:',
+                              child: Text('Lighting',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -394,7 +397,8 @@ class _BedroomUIState extends State<BedroomUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(4, value);
+                                  assesmentprovider.setdata(
+                                      4, value, 'Lighting');
                                 },
                                 value: assesmentprovider.getvalue(4),
                               ),
@@ -415,7 +419,7 @@ class _BedroomUIState extends State<BedroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Switches: Client Able to Operate:',
+                              child: Text('Switches Able to Operate',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -441,7 +445,8 @@ class _BedroomUIState extends State<BedroomUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(5, value);
+                                  assesmentprovider.setdata(
+                                      5, value, 'Switches Able to Operate');
                                 },
                                 value: assesmentprovider.getvalue(5),
                               ),
@@ -460,7 +465,7 @@ class _BedroomUIState extends State<BedroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Switch Types:',
+                              child: Text('Switch Types',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -506,7 +511,8 @@ class _BedroomUIState extends State<BedroomUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(6, value);
+                                  assesmentprovider.setdata(
+                                      6, value, 'Switch Types');
                                 },
                                 value: assesmentprovider.getvalue(6),
                               ),
@@ -547,7 +553,8 @@ class _BedroomUIState extends State<BedroomUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    assesmentprovider.setdata(7, value);
+                                    assesmentprovider.setdata(
+                                        7, value, 'Door Width');
                                     setState(() {
                                       widget.wholelist[6][widget.accessname]
                                           ['question']["7"]['doorwidth'] = 0;
@@ -612,7 +619,8 @@ class _BedroomUIState extends State<BedroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(8, value);
+                                assesmentprovider.setdata(
+                                    8, value, 'Obstacle/Clutter Present?');
                               },
                               value: assesmentprovider.getvalue(8),
                             )
@@ -628,7 +636,7 @@ class _BedroomUIState extends State<BedroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Client is Able to Access Telephone?',
+                              child: Text('Able to Access Telephone?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -653,7 +661,8 @@ class _BedroomUIState extends State<BedroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(9, value);
+                                assesmentprovider.setdata(
+                                    9, value, 'Able to Access Telephone?');
                               },
                               value: assesmentprovider.getvalue(9),
                             )
@@ -698,7 +707,8 @@ class _BedroomUIState extends State<BedroomUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
 
-                                assesmentprovider.setdata(10, value);
+                                assesmentprovider.setdata(
+                                    10, value, 'Smoke Detector?');
                               },
                               value: assesmentprovider.getvalue(10),
                             )
@@ -714,7 +724,7 @@ class _BedroomUIState extends State<BedroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Type of Bed:',
+                              child: Text('Type of Bed',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -745,7 +755,8 @@ class _BedroomUIState extends State<BedroomUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(11, value);
+                                  assesmentprovider.setdata(
+                                      11, value, 'Type of Bed');
                                 },
                                 value: assesmentprovider.getvalue(11),
                               ),
@@ -758,7 +769,7 @@ class _BedroomUIState extends State<BedroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Size of Bed:',
+                              child: Text('Size of Bed',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -801,7 +812,8 @@ class _BedroomUIState extends State<BedroomUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(12, value);
+                                  assesmentprovider.setdata(
+                                      12, value, 'Size of Bed');
                                 },
                                 value: assesmentprovider.getvalue(12),
                               ),
@@ -814,8 +826,7 @@ class _BedroomUIState extends State<BedroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text(
-                                  'Client is Able to Get In and Out of The Door?',
+                              child: Text('Able to Get In and Out of The Door?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -840,7 +851,8 @@ class _BedroomUIState extends State<BedroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
 
-                                assesmentprovider.setdata(13, value);
+                                assesmentprovider.setdata(13, value,
+                                    'Able to Get In and Out of The Door?');
                               },
                               value: assesmentprovider.getvalue(13),
                             )
@@ -856,8 +868,7 @@ class _BedroomUIState extends State<BedroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text(
-                                  'Client is Able to Access The Night Stand?',
+                              child: Text('Able to Access The Night Stand?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -883,7 +894,8 @@ class _BedroomUIState extends State<BedroomUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
 
-                                assesmentprovider.setdata(14, value);
+                                assesmentprovider.setdata(14, value,
+                                    'Able to Access The Night Stand?');
                               },
                               value: assesmentprovider.getvalue(14),
                             )
@@ -899,8 +911,7 @@ class _BedroomUIState extends State<BedroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text(
-                                  'Client is Able to Access the Dresser Drawer?',
+                              child: Text('Able to Access the Dresser Drawer?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -925,7 +936,8 @@ class _BedroomUIState extends State<BedroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(15, value);
+                                assesmentprovider.setdata(15, value,
+                                    'Able to Access the Dresser Drawer?');
                               },
                               value: assesmentprovider.getvalue(15),
                             )
@@ -941,8 +953,7 @@ class _BedroomUIState extends State<BedroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text(
-                                  'Client is Able to Access Closet/Clothes:',
+                              child: Text('Able to Access Closet/Clothes',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -968,7 +979,8 @@ class _BedroomUIState extends State<BedroomUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
 
-                                assesmentprovider.setdata(16, value);
+                                assesmentprovider.setdata(
+                                    16, value, 'Able to Access Closet/Clothes');
                               },
                               value: assesmentprovider.getvalue(16),
                             )
@@ -985,8 +997,7 @@ class _BedroomUIState extends State<BedroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text(
-                                  'Client is Able to Get In and Out of Bed?',
+                              child: Text('Able to Get In and Out of Bed?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1012,7 +1023,8 @@ class _BedroomUIState extends State<BedroomUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
 
-                                assesmentprovider.setdata(17, value);
+                                assesmentprovider.setdata(17, value,
+                                    'Able to Get In and Out of Bed?');
                               },
                               value: assesmentprovider.getvalue(17),
                             )
@@ -1029,7 +1041,7 @@ class _BedroomUIState extends State<BedroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Observations:',
+                              child: Text('Observations',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,

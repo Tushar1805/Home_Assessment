@@ -64,13 +64,11 @@ class _SplashScreenState extends State<SplashScreen> {
     var page = await LoginProvider().getUserType(type);
     if (newuser ?? false) {
       // rolesave.setString('role', type);
-      Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ResetPass(page, result, name)));
+      Navigator.of(context).pushReplacement(MaterialPageRoute(
+          builder: (context) => ResetPass(page, result, name)));
     } else {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => page));
+      Navigator.of(context)
+          .pushReplacement(MaterialPageRoute(builder: (context) => page));
     }
   }
 

@@ -94,7 +94,7 @@ class _PatioUIState extends State<PatioUI> {
     );
   }
 
-  setdata(index, value) {
+  setdata(index, value, que) {
     if (value.length == 0) {
       if (widget.wholelist[8][widget.accessname]['question']["$index"]['Answer']
               .length ==
@@ -104,6 +104,8 @@ class _PatioUIState extends State<PatioUI> {
           widget.wholelist[8][widget.accessname]['complete'] -= 1;
           widget.wholelist[8][widget.accessname]['question']["$index"]
               ['Answer'] = value;
+          widget.wholelist[8][widget.accessname]['question']["$index"]
+              ['Question'] = que;
         });
       }
     } else {
@@ -257,7 +259,7 @@ class _PatioUIState extends State<PatioUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(1, value);
+                                    setdata(1, value, 'Threshold to Patio');
                                   },
                                 ),
                               ),
@@ -305,7 +307,7 @@ class _PatioUIState extends State<PatioUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(2, value);
+                                  setdata(2, value, 'Flooring Type');
                                 },
                                 value: getvalue(2),
                               ),
@@ -355,7 +357,7 @@ class _PatioUIState extends State<PatioUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(3, value);
+                                  setdata(3, value, 'Floor Coverage');
                                 },
                                 value: getvalue(3),
                               ),
@@ -401,7 +403,7 @@ class _PatioUIState extends State<PatioUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(4, value);
+                                  setdata(4, value, 'Lighting:');
                                 },
                                 value: getvalue(4),
                               ),
@@ -447,7 +449,8 @@ class _PatioUIState extends State<PatioUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(5, value);
+                                  setdata(5, value,
+                                      'Switches: Client Able to Operate:');
                                 },
                                 value: getvalue(5),
                               ),
@@ -511,7 +514,7 @@ class _PatioUIState extends State<PatioUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(6, value);
+                                  setdata(6, value, 'Switch Types:');
                                 },
                                 value: getvalue(6),
                               ),
@@ -551,7 +554,7 @@ class _PatioUIState extends State<PatioUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(7, value);
+                                  setdata(7, value, 'Door Width');
                                   setState(() {
                                     widget.wholelist[8][widget.accessname]
                                         ['question']["7"]['doorwidth'] = 0;
@@ -616,7 +619,7 @@ class _PatioUIState extends State<PatioUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(8, value);
+                                setdata(8, value, 'Obstacle/Clutter Present?');
                               },
                               value: getvalue(8),
                             )
@@ -662,7 +665,7 @@ class _PatioUIState extends State<PatioUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(9, value);
+                                  setdata(9, value, 'Type of Steps:');
                                 },
                                 value: getvalue(9),
                               ),
@@ -1040,7 +1043,7 @@ class _PatioUIState extends State<PatioUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(10, value);
+                                setdata(10, value, 'Railling');
                               },
                               value: getvalue(10),
                             )
@@ -1148,7 +1151,7 @@ class _PatioUIState extends State<PatioUI> {
                                           ],
                                         ),
                                       ),
-                                      (type == 'Therapist')
+                                      (type == 'therapist')
                                           ? getrecowid(10)
                                           : SizedBox()
                                     ],
@@ -1188,7 +1191,7 @@ class _PatioUIState extends State<PatioUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(11, value);
+                                setdata(11, value, 'Smoke Detector?');
                               },
                               value: getvalue(11),
                             )
@@ -1237,7 +1240,7 @@ class _PatioUIState extends State<PatioUI> {
                               FocusScope.of(context).requestFocus();
                               new TextEditingController().clear();
                               // print(widget.accessname);
-                              setdata(12, value);
+                              setdata(12, value, 'Observations:');
                             },
                           ),
                         ),
@@ -1331,7 +1334,7 @@ class _PatioUIState extends State<PatioUI> {
                 },
               ),
             ),
-            (type == 'Therapist' && isthera) ? getrecowid(index) : SizedBox(),
+            (type == 'therapist' && isthera) ? getrecowid(index) : SizedBox(),
           ],
         ),
       ),

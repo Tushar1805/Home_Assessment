@@ -134,7 +134,8 @@ class _LaundryUIState extends State<LaundryUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    assesmentprovider.setdata(1, value);
+                                    assesmentprovider.setdata(
+                                        1, value, 'Threshold to Laundry Room');
                                   },
                                 ),
                               ),
@@ -192,7 +193,8 @@ class _LaundryUIState extends State<LaundryUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(2, value);
+                                  assesmentprovider.setdata(
+                                      2, value, 'Flooring Type');
                                 },
                                 value: assesmentprovider.getvalue(2),
                               ),
@@ -243,7 +245,8 @@ class _LaundryUIState extends State<LaundryUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(3, value);
+                                  assesmentprovider.setdata(
+                                      3, value, 'Floor Coverage');
                                 },
                                 value: assesmentprovider.getvalue(3),
                               ),
@@ -291,7 +294,8 @@ class _LaundryUIState extends State<LaundryUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(4, value);
+                                  assesmentprovider.setdata(
+                                      4, value, 'Lighting Types:');
                                 },
                                 value: assesmentprovider.getvalue(4),
                               ),
@@ -338,7 +342,8 @@ class _LaundryUIState extends State<LaundryUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(5, value);
+                                  assesmentprovider.setdata(5, value,
+                                      'Switches: Client Able to Operate:');
                                 },
                                 value: assesmentprovider.getvalue(5),
                               ),
@@ -403,7 +408,8 @@ class _LaundryUIState extends State<LaundryUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(6, value);
+                                  assesmentprovider.setdata(
+                                      6, value, 'Switch Types:');
                                 },
                                 value: assesmentprovider.getvalue(6),
                               ),
@@ -443,7 +449,8 @@ class _LaundryUIState extends State<LaundryUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(7, value);
+                                  assesmentprovider.setdata(
+                                      7, value, 'Door Width');
                                   setState(() {
                                     widget.wholelist[7][widget.accessname]
                                         ['question']["7"]['doorwidth'] = 0;
@@ -509,7 +516,8 @@ class _LaundryUIState extends State<LaundryUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(8, value);
+                                assesmentprovider.setdata(
+                                    8, value, 'Obstacle/Clutter Present?');
                               },
                               value: assesmentprovider.getvalue(8),
                             )
@@ -552,7 +560,8 @@ class _LaundryUIState extends State<LaundryUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(9, value);
+                                assesmentprovider.setdata(9, value,
+                                    'Client is Able to Access Washer and Dryer?');
                               },
                               value: assesmentprovider.getvalue(9),
                             )
@@ -605,7 +614,8 @@ class _LaundryUIState extends State<LaundryUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(10, value);
+                                  assesmentprovider.setdata(
+                                      10, value, 'Type of Washer and Dryer:');
                                 },
                                 value: assesmentprovider.getvalue(10),
                               ),
@@ -657,7 +667,8 @@ class _LaundryUIState extends State<LaundryUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(11, value);
+                                  assesmentprovider.setdata(11, value,
+                                      'Detergent and Supplies Stored in?');
                                 },
                                 value: assesmentprovider.getvalue(11),
                               ),
@@ -696,7 +707,8 @@ class _LaundryUIState extends State<LaundryUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(12, value);
+                                assesmentprovider.setdata(12, value,
+                                    'Client is Able to Access Laundry Cabinets?');
                               },
                               value: assesmentprovider.getvalue(12),
                             )
@@ -740,7 +752,8 @@ class _LaundryUIState extends State<LaundryUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(13, value);
+                                assesmentprovider.setdata(
+                                    13, value, 'Smoke Detector?');
                               },
                               value: assesmentprovider.getvalue(13),
                             )

@@ -51,7 +51,7 @@ class DiningPro extends ChangeNotifier {
       wholelist[4][accessname]['question']["7"]['doorwidth'] = 0;
     }
 
-    if (wholelist[4][accessname]['question']['15'].containsKey('ManageInOut')) {
+    if (wholelist[4][accessname]['question']["15"].containsKey('ManageInOut')) {
     } else {
       wholelist[4][accessname]['question']["15"]['ManageInOut'] = '';
     }
@@ -78,13 +78,15 @@ class DiningPro extends ChangeNotifier {
     );
   }
 
-  setdata(index, value) {
+  setdata(index, value, que) {
+    wholelist[4][accessname]['question']["$index"]['Question'] = que;
     if (value.length == 0) {
       if (wholelist[4][accessname]['question']["$index"]['Answer'].length ==
           0) {
       } else {
         wholelist[4][accessname]['complete'] -= 1;
         wholelist[4][accessname]['question']["$index"]['Answer'] = value;
+
         notifyListeners();
       }
     } else {
@@ -199,7 +201,7 @@ class DiningPro extends ChangeNotifier {
                 },
               ),
             ),
-            (assesmentprovider.type == 'Therapist' && isthera)
+            (assesmentprovider.type == 'therapist' && isthera)
                 ? getrecowid(assesmentprovider, index)
                 : SizedBox(),
           ],

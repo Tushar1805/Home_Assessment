@@ -12,6 +12,7 @@ import 'package:tryapp/Assesment/Forms/LivingRoom/livingbase.dart';
 import 'package:tryapp/Assesment/Forms/Pathway/pathwaybase.dart';
 import 'package:tryapp/Assesment/Forms/Patio/patiobase.dart';
 import 'package:async_button_builder/async_button_builder.dart';
+import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
 import 'package:tryapp/Nurse_Case_Manager/Dashboard/nursedash.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdash.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistdash.dart';
@@ -243,7 +244,7 @@ class _CardsUINewState extends State<CompleteAssessmentUI>
         } else if (role == 'patient') {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => Patient()));
-        } else if (role == 'nurse') {
+        } else if (role == 'nurse/case manager') {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => Nurse()));
         }
@@ -262,7 +263,7 @@ class _CardsUINewState extends State<CompleteAssessmentUI>
                 } else if (role == 'patient') {
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => Patient()));
-                } else if (role == 'nurse') {
+                } else if (role == 'nurse/case manager') {
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => Nurse()));
                 }
@@ -309,7 +310,7 @@ class _CardsUINewState extends State<CompleteAssessmentUI>
                               child: Container(
                                 padding: EdgeInsets.all(20),
                                 child: Text(
-                                  'AVAILABLE ROOMS:',
+                                  'ROOMS:',
                                   style: TextStyle(
                                       fontSize: 23,
                                       fontWeight: FontWeight.bold,
@@ -392,19 +393,19 @@ class _CardsUINewState extends State<CompleteAssessmentUI>
                           }
                         }
                       });
-                      // print(widget.wholelist);
+                      // // print(widget.wholelist);
                       // NewAssesmentRepository().setassessmentclosingtime(docID);
-                      // if (role == 'therapist') {
-                      //   NewAssesmentRepository().setAssessmentCurrentStatus(
-                      //       widget.docID, "Report Generated");
-                      // } else if (role == 'nurse') {
-                      //   NewAssesmentRepository().setAssessmentCurrentStatus(
-                      //       widget.docID, "Assessment Finished");
-                      // }
-                      // NewAssesmentRepository()
-                      //     .setAssessmentLatestChangeDate(widget.docID);
-                      // NewAssesmentRepository()
-                      //     .setAssessmentCompletionDate(widget.docID);
+                      if (role == 'therapist') {
+                        NewAssesmentRepository().setAssessmentCurrentStatus(
+                            "Report Generated", widget.docID);
+                        NewAssesmentRepository()
+                            .setAssessmentCompletionDate(widget.docID);
+                      } else if (role == 'nurse/case manager') {
+                        NewAssesmentRepository().setAssessmentCurrentStatus(
+                            "Assessment Finished", widget.docID);
+                      }
+                      NewAssesmentRepository()
+                          .setLatestChangeDate(widget.docID);
                     },
                     loadingSwitchInCurve: Curves.bounceInOut,
                     loadingTransitionBuilder: (child, animation) {

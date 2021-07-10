@@ -3,9 +3,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentbase.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
+import 'package:tryapp/CompleteAssessment/completeAssessmentBase.dart';
 import 'package:tryapp/Nurse_Case_Manager/Dashboard/nursedash.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdash.dart';
+import 'package:tryapp/Patient_Caregiver_Family/Dashboard/reportbase.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistdash.dart';
+import 'package:tryapp/constants.dart';
 import './oldassessmentspro.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import './oldassessmentsrepo.dart';
@@ -29,7 +32,7 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
   getRole() async {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
 
-    var type = await Firestore.instance
+    await Firestore.instance
         .collection('users')
         .document(user.uid)
         .get()
@@ -53,7 +56,7 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
         } else if (role == "patient") {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => Patient()));
-        } else if (role == "nurse") {
+        } else if (role == "nurse/case manager") {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => Nurse()));
         }
@@ -74,7 +77,7 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
                 child: Card(
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10)),
-                  color: Colors.grey[300],
+                  color: Colors.grey[200],
                   child: Row(
                     children: [
                       Container(
@@ -103,7 +106,7 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
                             ),
                           ),
                           onPressed: () {
-                            assesspro.getstatuspatient('old');
+                            assesspro.getstatuspatient('old', role);
                           },
                         ),
                       ),
@@ -134,7 +137,7 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
                             ),
                           ),
                           onPressed: () {
-                            assesspro.getstatuspatient('new');
+                            assesspro.getstatuspatient('new', role);
                           },
                         ),
                       ),
@@ -145,7 +148,7 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
               Container(
                   width: double.infinity,
                   alignment: Alignment.centerRight,
-                  padding: EdgeInsets.fromLTRB(12, 0, 0, 0),
+                  padding: EdgeInsets.fromLTRB(27, 0, 0, 0),
                   // color: Colors.red,box
                   height: MediaQuery.of(context).size.height * 0.08,
                   child: Align(
@@ -165,33 +168,46 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
                             ),
                             Container(
                               // color: Colors.pink,
-                              child: DropdownButton(
-                                items: [
-                                  DropdownMenuItem(
-                                    child: Text('Latest'),
-                                    value: '',
+                              padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                              height: MediaQuery.of(context).size.height,
+                              decoration: ShapeDecoration(
+                                shape: RoundedRectangleBorder(
+                                  side: BorderSide(
+                                      width: 1, style: BorderStyle.solid),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(5.0),
                                   ),
-                                  DropdownMenuItem(
-                                    child: Text('Location'),
-                                    value: 'Address',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Name'),
-                                    value: 'name',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Age'),
-                                    value: 'Age',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Recent'),
-                                    value: 'Recent',
-                                  ),
-                                ],
-                                onChanged: (value) {
-                                  assesspro.getsorteddata(value, 'old');
-                                },
-                                value: assesspro.sortdata,
+                                ),
+                              ),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButton(
+                                  items: [
+                                    DropdownMenuItem(
+                                      child: Text('Latest'),
+                                      value: '',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Location'),
+                                      value: 'Address',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Name'),
+                                      value: 'name',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Age'),
+                                      value: 'Age',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Recent'),
+                                      value: 'Recent',
+                                    ),
+                                  ],
+                                  onChanged: (value) {
+                                    assesspro.getsorteddata(value, 'old');
+                                  },
+                                  value: assesspro.sortdata,
+                                ),
                               ),
                             )
                           ],
@@ -203,33 +219,36 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
             ],
           )),
         ),
-        bottomNavigationBar: Padding(
-          padding: EdgeInsets.all(8.0),
-          child: RaisedButton(
-            onPressed: () {
-              String uid;
-              NewAssesmentRepository()
-                  .setAssessmentData()
-                  .then((value) => setState(() {
-                        if (value is String) {
-                          uid = value.toString();
-                        }
-                      }));
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => NewAssesment(uid)));
-            },
-            color: Colors.green,
-            textColor: Colors.white,
-            child: Text('Perform Assessment'),
-          ),
-        ),
+        // bottomNavigationBar: Padding(
+        //   padding: EdgeInsets.all(8.0),
+        //   child: RaisedButton(
+        //     onPressed: () {
+        //       String uid;
+        //       NewAssesmentRepository()
+        //           .setAssessmentData()
+        //           .then((value) => setState(() {
+        //                 if (value is String) {
+        //                   uid = value.toString();
+        //                 }
+        //               }));
+        //       Navigator.push(context,
+        //           MaterialPageRoute(builder: (context) => NewAssesment(uid)));
+        //     },
+        //     color: Colors.green,
+        //     textColor: Colors.white,
+        //     child: Text('Perform Assessment'),
+        //   ),
+        // ),
       ),
     );
   }
 
   Widget ongoingassess(assesspro) {
     return (assesspro.loading)
-        ? CircularProgressIndicator()
+        ? Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: Center(child: CircularProgressIndicator()))
         : (assesspro.datasetmain.length == 0)
             ? Container(
                 width: double.infinity,
@@ -284,7 +303,10 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
 
   Widget newassessments(assesspro) {
     return (assesspro.loading)
-        ? CircularProgressIndicator()
+        ? Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: Center(child: CircularProgressIndicator()))
         : (assesspro.datasetmain.length == 0)
             ? Container(
                 width: double.infinity,
@@ -341,7 +363,7 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
                 );
   }
 
-  Widget listdata(snapshot, assessmentdata, assesspro) {
+  Widget listdata(snapshot, assessmentdata, OldAssessmentsProvider assesspro) {
     // var data = getfield(snapshot);
     // print(snapshot);
     return Container(
@@ -352,7 +374,7 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
           ),
         ]),
         padding: EdgeInsets.all(7),
-        height: MediaQuery.of(context).size.height * 0.17,
+        // height: MediaQuery.of(context).size.height * 0.17,
         child: GestureDetector(
           child: Card(
               shape: RoundedRectangleBorder(
@@ -388,37 +410,51 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
                           Container(
                             width: double.infinity,
                             child: Text(
-                              'Name: ${snapshot['name']}',
+                              'Patient Name: ${snapshot['firstName']} ${snapshot["lastName"]}',
                               style: TextStyle(
                                 fontSize: 16,
                               ),
                             ),
                           ),
                           SizedBox(height: 2.5),
+                          Divider(),
                           Container(
                             width: double.infinity,
                             child: Text(
-                              'Age:${snapshot['Age']}',
+                              'Patient Age: ${snapshot['age']}',
                               style: TextStyle(
                                 fontSize: 16,
                               ),
                             ),
                           ),
                           SizedBox(height: 2.5),
+                          Divider(),
                           Container(
                             width: double.infinity,
                             child: Text(
-                              'Address:${snapshot['Address']}',
+                              'Patient Address: ${snapshot['houses'][0]["address1"]}, ${snapshot["houses"][0]["address2"]}',
                               style: TextStyle(
                                 fontSize: 16,
                               ),
                             ),
                           ),
                           SizedBox(height: 2.5),
+                          Divider(),
                           Container(
                             width: double.infinity,
                             child: Text(
-                              'Contact No:${snapshot['Details']['Contact Number']}',
+                              'Patient Contact No: ${snapshot['mobileNo']}',
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 2.5),
+                          Divider(),
+                          Container(
+                            width: double.infinity,
+                            child: Text(
+                              'Assessment Status: ${assessmentdata['currentStatus']}',
                               style: TextStyle(
                                 fontSize: 16,
                               ),
@@ -434,19 +470,34 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
             await assesspro.getdocref(assessmentdata);
             // print(assesspro.curretnassessmentdocref);
             // print(assessmentdata.data);
+            List<Map<String, dynamic>> list = [];
 
-            if (assessmentdata.data['Status'] == "new") {
+            if (assessmentdata.data["form"] != null) {
+              list = List<Map<String, dynamic>>.generate(
+                  assessmentdata.data["form"].length,
+                  (int index) => Map<String, dynamic>.from(
+                      assessmentdata.data["form"].elementAt(index)));
+            }
+            FirebaseUser user = await FirebaseAuth.instance.currentUser();
+            if (assessmentdata.data['currentStatus'] ==
+                    "Assessment in Progress" &&
+                assessmentdata.data["assessor"] == user.uid) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CompleteAssessmentBase(
+                          list, assesspro.curretnassessmentdocref, role)));
+            }
+            if (assessmentdata.data['currentStatus'] == "Report Generated") {
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) =>
-                          NewAssesment(assesspro.curretnassessmentdocref)));
+                          ReportBase(assesspro.curretnassessmentdocref)));
             } else {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          NewAssesment(assesspro.curretnassessmentdocref)));
+              SnackBar(
+                content: Text(assessmentdata.data["currentStatus"]),
+              );
             }
           },
         ));

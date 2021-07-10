@@ -5,6 +5,8 @@ import '../Assesment/newassesment/newassesmentbase.dart';
 import 'dart:async';
 
 class AssesmentSplashScreen extends StatefulWidget {
+  String role;
+  AssesmentSplashScreen(this.role);
   @override
   _AssesmentSplashScreenState createState() => _AssesmentSplashScreenState();
 }
@@ -19,18 +21,18 @@ class _AssesmentSplashScreenState extends State<AssesmentSplashScreen> {
               if (firebaseuser == null) {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => OldAssessments()),
+                  MaterialPageRoute(
+                      builder: (context) => OldAssessments(widget.role)),
                 );
               } else {
                 getdata();
               }
-              ;
             }));
   }
 
   getdata() async {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => OldAssessments()));
+    Navigator.pushReplacement(context,
+        MaterialPageRoute(builder: (context) => OldAssessments(widget.role)));
   }
 
   @override

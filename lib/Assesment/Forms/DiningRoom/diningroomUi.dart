@@ -242,7 +242,8 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
 
-                                      assesmentprovider.setdata(1, value);
+                                      assesmentprovider.setdata(
+                                          1, value, 'Threshold to Dining Room');
                                     }),
                               ),
                             ]),
@@ -298,7 +299,8 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                 onChanged: (value) {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
-                                  assesmentprovider.setdata(2, value);
+                                  assesmentprovider.setdata(
+                                      2, value, 'Flooring Type');
                                 },
                                 value: assesmentprovider.getvalue(2),
                               ),
@@ -349,7 +351,8 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(3, value);
+                                  assesmentprovider.setdata(
+                                      3, value, 'Floor Coverage');
                                 },
                                 value: assesmentprovider.getvalue(3),
                               ),
@@ -371,7 +374,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Lighting Types:',
+                              child: Text('Lighting Types',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -398,7 +401,8 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
 
-                                  assesmentprovider.setdata(4, value);
+                                  assesmentprovider.setdata(
+                                      4, value, 'Lighting Types');
                                 },
                                 value: assesmentprovider.getvalue(4),
                               ),
@@ -420,7 +424,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Switches: Client Able to Operate:',
+                              child: Text('Switches Able to Operate',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -447,15 +451,15 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
 
-                                  assesmentprovider.setdata(5, value);
+                                  assesmentprovider.setdata(
+                                      5, value, 'Switches Able to Operate');
                                 },
                                 value: assesmentprovider.getvalue(5),
                               ),
                             ),
                           ],
                         ),
-                        (assesmentprovider.getvalue(5) != 'No' &&
-                                assesmentprovider.getvalue(5) != '')
+                        (assesmentprovider.getvalue(5) == 'Yes')
                             ? assesmentprovider.getrecomain(
                                 assesmentprovider, 5, true, 'Comments(if any)')
                             : SizedBox(),
@@ -466,7 +470,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Switch Types:',
+                              child: Text('Switch Types',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -512,7 +516,8 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(6, value);
+                                  assesmentprovider.setdata(
+                                      6, value, 'Switch Types');
                                 },
                                 value: assesmentprovider.getvalue(6),
                               ),
@@ -551,7 +556,8 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    assesmentprovider.setdata(7, value);
+                                    assesmentprovider.setdata(
+                                        7, value, 'Door Width');
                                     setState(() {
                                       widget.wholelist[4][widget.accessname]
                                           ['question']["7"]['doorwidth'] = 0;
@@ -616,7 +622,8 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(8, value);
+                                assesmentprovider.setdata(
+                                    8, value, 'Obstacle/Clutter Present?');
                               },
                               value: assesmentprovider.getvalue(8),
                             )
@@ -658,7 +665,8 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(9, value);
+                                assesmentprovider.setdata(
+                                    9, value, 'Smoke Detector?');
                               },
                               value: assesmentprovider.getvalue(9),
                             )
@@ -710,7 +718,8 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(10, value);
+                                  assesmentprovider.setdata(
+                                      10, value, 'Type of Dining Table:');
                                 },
                                 value: assesmentprovider.getvalue(10),
                               ),
@@ -786,7 +795,8 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(11, value);
+                                  assesmentprovider.setdata(
+                                      11, value, 'Number of Chairs:');
                                 },
                                 value: assesmentprovider.getvalue(11),
                               ),
@@ -898,7 +908,8 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
 
-                                assesmentprovider.setdata(12, value);
+                                assesmentprovider.setdata(
+                                    12, value, 'Chair Arms Present?');
                               },
                               value: assesmentprovider.getvalue(12),
                             )
@@ -946,7 +957,8 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                             FocusScope.of(context).requestFocus();
                             new TextEditingController().clear();
                             // print(widget.accessname);
-                            assesmentprovider.setdata(13, value);
+                            assesmentprovider.setdata(
+                                13, value, 'Observations:');
                           },
                         ))
                       ],

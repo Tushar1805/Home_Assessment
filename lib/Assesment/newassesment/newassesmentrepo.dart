@@ -25,23 +25,23 @@ class NewAssesmentRepository {
     var res = await firestore
         .collection('assessments')
         .document(assessmentdoc)
-        .updateData({
-      "Status": 'old',
-    });
+        .setData({
+      "status": 'old',
+    }, merge: true);
   }
 
-  Future<void> updateForm(List<Map<String, dynamic>> list, docID) async {
+  Future<void> setForm(List<Map<String, dynamic>> list, docID) async {
     await firestore
         .collection("assessments")
         .document(docID)
-        .updateData({"form": list});
+        .setData({"form": list}, merge: true);
   }
 
-  Future<void> updateAssessmentCompletionDate(Timestamp date, docID) async {
+  Future<void> setAssessmentCompletionDate(docID) async {
     await firestore
         .collection("assessments")
         .document(docID)
-        .updateData({"assessmentCompletionDate": date});
+        .setData({"assessmentCompletionDate": Timestamp.now()}, merge: true);
   }
 
   Future<void> updateAssessor(uid, docID) async {
@@ -65,11 +65,11 @@ class NewAssesmentRepository {
         .updateData({"home": home});
   }
 
-  Future<void> updateLatestChangeDate(Timestamp date, docID) async {
+  Future<void> setLatestChangeDate(docID) async {
     await firestore
         .collection("assessments")
         .document(docID)
-        .updateData({"latestChangeDate": date});
+        .setData({"latestChangeDate": Timestamp.now()}, merge: true);
   }
 
   Future<void> updatePatient(uid, docID) async {
@@ -86,11 +86,11 @@ class NewAssesmentRepository {
         .updateData({"scheduleDate": date});
   }
 
-  Future<void> updateStatus(status, docID) async {
+  Future<void> setStatus(status, docID) async {
     await firestore
         .collection("assessments")
         .document(docID)
-        .updateData({"status": status});
+        .setData({"status": status}, merge: true);
   }
 
   Future<void> updateTherapist(uid, docID) async {
@@ -105,6 +105,13 @@ class NewAssesmentRepository {
         .collection("assessments")
         .document(docID)
         .updateData({"timeslot": timeslot});
+  }
+
+  Future<void> setAssessmentCurrentStatus(String status, docID) async {
+    await firestore
+        .collection("assessments")
+        .document(docID)
+        .setData({"currentStatus": status}, merge: true);
   }
 
   Future<String> setAssessmentData() async {

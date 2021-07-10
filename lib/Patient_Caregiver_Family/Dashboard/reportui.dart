@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_full_pdf_viewer/full_pdf_viewer_scaffold.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -14,6 +15,9 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/pdfReview.dart';
 
 class ReportUI extends StatefulWidget {
+  // List<Map<String, dynamic>> list;
+  String docID;
+  ReportUI(this.docID);
   @override
   _ReportUIState createState() => _ReportUIState();
 }
@@ -22,54 +26,85 @@ class _ReportUIState extends State<ReportUI> {
   FirebaseAuth auth = FirebaseAuth.instance;
   final firestoreInstance = Firestore.instance;
   FirebaseUser curuser;
-  var name, address, email, age, phone, height, weight, roomName;
+  var fname,
+      lname,
+      address,
+      email,
+      age,
+      phone,
+      height,
+      weight,
+      roomName,
+      gender,
+      handDominance;
   bool _isContainerVisible = true;
-  String uid, patient, therapist, docID;
-  TimeOfDay startingTime, closingTime;
+  String uid, patient, therapist, docID, fullPath;
+  // DateTime startingTime, closingTime;
   List<Map<String, dynamic>> assess = [];
-
   final pdf = pw.Document();
 
   @override
   void initState() {
     super.initState();
-    getUserName();
     getassessments();
+    getUserName();
   }
+
+  //  void getPermission() async {
+  //   print("getPermission");
+  //   // Map<PermissionGroup, PermissionStatus> permissions =
+  //   //     await PermissionHandler().requestPermissions([PermissionGroup.storage]);
+  // }
 
   Future<void> getUserName() async {
     final FirebaseUser useruid = await auth.currentUser();
-    firestoreInstance.collection("users").document(useruid.uid).get().then(
-      (value) {
-        setState(() {
-          name = (value["name"].toString());
-          address = (value["Address"].toString());
-          age = (value["Age"].toString());
-          phone = (value["Details"]["Contact Number"].toString());
-          email = useruid.email;
-          height = 180.toString();
-          weight = 65.toString();
-          docID = (value["assessmentId"].toString());
-        });
-      },
-    );
-    print(useruid.uid.toString());
-    print(docID);
-  }
-
-  Future<void> getassessments() async {
     firestoreInstance
-        .collection("Assessments")
-        .document(docID.toString())
+        .collection("users")
+        .document("MdLJbAeA7Lb6lPVgD5jDO0UAMbj2")
         .get()
         .then(
       (value) {
         setState(() {
-          assess = List.castFrom(value["form"].toList());
-          startingTime = (value["startingTime"]);
-          closingTime = (value["closingTime"]);
+          fname = (value["firstName"].toString() ?? "First");
+          lname = (value["lastName"].toString() ?? "Last");
+          gender = (value["gender"].toString() ?? "Male");
+          address = (value["houses"][0]["city"].toString() ?? "Nagpur");
+          age = (value["age"].toString() ?? "");
+          phone = (value["mobileNo"].toString() ?? "1234567890");
+          email = useruid.email;
+          height = (value["height"].toString() ?? "5.5");
+          weight = (value["weight"].toString() ?? "50");
+          handDominance = (value["handDominance"].toString() ?? "Right");
+          // docID = (value["docID"].toString());
+        });
+      },
+    );
+    // print(useruid.uid.toString());
+    // print(docID);
+    print("*******************");
+    print(useruid.uid);
+    print("**************");
+  }
+
+  Future<void> getassessments() async {
+    firestoreInstance
+        .collection("assessments")
+        .document(widget.docID)
+        .get()
+        .then(
+      (value) {
+        setState(() {
           patient = (value["patient"].toString());
           therapist = (value["therapist"].toString());
+          if (value["form"] != null) {
+            assess = List<Map<String, dynamic>>.generate(
+                value["form"].length,
+                (int index) =>
+                    Map<String, dynamic>.from(value["form"].elementAt(index)));
+          }
+          // assess = List.castFrom(value["form"].toList());
+          // startingTime = (value["sheduleDate"].toDate() ?? "");
+          // closingTime = (value["assessmentCompletionDate"].toDate() ?? "");
         });
       },
     );
@@ -125,11 +160,12 @@ class _ReportUIState extends State<ReportUI> {
     return list;
   }
 
-  String formatTimeOfDay(TimeOfDay tod) {
-    final now = new DateTime.now();
-    final dt = DateTime(now.year, now.month, now.day, tod.hour, tod.minute);
-    final format = DateFormat.jm(); //"6:00 AM"
-    return format.format(dt);
+  String formatTimeOfDay(DateTime tod) {
+    // final now = new DateTime.now();
+    // final dt = DateTime(now.year, now.month, now.day, tod.hour, tod.minute);
+    // final format = DateFormat.jm(); //"6:00 AM"
+    // return format.format(dt);
+    return DateFormat("MM-dd-yyyy hh:mm").format(tod).toString();
   }
 
   writeOnPdf() {
@@ -140,14 +176,14 @@ class _ReportUIState extends State<ReportUI> {
     pw.TableRow buildRow(label, value) {
       return pw.TableRow(children: [
         pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            mainAxisAlignment: pw.MainAxisAlignment.start,
+            crossAxisAlignment: pw.CrossAxisAlignment.center,
+            mainAxisAlignment: pw.MainAxisAlignment.center,
             children: [
               pw.Text(' $label', style: pw.TextStyle(fontSize: 14)),
             ]),
         pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.start,
-            mainAxisAlignment: pw.MainAxisAlignment.start,
+            crossAxisAlignment: pw.CrossAxisAlignment.center,
+            mainAxisAlignment: pw.MainAxisAlignment.center,
             children: [
               pw.Text(' $value', style: pw.TextStyle(fontSize: 14)),
             ]),
@@ -234,32 +270,34 @@ class _ReportUIState extends State<ReportUI> {
         margin: pw.EdgeInsets.all(31),
         build: (pw.Context context) {
           return <pw.Widget>[
-            pw.Header(
-                outlineColor: PdfColors.white,
-                child: pw.Center(
-                    child: pw.Text("Home Safety Report",
-                        style: pw.TextStyle(
-                            fontSize: 30, fontWeight: pw.FontWeight.bold)))),
+            pw.Padding(
+                padding: pw.EdgeInsets.only(top: 10),
+                child: pw.Header(
+                    outlineColor: PdfColors.white,
+                    child: pw.Center(
+                        child: pw.Text("Home Safety Report",
+                            style: pw.TextStyle(
+                                fontSize: 30,
+                                fontWeight: pw.FontWeight.bold))))),
             pw.SizedBox(height: 20),
-            pw.Table(
-                border: pw.TableBorder.all(width: 1),
-                defaultColumnWidth: pw.IntrinsicColumnWidth(),
-                children: [
-                  buildRow("Client", name),
-                  buildRow("Gender", "Male"),
-                  buildRow("Address", address),
-                  buildRow("Age", age),
-                  buildRow("Email", email),
-                  buildRow("Phone Number", phone),
-                  buildRow("Height", "Male"),
-                  buildRow("Weight(lbs)", "65"),
-                  buildRow("Hand Dominance", "Right"),
-                  buildRow("Date of Assessment", "10/5/20"),
-                  buildRow(
-                      "Assessment Start Time", formatTimeOfDay(startingTime)),
-                  buildRow("Assessment End Time", formatTimeOfDay(closingTime)),
-                  buildBlankRow("null ", "null "),
-                ]),
+            pw.Table(border: pw.TableBorder.all(width: 1), columnWidths: {
+              0: pw.FixedColumnWidth(200),
+              1: pw.FixedColumnWidth(200)
+            }, children: [
+              buildRow("Patient Name", "$fname $lname"),
+              buildRow("Gender", gender),
+              buildRow("Address", address),
+              buildRow("Age", age),
+              buildRow("Email", email),
+              buildRow("Phone Number", phone),
+              buildRow("Height", "$height ft"),
+              buildRow("Weight(lbs)", "$weight kg"),
+              buildRow("Hand Dominance", handDominance),
+              // buildRow("Date of Assessment", "10/5/20"),
+              buildRow("Assessment Start Time", " "),
+              buildRow("Assessment End Time", " "),
+              buildBlankRow("null ", "null "),
+            ]),
             buildTableBlankRow("null", "null"),
             pw.Table(border: pw.TableBorder.all(width: 1), children: [
               // pw.TableRow(children: [pw.Center(child: pw.Text("Priority 1"))]),
@@ -336,7 +374,7 @@ class _ReportUIState extends State<ReportUI> {
 
     File file = File("$documentPath/report.pdf");
 
-    file.writeAsBytesSync(await pdf.save());
+    file.writeAsBytesSync(pdf.save());
     print(documentDirectory);
     print(documentPath);
   }
@@ -405,7 +443,7 @@ class _ReportUIState extends State<ReportUI> {
             // SizedBox(
             //   width: 10,
             // ),
-            Text(' $value',
+            Text('$value',
                 style: TextStyle(fontWeight: FontWeight.normal, fontSize: 16)),
           ],
         ),
@@ -451,14 +489,14 @@ class _ReportUIState extends State<ReportUI> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               IntrinsicHeight(
-                child: buildRow("Client Name", name),
+                child: buildRow("Patient Name", "$fname  $lname"),
               ),
               Divider(
                 thickness: 0.5,
                 color: Colors.grey,
               ),
               IntrinsicHeight(
-                child: buildRow("Gender", "Male"),
+                child: buildRow("Gender", gender),
               ),
               Divider(
                 thickness: 0.5,
@@ -491,41 +529,41 @@ class _ReportUIState extends State<ReportUI> {
                 color: Colors.grey,
               ),
               IntrinsicHeight(
-                child: buildRow("Height", height),
+                child: buildRow("Height(ft)", height),
               ),
               Divider(
                 thickness: 0.5,
                 color: Colors.grey,
               ),
               IntrinsicHeight(
-                child: buildRow("Weight(lbs)", weight),
+                child: buildRow("Weight(kg)", weight),
               ),
               Divider(
                 thickness: 0.5,
                 color: Colors.grey,
               ),
               IntrinsicHeight(
-                child: buildRow("Hand Dominance", "Right"),
+                child: buildRow("Hand Dominance", handDominance),
               ),
               Divider(
                 thickness: 0.5,
                 color: Colors.grey,
               ),
+              // IntrinsicHeight(
+              //   child: buildRow("Date of Assessment", "10/28/),
+              // ),
+              // Divider(
+              //   thickness: 0.5,
+              //   color: Colors.grey,
+              // ),
               IntrinsicHeight(
-                child: buildRow("Date of Assessment", "10/28/20"),
+                child: buildRow("Assessment Start Time", " "),
               ),
               Divider(
                 thickness: 0.5,
                 color: Colors.grey,
               ),
-              IntrinsicHeight(
-                child: buildRow("Assessment Start Time", "2 pm"),
-              ),
-              Divider(
-                thickness: 0.5,
-                color: Colors.grey,
-              ),
-              IntrinsicHeight(child: buildRow("Assessment End Time", "3 pm")),
+              IntrinsicHeight(child: buildRow("Assessment End Time", " ")),
             ],
           ),
         ),
@@ -772,17 +810,22 @@ class _ReportUIState extends State<ReportUI> {
               Directory documentDirectory =
                   await getApplicationDocumentsDirectory();
               String documentPath = documentDirectory.path;
-              String fullPath = "$documentPath/report.pdf";
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => PdfPreviewScreen(
-                            path: fullPath,
-                          )));
+              fullPath = "$documentPath/report.pdf";
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => PdfPreviewScreen(
+                        path: fullPath,
+                      )));
+              // String path = await ExtStorage.getExternalStoragePublicDirectory(
+              //     ExtStorage.DIRECTORY_DOWNLOADS);
+              // print(path);
+              SnackBar(content: Text("Report Downloade Successfully"));
             },
           )
         ],
       ),
+      // body: PDFViewerScaffold(
+      //   path: fullPath,
+      // ),
       body: SingleChildScrollView(
         child: Column(
           children: [

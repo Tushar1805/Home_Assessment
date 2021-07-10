@@ -115,7 +115,7 @@ class _PathwayUIState extends State<PathwayUI> {
 
 // This function is used to set data i.e to take data from thr field and feed it in
 // map.
-  setdata(index, value) {
+  setdata(index, value, que) {
     if (value.length == 0) {
       if (widget.wholelist[0][widget.accessname]['question']["$index"]['Answer']
               .length ==
@@ -125,6 +125,8 @@ class _PathwayUIState extends State<PathwayUI> {
           widget.wholelist[0][widget.accessname]['complete'] -= 1;
           widget.wholelist[0][widget.accessname]['question']["$index"]
               ['Answer'] = value;
+          widget.wholelist[0][widget.accessname]['question']["$index"]
+              ['Question'] = que;
         });
       }
     } else {
@@ -301,7 +303,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(1, value);
+                                setdata(1, value, 'Obstacle/Clutter Present?');
                               },
                               value: getvalue(1),
                             )
@@ -348,7 +350,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(2, value);
+                                  setdata(2, value, 'Client Typically Uses');
                                 },
                                 value: getvalue(2),
                               ),
@@ -395,7 +397,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(3, value);
+                                  setdata(3, value, 'Client Ocasionally Uses');
                                 },
                                 value: getvalue(3),
                               ),
@@ -433,7 +435,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(4, value);
+                                setdata(4, value, 'Entrance Has Lights?');
                               },
                               value: getvalue(4),
                             )
@@ -474,7 +476,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(5, value);
+                                    setdata(5, value, 'Door Width');
                                   }),
                             ),
                           ],
@@ -516,7 +518,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(6, value);
+                                setdata(6, value, 'Smoke Detector?');
                               },
                               value: getvalue(6),
                             )
@@ -563,7 +565,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(7, value);
+                                  setdata(7, value, 'Type of Steps:');
                                 },
                                 value: getvalue(7),
                               ),
@@ -957,7 +959,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(8, value);
+                                setdata(8, value, 'Railling');
                               },
                               value: getvalue(8),
                             )
@@ -1065,7 +1067,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                           ],
                                         ),
                                       ),
-                                      (type == 'Therapist')
+                                      (type == 'therapist')
                                           ? getrecowid(8)
                                           : SizedBox()
                                     ],
@@ -1107,12 +1109,13 @@ class _PathwayUIState extends State<PathwayUI> {
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
 
-                                      setdata(9, value);
+                                      setdata(
+                                          9, value, 'Threshold to Front Door');
                                     }),
                               ),
                             ]),
                         (getvalue(9) != "" && getvalue(9) != "0")
-                            ? (type == 'Therapist')
+                            ? (type == 'therapist')
                                 ? getrecowid(9)
                                 : SizedBox()
                             : SizedBox(),
@@ -1164,7 +1167,8 @@ class _PathwayUIState extends State<PathwayUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(10, value);
+                                setdata(10, value,
+                                    'Client is Able to Manage Through Doors/Thresholds/ Door Sills?');
                               },
                               value: getvalue(10),
                             )
@@ -1223,7 +1227,8 @@ class _PathwayUIState extends State<PathwayUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(11, value);
+                                setdata(11, value,
+                                    'Client is Able to Lock/Unlock Doors?');
                               },
                               value: getvalue(11),
                             )
@@ -1286,11 +1291,10 @@ class _PathwayUIState extends State<PathwayUI> {
                     child: Text('Done'),
                     onPressed: () async {
                       listenbutton();
-
-                      // print(await pathwaypro.getRole());
-                      NewAssesmentRepository().updateLatestChangeDate(
-                          Timestamp.now(), widget.docID);
-                      print("docid: " + widget.docID);
+                      NewAssesmentRepository()
+                          .setLatestChangeDate(widget.docID);
+                      NewAssesmentRepository()
+                          .setForm(widget.wholelist, widget.docID);
                     },
                   ))
                 ],
@@ -1455,7 +1459,7 @@ class _PathwayUIState extends State<PathwayUI> {
                 },
               ),
             ),
-            (type == 'Therapist') ? getrecowid(index) : SizedBox(),
+            (type == 'therapist') ? getrecowid(index) : SizedBox(),
           ],
         ),
       ),

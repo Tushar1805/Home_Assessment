@@ -6,15 +6,15 @@ import 'package:tryapp/CompleteAssessment/completeAssessments.dart';
 
 class CompleteAssessmentBase extends StatelessWidget {
   List<Map<String, dynamic>> list = [];
-  String docID;
-  CompleteAssessmentBase(this.list, this.docID);
+  String docID, role;
+  CompleteAssessmentBase(this.list, this.docID, this.role);
   @override
   Widget build(BuildContext context) {
     return MultiProvider(providers: [
       ChangeNotifierProvider<NewAssesmentProvider>(
           create: (_) => NewAssesmentProvider("")),
       ChangeNotifierProvider<OldAssessmentsProvider>(
-        create: (_) => OldAssessmentsProvider(),
+        create: (_) => OldAssessmentsProvider(role),
       )
     ], child: CompleteAssessmentUI(this.list, docID));
   }

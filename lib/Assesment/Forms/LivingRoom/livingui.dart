@@ -65,7 +65,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .67,
+                              width: MediaQuery.of(context).size.width * .65,
                               child: Text(
                                 '${widget.roomname} Details:',
                                 style: TextStyle(
@@ -77,7 +77,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                             ),
                             Container(
                               alignment: Alignment.topRight,
-                              width: 50,
+                              width: 47,
                               decoration: BoxDecoration(
                                   color: _colorgreen,
                                   // border: Border.all(
@@ -149,6 +149,11 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                             widget.wholelist[2]
                                                     [widget.accessname]
                                                 ['complete'] -= 1;
+                                            widget.wholelist[2]
+                                                            [widget.accessname]
+                                                        ['question']["1"]
+                                                    ['Question'] =
+                                                'Threshold to Living Room';
                                             widget.wholelist[2]
                                                         [widget.accessname]
                                                     ['question']["1"]
@@ -231,6 +236,9 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                             ['complete'] -= 1;
                                         widget.wholelist[2][widget.accessname]
                                             ['question']["2"]['Answer'] = value;
+                                        widget.wholelist[2][widget.accessname]
+                                                ['question']["2"]['Question'] =
+                                            'Flooring Type';
                                       });
                                     }
                                   } else {
@@ -378,6 +386,9 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                             ['complete'] -= 1;
                                         widget.wholelist[2][widget.accessname]
                                             ['question']["3"]['Answer'] = value;
+                                        widget.wholelist[2][widget.accessname]
+                                                ['question']["3"]['Question'] =
+                                            'Floor Coverage';
                                       });
                                     }
                                   } else {

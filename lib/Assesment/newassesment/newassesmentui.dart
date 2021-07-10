@@ -1,6 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
 import 'package:tryapp/Assesment/oldassessments/oldassessmentsbase.dart';
 import 'package:tryapp/Assesment/oldassessments/oldassessmentspro.dart';
+import 'package:tryapp/Nurse_Case_Manager/Dashboard/nursedash.dart';
+import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdash.dart';
+import 'package:tryapp/Therapist/Dashboard/therapistdash.dart';
 import 'newassesmentpro.dart';
 import 'cardsUI.dart';
 import 'package:provider/provider.dart';
@@ -38,6 +44,28 @@ class NewAssesmentUI extends StatefulWidget {
 }
 
 class _NewAssesmentUIState extends State<NewAssesmentUI> {
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  Firestore firestore = Firestore.instance;
+  String role;
+
+  @override
+  void initState() {
+    super.initState();
+    getRole();
+    print(role);
+  }
+
+  getRole() async {
+    FirebaseUser user = await _auth.currentUser();
+    firestore
+        .collection("users")
+        .document(user.uid)
+        .get()
+        .then((value) => setState(() {
+              role = value.data["role"];
+            }));
+  }
+
   @override
   Widget build(BuildContext context) {
     final assesmentprovider = Provider.of<NewAssesmentProvider>(context);
@@ -58,12 +86,24 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                   FlatButton(
                     onPressed: () {
                       Navigator.pop(context);
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => OldAssessments()),
-                        (Route<dynamic> route) => false,
-                      );
+                      if (role == "therapist") {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Therapist()));
+                      } else if (role == "nurse/case manager") {
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) => Nurse()));
+                      } else if (role == "patient") {
+                        Navigator.pushReplacement(context,
+                            MaterialPageRoute(builder: (context) => Patient()));
+                      }
+                      // Navigator.pushAndRemoveUntil(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //       builder: (context) => OldAssessments()),
+                      //   (Route<dynamic> route) => false,
+                      // );
 
                       // Navigator.push(
                       //     context,
@@ -147,7 +187,8 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                               /// As said earlier we do skip the living Arrangements card so here
                               /// it is taken care of. we do create only a single room for living arrangements
 
-                              assesmentprovider.setassessmainstatus();
+                              assesmentprovider
+                                  .setassessmainstatus(widget.docID);
                               for (int i = 0;
                                   i < assesmentprovider.listofRooms.length;
                                   i++) {
@@ -177,6 +218,9 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                                       builder: (context) => CardsUINew(
                                           assesmentprovider.getlistdata(),
                                           widget.docID)));
+                              NewAssesmentRepository()
+                                  .setAssessmentCurrentStatus(
+                                      "Assessment in Progress", widget.docID);
                             },
                           ),
                         ),

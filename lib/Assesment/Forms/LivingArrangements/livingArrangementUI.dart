@@ -35,7 +35,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
   int roomatecount = 0;
   int flightcount = 0;
   Color colorb = Color.fromRGBO(10, 80, 106, 1);
-  String type;
+  String role;
   @override
   void initState() {
     super.initState();
@@ -57,6 +57,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
     }
     getRole();
     setinitialsdata();
+    print(role);
   }
 
   Future<Null> selectTime1(BuildContext context) async {
@@ -125,7 +126,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
         });
       }
     } else {
-      print('Yes,it is');
+      // print('Yes,it is');
       setState(() {
         widget.wholelist[1][widget.accessname]['question']["5"]['Roomate'] = {};
       });
@@ -135,10 +136,10 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
         .containsKey('Flights')) {
       setState(() {
         flightcount = widget.wholelist[1][widget.accessname]['question']["11"]
-            ['Flights']['count'];
+            ['Flights']["count"];
       });
     } else {
-      print('hello');
+      // print('hello');
       setState(() {
         widget.wholelist[1][widget.accessname]['question']["11"]
             ['Flights'] = {};
@@ -146,18 +147,20 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
     }
   }
 
-  Future<void> getRole() async {
-    final FirebaseUser useruid = await _auth.currentUser();
-    firestoreInstance.collection("users").document(useruid.uid).get().then(
-      (value) {
-        setState(() {
-          type = (value["role"].toString()).split(" ")[0];
-        });
-      },
-    );
+  getRole() async {
+    FirebaseUser user = await _auth.currentUser();
+    await Firestore.instance
+        .collection("users")
+        .document(user.uid)
+        .get()
+        .then((value) => setState(() {
+              role = value["role"];
+            }));
   }
 
-  setdata(index, value) {
+  setdata(index, value, que) {
+    widget.wholelist[1][widget.accessname]['question']["$index"]['Question'] =
+        que;
     if (value.length == 0) {
       if (widget.wholelist[1][widget.accessname]['question']["$index"]['Answer']
               .length ==
@@ -180,6 +183,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
       setState(() {
         widget.wholelist[1][widget.accessname]['question']["$index"]['Answer'] =
             value;
+        widget.wholelist[1][widget.accessname]['question']["$index"]
+            ['Question'] = que;
       });
     }
   }
@@ -254,7 +259,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             Container(
                               width: MediaQuery.of(context).size.width / 1.6,
                               child: Text(
-                                '${widget.roomname} Details:',
+                                '${widget.roomname} Details',
                                 style: TextStyle(
                                   fontSize: 25,
                                   fontWeight: FontWeight.bold,
@@ -264,7 +269,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             ),
                             Container(
                               alignment: Alignment.topRight,
-                              width: 42,
+                              width: 45,
                               decoration: BoxDecoration(
                                   color: _colorgreen,
                                   // border: Border.all(
@@ -336,7 +341,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 onChanged: (value) {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
-                                  setdata(1, value);
+                                  setdata(1, value, 'House Type');
                                 },
                                 value: getvalue(1),
                               ),
@@ -394,7 +399,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(2, value);
+                                  setdata(2, value, 'Number of Levels');
                                 },
                                 value: getvalue(2),
                               ),
@@ -419,7 +424,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                                     .width *
                                                 .5,
                                             child:
-                                                Text('Mode Of Transportation:',
+                                                Text('Mode Of Transportation',
                                                     style: TextStyle(
                                                       color: Color.fromRGBO(
                                                           10, 80, 106, 1),
@@ -485,7 +490,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .5,
-                              child: Text('Client Living on Level',
+                              child: Text('Living on Level',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -533,7 +538,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(3, value);
+                                  setdata(3, value, 'Living on Level');
                                 },
                                 value: getvalue(3),
                               ),
@@ -579,7 +584,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(4, value);
+                                  setdata(4, value, 'Living Arrangements');
                                 },
                                 value: getvalue(4),
                               ),
@@ -663,7 +668,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                                 width: MediaQuery.of(context)
                                                         .size
                                                         .width *
-                                                    .4,
+                                                    .39,
                                                 child: Row(
                                                   children: [
                                                     Text(
@@ -703,7 +708,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                                               onPressed: () {
                                                                 selectTime2(
                                                                     context);
-                                                                print(time2);
+                                                                // print(time2);
                                                               },
                                                             )),
                                                         Text(
@@ -757,7 +762,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
 
-                                setdata(5, value);
+                                setdata(5, value, 'Has Roomate?');
                               },
                               value: getvalue(5),
                             )
@@ -851,10 +856,10 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                                     }
                                                   });
 
-                                                  print(widget.wholelist[1][
-                                                              widget.accessname]
-                                                          ['question']["5"]
-                                                      ['Roomate']);
+                                                  // print(widget.wholelist[1][
+                                                  //             widget.accessname]
+                                                  //         ['question']["5"]
+                                                  //     ['Roomate']);
                                                 },
                                               ),
                                             ),
@@ -902,7 +907,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             Container(
                               width: MediaQuery.of(context).size.width * .5,
                               child: Text(
-                                  'Client is Able to Get In and Out of Doors and Steps?',
+                                  'Able to Get In and Out of Doors and Steps?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -944,7 +949,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
 
-                                setdata(6, value);
+                                setdata(6, value,
+                                    'Able to Get In and Out of Doors and Steps?');
                               },
                               value: getvalue(6),
                             )
@@ -987,7 +993,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
 
-                                setdata(7, value);
+                                setdata(7, value, 'Using Assistive Device?');
                               },
                               value: getvalue(7),
                             )
@@ -1118,7 +1124,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
 
-                                  setdata(8, value);
+                                  setdata(8, value, 'Gait Pattern Noted');
                                 },
                                 value: getvalue(8),
                               ),
@@ -1134,7 +1140,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .3,
-                              child: Text('Client Access to Curbside',
+                              child: Text('Access to Curbside',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1172,7 +1178,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
 
-                                  setdata(9, value);
+                                  setdata(9, value, 'Access to Curbside');
                                 },
                                 value: getvalue(9),
                               ),
@@ -1192,12 +1198,11 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .5,
-                              child:
-                                  Text('Client Access to Curbside to: Specify:',
-                                      style: TextStyle(
-                                        color: Color.fromRGBO(10, 80, 106, 1),
-                                        fontSize: 20,
-                                      )),
+                              child: Text('Access to Curbside Specify',
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(10, 80, 106, 1),
+                                    fontSize: 20,
+                                  )),
                             ),
                           ],
                         ),
@@ -1254,72 +1259,82 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             new TextEditingController().clear();
                             // print(widget.accessname);
 
-                            setdata(10, value);
+                            setdata(10, value, 'Access to Curbside Specify');
                           },
                         )),
                         SizedBox(
                           height: 15,
                         ),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width * .5,
-                                child: Text('Number of Flight of Stairs',
-                                    style: TextStyle(
-                                      color: Color.fromRGBO(10, 80, 106, 1),
-                                      fontSize: 20,
-                                    )),
-                              ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width * .35,
-                                child: NumericStepButton(
-                                  counterval: flightcount,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      widget.wholelist[1][widget.accessname]
-                                              ['question']["11"]['Flights']
-                                          ['count'] = value;
-                                      flightcount = widget.wholelist[1]
-                                              [widget.accessname]['question']
-                                          ["11"]['Flights']['count'];
+                        Container(
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width * .5,
+                                  child: Text('Number of Flight of Stairs',
+                                      style: TextStyle(
+                                        color: Color.fromRGBO(10, 80, 106, 1),
+                                        fontSize: 20,
+                                      )),
+                                ),
+                                SizedBox(
+                                  width:
+                                      MediaQuery.of(context).size.width * .35,
+                                  child: NumericStepButton(
+                                    counterval: flightcount,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        widget.wholelist[1][widget.accessname]
+                                                ['question']["11"]['Question'] =
+                                            'Number of Flight of Stairs';
+                                        widget.wholelist[1][widget.accessname]
+                                                ['question']["11"]['Flights'] =
+                                            value;
+                                        flightcount = widget.wholelist[1]
+                                                [widget.accessname]['question']
+                                            ["11"]['Flights'];
+                                        print(widget.wholelist[1]
+                                                [widget.accessname]['question']
+                                            ["11"]['Flights']["count"]);
+                                        if (value > 0) {
+                                          widget.wholelist[1][widget.accessname]
+                                                  ['question']["11"]
+                                              ['Flights'] = "";
+
+                                          if (widget.wholelist[1]
+                                                  [widget.accessname]
+                                                  ['question']["11"]['Flights']
+                                              .containsKey(
+                                                  'flight${value + 1}')) {
+                                            widget.wholelist[1]
+                                                    [widget.accessname]
+                                                    ['question']["11"]
+                                                    ['Flights']
+                                                .remove('flight${value + 1}');
+                                          }
+                                        } else if (value == 0) {
+                                          if (widget.wholelist[1]
+                                                  [widget.accessname]
+                                                  ['question']["11"]['Flights']
+                                              .containsKey(
+                                                  'flight${value + 1}')) {
+                                            widget.wholelist[1]
+                                                    [widget.accessname]
+                                                    ['question']["11"]
+                                                    ['Flights']
+                                                .remove('flight${value + 1}');
+                                          }
+                                        }
+                                      });
+
                                       print(widget.wholelist[1]
                                               [widget.accessname]['question']
-                                          ["11"]['Flights']['count']);
-                                      if (value > 0) {
-                                        widget.wholelist[1][widget.accessname]
-                                                ['question']["11"]['Flights']
-                                            ['flight$value'] = '';
-
-                                        if (widget.wholelist[1]
-                                                [widget.accessname]['question']
-                                                ["11"]['Flights']
-                                            .containsKey(
-                                                'flight${value + 1}')) {
-                                          widget.wholelist[1][widget.accessname]
-                                                  ['question']["11"]['Flights']
-                                              .remove('flight${value + 1}');
-                                        }
-                                      } else if (value == 0) {
-                                        if (widget.wholelist[1]
-                                                [widget.accessname]['question']
-                                                ["11"]['Flights']
-                                            .containsKey(
-                                                'flight${value + 1}')) {
-                                          widget.wholelist[1][widget.accessname]
-                                                  ['question']["11"]['Flights']
-                                              .remove('flight${value + 1}');
-                                        }
-                                      }
-                                    });
-
-                                    print(widget.wholelist[1][widget.accessname]
-                                        ['question']["11"]['Flights']);
-                                  },
+                                          ["11"]['Flights']);
+                                    },
+                                  ),
                                 ),
-                              ),
-                            ]),
-
+                              ]),
+                        ),
                         (flightcount ?? 0 > 0)
                             ? Container(
                                 child: Padding(
@@ -1336,7 +1351,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                       shrinkWrap: true,
                                       itemCount: flightcount,
                                       itemBuilder: (context, index1) {
-                                        return flightcountwidget(index1 + 1);
+                                        return flightcountwidget((index1 + 1));
                                       },
                                     ),
                                   ),
@@ -1378,7 +1393,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
 
-                                setdata(12, value);
+                                setdata(12, value,
+                                    'Smoke Detector Batteries Checked Annualy/Replaced?');
                               },
                               value: getvalue(12),
                             )
@@ -1394,7 +1410,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             Container(
                               width: MediaQuery.of(context).size.width * .5,
                               child: Text(
-                                  'Person Responsible to Change Smoke Detector batteries:',
+                                  'Person Responsible to Change Smoke Detector batteries',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1426,7 +1442,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             FocusScope.of(context).requestFocus();
                             new TextEditingController().clear();
                             // print(widget.accessname);
-                            setdata(13, value);
+                            setdata(13, value,
+                                'Person Responsible to Change Smoke Detector batteries');
                           },
                         )),
                         SizedBox(
@@ -1437,7 +1454,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .5,
-                              child: Text('Observations:',
+                              child: Text('Observations',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1469,7 +1486,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             FocusScope.of(context).requestFocus();
                             new TextEditingController().clear();
                             // print(widget.accessname);
-                            setdata(14, value);
+                            setdata(14, value, 'Observations');
                           },
                         )),
                       ],
@@ -1492,9 +1509,10 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                         Navigator.pop(
                             context, widget.wholelist[1][widget.accessname]);
                       }
-                      NewAssesmentRepository().updateLatestChangeDate(
-                          Timestamp.now(), widget.docID);
-                      print(widget.docID);
+                      NewAssesmentRepository()
+                          .setLatestChangeDate(widget.docID);
+                      NewAssesmentRepository()
+                          .setForm(widget.wholelist, widget.docID);
                     },
                   ))
                 ],
@@ -1571,7 +1589,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                 },
               ),
             ),
-            (type == 'Therapist' && isthera) ? getrecowid(index) : SizedBox(),
+            (role == 'therapist' && isthera) ? getrecowid(index) : SizedBox(),
           ],
         ),
       ),
@@ -1765,9 +1783,9 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
       child: Column(
         children: [
           Container(
-            // padding: EdgeInsets.all(5),
+            padding: EdgeInsets.all(5),
             child: Container(
-              // width: MediaQuery.of(context).size.width * .35,
+              width: MediaQuery.of(context).size.width * .35,
               child: TextFormField(
                 initialValue: widget.wholelist[1][widget.accessname]['question']
                     ["11"]['Flights']['flight$index'],
@@ -1783,6 +1801,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                     ),
                     labelText: 'Number of steps in flight$index:'),
                 onChanged: (value) {
+                  FocusScope.of(context).requestFocus();
+                  new TextEditingController().clear();
                   setState(() {
                     widget.wholelist[1][widget.accessname]['question']["11"]
                         ['Flights']['flight$index'] = value;

@@ -121,7 +121,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
 
-                                    assesmentprovider.setdata(1, value);
+                                    assesmentprovider.setdata(
+                                        1, value, 'Threshold to Living Room');
                                     // print(assesmentprovider.getvalue(1));
                                   }),
                             ),
@@ -181,7 +182,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                 onChanged: (value) {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
-                                  assesmentprovider.setdata(2, value);
+                                  assesmentprovider.setdata(
+                                      2, value, 'Flooring Type');
                                 },
                                 value: assesmentprovider.getvalue(2),
                               ),
@@ -232,7 +234,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(3, value);
+                                  assesmentprovider.setdata(
+                                      3, value, 'Floor Coverage');
                                 },
                                 value: assesmentprovider.getvalue(3),
                               ),
@@ -254,7 +257,7 @@ class _BathroomUIState extends State<BathroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Lighting Types:',
+                              child: Text('Lighting Types',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -281,7 +284,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
 
-                                  assesmentprovider.setdata(4, value);
+                                  assesmentprovider.setdata(
+                                      4, value, 'Lighting Types');
                                 },
                                 value: assesmentprovider.getvalue(4),
                               ),
@@ -302,7 +306,7 @@ class _BathroomUIState extends State<BathroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Switches: Client Able to Operate:',
+                              child: Text('Switches Able to Operate',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -329,7 +333,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
 
-                                  assesmentprovider.setdata(5, value);
+                                  assesmentprovider.setdata(
+                                      5, value, 'Switches Able to Operate');
                                 },
                                 value: assesmentprovider.getvalue(5),
                               ),
@@ -348,7 +353,7 @@ class _BathroomUIState extends State<BathroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Switch Types:',
+                              child: Text('Switch Types',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -394,7 +399,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(6, value);
+                                  assesmentprovider.setdata(
+                                      6, value, 'Switch Types:');
                                 },
                                 value: assesmentprovider.getvalue(6),
                               ),
@@ -433,7 +439,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    assesmentprovider.setdata(7, value);
+                                    assesmentprovider.setdata(
+                                        7, value, 'Door Width');
                                     setState(() {
                                       widget.wholelist[5][widget.accessname]
                                           ['question']["7"]['doorwidth'] = 0;
@@ -498,7 +505,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(8, value);
+                                assesmentprovider.setdata(
+                                    8, value, 'Obstacle/Clutter Present?');
                               },
                               value: assesmentprovider.getvalue(8),
                             )
@@ -539,7 +547,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(9, value);
+                                assesmentprovider.setdata(9, value,
+                                    'Client is Able to Access Telephone?');
                               },
                               value: assesmentprovider.getvalue(9),
                             )
@@ -583,7 +592,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(10, value);
+                                assesmentprovider.setdata(
+                                    10, value, 'Smoke Detector?');
                               },
                               value: assesmentprovider.getvalue(10),
                             )
@@ -643,7 +653,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
 
-                                assesmentprovider.setdata(11, value);
+                                assesmentprovider.setdata(11, value,
+                                    'Client is Able to manage Through the Doorway and In/Out of the Bathroom ?');
                               },
                               value: assesmentprovider.getvalue(11),
                             )
@@ -688,7 +699,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
 
-                                assesmentprovider.setdata(12, value);
+                                assesmentprovider.setdata(
+                                    12, value, 'Medicine Cabinet Has Access?');
                               },
                               value: assesmentprovider.getvalue(12),
                             )
@@ -732,7 +744,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
 
-                                assesmentprovider.setdata(13, value);
+                                assesmentprovider.setdata(13, value,
+                                    'Cabinet Under Sink: Has Access?');
                               },
                               value: assesmentprovider.getvalue(13),
                             )
@@ -776,7 +789,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
 
-                                assesmentprovider.setdata(14, value);
+                                assesmentprovider.setdata(
+                                    14, value, 'Shower: Present?');
                               },
                               value: assesmentprovider.getvalue(14),
                             )
@@ -883,7 +897,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(15, value);
+                                assesmentprovider.setdata(15, value,
+                                    'Client is Able to Manage In and Out of The Shower? ');
                               },
                               value: assesmentprovider.getvalue(15),
                             )
@@ -989,7 +1004,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(16, value);
+                                assesmentprovider.setdata(
+                                    16, value, 'Grab Bars: Present?');
                                 if (value == 'No') {
                                   setState(() {
                                     assesmentprovider.grabbarneeded = false;
@@ -1229,7 +1245,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(17, value);
+                                assesmentprovider.setdata(
+                                    17, value, 'Grab Bar: Placement: On');
                               },
                               value: assesmentprovider.getvalue(17),
                             )
@@ -1321,7 +1338,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    assesmentprovider.setdata(18, value);
+                                    assesmentprovider.setdata(18, value,
+                                        'Grab Bar Distance From Floor');
                                   },
                                 ),
                               ),
@@ -1360,7 +1378,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    assesmentprovider.setdata(19, value);
+                                    assesmentprovider.setdata(
+                                        19, value, 'Grab Bar Length');
                                   },
                                 ),
                               ),
@@ -1402,7 +1421,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(20, value);
+                                assesmentprovider.setdata(
+                                    20, value, 'Faucet/Control: Placement');
                               },
                               value: assesmentprovider.getvalue(20),
                             )
@@ -1441,7 +1461,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(21, value);
+                                assesmentprovider.setdata(
+                                    21, value, 'Hand-Held Shower ');
                               },
                               value: assesmentprovider.getvalue(21),
                             )
@@ -1496,7 +1517,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(22, value);
+                                assesmentprovider.setdata(
+                                    22, value, 'Type Of Wall');
                               },
                               value: assesmentprovider.getvalue(22),
                             )
@@ -1536,7 +1558,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(23, value);
+                                assesmentprovider.setdata(23, value,
+                                    'Client is Able to Enter/Exit the Tub Independently?');
                               },
                               value: assesmentprovider.getvalue(23),
                             )
@@ -1580,7 +1603,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(24, value);
+                                assesmentprovider.setdata(24, value,
+                                    'Client is Able to Access Faucets Independently?');
                               },
                               value: assesmentprovider.getvalue(24),
                             )
@@ -1624,7 +1648,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    assesmentprovider.setdata(25, value);
+                                    assesmentprovider.setdata(
+                                        25, value, 'Toilet Height');
                                   },
                                 ),
                               ),
@@ -1638,7 +1663,7 @@ class _BathroomUIState extends State<BathroomUI> {
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
                               child: Text(
-                                  ' Client Can Get On/Off Toilet Independently?',
+                                  'Client Can Get On/Off Toilet Independently?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1663,7 +1688,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(26, value);
+                                assesmentprovider.setdata(26, value,
+                                    'Client Can Get On/Off Toilet Independently?');
                               },
                               value: assesmentprovider.getvalue(26),
                             )
@@ -1707,7 +1733,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(27, value);
+                                assesmentprovider.setdata(27, value,
+                                    'Client is Able to Flush Toilet Independently?');
                               },
                               value: assesmentprovider.getvalue(27),
                             )
@@ -1760,7 +1787,8 @@ class _BathroomUIState extends State<BathroomUI> {
                             FocusScope.of(context).requestFocus();
                             new TextEditingController().clear();
                             // print(widget.accessname);
-                            assesmentprovider.setdata(28, value);
+                            assesmentprovider.setdata(
+                                28, value, 'Observations:');
                           },
                         ))
                       ],
@@ -1771,8 +1799,10 @@ class _BathroomUIState extends State<BathroomUI> {
                     child: Text('Done'),
                     onPressed: () {
                       listenbutton(assesmentprovider);
-                      NewAssesmentRepository().updateLatestChangeDate(
-                          Timestamp.now(), widget.docID);
+                      NewAssesmentRepository()
+                          .setLatestChangeDate(widget.docID);
+                      NewAssesmentRepository()
+                          .setForm(widget.wholelist, widget.docID);
                     },
                   ))
                 ],

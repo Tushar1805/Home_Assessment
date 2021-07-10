@@ -16,21 +16,22 @@ class OldAssessmentsProvider extends ChangeNotifier {
   Map<String, dynamic> datasetmain = {};
   var docs;
   var data2;
-  String curretnassessmentdocref;
+  String curretnassessmentdocref, role;
   bool loading = false;
   String sortdata = '';
-  OldAssessmentsProvider() {
-    getdocset("old");
+  OldAssessmentsProvider(String role) {
+    getdocset("old", role);
+    print(role);
   }
 
-  getdocset(type) async {
+  getdocset(type, role) async {
     loading = true;
     notifyListeners();
-    dataset = await oldrepo.getpatients(type);
+    dataset = await oldrepo.getpatients(type, role);
     Map<String, DocumentSnapshot> datasetmaintemp = {};
     for (int i = 0; i < dataset.documents.length; i++) {
       await getfielddata(
-        dataset.documents[i].data['Patient'],
+        dataset.documents[i].data['patient'],
       );
       datasetmaintemp["$i"] = (data2);
     }
@@ -106,9 +107,10 @@ class OldAssessmentsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  getstatuspatient(type) {
+  getstatuspatient(type, role) {
     (type == 'new') ? assessdisplay = true : assessdisplay = false;
-    getdocset(type);
+    role = role;
+    getdocset(type, role);
     notifyListeners();
   }
 

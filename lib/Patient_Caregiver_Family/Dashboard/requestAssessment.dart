@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
+import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdash.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdashrepo.dart';
 
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
@@ -238,16 +240,21 @@ class _RequestAssessmentState extends State<RequestAssessment> {
                 height: 85,
                 child: RaisedButton(
                   onPressed: () async {
+                    FirebaseUser user =
+                        await FirebaseAuth.instance.currentUser();
                     try {
-                      // docID = await PatientRepository().saveInDatabase(name,
-                      //     formatTimeOfDay(time), fromDateTimeToJson(date));
-                      showSnackBar(
-                          context, "Assessment Scheduled Successfully");
+                      docID = await PatientRepository().saveInDatabase(user.uid,
+                          formatTimeOfDay(time), fromDateTimeToJson(date));
+                      // showSnackBar(
+                      //     context, "Assessment Scheduled Successfully");
+                      print(docID);
                     } catch (e) {
                       showSnackBar(context, "Something Went Wrong");
                       print(StackTrace.current);
                     }
-                    Navigator.of(context).pop();
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => Patient()));
+                    print(docID);
                   },
                   color: Color.fromRGBO(10, 80, 106, 1),
                   child: Center(

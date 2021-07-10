@@ -89,8 +89,8 @@ class NewAssesmentProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  setassessmainstatus() async {
-    newRepo.setassessmentstatus(assessmentdoc);
+  setassessmainstatus(String docID) async {
+    newRepo.setassessmentstatus(docID);
   }
 }
 
@@ -137,6 +137,7 @@ getMaps(String classname) {
     /// i stands for the rooms count which we will get from the
     /// gettotal fucntion.
     rr["$i"] = {
+      'Question': "",
       'Answer': '',
       'Priority': '1',
       //The data from comments field will get saves here.

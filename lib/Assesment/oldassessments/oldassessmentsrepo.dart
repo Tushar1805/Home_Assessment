@@ -14,31 +14,38 @@ class OldAssessmentRepo {
     return useruid;
   }
 
-  Future<QuerySnapshot> getpatients(type) async {
-    dataset = await firestore
-        .collection('Assessments')
-        .where('Therapist', isEqualTo: await getcurrentuid())
-        .where('Status', isEqualTo: type)
-        .orderBy('StartDate', descending: true)
-        .getDocuments();
-    return dataset;
+  Future<QuerySnapshot> getpatients(type, role) async {
+    FirebaseUser user = await _auth.currentUser();
+    if (role == "therapist") {
+      dataset = await firestore
+          .collection('assessments')
+          .where('therapist', isEqualTo: user.uid)
+          .where('status', isEqualTo: type)
+          .getDocuments();
+      return dataset;
+    } else if (role == "nurse/case manager") {
+      dataset = await firestore
+          .collection('assessments')
+          .where('assessor', isEqualTo: user.uid)
+          .where('status', isEqualTo: type)
+          .getDocuments();
+      return dataset;
+    }
     // return dataset;
   }
 
   Future<QuerySnapshot> getpatientsorder(type) async {
-    QuerySnapshot datasetds = await firestore
-        .collection('users')
-        .where('role', isEqualTo: 'Patient')
-        .orderBy('Age')
-        .getDocuments();
-    // datasetorder = await firestore
-    //     .collection('Assessments')
-    //     .where('Therapist', isEqualTo: await getcurrentuid())
-    //     .where('Status', isEqualTo: type)
-    //     .orderBy()
+    // QuerySnapshot datasetds = await firestore
+    //     .collection('users')
+    //     .where('role', isEqualTo: 'patient')
+    //     .orderBy('age')
     //     .getDocuments();
-    // .getDocuments();
-    print(datasetds.documents[0].data);
+    datasetorder = await firestore
+        .collection('assessments')
+        .where('therapist', isEqualTo: await getcurrentuid())
+        .where('status', isEqualTo: type)
+        .getDocuments();
+    print(datasetorder.documents[0].data);
 
     // print(dataset.documents[0].data['Patient']);
     // return dataset;
@@ -51,8 +58,8 @@ class OldAssessmentRepo {
 
   Future<Stream<QuerySnapshot>> getassessments() async {
     var assess = firestore
-        .collection('Assessments')
-        .where('Therapist', isEqualTo: getcurrentuid())
+        .collection('assessments')
+        .where('therapist', isEqualTo: getcurrentuid())
         .snapshots();
 
     return assess;
