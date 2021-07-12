@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
+import 'package:tryapp/constants.dart';
 
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
@@ -39,6 +41,26 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
     }
   }
 
+  void _showSnackBar(snackbar, BuildContext buildContext) {
+    final snackBar = SnackBar(
+      duration: const Duration(seconds: 3),
+      content: Container(
+        height: 30.0,
+        child: Center(
+          child: Text(
+            '$snackbar',
+            style: TextStyle(fontSize: 14.0, color: Colors.white),
+          ),
+        ),
+      ),
+      backgroundColor: lightBlack(),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+    );
+    ScaffoldMessenger.of(buildContext)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(snackBar);
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -67,7 +89,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                             Container(
                               width: MediaQuery.of(context).size.width * .65,
                               child: Text(
-                                '${widget.roomname} Details:',
+                                '${widget.roomname} Details',
                                 style: TextStyle(
                                   fontSize: 25,
                                   fontWeight: FontWeight.bold,
@@ -137,6 +159,9 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                       FocusScope.of(context).requestFocus();
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
+                                      widget.wholelist[2][widget.accessname]
+                                              ['question']["1"]['Question'] =
+                                          'Threshold to Living Room';
 
                                       if (value.length == 0) {
                                         if (widget
@@ -149,11 +174,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                             widget.wholelist[2]
                                                     [widget.accessname]
                                                 ['complete'] -= 1;
-                                            widget.wholelist[2]
-                                                            [widget.accessname]
-                                                        ['question']["1"]
-                                                    ['Question'] =
-                                                'Threshold to Living Room';
+
                                             widget.wholelist[2]
                                                         [widget.accessname]
                                                     ['question']["1"]
@@ -224,6 +245,9 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
+                                  widget.wholelist[2][widget.accessname]
+                                          ['question']["2"]['Question'] =
+                                      'Flooring Type';
                                   if (value.length == 0) {
                                     if (widget
                                             .wholelist[2][widget.accessname]
@@ -236,9 +260,6 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                             ['complete'] -= 1;
                                         widget.wholelist[2][widget.accessname]
                                             ['question']["2"]['Answer'] = value;
-                                        widget.wholelist[2][widget.accessname]
-                                                ['question']["2"]['Question'] =
-                                            'Flooring Type';
                                       });
                                     }
                                   } else {
@@ -373,6 +394,9 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
+                                  widget.wholelist[2][widget.accessname]
+                                          ['question']["3"]['Question'] =
+                                      'Floor Coverage';
 
                                   if (value.length == 0) {
                                     if (widget
@@ -386,9 +410,6 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                             ['complete'] -= 1;
                                         widget.wholelist[2][widget.accessname]
                                             ['question']["3"]['Answer'] = value;
-                                        widget.wholelist[2][widget.accessname]
-                                                ['question']["3"]['Question'] =
-                                            'Floor Coverage';
                                       });
                                     }
                                   } else {
@@ -493,7 +514,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .5,
-                              child: Text('Lighting Types:',
+                              child: Text('Lighting Types',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -531,6 +552,10 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
+
+                                  widget.wholelist[2][widget.accessname]
+                                          ['question']["4"]['Question'] =
+                                      'Lighting Types';
 
                                   if (value.length == 0) {
                                     if (widget
@@ -644,7 +669,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .5,
-                              child: Text('Switches: Client Able to Operate:',
+                              child: Text('Switches Able to Operate',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -670,6 +695,9 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
+                                  widget.wholelist[2][widget.accessname]
+                                          ['question']["5"]['Question'] =
+                                      'Switches Able to Operate';
 
                                   if (value.length == 0) {
                                     if (widget
@@ -715,7 +743,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .5,
-                              child: Text('Switch Types:',
+                              child: Text('Switch Types',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -749,6 +777,9 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
+                                  widget.wholelist[2][widget.accessname]
+                                          ['question']["6"]['Question'] =
+                                      'Switch Types';
 
                                   if (value.length == 0) {
                                     if (widget
@@ -838,7 +869,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                         ),
                                       ]),
                                     ),
-                                    labelText: 'Specify Switch Type.'),
+                                    labelText: 'Specify Switch Type'),
                                 onChanged: (value) {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
@@ -886,6 +917,9 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
+                                    widget.wholelist[2][widget.accessname]
+                                            ['question']["7"]['Question'] =
+                                        'Door Width';
 
                                     if (value.length == 0) {
                                       if (widget
@@ -1026,6 +1060,9 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
+                                widget.wholelist[2][widget.accessname]
+                                        ['question']["8"]['Question'] =
+                                    'Obstacle/Clutter Present?';
 
                                 if (value.length == 0) {
                                   if (widget
@@ -1132,7 +1169,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .5,
-                              child: Text('Client is Able to Access Telephone?',
+                              child: Text('Able to Access Telephone?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1157,6 +1194,9 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
+                                widget.wholelist[2][widget.accessname]
+                                        ['question']["9"]['Question'] =
+                                    'Able to Access Telephone?';
 
                                 if (value.length == 0) {
                                   if (widget
@@ -1290,6 +1330,9 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
+                                widget.wholelist[2][widget.accessname]
+                                        ['question']["10"]['Question'] =
+                                    'Smoke Detector?';
 
                                 if (value.length == 0) {
                                   if (widget
@@ -1397,7 +1440,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .5,
-                              child: Text('Observations:',
+                              child: Text('Observations',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1430,6 +1473,8 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                             FocusScope.of(context).requestFocus();
                             new TextEditingController().clear();
                             // print(widget.accessname);
+                            widget.wholelist[2][widget.accessname]['question']
+                                ["11"]['Question'] = 'Observations';
 
                             if (value.length == 0) {
                               if (widget
@@ -1470,26 +1515,34 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                       child: RaisedButton(
                     child: Text('Done'),
                     onPressed: () {
-                      var test = 0;
+                      var test =
+                          widget.wholelist[2][widget.accessname]["complete"];
                       for (int i = 0;
                           i <
                               widget.wholelist[2][widget.accessname]['question']
                                   .length;
                           i++) {
                         // print(colorsset["field${i + 1}"]);
-                        if (colorsset["field${i + 1}"] == Colors.red) {
-                          showDialog(
-                              context: context,
-                              builder: (context) => CustomDialog(
-                                  title: "Not Saved",
-                                  description:
-                                      "Please click cancel button to save the field"));
-                          test = 1;
-                        }
+                        // if (colorsset["field${i + 1}"] == Colors.red) {
+                        //   showDialog(
+                        //       context: context,
+                        //       builder: (context) => CustomDialog(
+                        //           title: "Not Saved",
+                        //           description:
+                        //               "Please click cancel button to save the field"));
+                        //   test = 1;
+                        // }
                       }
                       if (test == 0) {
+                        _showSnackBar(
+                            "You Must Have to Fill The Details First", context);
+                      } else {
+                        NewAssesmentRepository()
+                            .setLatestChangeDate(widget.docID);
+                        NewAssesmentRepository()
+                            .setForm(widget.wholelist, widget.docID);
                         Navigator.pop(
-                            context, widget.wholelist[2][widget.accessname]);
+                            context, widget.wholelist[0][widget.accessname]);
                       }
                     },
                   ))

@@ -2,12 +2,16 @@ import 'dart:collection';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_full_pdf_viewer/full_pdf_viewer_scaffold.dart';
 import 'package:intl/intl.dart';
+import 'package:intl/intl.dart';
+import 'package:ndialog/ndialog.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentpro.dart';
 import 'package:pdf/pdf.dart';
@@ -16,8 +20,8 @@ import 'package:tryapp/Patient_Caregiver_Family/Dashboard/pdfReview.dart';
 
 class ReportUI extends StatefulWidget {
   // List<Map<String, dynamic>> list;
-  String docID;
-  ReportUI(this.docID);
+  String docID, patientUid;
+  ReportUI(this.docID, this.patientUid);
   @override
   _ReportUIState createState() => _ReportUIState();
 }
@@ -39,51 +43,93 @@ class _ReportUIState extends State<ReportUI> {
       handDominance;
   bool _isContainerVisible = true;
   String uid, patient, therapist, docID, fullPath;
-  // DateTime startingTime, closingTime;
+  var startingTime, closingTime;
+  bool _allowWriteFile = false;
   List<Map<String, dynamic>> assess = [];
   final pdf = pw.Document();
+  Dio dio;
 
   @override
   void initState() {
     super.initState();
+    dio = Dio();
     getassessments();
     getUserName();
+    // print(patient);
+    // getPermission();
   }
 
-  //  void getPermission() async {
-  //   print("getPermission");
-  //   // Map<PermissionGroup, PermissionStatus> permissions =
-  //   //     await PermissionHandler().requestPermissions([PermissionGroup.storage]);
+  // void getPermission() async {
+  //   Map<PermissionGroup, PermissionStatus> permissions =
+  //       await PermissionHandler().requestPermissions([PermissionGroup.storage]);
   // }
+
+  Future<String> getDirectoryPath() async {
+    Directory appDocDirectory = await getApplicationDocumentsDirectory();
+
+    Directory directory =
+        await new Directory(appDocDirectory.path + '/' + 'dir')
+            .create(recursive: true);
+
+    return directory.path;
+  }
+
+  Future downloadFile(path) async {
+    try {
+      ProgressDialog progressDialog = ProgressDialog(context,
+          dialogTransitionType: DialogTransitionType.Bubble,
+          title: Text("Downloading File"));
+
+      progressDialog.show();
+
+      // await dio.download(path, onReceiveProgress: (rec, total) {
+      //   setState(() {
+      //     bool isLoading = true;
+      //     String progress = ((rec / total) * 100).toStringAsFixed(0) + "%";
+      //     progressDialog.setMessage(Text("Dowloading $progress"));
+      //   });
+      // });
+      progressDialog.dismiss();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
 
   Future<void> getUserName() async {
     final FirebaseUser useruid = await auth.currentUser();
-    firestoreInstance
+    await firestoreInstance
         .collection("users")
-        .document("MdLJbAeA7Lb6lPVgD5jDO0UAMbj2")
+        .document(widget.patientUid)
         .get()
         .then(
       (value) {
         setState(() {
-          fname = (value["firstName"].toString() ?? "First");
-          lname = (value["lastName"].toString() ?? "Last");
-          gender = (value["gender"].toString() ?? "Male");
-          address = (value["houses"][0]["city"].toString() ?? "Nagpur");
-          age = (value["age"].toString() ?? "");
-          phone = (value["mobileNo"].toString() ?? "1234567890");
-          email = useruid.email;
-          height = (value["height"].toString() ?? "5.5");
-          weight = (value["weight"].toString() ?? "50");
-          handDominance = (value["handDominance"].toString() ?? "Right");
+          if (value != null) {
+            fname = (NewAssesmentProvider("")
+                .capitalize((value.data["firstName"].toString() ?? "First")));
+            lname = (NewAssesmentProvider("")
+                .capitalize(value.data["lastName"].toString() ?? "Last"));
+            gender = (NewAssesmentProvider("")
+                .capitalize(value.data["gender"].toString() ?? "Male"));
+            address = (NewAssesmentProvider("").capitalize(
+                value.data["houses"][0]["city"].toString() ?? "Nagpur"));
+            age = (value.data["age"].toString() ?? "21");
+            phone = (value.data["mobileNo"].toString() ?? "1234567890");
+            email = (value.data["email"].toString() ?? "user@gmail.com");
+            height = (value.data["height"].toString() ?? "5.5");
+            weight = (value.data["weight"].toString() ?? "50");
+            handDominance = (NewAssesmentProvider("")
+                .capitalize((value["handDominance"].toString() ?? "Right")));
+          }
           // docID = (value["docID"].toString());
         });
       },
     );
     // print(useruid.uid.toString());
     // print(docID);
-    print("*******************");
-    print(useruid.uid);
-    print("**************");
+    // print("*******************");
+    // print(patient);
+    // print("**************");
   }
 
   Future<void> getassessments() async {
@@ -96,63 +142,91 @@ class _ReportUIState extends State<ReportUI> {
         setState(() {
           patient = (value["patient"].toString());
           therapist = (value["therapist"].toString());
-          if (value["form"] != null) {
+          if (value.data["form"] != null) {
             assess = List<Map<String, dynamic>>.generate(
                 value["form"].length,
-                (int index) =>
-                    Map<String, dynamic>.from(value["form"].elementAt(index)));
+                (int index) => Map<String, dynamic>.from(
+                    value.data["form"].elementAt(index)));
           }
           // assess = List.castFrom(value["form"].toList());
-          // startingTime = (value["sheduleDate"].toDate() ?? "");
-          // closingTime = (value["assessmentCompletionDate"].toDate() ?? "");
+          if (value.data["date"] != null) {
+            startingTime = value.data["date"].toString();
+          }
+          if (value.data["assessmentCompletionDate"] != null) {
+            closingTime = DateFormat.yMd()
+                .format(value.data["assessmentCompletionDate"].toDate());
+          }
         });
       },
     );
+    // print(widget.docID);
     // print("//////////");
     // print(assess);
+  }
+
+  Widget getDate(String label, var date) {
+    if (date != null) {
+      return Container(
+        width: double.infinity,
+        child: Text(
+          '$label ${date.toDate()} ',
+          style: TextStyle(
+            fontSize: 16,
+          ),
+        ),
+      );
+    } else {
+      if (label == "Completion Date: ") {
+        return Text("$label Yet to be Complete");
+      } else {
+        return Text("$label Yet to be Begin");
+      }
+    }
   }
 
   List<pw.TableRow> buildAssesment(priority) {
     List<pw.TableRow> list = [];
     for (int index = 0; index < 12; index++) {
-      int count = assess[index]['count'];
+      int count = assess[index]['count'] ?? 0;
       for (int i = 1; i <= count; i++) {
         int queCount = assess[index]['room$i']['complete'];
         for (int j = 1; j <= queCount; j++) {
-          if (assess[index]['room$i']['question']['$j']['Priority'] ==
-                  priority &&
-              assess[index]['room$i']['question']['$j']
-                      ['Recommendationthera'] !=
-                  "") {
-            list.add(
-              pw.TableRow(children: [
-                pw.Column(
-                    crossAxisAlignment: pw.CrossAxisAlignment.start,
-                    mainAxisAlignment: pw.MainAxisAlignment.start,
-                    children: [
-                      pw.Container(
-                        padding: pw.EdgeInsets.only(left: 5, right: 5),
-                        child: pw.Text(
-                            ' ${assess[index]['name']}- ' +
-                                '${assess[index]['room$i']['name']}- ' +
-                                '${assess[index]['room$i']['question']['$j']['Question']}- ' +
-                                '${assess[index]['room$i']['question']['$j']['Answer']}: ',
-                            style: pw.TextStyle(fontSize: 14)),
-                      ),
-                    ]),
-                pw.Column(
-                    crossAxisAlignment: pw.CrossAxisAlignment.start,
-                    mainAxisAlignment: pw.MainAxisAlignment.start,
-                    children: [
-                      pw.Container(
-                        padding: pw.EdgeInsets.only(left: 5, right: 5),
-                        child: pw.Text(
-                            ' ${assess[index]['room$i']['question']['$j']['Recommendationthera']}',
-                            style: pw.TextStyle(fontSize: 14)),
-                      ),
-                    ]),
-              ]),
-            );
+          if (assess[index]['room$i']['question']['$j'] != null) {
+            if (assess[index]['room$i']['question']['$j']['Priority'] ==
+                    priority &&
+                assess[index]['room$i']['question']['$j']
+                        ['Recommendationthera'] !=
+                    "") {
+              list.add(
+                pw.TableRow(children: [
+                  pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      mainAxisAlignment: pw.MainAxisAlignment.start,
+                      children: [
+                        pw.Container(
+                          padding: pw.EdgeInsets.only(left: 5, right: 5),
+                          child: pw.Text(
+                              ' ${assess[index]['name']}: ' +
+                                  '${assess[index]['room$i']['name']}: ' +
+                                  '${assess[index]['room$i']['question']['$j']['Question']}: ' +
+                                  '${assess[index]['room$i']['question']['$j']['Answer']}',
+                              style: pw.TextStyle(fontSize: 14)),
+                        ),
+                      ]),
+                  pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      mainAxisAlignment: pw.MainAxisAlignment.start,
+                      children: [
+                        pw.Container(
+                          padding: pw.EdgeInsets.only(left: 5, right: 5),
+                          child: pw.Text(
+                              ' ${assess[index]['room$i']['question']['$j']['Recommendationthera']}',
+                              style: pw.TextStyle(fontSize: 14)),
+                        ),
+                      ]),
+                ]),
+              );
+            }
           }
         }
       }
@@ -284,7 +358,8 @@ class _ReportUIState extends State<ReportUI> {
               0: pw.FixedColumnWidth(200),
               1: pw.FixedColumnWidth(200)
             }, children: [
-              buildRow("Patient Name", "$fname $lname"),
+              buildRow("Patient", "Details"),
+              buildRow("Name", "$fname $lname"),
               buildRow("Gender", gender),
               buildRow("Address", address),
               buildRow("Age", age),
@@ -294,8 +369,8 @@ class _ReportUIState extends State<ReportUI> {
               buildRow("Weight(lbs)", "$weight kg"),
               buildRow("Hand Dominance", handDominance),
               // buildRow("Date of Assessment", "10/5/20"),
-              buildRow("Assessment Start Time", " "),
-              buildRow("Assessment End Time", " "),
+              buildRow("Assessment Start Time", startingTime),
+              buildRow("Assessment End Time", closingTime),
               buildBlankRow("null ", "null "),
             ]),
             buildTableBlankRow("null", "null"),
@@ -375,13 +450,13 @@ class _ReportUIState extends State<ReportUI> {
     File file = File("$documentPath/report.pdf");
 
     file.writeAsBytesSync(pdf.save());
-    print(documentDirectory);
-    print(documentPath);
+    // print(documentDirectory);
+    // print(documentPath);
   }
 
   @override
   Widget build(BuildContext context) {
-    getassessments();
+    // getassessments();
     _verticalDivider() => BoxDecoration(
           border: Border(
             right: BorderSide(
@@ -489,7 +564,7 @@ class _ReportUIState extends State<ReportUI> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               IntrinsicHeight(
-                child: buildRow("Patient Name", "$fname  $lname"),
+                child: buildRow("Patient Name", "$fname$lname"),
               ),
               Divider(
                 thickness: 0.5,
@@ -557,13 +632,16 @@ class _ReportUIState extends State<ReportUI> {
               //   color: Colors.grey,
               // ),
               IntrinsicHeight(
-                child: buildRow("Assessment Start Time", " "),
+                child: buildRow(
+                    "Assessment Start Time", startingTime ?? "Yet To Begin"),
               ),
               Divider(
                 thickness: 0.5,
                 color: Colors.grey,
               ),
-              IntrinsicHeight(child: buildRow("Assessment End Time", " ")),
+              IntrinsicHeight(
+                  child: buildRow(
+                      "Assessment End Time", closingTime ?? "Yet To Finish")),
             ],
           ),
         ),

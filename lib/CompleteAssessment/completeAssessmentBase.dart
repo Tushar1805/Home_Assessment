@@ -16,6 +16,6 @@ class CompleteAssessmentBase extends StatelessWidget {
       ChangeNotifierProvider<OldAssessmentsProvider>(
         create: (_) => OldAssessmentsProvider(role),
       )
-    ], child: CompleteAssessmentUI(this.list, docID));
+    ], child: CompleteAssessmentUI(list, docID));
   }
 }

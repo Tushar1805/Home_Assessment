@@ -5,14 +5,14 @@ import 'package:tryapp/Assesment/newassesment/newassesmentui.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/reportui.dart';
 
 class ReportBase extends StatelessWidget {
-  final String docID;
-  ReportBase(this.docID);
+  final String docID, patientUid;
+  ReportBase(this.docID, this.patientUid);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
             child: ChangeNotifierProvider<NewAssesmentProvider>(
                 create: (_) => NewAssesmentProvider(""),
-                child: ReportUI(docID))));
+                child: ReportUI(docID, patientUid))));
   }
 }

@@ -16,6 +16,7 @@ import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
 import 'package:tryapp/Nurse_Case_Manager/Dashboard/nursedash.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdash.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistdash.dart';
+import 'package:tryapp/constants.dart';
 
 /// Frame of this page:
 ///     There are certain functions defined to take care of things such as colour and border dimension
@@ -85,10 +86,10 @@ class CompleteAssessmentUI extends StatefulWidget {
   String docID;
   CompleteAssessmentUI(this.wholelist, this.docID);
   @override
-  _CardsUINewState createState() => _CardsUINewState();
+  _CompleteAssessmentState createState() => _CompleteAssessmentState();
 }
 
-class _CardsUINewState extends State<CompleteAssessmentUI>
+class _CompleteAssessmentState extends State<CompleteAssessmentUI>
     with TickerProviderStateMixin {
   GlobalKey c1 = GlobalKey();
   double widthh = 1;
@@ -134,6 +135,7 @@ class _CardsUINewState extends State<CompleteAssessmentUI>
         }
       });
     });
+    print("index = ${widget.wholelist.length}");
     getRole();
   }
 
@@ -229,6 +231,26 @@ class _CardsUINewState extends State<CompleteAssessmentUI>
   // This function used to get the WholeList map.
   List<Map<String, dynamic>> getList() {
     return widget.wholelist;
+  }
+
+  void _showSnackBar(snackbar, BuildContext buildContext) {
+    final snackBar = SnackBar(
+      duration: const Duration(seconds: 3),
+      content: Container(
+        height: 30.0,
+        child: Center(
+          child: Text(
+            '$snackbar',
+            style: TextStyle(fontSize: 14.0, color: Colors.white),
+          ),
+        ),
+      ),
+      backgroundColor: lightBlack(),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+    );
+    ScaffoldMessenger.of(buildContext)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(snackBar);
   }
 
   @override
@@ -400,9 +422,15 @@ class _CardsUINewState extends State<CompleteAssessmentUI>
                             "Report Generated", widget.docID);
                         NewAssesmentRepository()
                             .setAssessmentCompletionDate(widget.docID);
+                        _showSnackBar("Report Generated", context);
                       } else if (role == 'nurse/case manager') {
                         NewAssesmentRepository().setAssessmentCurrentStatus(
                             "Assessment Finished", widget.docID);
+                        _showSnackBar("Assessment Finished", context);
+                      } else if (role == 'patient') {
+                        NewAssesmentRepository().setAssessmentCurrentStatus(
+                            "Assessment Finished", widget.docID);
+                        _showSnackBar("Assessment Finished", context);
                       }
                       NewAssesmentRepository()
                           .setLatestChangeDate(widget.docID);

@@ -4,6 +4,7 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
+import 'package:tryapp/constants.dart';
 
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
@@ -67,7 +68,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
       setState(() {
         time1 = picked1;
         widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
-            ['From'] = time1;
+            ['From'] = time1.toString() ?? "";
       });
     }
   }
@@ -79,7 +80,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
       setState(() {
         time2 = picked2;
         widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
-            ['Till'] = time2;
+            ['Till'] = time2.toString() ?? "";
       });
     }
   }
@@ -101,8 +102,15 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
       setState(() {
         if (widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
             .containsKey('From')) {
-          time1 = widget.wholelist[1][widget.accessname]['question']["4"]
-              ['Alone']['From'];
+          // time1 = int.parse(wholelist[1][widget.accessname]['question']["4"]
+          //     ['Alone']['From']);
+          time1 = TimeOfDay(
+              hour: int.parse(widget.wholelist[1][widget.accessname]['question']
+                      ["4"]['Alone']['From']
+                  .split(":")[0]),
+              minute: int.parse(widget.wholelist[1][widget.accessname]
+                      ['question']["4"]['Alone']['From']
+                  .split(":")[1]));
         }
         if (widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
             .containsKey('Till')) {
@@ -230,6 +238,26 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
         ['Recommendationthera'];
   }
 
+  void _showSnackBar(snackbar, BuildContext buildContext) {
+    final snackBar = SnackBar(
+      duration: const Duration(seconds: 3),
+      content: Container(
+        height: 30.0,
+        child: Center(
+          child: Text(
+            '$snackbar',
+            style: TextStyle(fontSize: 14.0, color: Colors.white),
+          ),
+        ),
+      ),
+      backgroundColor: lightBlack(),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+    );
+    ScaffoldMessenger.of(buildContext)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(snackBar);
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -295,7 +323,6 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                     padding: EdgeInsets.all(15),
                     child: Column(
                       children: [
-                        SizedBox(height: 15),
                         SizedBox(
                           height: 15,
                         ),
@@ -410,7 +437,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 getvalue(2) != '0' &&
                                 getvalue(2) != '1')
                             ? Container(
-                                padding: EdgeInsets.all(5),
+                                padding: EdgeInsets.only(top: 15),
                                 child: Column(
                                   children: [
                                     Container(
@@ -465,6 +492,11 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                                         ['question']["2"]
                                                     ['Modetrnas'] = value;
                                               });
+                                              // setdata(
+                                              //   2,
+                                              //   value,
+                                              //   'Mode Of Transportation'
+                                              // );
                                             },
                                             value: widget.wholelist[1]
                                                     [widget.accessname]
@@ -1001,7 +1033,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                         ),
                         (getvalue(7) == 'Yes')
                             ? Container(
-                                padding: EdgeInsets.fromLTRB(5, 5, 5, 0),
+                                padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
                                 child: Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
@@ -1072,10 +1104,6 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 ),
                               )
                             : SizedBox(),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        //
                         SizedBox(
                           height: 15,
                         ),
@@ -1295,7 +1323,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                             ["11"]['Flights'];
                                         print(widget.wholelist[1]
                                                 [widget.accessname]['question']
-                                            ["11"]['Flights']["count"]);
+                                            ["11"]['Flights']);
                                         if (value > 0) {
                                           widget.wholelist[1][widget.accessname]
                                                   ['question']["11"]
@@ -1351,7 +1379,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                       shrinkWrap: true,
                                       itemCount: flightcount,
                                       itemBuilder: (context, index1) {
-                                        return flightcountwidget((index1 + 1));
+                                        return flightcountwidget(index1 + 1);
                                       },
                                     ),
                                   ),
@@ -1496,7 +1524,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                       child: RaisedButton(
                     child: Text('Done'),
                     onPressed: () {
-                      var test = 0;
+                      var test =
+                          widget.wholelist[1][widget.accessname]["complete"];
                       for (int i = 0;
                           i <
                               widget.wholelist[1][widget.accessname]['question']
@@ -1505,14 +1534,18 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                         setdatalisten(i + 1);
                         setdatalistenthera(i + 1);
                       }
+
                       if (test == 0) {
+                        _showSnackBar(
+                            "You Must Have to Fill the Form First", context);
+                      } else {
+                        NewAssesmentRepository()
+                            .setLatestChangeDate(widget.docID);
+                        NewAssesmentRepository()
+                            .setForm(widget.wholelist, widget.docID);
                         Navigator.pop(
                             context, widget.wholelist[1][widget.accessname]);
                       }
-                      NewAssesmentRepository()
-                          .setLatestChangeDate(widget.docID);
-                      NewAssesmentRepository()
-                          .setForm(widget.wholelist, widget.docID);
                     },
                   ))
                 ],
@@ -1801,8 +1834,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                     ),
                     labelText: 'Number of steps in flight$index:'),
                 onChanged: (value) {
-                  FocusScope.of(context).requestFocus();
-                  new TextEditingController().clear();
+                  // FocusScope.of(context).requestFocus();
+                  // new TextEditingController().clear();
                   setState(() {
                     widget.wholelist[1][widget.accessname]['question']["11"]
                         ['Flights']['flight$index'] = value;

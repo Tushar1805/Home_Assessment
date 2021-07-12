@@ -76,7 +76,7 @@ class NewAssesmentRepository {
     await firestore
         .collection("assessments")
         .document(docID)
-        .updateData({"latestChangeDate": uid});
+        .updateData({"patient": uid});
   }
 
   Future<void> updateScheduleDate(Timestamp date, docID) async {

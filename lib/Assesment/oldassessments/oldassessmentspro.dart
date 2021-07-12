@@ -21,7 +21,7 @@ class OldAssessmentsProvider extends ChangeNotifier {
   String sortdata = '';
   OldAssessmentsProvider(String role) {
     getdocset("old", role);
-    print(role);
+    // print(role);
   }
 
   getdocset(type, role) async {
@@ -71,7 +71,7 @@ class OldAssessmentsProvider extends ChangeNotifier {
         );
         datasetmaintemp["$i"] = (data2);
       }
-      print(datasetmaintemp["0"].data);
+      // print(datasetmaintemp["0"].data);
       // datasetmain =
       Map<String, dynamic> temptry = {};
       for (int j = 0; j < datasetmaintemp.length; j++) {
@@ -80,7 +80,7 @@ class OldAssessmentsProvider extends ChangeNotifier {
       datasetmain = temptry;
       loading = false;
       notifyListeners();
-      print(datasetmain);
+      // print(datasetmain);
 
       return;
     }
@@ -99,7 +99,7 @@ class OldAssessmentsProvider extends ChangeNotifier {
 
     datasetmain = temptry2;
     notifyListeners();
-    print(datasetmain);
+    // print(datasetmain);
   }
 
   getdocref(asessmentdoc) async {
@@ -128,5 +128,16 @@ class OldAssessmentsProvider extends ChangeNotifier {
   getuid() async {
     getq = await oldrepo.getcurrentuid();
     notifyListeners();
+  }
+
+  String capitalize(String s) {
+    if (s != null) {
+      var parts = s.split(' ');
+      // print(parts);
+      String sum = '';
+      parts.forEach(
+          (cur) => {sum += cur[0].toUpperCase() + cur.substring(1) + " "});
+      return sum;
+    }
   }
 }

@@ -98,13 +98,14 @@ class LaundryPro extends ChangeNotifier {
   ///This function is used to set data i.e to take data from thr field and feed it in
 // map.
   setdata(index, value, que) {
+    wholelist[7][accessname]['question']["$index"]['Question'] = que;
     if (value.length == 0) {
       if (wholelist[7][accessname]['question']["$index"]['Answer'].length ==
           0) {
       } else {
         wholelist[7][accessname]['complete'] -= 1;
         wholelist[7][accessname]['question']["$index"]['Answer'] = value;
-        wholelist[7][accessname]['question']["$index"]['Question'] = que;
+
         notifyListeners();
       }
     } else {

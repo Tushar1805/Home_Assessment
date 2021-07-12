@@ -30,14 +30,14 @@ InputDecoration formInputDecoration(hint) {
   );
 }
 
-ScaffoldMessengerState _showSnackBar(context, value) {
+void _showSnackBar(snackbar, BuildContext buildContext) {
   final snackBar = SnackBar(
     duration: const Duration(seconds: 3),
     content: Container(
       height: 30.0,
       child: Center(
         child: Text(
-          '$value',
+          '$snackbar',
           style: TextStyle(fontSize: 14.0, color: Colors.white),
         ),
       ),
@@ -45,10 +45,31 @@ ScaffoldMessengerState _showSnackBar(context, value) {
     backgroundColor: lightBlack(),
     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
   );
-  return ScaffoldMessenger.of(context)
+  ScaffoldMessenger.of(buildContext)
     ..hideCurrentSnackBar()
     ..showSnackBar(snackBar);
 }
+
+
+// ScaffoldMessengerState _showSnackBar(context, value) {
+//   final snackBar = SnackBar(
+//     duration: const Duration(seconds: 3),
+//     content: Container(
+//       height: 30.0,
+//       child: Center(
+//         child: Text(
+//           '$value',
+//           style: TextStyle(fontSize: 14.0, color: Colors.white),
+//         ),
+//       ),
+//     ),
+//     backgroundColor: lightBlack(),
+//     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+//   );
+//   return ScaffoldMessenger.of(context)
+//     ..hideCurrentSnackBar()
+//     ..showSnackBar(snackBar);
+// }
 
 // ignore: unused_element
 // void _showSnackBar(snackbar, BuildContext buildContext) {

@@ -10,6 +10,7 @@ class Nurse extends StatelessWidget {
     return Scaffold(
         body: Center(
             child: ChangeNotifierProvider<NurseProvider>(
-                create: (_) => NurseProvider(), child: NurseUI())));
+                create: (_) => NurseProvider("nurse/case manager"),
+                child: NurseUI())));
   }
 }

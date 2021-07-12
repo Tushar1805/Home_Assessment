@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
+import 'package:tryapp/constants.dart';
 import './garagepro.dart';
 
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
@@ -40,6 +42,26 @@ class _GarageUIState extends State<GarageUI> {
     super.initState();
   }
 
+  void _showSnackBar(snackbar, BuildContext buildContext) {
+    final snackBar = SnackBar(
+      duration: const Duration(seconds: 3),
+      content: Container(
+        height: 30.0,
+        child: Center(
+          child: Text(
+            '$snackbar',
+            style: TextStyle(fontSize: 14.0, color: Colors.white),
+          ),
+        ),
+      ),
+      backgroundColor: lightBlack(),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+    );
+    ScaffoldMessenger.of(buildContext)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(snackBar);
+  }
+
   @override
   Widget build(BuildContext context) {
     final assesmentprovider = Provider.of<GaragePro>(context);
@@ -67,12 +89,15 @@ class _GarageUIState extends State<GarageUI> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              '${widget.roomname} Details:',
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                                color: Color.fromRGBO(10, 80, 106, 1),
+                            Container(
+                              width: MediaQuery.of(context).size.width / 1.6,
+                              child: Text(
+                                '${widget.roomname}Details',
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color.fromRGBO(10, 80, 106, 1),
+                                ),
                               ),
                             ),
                             Container(
@@ -276,7 +301,7 @@ class _GarageUIState extends State<GarageUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Lighting:',
+                              child: Text('Lighting',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -303,7 +328,7 @@ class _GarageUIState extends State<GarageUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(
-                                      4, value, 'Lighting:');
+                                      4, value, 'Lighting');
                                 },
                                 value: assesmentprovider.getvalue(4),
                               ),
@@ -320,7 +345,7 @@ class _GarageUIState extends State<GarageUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Switches: Client Able to Operate:',
+                              child: Text('Switches Able to Operate',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -346,8 +371,8 @@ class _GarageUIState extends State<GarageUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(5, value,
-                                      'Switches: Client Able to Operate:');
+                                  assesmentprovider.setdata(
+                                      5, value, 'Switches Able to Operate');
                                 },
                                 value: assesmentprovider.getvalue(5),
                               ),
@@ -366,7 +391,7 @@ class _GarageUIState extends State<GarageUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Switch Types:',
+                              child: Text('Switch Types',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -413,7 +438,7 @@ class _GarageUIState extends State<GarageUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(
-                                      6, value, 'Switch Types:');
+                                      6, value, 'Switch Types');
                                 },
                                 value: assesmentprovider.getvalue(6),
                               ),
@@ -538,7 +563,7 @@ class _GarageUIState extends State<GarageUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Type of Steps:',
+                              child: Text('Type of Steps',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -570,7 +595,7 @@ class _GarageUIState extends State<GarageUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(
-                                      9, value, 'Type of Steps:');
+                                      9, value, 'Type of Steps');
                                 },
                                 value: assesmentprovider.getvalue(9),
                               ),
@@ -598,8 +623,7 @@ class _GarageUIState extends State<GarageUI> {
                                                           .size
                                                           .width *
                                                       .5,
-                                                  child: Text(
-                                                      'Number Of Steps:',
+                                                  child: Text('Number Of Steps',
                                                       style: TextStyle(
                                                         color: Color.fromRGBO(
                                                             10, 80, 106, 1),
@@ -691,16 +715,18 @@ class _GarageUIState extends State<GarageUI> {
                                                               focusedBorder:
                                                                   OutlineInputBorder(
                                                                 borderSide: BorderSide(
-                                                                    color: colorsset[
-                                                                        "field${9}"],
+                                                                    // color: colorsset[
+                                                                    //     "field${9}"],
                                                                     width: 1),
                                                               ),
                                                               enabledBorder:
                                                                   OutlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                    width: 1,
-                                                                    color: colorsset[
-                                                                        "field${9}"]),
+                                                                borderSide:
+                                                                    BorderSide(
+                                                                  width: 1,
+                                                                  // color: colorsset[
+                                                                  //     "field${9}"]
+                                                                ),
                                                               ),
                                                               labelText:
                                                                   'Step Width:'),
@@ -742,16 +768,18 @@ class _GarageUIState extends State<GarageUI> {
                                                               focusedBorder:
                                                                   OutlineInputBorder(
                                                                 borderSide: BorderSide(
-                                                                    color: colorsset[
-                                                                        "field${9}"],
+                                                                    // color: colorsset[
+                                                                    //     "field${9}"],
                                                                     width: 1),
                                                               ),
                                                               enabledBorder:
                                                                   OutlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                    width: 1,
-                                                                    color: colorsset[
-                                                                        "field${9}"]),
+                                                                borderSide:
+                                                                    BorderSide(
+                                                                  width: 1,
+                                                                  // color: colorsset[
+                                                                  //     "field${9}"]
+                                                                ),
                                                               ),
                                                               labelText:
                                                                   'Step Height:'),
@@ -781,7 +809,7 @@ class _GarageUIState extends State<GarageUI> {
                                 : SingleChildScrollView(
                                     // reverse: true,
                                     child: Container(
-                                      // color: Colors.yellow,
+                                      color: Colors.yellow,
                                       child: Column(
                                         children: [
                                           Container(
@@ -795,8 +823,7 @@ class _GarageUIState extends State<GarageUI> {
                                                           .size
                                                           .width *
                                                       .5,
-                                                  child: Text(
-                                                      'Number Of Steps:',
+                                                  child: Text('Number Of Steps',
                                                       style: TextStyle(
                                                         color: Color.fromRGBO(
                                                             10, 80, 106, 1),
@@ -989,7 +1016,7 @@ class _GarageUIState extends State<GarageUI> {
                                                       .size
                                                       .width *
                                                   .5,
-                                              child: Text('Going Up:',
+                                              child: Text('Going Up',
                                                   style: TextStyle(
                                                     color: Color.fromRGBO(
                                                         10, 80, 106, 1),
@@ -1018,11 +1045,11 @@ class _GarageUIState extends State<GarageUI> {
                                                         ['Railling']['OneSided']
                                                     ['GoingUp'] = value;
                                               },
-                                              value: widget.wholelist[9][
-                                                              widget.accessname]
-                                                          ['question']["10"]
-                                                      ['Railling']['OneSided']
-                                                  ['GoingUp'],
+                                              // value: widget.wholelist[9][
+                                              //                 widget.accessname]
+                                              //             ['question']["10"]
+                                              //         ['Railling']['OneSided']
+                                              //     ['GoingUp'],
                                             )
                                           ],
                                         ),
@@ -1037,7 +1064,7 @@ class _GarageUIState extends State<GarageUI> {
                                                       .size
                                                       .width *
                                                   .5,
-                                              child: Text('Going Down:',
+                                              child: Text('Going Down',
                                                   style: TextStyle(
                                                     color: Color.fromRGBO(
                                                         10, 80, 106, 1),
@@ -1066,16 +1093,16 @@ class _GarageUIState extends State<GarageUI> {
                                                         ['Railling']['OneSided']
                                                     ['GoingDown'] = value;
                                               },
-                                              value: widget.wholelist[9][
-                                                              widget.accessname]
-                                                          ['question']["10"]
-                                                      ['Railling']['OneSided']
-                                                  ['GoingDown'],
+                                              // value: widget.wholelist[9][
+                                              //                 widget.accessname]
+                                              //             ['question']["10"]
+                                              //         ['Railling']['OneSided']
+                                              //     ['GoingDown'],
                                             )
                                           ],
                                         ),
                                       ),
-                                      (type == 'Therapist')
+                                      (type == 'therapist')
                                           ? assesmentprovider.getrecowid(
                                               assesmentprovider, 10)
                                           : SizedBox()
@@ -1104,8 +1131,8 @@ class _GarageUIState extends State<GarageUI> {
                                   value: '',
                                 ),
                                 DropdownMenuItem(
-                                  child: Text('True'),
-                                  value: 'true',
+                                  child: Text('Yes'),
+                                  value: 'Yes',
                                 ),
                                 DropdownMenuItem(
                                   child: Text('No'),
@@ -1134,7 +1161,7 @@ class _GarageUIState extends State<GarageUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Observations:',
+                              child: Text('Observations',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1168,52 +1195,52 @@ class _GarageUIState extends State<GarageUI> {
                             new TextEditingController().clear();
                             // print(widget.accessname);
                             assesmentprovider.setdata(
-                                12, value, 'Observations:');
+                                12, value, 'Observations');
                           },
                         )),
                         SizedBox(
                           height: 15,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Time Completed:',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(10, 80, 106, 1),
-                                    fontSize: 20,
-                                  )),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 15),
-                        Container(
-                            child: TextFormField(
-                          enableInteractiveSelection: false,
-                          focusNode: new AlwaysDisabledFocusNode(),
-                          initialValue: widget.wholelist[9][widget.accessname]
-                              ['question']["13"]['Answer'],
-                          decoration: InputDecoration(
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Color.fromRGBO(10, 80, 106, 1),
-                                    width: 1),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(width: 1),
-                              ),
-                              suffix: Icon(Icons.mic),
-                              labelText:
-                                  'Input the Time at The End of Assessment'),
-                          onChanged: (value) {
-                            FocusScope.of(context).requestFocus();
-                            new TextEditingController().clear();
-                            // print(widget.accessname);
-                            assesmentprovider.setdata(
-                                13, value, 'Time Completed:');
-                          },
-                        )),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        //   children: [
+                        //     Container(
+                        //       width: MediaQuery.of(context).size.width * .4,
+                        //       child: Text('Time Completed',
+                        //           style: TextStyle(
+                        //             color: Color.fromRGBO(10, 80, 106, 1),
+                        //             fontSize: 20,
+                        //           )),
+                        //     ),
+                        //   ],
+                        // ),
+                        // SizedBox(height: 15),
+                        // Container(
+                        //     child: TextFormField(
+                        //   enableInteractiveSelection: false,
+                        //   focusNode: new AlwaysDisabledFocusNode(),
+                        //   initialValue: widget.wholelist[9][widget.accessname]
+                        //       ['question']["13"]['Answer'],
+                        //   decoration: InputDecoration(
+                        //       focusedBorder: OutlineInputBorder(
+                        //         borderSide: BorderSide(
+                        //             color: Color.fromRGBO(10, 80, 106, 1),
+                        //             width: 1),
+                        //       ),
+                        //       enabledBorder: OutlineInputBorder(
+                        //         borderSide: BorderSide(width: 1),
+                        //       ),
+                        //       suffix: Icon(Icons.mic),
+                        //       labelText:
+                        //           'Input the Time at The End of Assessment'),
+                        //   onChanged: (value) {
+                        //     FocusScope.of(context).requestFocus();
+                        //     new TextEditingController().clear();
+                        //     // print(widget.accessname);
+                        //     assesmentprovider.setdata(
+                        //         13, value, 'Time Completed');
+                        //   },
+                        // )),
                       ],
                     ),
                   ),
@@ -1221,7 +1248,8 @@ class _GarageUIState extends State<GarageUI> {
                       child: RaisedButton(
                     child: Text('Done'),
                     onPressed: () {
-                      var test = 0;
+                      var test =
+                          widget.wholelist[9][widget.accessname]['complete'];
                       for (int i = 0;
                           i <
                               widget.wholelist[9][widget.accessname]['question']
@@ -1231,6 +1259,13 @@ class _GarageUIState extends State<GarageUI> {
                         assesmentprovider.setdatalistenthera(i + 1);
                       }
                       if (test == 0) {
+                        _showSnackBar(
+                            "You Must Have To Fill The Details First", context);
+                      } else {
+                        NewAssesmentRepository()
+                            .setLatestChangeDate(widget.docID);
+                        NewAssesmentRepository()
+                            .setForm(widget.wholelist, widget.docID);
                         Navigator.pop(
                             context, widget.wholelist[9][widget.accessname]);
                       }

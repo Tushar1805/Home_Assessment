@@ -6,6 +6,8 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tryapp/Assesment/Forms/DiningRoom/diningroompro.dart';
+import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
+import 'package:tryapp/constants.dart';
 
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
@@ -146,6 +148,25 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
   //   return widget.wholelist[4][widget.accessname]['question'][index]
   //       ['Recommendationthera'];
   // }
+  void _showSnackBar(snackbar, BuildContext buildContext) {
+    final snackBar = SnackBar(
+      duration: const Duration(seconds: 3),
+      content: Container(
+        height: 30.0,
+        child: Center(
+          child: Text(
+            '$snackbar',
+            style: TextStyle(fontSize: 14.0, color: Colors.white),
+          ),
+        ),
+      ),
+      backgroundColor: lightBlack(),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+    );
+    ScaffoldMessenger.of(buildContext)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(snackBar);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -173,12 +194,15 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              '${widget.roomname} Details:',
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                                color: Color.fromRGBO(10, 80, 106, 1),
+                            Container(
+                              width: MediaQuery.of(context).size.width / 1.6,
+                              child: Text(
+                                '${widget.roomname}Details',
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color.fromRGBO(10, 80, 106, 1),
+                                ),
                               ),
                             ),
                             Container(
@@ -683,7 +707,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Type of Dining Table:',
+                              child: Text('Type of Dining Table',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -719,7 +743,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(
-                                      10, value, 'Type of Dining Table:');
+                                      10, value, 'Type of Dining Table');
                                 },
                                 value: assesmentprovider.getvalue(10),
                               ),
@@ -736,7 +760,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Number of Chairs:',
+                              child: Text('Number of Chairs',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -796,7 +820,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(
-                                      11, value, 'Number of Chairs:');
+                                      11, value, 'Number of Chairs');
                                 },
                                 value: assesmentprovider.getvalue(11),
                               ),
@@ -817,7 +841,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                                     .size
                                                     .width *
                                                 .5,
-                                            child: Text('Type of Chairs:',
+                                            child: Text('Type of Chairs',
                                                 style: TextStyle(
                                                   color: Color.fromRGBO(
                                                       10, 80, 106, 1),
@@ -925,7 +949,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Observations:',
+                              child: Text('Observations',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -958,7 +982,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                             new TextEditingController().clear();
                             // print(widget.accessname);
                             assesmentprovider.setdata(
-                                13, value, 'Observations:');
+                                13, value, 'Observations');
                           },
                         ))
                       ],
@@ -968,7 +992,8 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                       child: RaisedButton(
                     child: Text('Done'),
                     onPressed: () {
-                      var test = 0;
+                      var test =
+                          widget.wholelist[4][widget.accessname]['complete'];
                       for (int i = 0;
                           i <
                               widget.wholelist[4][widget.accessname]['question']
@@ -978,6 +1003,13 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                         assesmentprovider.setdatalistenthera(i + 1);
                       }
                       if (test == 0) {
+                        _showSnackBar(
+                            "You Must Have To Fill The Details First", context);
+                      } else {
+                        NewAssesmentRepository()
+                            .setLatestChangeDate(widget.docID);
+                        NewAssesmentRepository()
+                            .setForm(widget.wholelist, widget.docID);
                         Navigator.pop(
                             context, widget.wholelist[4][widget.accessname]);
                       }

@@ -15,6 +15,7 @@ import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
 import 'package:tryapp/Nurse_Case_Manager/Dashboard/nursedash.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdash.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistdash.dart';
+import 'package:tryapp/constants.dart';
 import '../Forms/LivingRoom/livingbase.dart';
 
 /// Frame of this page:
@@ -219,6 +220,26 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
     return bordertype;
   }
 
+  void _showSnackBar(snackbar, BuildContext buildContext) {
+    final snackBar = SnackBar(
+      duration: const Duration(seconds: 3),
+      content: Container(
+        height: 30.0,
+        child: Center(
+          child: Text(
+            '$snackbar',
+            style: TextStyle(fontSize: 14.0, color: Colors.white),
+          ),
+        ),
+      ),
+      backgroundColor: lightBlack(),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+    );
+    ScaffoldMessenger.of(buildContext)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(snackBar);
+  }
+
   @override
   Widget build(BuildContext context) {
     // AssesmentProvider assesmentProvider = AssesmentProvider();
@@ -372,18 +393,23 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
                         NewAssesmentRepository().setStatus("old", widget.docID);
                         NewAssesmentRepository()
                             .setAssessmentCompletionDate(widget.docID);
+                        _showSnackBar("Report Generated", context);
                       } else if (role == 'nurse/case manager') {
                         NewAssesmentRepository().setAssessmentCurrentStatus(
                             "Assessment Finished", widget.docID);
+                        _showSnackBar("Assessment Finished", context);
                       } else if (role == "patient") {
                         NewAssesmentRepository().setAssessmentCurrentStatus(
                             "Assessment Finished", widget.docID);
+                        _showSnackBar("Assessment Finished", context);
                       }
                       NewAssesmentRepository()
                           .setLatestChangeDate(widget.docID);
 
                       NewAssesmentRepository()
                           .setForm(widget.wholelist, widget.docID);
+                      // _showSnackBar(
+                      //     "Assessment Submitted Successfully", context);
                     },
                     loadingSwitchInCurve: Curves.bounceInOut,
                     loadingTransitionBuilder: (child, animation) {

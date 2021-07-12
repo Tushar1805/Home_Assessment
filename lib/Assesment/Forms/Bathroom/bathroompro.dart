@@ -80,13 +80,14 @@ class BathroomPro extends ChangeNotifier {
   }
 
   setdata(index, value, que) {
+    wholelist[5][accessname]['question']["$index"]['Question'] = que;
     if (value.length == 0) {
       if (wholelist[5][accessname]['question']["$index"]['Answer'].length ==
           0) {
       } else {
         wholelist[5][accessname]['complete'] -= 1;
         wholelist[5][accessname]['question']["$index"]['Answer'] = value;
-        wholelist[5][accessname]['question']["$index"]['Question'] = que;
+
         notifyListeners();
       }
     } else {

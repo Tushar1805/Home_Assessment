@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tryapp/Assesment/newassesment/cardsUI.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentbase.dart';
@@ -12,6 +14,7 @@ import 'package:tryapp/Therapist/Dashboard/nurses.dart';
 import 'package:tryapp/Therapist/Dashboard/patients.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistdashrepo.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistpro.dart';
+import 'package:tryapp/constants.dart';
 import 'package:tryapp/splash/assesment.dart';
 import 'package:tryapp/splash/midassessment.dart';
 import '../../login/login.dart';
@@ -72,20 +75,46 @@ class _TherapistUIState extends State<TherapistUI> {
     });
   }
 
-  Widget getButton(String status, String therapistUid, String assessorUid,
-      List<Map<String, dynamic>> list, String docID) {
+  Widget getButton(
+      String status,
+      String therapistUid,
+      String assessorUid,
+      String patientUid,
+      List<Map<String, dynamic>> list,
+      String docID,
+      BuildContext buildContext) {
+    void _showSnackBar(snackbar) {
+      final snackBar = SnackBar(
+        duration: const Duration(seconds: 3),
+        content: Container(
+          height: 25.0,
+          child: Center(
+            child: Text(
+              '$snackbar',
+              style: TextStyle(fontSize: 14.0, color: Colors.white),
+            ),
+          ),
+        ),
+        backgroundColor: lightBlack(),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      );
+      ScaffoldMessenger.of(buildContext)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(snackBar);
+    }
+
     if (status == "Assessment Scheduled" && assessorUid == curUid) {
       return Container(
         width: MediaQuery.of(context).size.width,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(5),
+            borderRadius: new BorderRadius.circular(10),
           ),
           padding: EdgeInsets.symmetric(
             vertical: 10,
             horizontal: 10,
           ),
-          elevation: 0,
+          elevation: 3,
           color: Color.fromRGBO(10, 80, 106, 1),
           onPressed: () {
             Navigator.push(
@@ -107,17 +136,18 @@ class _TherapistUIState extends State<TherapistUI> {
         width: MediaQuery.of(context).size.width,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(5),
+            borderRadius: new BorderRadius.circular(10),
           ),
           padding: EdgeInsets.symmetric(
             vertical: 10,
             horizontal: 10,
           ),
-          elevation: 0,
+          elevation: 3,
           color: Color.fromRGBO(10, 80, 106, 1),
           onPressed: () {
             // Navigator.push(context,
             //     MaterialPageRoute(builder: (context) => NewAssesment(docID)));
+            _showSnackBar("Wait For The Assessor To Finish The Assessment");
           },
           child: Text(
             "Assessment Scheduled",
@@ -133,13 +163,13 @@ class _TherapistUIState extends State<TherapistUI> {
         width: MediaQuery.of(context).size.width,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(5),
+            borderRadius: new BorderRadius.circular(10),
           ),
           padding: EdgeInsets.symmetric(
             vertical: 10,
             horizontal: 10,
           ),
-          elevation: 0,
+          elevation: 3,
           color: Color.fromRGBO(10, 80, 106, 1),
           onPressed: () {
             Navigator.push(
@@ -162,15 +192,17 @@ class _TherapistUIState extends State<TherapistUI> {
         width: MediaQuery.of(context).size.width,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(5),
+            borderRadius: new BorderRadius.circular(10),
           ),
           padding: EdgeInsets.symmetric(
             vertical: 10,
             horizontal: 10,
           ),
-          elevation: 0,
+          elevation: 3,
           color: Color.fromRGBO(10, 80, 106, 1),
-          onPressed: () {},
+          onPressed: () {
+            _showSnackBar("Wait For The Assessor To Finish The Assessment");
+          },
           child: Text(
             "Assessment in Progress",
             style: TextStyle(
@@ -185,17 +217,19 @@ class _TherapistUIState extends State<TherapistUI> {
         width: MediaQuery.of(context).size.width,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(5),
+            borderRadius: new BorderRadius.circular(10),
           ),
           padding: EdgeInsets.symmetric(
             vertical: 10,
             horizontal: 10,
           ),
-          elevation: 0,
+          elevation: 3,
           color: Color.fromRGBO(10, 80, 106, 1),
           onPressed: () {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => ReportBase(docID)));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ReportBase(docID, patientUid)));
           },
           child: Text(
             "View Report",
@@ -209,25 +243,31 @@ class _TherapistUIState extends State<TherapistUI> {
     } else if (status == "Assessment Finished" && curUid != assessorUid) {
       return Container(
         width: MediaQuery.of(context).size.width,
-        child: RaisedButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(5),
-          ),
-          padding: EdgeInsets.symmetric(
-            vertical: 10,
-            horizontal: 10,
-          ),
-          elevation: 0,
-          color: Color.fromRGBO(10, 80, 106, 1),
-          onPressed: () {
-            // Navigator.push(
-            //     context, MaterialPageRoute(builder: (context) => ReportBase(docID)));
-          },
-          child: Text(
-            "Provide Recommendations",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 15,
+        child: Positioned(
+          bottom: 0,
+          child: RaisedButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: new BorderRadius.circular(10),
+            ),
+            padding: EdgeInsets.symmetric(
+              vertical: 10,
+              horizontal: 10,
+            ),
+            elevation: 3,
+            color: Color.fromRGBO(10, 80, 106, 1),
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          CompleteAssessmentBase(list, docID, "therapist")));
+            },
+            child: Text(
+              "Provide Recommendations",
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 15,
+              ),
             ),
           ),
         ),
@@ -271,7 +311,7 @@ class _TherapistUIState extends State<TherapistUI> {
             : Container(
                 child: Container(
                 child: Padding(
-                  padding: EdgeInsets.only(top: 5, left: 5, right: 5),
+                  padding: EdgeInsets.all(8),
                   child: ConstrainedBox(
                     constraints: BoxConstraints(
                         maxHeight: 1000,
@@ -283,8 +323,13 @@ class _TherapistUIState extends State<TherapistUI> {
                       itemBuilder: (context, index) {
                         // print(assesspro.datasetmain.length);
                         // return;
-                        return listdata(assesspro.datasetmain[index],
-                            assesspro.datasetmain[index], assesspro);
+                        // return listdata(assesspro.datasetmain[index],
+                        //     assesspro.datasetmain[index], assesspro);
+                        return listdata(
+                            assesspro.datasetmain["$index"],
+                            assesspro.dataset.documents[index],
+                            assesspro,
+                            context);
                       },
                     ),
                   ),
@@ -292,45 +337,74 @@ class _TherapistUIState extends State<TherapistUI> {
               ));
   }
 
-  Widget listdata(snapshot, assessmentdata, TherapistProvider assesspro) {
-    // var data = getfield(snapshot);
-    // // print(snapshot);
-    final TherapistRepository therapistRepository = TherapistRepository();
-    // await assesspro.getdocref(assessmentdata);
-
-    patientUid = snapshot["patient"];
+  Widget listdata(snapshot, assessmentdata, TherapistProvider assesspro,
+      BuildContext buildContext) {
+    patientUid = assessmentdata.data["patient"] ?? "";
     List<Map<String, dynamic>> list = [];
 
-    if (snapshot["form"] != null) {
+    if (assessmentdata.data["form"] != null) {
       list = List<Map<String, dynamic>>.generate(
-          snapshot["form"].length,
-          (int index) =>
-              Map<String, dynamic>.from(snapshot["form"].elementAt(index)));
+          assessmentdata.data["form"].length,
+          (int index) => Map<String, dynamic>.from(
+              assessmentdata.data["form"].elementAt(index)));
     }
     // print(snapshot["patient"]);
     // print(snapshot);
     Widget getDate(String label, var date) {
-      if (snapshot["latestChangeDate"] != null ||
-          snapshot["assessmentCompletionDate"] != null) {
+      if (date != null) {
         return Container(
           width: double.infinity,
           child: Text(
-            '$label ${date.toDate()} ',
+            '$label ${DateFormat.yMd().format(date.toDate())} ',
             style: TextStyle(
               fontSize: 16,
             ),
           ),
         );
       } else {
-        if (label == "Completion Date: ") {
-          return Text("$label Yet to be Complete");
+        if (label == "Completion Date:") {
+          return Text(
+            "$label Yet to be Complete",
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          );
         } else {
-          return Text("$label Yet to be Begin");
+          return Text(
+            "$label Yet to be Begin",
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          );
         }
       }
     }
 
-    assesspro.getfielddata(snapshot["patient"]);
+    Widget getAddress(var address) {
+      if (address != null) {
+        return Container(
+          width: double.infinity,
+          child: Text(
+            'Home Address : ${assesspro.capitalize(snapshot["houses"][0]["address1"])}, ${assesspro.capitalize(snapshot["houses"][0]["address2"])}, ${assesspro.capitalize(snapshot["houses"][0]["city"])} ' ??
+                "Home Address: Nagpur",
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          ),
+        );
+      } else {
+        return Container(
+          child: Text(
+            "Home Address: Home Address not Availabe",
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          ),
+        );
+      }
+    }
+
+    // assesspro.getfielddata(snapshot["patient"]);
 
     if (assesspro.data2 == null) {
       return Container(
@@ -349,13 +423,14 @@ class _TherapistUIState extends State<TherapistUI> {
       );
     } else {
       return Container(
-          decoration: new BoxDecoration(boxShadow: [
-            new BoxShadow(
-              color: Colors.grey[200],
-              blurRadius: 15.0,
-            ),
-          ]),
-          padding: EdgeInsets.only(top: 5, left: 8, right: 8, bottom: 10),
+          // decoration: new BoxDecoration(boxShadow: [
+          //   new BoxShadow(
+          //     color: Colors.grey[100],
+          //     blurRadius: 15.0,
+          //   ),
+          // ]
+          // ),
+          padding: EdgeInsets.only(left: 8, right: 8, bottom: 10),
           // height: MediaQuery.of(context).size.height * 0.3,
           child: GestureDetector(
             child: Card(
@@ -395,26 +470,7 @@ class _TherapistUIState extends State<TherapistUI> {
                                 Container(
                                   width: double.infinity,
                                   child: Text(
-                                    'Patient Name: ${assesspro.data2["firstName"]} ${assesspro.data2["lastName"]}',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 2.5),
-                                Divider(),
-                                getDate("Completion Date: ",
-                                    snapshot["assessmentCompletionDate"]),
-                                SizedBox(height: 2.5),
-                                Divider(),
-                                getDate("Latest Change: ",
-                                    snapshot["latestChangeDate"]),
-                                SizedBox(height: 2.5),
-                                Divider(),
-                                Container(
-                                  width: double.infinity,
-                                  child: Text(
-                                    'Status : ${snapshot["currentStatus"]}',
+                                    'Patient Name: ${assesspro.capitalize(snapshot["firstName"])}${assesspro.capitalize(snapshot["lastName"])}',
                                     style: TextStyle(
                                       fontSize: 16,
                                     ),
@@ -425,20 +481,52 @@ class _TherapistUIState extends State<TherapistUI> {
                                 Container(
                                   width: double.infinity,
                                   child: Text(
-                                    'Home Address : ${assesspro.data2["houses"][0]["address1"]}, ${assesspro.data2["houses"][0]["address2"]}, ${assesspro.data2["houses"][0]["city"]} ' ??
-                                        "Home Address: Nagpur",
+                                    'Start Date: ${assessmentdata.data["date"]}' ??
+                                        "1/1/2021",
                                     style: TextStyle(
                                       fontSize: 16,
                                     ),
                                   ),
                                 ),
+                                SizedBox(height: 2.5),
+                                Divider(),
+                                getDate(
+                                    "Completion Date:",
+                                    assessmentdata
+                                        .data["assessmentCompletionDate"]),
+                                SizedBox(height: 2.5),
+                                Divider(),
+                                // getDate("Latest Change: ",
+                                //     snapshot["latestChangeDate"]),
+                                // SizedBox(height: 2.5),
+                                // Divider(),
+                                Container(
+                                  width: double.infinity,
+                                  child: Text(
+                                    'Status : ${assessmentdata.data["currentStatus"]}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: 2.5),
+                                Divider(),
+
+                                getAddress(snapshot["houses"]),
+
                                 // Container(child: Text('${dataset.data}')),
                               ],
                             )),
                       ],
                     ),
-                    getButton(snapshot["currentStatus"], snapshot["therapist"],
-                        snapshot["assessor"], list, snapshot["docID"]),
+                    getButton(
+                        assessmentdata.data["currentStatus"],
+                        assessmentdata.data["therapist"],
+                        assessmentdata.data["assessor"],
+                        assessmentdata.data["patient"],
+                        list,
+                        assessmentdata.data["docID"],
+                        context),
                   ],
                 ))),
             onTap: () async {
@@ -468,6 +556,32 @@ class _TherapistUIState extends State<TherapistUI> {
   @override
   Widget build(BuildContext context) {
     TherapistProvider assesspro = Provider.of<TherapistProvider>(context);
+    Widget getName(String name) {
+      if (name != null) {
+        return Container(
+          alignment: Alignment.bottomLeft,
+          child: Text(
+            "${assesspro.capitalize(name)}",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 37,
+            ),
+          ),
+        );
+      } else {
+        return Container(
+          alignment: Alignment.bottomLeft,
+          child: Text(
+            "Therapist",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 37,
+            ),
+          ),
+        );
+      }
+    }
+
     return WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(
@@ -500,16 +614,7 @@ class _TherapistUIState extends State<TherapistUI> {
                                   ),
                                 ),
                               ),
-                              Container(
-                                alignment: Alignment.bottomLeft,
-                                child: Text(
-                                  "$userFirstName",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 37,
-                                  ),
-                                ),
-                              ),
+                              getName(userFirstName),
                             ],
                           ),
                         ),
@@ -596,7 +701,7 @@ class _TherapistUIState extends State<TherapistUI> {
               elevation: 0.0,
               actions: [
                 FlatButton.icon(
-                  icon: Icon(Icons.logout),
+                  icon: Icon(Icons.logout, color: Colors.white),
                   onPressed: () async {
                     try {
                       await _auth.signOut();
@@ -606,7 +711,10 @@ class _TherapistUIState extends State<TherapistUI> {
                       print(e.toString());
                     }
                   },
-                  label: Text('Logout'),
+                  label: Text(
+                    'Logout',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
                 )
               ],
             ),

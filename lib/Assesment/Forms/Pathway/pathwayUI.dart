@@ -8,6 +8,7 @@ import 'dart:io';
 import 'package:tryapp/Assesment/Forms/Pathway/pathwaypro.dart';
 import 'package:provider/provider.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
+import 'package:tryapp/constants.dart';
 
 ///Frame of this page:
 ///       init function:
@@ -116,6 +117,8 @@ class _PathwayUIState extends State<PathwayUI> {
 // This function is used to set data i.e to take data from thr field and feed it in
 // map.
   setdata(index, value, que) {
+    widget.wholelist[0][widget.accessname]['question']["$index"]['Question'] =
+        que;
     if (value.length == 0) {
       if (widget.wholelist[0][widget.accessname]['question']["$index"]['Answer']
               .length ==
@@ -202,6 +205,25 @@ class _PathwayUIState extends State<PathwayUI> {
     //   _image = image;
     // });
   }
+  void _showSnackBar(snackbar, BuildContext buildContext) {
+    final snackBar = SnackBar(
+      duration: const Duration(seconds: 3),
+      content: Container(
+        height: 30.0,
+        child: Center(
+          child: Text(
+            '$snackbar',
+            style: TextStyle(fontSize: 14.0, color: Colors.white),
+          ),
+        ),
+      ),
+      backgroundColor: lightBlack(),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+    );
+    ScaffoldMessenger.of(buildContext)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(snackBar);
+  }
 
 // UI
   @override
@@ -233,7 +255,7 @@ class _PathwayUIState extends State<PathwayUI> {
                             Container(
                                 width: MediaQuery.of(context).size.width / 1.6,
                                 child: Text(
-                                  '${widget.roomname} Details:',
+                                  '${widget.roomname}Details',
                                   style: TextStyle(
                                     fontSize: 25,
                                     fontWeight: FontWeight.bold,
@@ -316,7 +338,7 @@ class _PathwayUIState extends State<PathwayUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .5,
-                              child: Text('Client Typically Uses',
+                              child: Text('Typically Uses',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -350,7 +372,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(2, value, 'Client Typically Uses');
+                                  setdata(2, value, 'Typically Uses');
                                 },
                                 value: getvalue(2),
                               ),
@@ -363,7 +385,7 @@ class _PathwayUIState extends State<PathwayUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .5,
-                              child: Text('Client Ocasionally Uses',
+                              child: Text('Ocasionally Uses',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -397,7 +419,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(3, value, 'Client Ocasionally Uses');
+                                  setdata(3, value, 'Ocasionally Uses');
                                 },
                                 value: getvalue(3),
                               ),
@@ -534,7 +556,7 @@ class _PathwayUIState extends State<PathwayUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Type of Steps:',
+                              child: Text('Type of Steps',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -565,7 +587,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(7, value, 'Type of Steps:');
+                                  setdata(7, value, 'Type of Steps');
                                 },
                                 value: getvalue(7),
                               ),
@@ -591,8 +613,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                           .size
                                                           .width *
                                                       .5,
-                                                  child: Text(
-                                                      'Number Of Steps:',
+                                                  child: Text('Number Of Steps',
                                                       style: TextStyle(
                                                         color: Color.fromRGBO(
                                                             10, 80, 106, 1),
@@ -646,11 +667,11 @@ class _PathwayUIState extends State<PathwayUI> {
                                                               [
                                                               'Recommendation'] = value;
                                                         });
-                                                        print(widget.wholelist[
-                                                                    0][
-                                                                widget
-                                                                    .accessname]
-                                                            ['question']);
+                                                        // print(widget.wholelist[
+                                                        //             0][
+                                                        //         widget
+                                                        //             .accessname]
+                                                        //     ['question']);
                                                       }),
                                                 ),
                                               ],
@@ -757,11 +778,11 @@ class _PathwayUIState extends State<PathwayUI> {
                                                               [
                                                               'Single Step Height'] = value;
                                                         });
-                                                        print(widget.wholelist[
-                                                                    0][
-                                                                widget
-                                                                    .accessname]
-                                                            ['question']["7"]);
+                                                        // print(widget.wholelist[
+                                                        //             0][
+                                                        //         widget
+                                                        //             .accessname]
+                                                        //     ['question']["7"]);
                                                       },
                                                     ),
                                                   ),
@@ -788,8 +809,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                           .size
                                                           .width *
                                                       .5,
-                                                  child: Text(
-                                                      'Number Of Steps:',
+                                                  child: Text('Number Of Steps',
                                                       style: TextStyle(
                                                         color: Color.fromRGBO(
                                                             10, 80, 106, 1),
@@ -880,11 +900,11 @@ class _PathwayUIState extends State<PathwayUI> {
                                                         }
                                                       });
 
-                                                      print(widget.wholelist[0][
-                                                                  widget
-                                                                      .accessname]
-                                                              ['question']["7"]
-                                                          ['MultipleStair']);
+                                                      // print(widget.wholelist[0][
+                                                      //             widget
+                                                      //                 .accessname]
+                                                      //         ['question']["7"]
+                                                      //     ['MultipleStair']);
                                                     },
                                                   ),
                                                 ),
@@ -1029,7 +1049,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                       .size
                                                       .width *
                                                   .5,
-                                              child: Text('Going Down:',
+                                              child: Text('Going Down',
                                                   style: TextStyle(
                                                     color: Color.fromRGBO(
                                                         10, 80, 106, 1),
@@ -1126,7 +1146,7 @@ class _PathwayUIState extends State<PathwayUI> {
                             Container(
                               width: MediaQuery.of(context).size.width * .5,
                               child: Text(
-                                  'Client is Able to Manage Through Doors/Thresholds/ Door Sills?',
+                                  'Able to Manage Through Doors/Thresholds/ Door Sills?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1168,7 +1188,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
                                 setdata(10, value,
-                                    'Client is Able to Manage Through Doors/Thresholds/ Door Sills?');
+                                    'Able to Manage Through Doors/Thresholds/ Door Sills?');
                               },
                               value: getvalue(10),
                             )
@@ -1185,12 +1205,11 @@ class _PathwayUIState extends State<PathwayUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .5,
-                              child:
-                                  Text('Client is Able to Lock/Unlock Doors?',
-                                      style: TextStyle(
-                                        color: Color.fromRGBO(10, 80, 106, 1),
-                                        fontSize: 20,
-                                      )),
+                              child: Text('Able to Lock/Unlock Doors?',
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(10, 80, 106, 1),
+                                    fontSize: 20,
+                                  )),
                             ),
                             DropdownButton(
                               items: [
@@ -1227,8 +1246,8 @@ class _PathwayUIState extends State<PathwayUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(11, value,
-                                    'Client is Able to Lock/Unlock Doors?');
+                                setdata(
+                                    11, value, 'Able to Lock/Unlock Doors?');
                               },
                               value: getvalue(11),
                             )
@@ -1245,7 +1264,7 @@ class _PathwayUIState extends State<PathwayUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .5,
-                              child: Text('Observations:',
+                              child: Text('Observations',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1281,6 +1300,7 @@ class _PathwayUIState extends State<PathwayUI> {
                             new TextEditingController().clear();
                             // print(widget.accessname);
                             setreco(12, value);
+                            setdata(12, value, 'Oberservations');
                           },
                         ))
                       ],
@@ -1290,11 +1310,10 @@ class _PathwayUIState extends State<PathwayUI> {
                       child: RaisedButton(
                     child: Text('Done'),
                     onPressed: () async {
-                      listenbutton();
-                      NewAssesmentRepository()
-                          .setLatestChangeDate(widget.docID);
-                      NewAssesmentRepository()
-                          .setForm(widget.wholelist, widget.docID);
+                      listenbutton(context);
+
+                      // _showSnackBar(
+                      //     "You Must Have to Fill the Details First", context);
                     },
                   ))
                 ],
@@ -1307,8 +1326,8 @@ class _PathwayUIState extends State<PathwayUI> {
   }
 
   /// this fucntion helps us to listent to hte done button at the bottom
-  void listenbutton() {
-    var test = 0;
+  void listenbutton(BuildContext buildContext) {
+    var test = widget.wholelist[0][widget.accessname]["complete"];
     for (int i = 0;
         i < widget.wholelist[0][widget.accessname]['question'].length;
         i++) {
@@ -1324,6 +1343,10 @@ class _PathwayUIState extends State<PathwayUI> {
       setdatalisten(i + 1);
     }
     if (test == 0) {
+      _showSnackBar("You Must Have to Fill The Details First", buildContext);
+    } else {
+      NewAssesmentRepository().setLatestChangeDate(widget.docID);
+      NewAssesmentRepository().setForm(widget.wholelist, widget.docID);
       Navigator.pop(context, widget.wholelist[0][widget.accessname]);
     }
   }

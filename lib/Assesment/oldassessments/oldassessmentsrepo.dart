@@ -30,6 +30,13 @@ class OldAssessmentRepo {
           .where('status', isEqualTo: type)
           .getDocuments();
       return dataset;
+    } else if (role == "patient") {
+      dataset = await firestore
+          .collection('assessments')
+          .where('patient', isEqualTo: user.uid)
+          .where('status', isEqualTo: type)
+          .getDocuments();
+      return dataset;
     }
     // return dataset;
   }

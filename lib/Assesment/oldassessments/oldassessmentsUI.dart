@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentbase.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
 import 'package:tryapp/CompleteAssessment/completeAssessmentBase.dart';
@@ -43,6 +44,26 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
     });
   }
 
+  void _showSnackBar(snackbar, BuildContext buildContext) {
+    final snackBar = SnackBar(
+      duration: const Duration(seconds: 3),
+      content: Container(
+        height: 25.0,
+        child: Center(
+          child: Text(
+            '$snackbar',
+            style: TextStyle(fontSize: 14.0, color: Colors.white),
+          ),
+        ),
+      ),
+      backgroundColor: lightBlack(),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+    );
+    ScaffoldMessenger.of(buildContext)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(snackBar);
+  }
+
   @override
   Widget build(BuildContext context) {
     final assesspro = Provider.of<OldAssessmentsProvider>(context);
@@ -66,85 +87,86 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
           backgroundColor: assesspro.colorgreen,
           title: Text('Assessments'),
         ),
+        backgroundColor: Colors.grey[200],
         body: SingleChildScrollView(
           child: Container(
               child: Column(
             children: [
               Container(
-                padding: EdgeInsets.fromLTRB(25, 5, 25, 5),
+                padding: EdgeInsets.fromLTRB(25, 10, 25, 10),
                 height: MediaQuery.of(context).size.height * 0.09,
                 width: MediaQuery.of(context).size.height * 0.6,
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  color: Colors.grey[200],
-                  child: Row(
-                    children: [
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.09,
-                        width: MediaQuery.of(context).size.width * 0.41,
-                        padding: EdgeInsets.all(7),
-                        // color: Colors.red,
-                        child: RaisedButton(
-                          color: (!assesspro.assessdisplay)
-                              ? Colors.green[600]
-                              : Colors.grey[200],
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(7),
-                            // side: BorderSide(color: Colors.grey[200])
-                          ),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              "Old",
-                              style: TextStyle(
-                                  fontSize: 14.0,
-                                  color: (!assesspro.assessdisplay)
-                                      ? Colors.white
-                                      : Colors.grey[700]),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          onPressed: () {
-                            assesspro.getstatuspatient('old', role);
-                          },
+                // child: Card(
+                //   shape: RoundedRectangleBorder(
+                //       borderRadius: BorderRadius.circular(10)),
+                //   color: Colors.grey[200],
+                child: Row(
+                  children: [
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.09,
+                      width: MediaQuery.of(context).size.width * 0.41,
+                      padding: EdgeInsets.all(7),
+                      // color: Colors.red,
+                      child: RaisedButton(
+                        color: (!assesspro.assessdisplay)
+                            ? Colors.green[600]
+                            : Colors.grey[300],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(7),
+                          // side: BorderSide(color: Colors.grey[200])
                         ),
-                      ),
-                      // SizedBox(width: MediaQuery.of(context).size.width * 0.05),
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.09,
-                        width: MediaQuery.of(context).size.width * 0.42,
-                        // color: Colors.yellow,
-                        padding: EdgeInsets.all(7),
-                        child: RaisedButton(
-                          color: (assesspro.assessdisplay)
-                              ? Colors.green
-                              : Colors.grey[200],
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(7),
-                            // side: BorderSide(color: Colors.grey[200])
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Old",
+                            style: TextStyle(
+                                fontSize: 14.0,
+                                color: (!assesspro.assessdisplay)
+                                    ? Colors.white
+                                    : Colors.grey[700]),
+                            textAlign: TextAlign.center,
                           ),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              "Newly Assigned",
-                              style: TextStyle(
-                                  fontSize: 14.0,
-                                  color: (assesspro.assessdisplay)
-                                      ? Colors.white
-                                      : Colors.grey[700]),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          onPressed: () {
-                            assesspro.getstatuspatient('new', role);
-                          },
                         ),
+                        onPressed: () {
+                          assesspro.getstatuspatient('old', role);
+                        },
                       ),
-                    ],
-                  ),
+                    ),
+                    // SizedBox(width: MediaQuery.of(context).size.width * 0.05),
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.09,
+                      width: MediaQuery.of(context).size.width * 0.42,
+                      // color: Colors.yellow,
+                      padding: EdgeInsets.all(7),
+                      child: RaisedButton(
+                        color: (assesspro.assessdisplay)
+                            ? Colors.green
+                            : Colors.grey[300],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(7),
+                          // side: BorderSide(color: Colors.grey[200])
+                        ),
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            "Newly Assigned",
+                            style: TextStyle(
+                                fontSize: 14.0,
+                                color: (assesspro.assessdisplay)
+                                    ? Colors.white
+                                    : Colors.grey[700]),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        onPressed: () {
+                          assesspro.getstatuspatient('new', role);
+                        },
+                      ),
+                    ),
+                  ],
                 ),
               ),
+              // ),
               Container(
                   width: double.infinity,
                   alignment: Alignment.centerRight,
@@ -279,26 +301,29 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
               )
             : Container(
                 child: Container(
-                child: Padding(
-                  padding: EdgeInsets.all(15),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                        maxHeight: 1000,
-                        minHeight: MediaQuery.of(context).size.height / 10),
+                  child: Padding(
+                    padding: EdgeInsets.all(8),
+                    // child: ConstrainedBox(
+                    //   constraints: BoxConstraints(
+                    //       maxHeight: 1000,
+                    //       minHeight: MediaQuery.of(context).size.height / 10),
                     child: ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
+                      physics: BouncingScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: assesspro.datasetmain.length,
                       itemBuilder: (context, index1) {
                         // print(assesspro.datasetmain.length);
                         // return;
-                        return listdata(assesspro.datasetmain["$index1"],
-                            assesspro.dataset.documents[index1], assesspro);
+                        return listdata(
+                            assesspro.datasetmain["$index1"],
+                            assesspro.dataset.documents[index1],
+                            assesspro,
+                            context);
                       },
                     ),
                   ),
                 ),
-              ));
+              );
   }
 
   Widget newassessments(assesspro) {
@@ -337,46 +362,105 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
               )
             : Container(
                 child: Container(
-                child: Padding(
-                  padding: EdgeInsets.all(15),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                        maxHeight: 1000,
-                        minHeight: MediaQuery.of(context).size.height / 10),
+                  child: Padding(
+                    padding: EdgeInsets.all(8),
+                    // child: ConstrainedBox(
+                    // constraints: BoxConstraints(
+                    //     maxHeight: MediaQuery.of(context).size.height,
+                    //     minHeight: MediaQuery.of(context).size.height / 10),
                     child: ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: assesspro.datasetmain.length,
                       itemBuilder: (context, index1) {
                         // print(assesspro.getdocref());
-                        return listdata(assesspro.datasetmain["$index1"],
-                            assesspro.dataset.documents[index1], assesspro);
+                        return listdata(
+                            assesspro.datasetmain["$index1"],
+                            assesspro.dataset.documents[index1],
+                            assesspro,
+                            context);
                       },
                     ),
                   ),
                 ),
-              )
+              );
 
-                // child: RaisedButton(onPressed: () {
-                //   print(assesspro.datasetmain['0'].data['name']);
-                // }),
-                );
+    // child: RaisedButton(onPressed: () {
+    //   print(assesspro.datasetmain['0'].data['name']);
+    // }),
   }
 
-  Widget listdata(snapshot, assessmentdata, OldAssessmentsProvider assesspro) {
+  Widget listdata(snapshot, assessmentdata, OldAssessmentsProvider assesspro,
+      BuildContext buildContext) {
     // var data = getfield(snapshot);
     // print(snapshot);
-    return Container(
-        decoration: new BoxDecoration(boxShadow: [
-          new BoxShadow(
-            color: Colors.grey[300],
-            blurRadius: 15.0,
+
+    Widget getAddress(var address) {
+      if (address != null) {
+        return Container(
+          width: double.infinity,
+          child: Text(
+            'Patient Address: ${assesspro.capitalize(address[0]["address1"])}, ${assesspro.capitalize(address[0]["address2"])}',
+            style: TextStyle(
+              fontSize: 16,
+            ),
           ),
-        ]),
+        );
+      } else {
+        return Container(
+          width: double.infinity,
+          child: Text(
+            'Patient Address: Nagpur',
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          ),
+        );
+      }
+    }
+
+    Widget getDate(String label, var date) {
+      if (date != null) {
+        return Container(
+          width: double.infinity,
+          child: Text(
+            '$label ${DateFormat.yMd().format(date.toDate())} ',
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          ),
+        );
+      } else {
+        if (label == "Completion Date:") {
+          return Text(
+            "$label Yet to be Complete",
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          );
+        } else {
+          return Text(
+            "$label Yet to be Begin",
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          );
+        }
+      }
+    }
+
+    return Container(
+        // decoration: new BoxDecoration(boxShadow: [
+        //   new BoxShadow(
+        //     color: Colors.grey[100],
+        //     blurRadius: 15.0,
+        //   ),
+        // ]),
         padding: EdgeInsets.all(7),
         // height: MediaQuery.of(context).size.height * 0.17,
         child: GestureDetector(
           child: Card(
+              elevation: 3,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10)),
               color: Colors.white,
@@ -410,7 +494,7 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
                           Container(
                             width: double.infinity,
                             child: Text(
-                              'Patient Name: ${snapshot['firstName']} ${snapshot["lastName"]}',
+                              'Patient Name: ${assesspro.capitalize(snapshot['firstName'])}${assesspro.capitalize(snapshot["lastName"])}',
                               style: TextStyle(
                                 fontSize: 16,
                               ),
@@ -421,7 +505,7 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
                           Container(
                             width: double.infinity,
                             child: Text(
-                              'Patient Age: ${snapshot['age']}',
+                              'Patient Age: ${snapshot['age'] ?? '18'}',
                               style: TextStyle(
                                 fontSize: 16,
                               ),
@@ -429,15 +513,7 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
                           ),
                           SizedBox(height: 2.5),
                           Divider(),
-                          Container(
-                            width: double.infinity,
-                            child: Text(
-                              'Patient Address: ${snapshot['houses'][0]["address1"]}, ${snapshot["houses"][0]["address2"]}',
-                              style: TextStyle(
-                                fontSize: 16,
-                              ),
-                            ),
-                          ),
+                          getAddress(snapshot["houses"]),
                           SizedBox(height: 2.5),
                           Divider(),
                           Container(
@@ -449,6 +525,10 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
                               ),
                             ),
                           ),
+                          SizedBox(height: 2.5),
+                          Divider(),
+                          getDate("Completion Date:",
+                              assessmentdata['assessmentCompletionDate']),
                           SizedBox(height: 2.5),
                           Divider(),
                           Container(
@@ -487,17 +567,39 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
                   MaterialPageRoute(
                       builder: (context) => CompleteAssessmentBase(
                           list, assesspro.curretnassessmentdocref, role)));
-            }
-            if (assessmentdata.data['currentStatus'] == "Report Generated") {
+            } else if (assessmentdata.data['currentStatus'] ==
+                    "Assessment Scheduled" &&
+                assessmentdata.data["assessor"] == user.uid) {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          ReportBase(assesspro.curretnassessmentdocref)));
+                      builder: (context) => NewAssesment(
+                          assesspro.curretnassessmentdocref, role)));
+            } else if (assessmentdata.data['currentStatus'] ==
+                "Report Generated") {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ReportBase(
+                          assesspro.curretnassessmentdocref,
+                          assessmentdata["patient"])));
+            } else if (assessmentdata.data['currentStatus'] ==
+                    "Assessment Finished" &&
+                assessmentdata["therapist"] == user.uid) {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => CompleteAssessmentBase(
+                          list, assesspro.curretnassessmentdocref, role)));
+              // _showSnackBar("Wait For The Therapist To Provide Recommendations",
+              //     buildContext);
+            } else if (assessmentdata.data['currentStatus'] ==
+                    "Assessment Finished" &&
+                assessmentdata["therapist"] != user.uid) {
+              _showSnackBar("Wait For The Therapist To Provide Recommendations",
+                  buildContext);
             } else {
-              SnackBar(
-                content: Text(assessmentdata.data["currentStatus"]),
-              );
+              _showSnackBar("Assessment is Yet to be Finished", buildContext);
             }
           },
         ));

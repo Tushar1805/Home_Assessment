@@ -6,6 +6,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tryapp/Assesment/Forms/Bedroom/bedroompro.dart';
+import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
+import 'package:tryapp/constants.dart';
 
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
@@ -140,6 +142,25 @@ class _BedroomUIState extends State<BedroomUI> {
   //   return widget.wholelist[6][widget.accessname]['question'][index]
   //       ['Recommendationthera'];
   // }
+  void _showSnackBar(snackbar, BuildContext buildContext) {
+    final snackBar = SnackBar(
+      duration: const Duration(seconds: 3),
+      content: Container(
+        height: 30.0,
+        child: Center(
+          child: Text(
+            '$snackbar',
+            style: TextStyle(fontSize: 14.0, color: Colors.white),
+          ),
+        ),
+      ),
+      backgroundColor: lightBlack(),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+    );
+    ScaffoldMessenger.of(buildContext)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(snackBar);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -167,12 +188,15 @@ class _BedroomUIState extends State<BedroomUI> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              '${widget.roomname} Details:',
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                                color: Color.fromRGBO(10, 80, 106, 1),
+                            Container(
+                              width: MediaQuery.of(context).size.width / 1.6,
+                              child: Text(
+                                '${widget.roomname}Details',
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color.fromRGBO(10, 80, 106, 1),
+                                ),
                               ),
                             ),
                             Container(
@@ -1074,6 +1098,8 @@ class _BedroomUIState extends State<BedroomUI> {
                             FocusScope.of(context).requestFocus();
                             new TextEditingController().clear();
                             // print(widget.accessname);
+                            widget.wholelist[6][widget.accessname]['question']
+                                ["18"]['Question'] = 'Observations';
 
                             if (value.length == 0) {
                               if (widget
@@ -1114,7 +1140,8 @@ class _BedroomUIState extends State<BedroomUI> {
                       child: RaisedButton(
                     child: Text('Done'),
                     onPressed: () {
-                      var test = 0;
+                      var test =
+                          widget.wholelist[6][widget.accessname]['complete'];
                       for (int i = 0;
                           i <
                               widget.wholelist[6][widget.accessname]['question']
@@ -1124,6 +1151,13 @@ class _BedroomUIState extends State<BedroomUI> {
                         assesmentprovider.setdatalistenthera(i + 1);
                       }
                       if (test == 0) {
+                        _showSnackBar(
+                            "You Must Have To Fill The Details First", context);
+                      } else {
+                        NewAssesmentRepository()
+                            .setLatestChangeDate(widget.docID);
+                        NewAssesmentRepository()
+                            .setForm(widget.wholelist, widget.docID);
                         Navigator.pop(
                             context, widget.wholelist[6][widget.accessname]);
                       }

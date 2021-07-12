@@ -2,12 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PatientRepository {
-  Firestore firestoreInstance = Firestore.instance;
+  Firestore firestore = Firestore.instance;
   FirebaseAuth _auth = FirebaseAuth.instance;
+  QuerySnapshot dataset;
+  QuerySnapshot datasetorder;
 
   getUserData() async {
     FirebaseUser firebaseUser = await FirebaseAuth.instance.currentUser();
-    var dataname = await firestoreInstance
+    var dataname = await firestore
         .collection("users")
         .document(firebaseUser.uid)
         .get()
@@ -17,34 +19,53 @@ class PatientRepository {
     return await dataname;
   }
 
-  Future<List> getassessments() async {
-    final FirebaseUser useruid = await _auth.currentUser();
-    // String uid;
-    //  await getcurrentuid().then((value) =>
-    //    setState(() {
-    //    if (value is String)
-    //         uid = value.toString(); //use toString to convert as String
-    // }););
-    List list = [];
-    var assess = firestoreInstance
-        .collection('assessments')
-        .where('patient', isEqualTo: useruid.uid)
-        .getDocuments()
-        .then((value) => value.documents.forEach((element) {
-              list.add(element.data);
-            }));
+  // Future<List> getassessments() async {
+  //   final FirebaseUser useruid = await _auth.currentUser();
+  //   // String uid;
+  //   //  await getcurrentuid().then((value) =>
+  //   //    setState(() {
+  //   //    if (value is String)
+  //   //         uid = value.toString(); //use toString to convert as String
+  //   // }););
+  //   List list = [];
+  //   var assess = firestoreInstance
+  //       .collection('assessments')
+  //       .where('patient', isEqualTo: useruid.uid)
+  //       .getDocuments()
+  //       .then((value) => value.documents.forEach((element) {
+  //             list.add(element.data);
+  //           }));
 
-    return list;
+  //   return list;
+  // }
+  Future<QuerySnapshot> getAssessments(role) async {
+    FirebaseUser user = await _auth.currentUser();
+
+    dataset = await firestore
+        .collection('assessments')
+        .where('patient', isEqualTo: user.uid)
+        .getDocuments();
+    return dataset;
+
+    // return dataset;
+  }
+
+  Future<String> getassessmentdocid(asessmentdoc) async {
+    return asessmentdoc.reference.documentID;
+    // dataset.documents.forEach((e) => print(e.reference.documentID));
+  }
+
+  Future<DocumentSnapshot> getfielddata(String uid) async {
+    var data = await firestore.collection('users').document(uid).get();
+    return data;
   }
 
   Future<String> saveInDatabase(
       String patientUid, String time, DateTime date) async {
     String docId =
-        await firestoreInstance.collection("assessments").document().documentID;
-    var res = await firestoreInstance
-        .collection('assessments')
-        .document(docId)
-        .setData({
+        await firestore.collection("assessments").document().documentID;
+    var res =
+        await firestore.collection('assessments').document(docId).setData({
       "form": "",
       "assessmentCompletionDate": "",
       "assessor": "",
@@ -60,10 +81,5 @@ class PatientRepository {
       "docID": docId,
     });
     return docId.toString();
-  }
-
-  Future<DocumentSnapshot> getfielddata(String uid) async {
-    var data = await firestoreInstance.collection('users').document(uid).get();
-    return data;
   }
 }

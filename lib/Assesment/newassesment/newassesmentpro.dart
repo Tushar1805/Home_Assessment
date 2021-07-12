@@ -92,6 +92,17 @@ class NewAssesmentProvider extends ChangeNotifier {
   setassessmainstatus(String docID) async {
     newRepo.setassessmentstatus(docID);
   }
+
+  String capitalize(String s) {
+    if (s != null) {
+      var parts = s.split(' ');
+      // print(parts);
+      String sum = '';
+      parts.forEach(
+          (cur) => {sum += cur[0].toUpperCase() + cur.substring(1) + " "});
+      return sum;
+    }
+  }
 }
 
 ///This function is to get how many quetions are there
@@ -100,7 +111,7 @@ class NewAssesmentProvider extends ChangeNotifier {
 ///is specified in below function
 gettotal(String classname) {
   if (classname == 'Garage') {
-    return 13;
+    return 12;
   } else if (classname == 'Patio') {
     return 12;
   } else if (classname == 'Laundry') {
@@ -114,7 +125,7 @@ gettotal(String classname) {
   } else if (classname == 'Kitchen') {
     return 18;
   } else if (classname == 'Living Room') {
-    return 11;
+    return 12;
   } else if (classname == 'Living Arrangements') {
     return 14;
   } else if (classname == 'Pathway') {
@@ -169,10 +180,12 @@ Widget getinfo() {
 /// This fucntion is used to capitalize every initial
 /// of any string feeded as name of the room.
 String capitalize(String s) {
-  var parts = s.split(' ');
-  print(parts);
-  String sum = '';
-  parts
-      .forEach((cur) => {sum += cur[0].toUpperCase() + cur.substring(1) + " "});
-  return sum;
+  if (s != null) {
+    var parts = s.split(' ');
+    // print(parts);
+    String sum = '';
+    parts.forEach(
+        (cur) => {sum += cur[0].toUpperCase() + cur.substring(1) + " "});
+    return sum;
+  }
 }

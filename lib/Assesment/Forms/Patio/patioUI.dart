@@ -3,6 +3,8 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
+import 'package:tryapp/constants.dart';
 
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
@@ -95,6 +97,8 @@ class _PatioUIState extends State<PatioUI> {
   }
 
   setdata(index, value, que) {
+    widget.wholelist[8][widget.accessname]['question']["$index"]['Question'] =
+        que;
     if (value.length == 0) {
       if (widget.wholelist[8][widget.accessname]['question']["$index"]['Answer']
               .length ==
@@ -104,8 +108,6 @@ class _PatioUIState extends State<PatioUI> {
           widget.wholelist[8][widget.accessname]['complete'] -= 1;
           widget.wholelist[8][widget.accessname]['question']["$index"]
               ['Answer'] = value;
-          widget.wholelist[8][widget.accessname]['question']["$index"]
-              ['Question'] = que;
         });
       }
     } else {
@@ -164,6 +166,26 @@ class _PatioUIState extends State<PatioUI> {
         ['Recommendationthera'];
   }
 
+  void _showSnackBar(snackbar, BuildContext buildContext) {
+    final snackBar = SnackBar(
+      duration: const Duration(seconds: 3),
+      content: Container(
+        height: 30.0,
+        child: Center(
+          child: Text(
+            '$snackbar',
+            style: TextStyle(fontSize: 14.0, color: Colors.white),
+          ),
+        ),
+      ),
+      backgroundColor: lightBlack(),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+    );
+    ScaffoldMessenger.of(buildContext)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(snackBar);
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -189,12 +211,15 @@ class _PatioUIState extends State<PatioUI> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              '${widget.roomname} Details:',
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                                color: Color.fromRGBO(10, 80, 106, 1),
+                            Container(
+                              width: MediaQuery.of(context).size.width / 1.6,
+                              child: Text(
+                                '${widget.roomname}Details',
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color.fromRGBO(10, 80, 106, 1),
+                                ),
                               ),
                             ),
                             Container(
@@ -377,7 +402,7 @@ class _PatioUIState extends State<PatioUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Lighting:',
+                              child: Text('Lighting',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -403,7 +428,7 @@ class _PatioUIState extends State<PatioUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(4, value, 'Lighting:');
+                                  setdata(4, value, 'Lighting');
                                 },
                                 value: getvalue(4),
                               ),
@@ -423,7 +448,7 @@ class _PatioUIState extends State<PatioUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Switches: Client Able to Operate:',
+                              child: Text('Switches Able to Operate',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -449,8 +474,7 @@ class _PatioUIState extends State<PatioUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(5, value,
-                                      'Switches: Client Able to Operate:');
+                                  setdata(5, value, 'Switches Able to Operate');
                                 },
                                 value: getvalue(5),
                               ),
@@ -468,7 +492,7 @@ class _PatioUIState extends State<PatioUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Switch Types:',
+                              child: Text('Switch Types',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -514,7 +538,7 @@ class _PatioUIState extends State<PatioUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(6, value, 'Switch Types:');
+                                  setdata(6, value, 'Switch Types');
                                 },
                                 value: getvalue(6),
                               ),
@@ -634,7 +658,7 @@ class _PatioUIState extends State<PatioUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Type of Steps:',
+                              child: Text('Type of Steps',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -665,7 +689,7 @@ class _PatioUIState extends State<PatioUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(9, value, 'Type of Steps:');
+                                  setdata(9, value, 'Type of Steps');
                                 },
                                 value: getvalue(9),
                               ),
@@ -691,8 +715,7 @@ class _PatioUIState extends State<PatioUI> {
                                                           .size
                                                           .width *
                                                       .5,
-                                                  child: Text(
-                                                      'Number Of Steps:',
+                                                  child: Text('Number Of Steps',
                                                       style: TextStyle(
                                                         color: Color.fromRGBO(
                                                             10, 80, 106, 1),
@@ -878,8 +901,7 @@ class _PatioUIState extends State<PatioUI> {
                                                           .size
                                                           .width *
                                                       .5,
-                                                  child: Text(
-                                                      'Number Of Steps:',
+                                                  child: Text('Number Of Steps',
                                                       style: TextStyle(
                                                         color: Color.fromRGBO(
                                                             10, 80, 106, 1),
@@ -1065,7 +1087,7 @@ class _PatioUIState extends State<PatioUI> {
                                                       .size
                                                       .width *
                                                   .5,
-                                              child: Text('Going Up:',
+                                              child: Text('Going Up',
                                                   style: TextStyle(
                                                     color: Color.fromRGBO(
                                                         10, 80, 106, 1),
@@ -1113,7 +1135,7 @@ class _PatioUIState extends State<PatioUI> {
                                                       .size
                                                       .width *
                                                   .5,
-                                              child: Text('Going Down:',
+                                              child: Text('Going Down',
                                                   style: TextStyle(
                                                     color: Color.fromRGBO(
                                                         10, 80, 106, 1),
@@ -1207,7 +1229,7 @@ class _PatioUIState extends State<PatioUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Observations:',
+                              child: Text('Observations',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1240,7 +1262,7 @@ class _PatioUIState extends State<PatioUI> {
                               FocusScope.of(context).requestFocus();
                               new TextEditingController().clear();
                               // print(widget.accessname);
-                              setdata(12, value, 'Observations:');
+                              setdata(12, value, 'Observations');
                             },
                           ),
                         ),
@@ -1251,7 +1273,8 @@ class _PatioUIState extends State<PatioUI> {
                       child: RaisedButton(
                     child: Text('Done'),
                     onPressed: () {
-                      var test = 0;
+                      var test =
+                          widget.wholelist[8][widget.accessname]['complete'];
                       for (int i = 0;
                           i <
                               widget.wholelist[8][widget.accessname]['question']
@@ -1261,6 +1284,13 @@ class _PatioUIState extends State<PatioUI> {
                         setdatalistenthera(i + 1);
                       }
                       if (test == 0) {
+                        _showSnackBar(
+                            "You Must Have to Fill The Details First", context);
+                      } else {
+                        NewAssesmentRepository()
+                            .setLatestChangeDate(widget.docID);
+                        NewAssesmentRepository()
+                            .setForm(widget.wholelist, widget.docID);
                         Navigator.pop(
                             context, widget.wholelist[8][widget.accessname]);
                       }

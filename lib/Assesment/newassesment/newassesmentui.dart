@@ -221,6 +221,9 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                               NewAssesmentRepository()
                                   .setAssessmentCurrentStatus(
                                       "Assessment in Progress", widget.docID);
+                              NewAssesmentRepository().setForm(
+                                  assesmentprovider.getlistdata(),
+                                  widget.docID);
                             },
                           ),
                         ),
@@ -382,9 +385,11 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                                             labelText:
                                                 '${prov.getlistdata()[index]['name']} (Name)'),
                                         onChanged: (text) {
-                                          prov.listofRooms[index]
-                                                  ['room${index1 + 1}']
-                                              ['name'] = capitalize(text);
+                                          if (text != null) {
+                                            prov.listofRooms[index]
+                                                    ['room${index1 + 1}']
+                                                ['name'] = capitalize(text);
+                                          }
                                         },
                                       );
                                     },

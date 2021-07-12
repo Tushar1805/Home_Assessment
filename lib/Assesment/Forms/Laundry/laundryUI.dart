@@ -6,6 +6,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tryapp/Assesment/Forms/Laundry/laundrypro.dart';
+import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
+import 'package:tryapp/constants.dart';
 
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
@@ -38,6 +40,26 @@ class _LaundryUIState extends State<LaundryUI> {
     super.initState();
   }
 
+  void _showSnackBar(snackbar, BuildContext buildContext) {
+    final snackBar = SnackBar(
+      duration: const Duration(seconds: 3),
+      content: Container(
+        height: 30.0,
+        child: Center(
+          child: Text(
+            '$snackbar',
+            style: TextStyle(fontSize: 14.0, color: Colors.white),
+          ),
+        ),
+      ),
+      backgroundColor: lightBlack(),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+    );
+    ScaffoldMessenger.of(buildContext)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(snackBar);
+  }
+
   @override
   Widget build(BuildContext context) {
     final assesmentprovider = Provider.of<LaundryPro>(context);
@@ -64,12 +86,15 @@ class _LaundryUIState extends State<LaundryUI> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              '${widget.roomname} Details:',
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                                color: Color.fromRGBO(10, 80, 106, 1),
+                            Container(
+                              width: MediaQuery.of(context).size.width / 1.6,
+                              child: Text(
+                                '${widget.roomname}Details',
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color.fromRGBO(10, 80, 106, 1),
+                                ),
                               ),
                             ),
                             Container(
@@ -268,7 +293,7 @@ class _LaundryUIState extends State<LaundryUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Lighting Types:',
+                              child: Text('Lighting Types',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -316,7 +341,7 @@ class _LaundryUIState extends State<LaundryUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Switches: Client Able to Operate:',
+                              child: Text('Switches Able to Operate',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -342,8 +367,8 @@ class _LaundryUIState extends State<LaundryUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(5, value,
-                                      'Switches: Client Able to Operate:');
+                                  assesmentprovider.setdata(
+                                      5, value, 'Switches Able to Operate');
                                 },
                                 value: assesmentprovider.getvalue(5),
                               ),
@@ -362,7 +387,7 @@ class _LaundryUIState extends State<LaundryUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Switch Types:',
+                              child: Text('Switch Types',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -409,7 +434,7 @@ class _LaundryUIState extends State<LaundryUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(
-                                      6, value, 'Switch Types:');
+                                      6, value, 'Switch Types');
                                 },
                                 value: assesmentprovider.getvalue(6),
                               ),
@@ -534,8 +559,7 @@ class _LaundryUIState extends State<LaundryUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text(
-                                  'Client is Able to Access Washer and Dryer?',
+                              child: Text('Able to Access Washer and Dryer?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -561,7 +585,7 @@ class _LaundryUIState extends State<LaundryUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
                                 assesmentprovider.setdata(9, value,
-                                    'Client is Able to Access Washer and Dryer?');
+                                    'Able to Access Washer and Dryer?');
                               },
                               value: assesmentprovider.getvalue(9),
                             )
@@ -578,7 +602,7 @@ class _LaundryUIState extends State<LaundryUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Type of Washer and Dryer:',
+                              child: Text('Type of Washer and Dryer',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -681,8 +705,7 @@ class _LaundryUIState extends State<LaundryUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text(
-                                  'Client is Able to Access Laundry Cabinets?',
+                              child: Text('Able to Access Laundry Cabinets?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -708,7 +731,7 @@ class _LaundryUIState extends State<LaundryUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
                                 assesmentprovider.setdata(12, value,
-                                    'Client is Able to Access Laundry Cabinets?');
+                                    'Able to Access Laundry Cabinets?');
                               },
                               value: assesmentprovider.getvalue(12),
                             )
@@ -770,7 +793,7 @@ class _LaundryUIState extends State<LaundryUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Observations:',
+                              child: Text('Observations',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -803,6 +826,8 @@ class _LaundryUIState extends State<LaundryUI> {
                             FocusScope.of(context).requestFocus();
                             new TextEditingController().clear();
                             // print(widget.accessname);
+                            widget.wholelist[7][widget.accessname]['question']
+                                ["14"]['Question'] = 'Observations';
 
                             if (value.length == 0) {
                               if (widget
@@ -843,7 +868,8 @@ class _LaundryUIState extends State<LaundryUI> {
                       child: RaisedButton(
                     child: Text('Done'),
                     onPressed: () {
-                      var test = 0;
+                      var test =
+                          widget.wholelist[7][widget.accessname]['complete'];
                       for (int i = 0;
                           i <
                               widget.wholelist[7][widget.accessname]['question']
@@ -853,6 +879,13 @@ class _LaundryUIState extends State<LaundryUI> {
                         assesmentprovider.setdatalistenthera(i + 1);
                       }
                       if (test == 0) {
+                        _showSnackBar(
+                            "You Must Have To Fill The Details First", context);
+                      } else {
+                        NewAssesmentRepository()
+                            .setLatestChangeDate(widget.docID);
+                        NewAssesmentRepository()
+                            .setForm(widget.wholelist, widget.docID);
                         Navigator.pop(
                             context, widget.wholelist[7][widget.accessname]);
                       }

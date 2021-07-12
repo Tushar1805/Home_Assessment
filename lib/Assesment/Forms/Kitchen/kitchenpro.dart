@@ -81,13 +81,14 @@ class KitchenPro extends ChangeNotifier {
   }
 
   setdata(index, value, que) {
+    wholelist[3][accessname]['question']["$index"]['Question'] = que;
     if (value.length == 0) {
       if (wholelist[3][accessname]['question']["$index"]['Answer'].length ==
           0) {
       } else {
         wholelist[3][accessname]['complete'] -= 1;
         wholelist[3][accessname]['question']["$index"]['Answer'] = value;
-        wholelist[3][accessname]['question']["$index"]['Question'] = que;
+
         notifyListeners();
       }
     } else {

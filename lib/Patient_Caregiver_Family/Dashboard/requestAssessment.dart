@@ -2,9 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:tryapp/Assesment/newassesment/newassesmentpro.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdash.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdashrepo.dart';
+import 'package:tryapp/constants.dart';
 
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
@@ -22,9 +24,9 @@ class _RequestAssessmentState extends State<RequestAssessment> {
 
   void initState() {
     super.initState();
+    getUserName();
     time = TimeOfDay.now();
     date = DateTime.now();
-    getUserName();
   }
 
   Future<void> getUserName() async {
@@ -35,9 +37,10 @@ class _RequestAssessmentState extends State<RequestAssessment> {
         .get()
         .then((value) {
       setState(() {
-        name = value["name"];
+        name = value["firstName"];
       });
     });
+    print(user.uid);
   }
 
   Future<Null> selectTime1(BuildContext context) async {
@@ -83,7 +86,21 @@ class _RequestAssessmentState extends State<RequestAssessment> {
   static void showSnackBar(BuildContext context, String text) =>
       ScaffoldMessenger.of(context)
         ..removeCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(text)));
+        ..showSnackBar(SnackBar(
+          duration: const Duration(seconds: 3),
+          content: Container(
+            height: 30.0,
+            child: Center(
+              child: Text(
+                '$text',
+                style: TextStyle(fontSize: 14.0, color: Colors.white),
+              ),
+            ),
+          ),
+          backgroundColor: lightBlack(),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+        ));
 
   @override
   Widget build(BuildContext context) {
@@ -111,7 +128,7 @@ class _RequestAssessmentState extends State<RequestAssessment> {
                   Container(
                     padding: EdgeInsets.only(right: 10),
                     child: Text(
-                      "$name",
+                      "${NewAssesmentProvider("").capitalize(name)}",
                       style: TextStyle(
                           fontSize: 37, color: Color.fromRGBO(10, 80, 106, 1)),
                     ),
@@ -243,17 +260,17 @@ class _RequestAssessmentState extends State<RequestAssessment> {
                     FirebaseUser user =
                         await FirebaseAuth.instance.currentUser();
                     try {
-                      docID = await PatientRepository().saveInDatabase(user.uid,
-                          formatTimeOfDay(time), fromDateTimeToJson(date));
-                      // showSnackBar(
-                      //     context, "Assessment Scheduled Successfully");
+                      // docID = await PatientRepository().saveInDatabase(user.uid,
+                      //     formatTimeOfDay(time), fromDateTimeToJson(date));
+                      showSnackBar(
+                          context, "Assessment Scheduled Successfully");
                       print(docID);
                     } catch (e) {
                       showSnackBar(context, "Something Went Wrong");
                       print(StackTrace.current);
                     }
-                    Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) => Patient()));
+                    // Navigator.of(context).pushReplacement(
+                    //     MaterialPageRoute(builder: (context) => Patient()));
                     print(docID);
                   },
                   color: Color.fromRGBO(10, 80, 106, 1),

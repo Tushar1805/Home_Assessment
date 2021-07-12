@@ -12,6 +12,7 @@ class Therapist extends StatelessWidget {
     return Scaffold(
         body: Center(
             child: ChangeNotifierProvider<TherapistProvider>(
-                create: (_) => TherapistProvider(), child: TherapistUI())));
+                create: (_) => TherapistProvider("therapist"),
+                child: TherapistUI())));
   }
 }

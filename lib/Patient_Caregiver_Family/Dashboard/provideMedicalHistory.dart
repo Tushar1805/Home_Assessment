@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdash.dart';
 
 class ProvideMedicalHistory extends StatefulWidget {
   @override
@@ -8,17 +9,24 @@ class ProvideMedicalHistory extends StatefulWidget {
 class _ProvideMedicalHistoryState extends State<ProvideMedicalHistory> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color.fromRGBO(10, 80, 106, 1),
-        title: Text(
-          'Provide Medical History',
-          style: TextStyle(fontWeight: FontWeight.bold),
+    return WillPopScope(
+      // ignore: missing_return
+      onWillPop: () {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => Patient()));
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Color.fromRGBO(10, 80, 106, 1),
+          title: Text(
+            'Provide Medical History',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
-      ),
-      body: Container(
-        child: Center(
-          child: Text("Provide Medical History is to be Implementted Here"),
+        body: Container(
+          child: Center(
+            child: Text("Provide Medical History is to be Implementted Here"),
+          ),
         ),
       ),
     );

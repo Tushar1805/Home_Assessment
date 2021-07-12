@@ -7,6 +7,7 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tryapp/Assesment/Forms/Bathroom/bathroompro.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
+import 'package:tryapp/constants.dart';
 
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
@@ -24,6 +25,26 @@ class _BathroomUIState extends State<BathroomUI> {
   @override
   void initState() {
     super.initState();
+  }
+
+  void _showSnackBar(snackbar, BuildContext buildContext) {
+    final snackBar = SnackBar(
+      duration: const Duration(seconds: 3),
+      content: Container(
+        height: 30.0,
+        child: Center(
+          child: Text(
+            '$snackbar',
+            style: TextStyle(fontSize: 14.0, color: Colors.white),
+          ),
+        ),
+      ),
+      backgroundColor: lightBlack(),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+    );
+    ScaffoldMessenger.of(buildContext)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(snackBar);
   }
 
   @override
@@ -52,12 +73,15 @@ class _BathroomUIState extends State<BathroomUI> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
-                              '${widget.roomname} Details:',
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.bold,
-                                color: Color.fromRGBO(10, 80, 106, 1),
+                            Container(
+                              width: MediaQuery.of(context).size.width / 1.6,
+                              child: Text(
+                                '${widget.roomname}Details',
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color.fromRGBO(10, 80, 106, 1),
+                                ),
                               ),
                             ),
                             Container(
@@ -400,7 +424,7 @@ class _BathroomUIState extends State<BathroomUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(
-                                      6, value, 'Switch Types:');
+                                      6, value, 'Switch Types');
                                 },
                                 value: assesmentprovider.getvalue(6),
                               ),
@@ -522,7 +546,7 @@ class _BathroomUIState extends State<BathroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Client is Able to Access Telephone?',
+                              child: Text('Able to Access Telephone?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -547,8 +571,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                assesmentprovider.setdata(9, value,
-                                    'Client is Able to Access Telephone?');
+                                assesmentprovider.setdata(
+                                    9, value, 'Able to Access Telephone?');
                               },
                               value: assesmentprovider.getvalue(9),
                             )
@@ -611,7 +635,7 @@ class _BathroomUIState extends State<BathroomUI> {
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
                               child: Text(
-                                  'Client is Able to manage Through the Doorway and In/Out of the Bathroom ?',
+                                  'Able to manage Through the Doorway and In/Out of the Bathroom?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -654,7 +678,7 @@ class _BathroomUIState extends State<BathroomUI> {
                                 // print(widget.accessname);
 
                                 assesmentprovider.setdata(11, value,
-                                    'Client is Able to manage Through the Doorway and In/Out of the Bathroom ?');
+                                    'Able to manage Through the Doorway and In/Out of the Bathroom?');
                               },
                               value: assesmentprovider.getvalue(11),
                             )
@@ -854,7 +878,7 @@ class _BathroomUIState extends State<BathroomUI> {
                                       ]),
                                     ),
                                     labelText:
-                                        'Specify Seat, Usage And Type of Shower.'),
+                                        'Specify Seat, Usage And Type of Shower'),
                                 onChanged: (value) {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
@@ -872,7 +896,7 @@ class _BathroomUIState extends State<BathroomUI> {
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
                               child: Text(
-                                  'Client is Able to Manage In and Out of The Shower? ',
+                                  'Able to Manage In and Out of The Shower?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -898,7 +922,7 @@ class _BathroomUIState extends State<BathroomUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
                                 assesmentprovider.setdata(15, value,
-                                    'Client is Able to Manage In and Out of The Shower? ');
+                                    'Able to Manage In and Out of The Shower?');
                               },
                               value: assesmentprovider.getvalue(15),
                             )
@@ -920,7 +944,7 @@ class _BathroomUIState extends State<BathroomUI> {
                                                     .width *
                                                 .4,
                                             child: Text(
-                                                'Client is able to Manage in and out of the shower independently or with assistance? ',
+                                                'Able to Manage in and out of the shower independently or with assistance?',
                                                 style: TextStyle(
                                                   color: Color.fromRGBO(
                                                       10, 80, 106, 1),
@@ -1533,7 +1557,7 @@ class _BathroomUIState extends State<BathroomUI> {
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
                               child: Text(
-                                  'Client is Able to Enter/Exit the Tub Independently?',
+                                  'Able to Enter/Exit the Tub Independently?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1559,7 +1583,7 @@ class _BathroomUIState extends State<BathroomUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
                                 assesmentprovider.setdata(23, value,
-                                    'Client is Able to Enter/Exit the Tub Independently?');
+                                    'Able to Enter/Exit the Tub Independently?');
                               },
                               value: assesmentprovider.getvalue(23),
                             )
@@ -1577,12 +1601,12 @@ class _BathroomUIState extends State<BathroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text(
-                                  'Client is Able to Access Faucets Independently?',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(10, 80, 106, 1),
-                                    fontSize: 20,
-                                  )),
+                              child:
+                                  Text('Able to Access Faucets Independently?',
+                                      style: TextStyle(
+                                        color: Color.fromRGBO(10, 80, 106, 1),
+                                        fontSize: 20,
+                                      )),
                             ),
                             DropdownButton(
                               items: [
@@ -1604,7 +1628,7 @@ class _BathroomUIState extends State<BathroomUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
                                 assesmentprovider.setdata(24, value,
-                                    'Client is Able to Access Faucets Independently?');
+                                    'Able to Access Faucets Independently?');
                               },
                               value: assesmentprovider.getvalue(24),
                             )
@@ -1662,12 +1686,12 @@ class _BathroomUIState extends State<BathroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text(
-                                  'Client Can Get On/Off Toilet Independently?',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(10, 80, 106, 1),
-                                    fontSize: 20,
-                                  )),
+                              child:
+                                  Text('Can Get On/Off Toilet Independently?',
+                                      style: TextStyle(
+                                        color: Color.fromRGBO(10, 80, 106, 1),
+                                        fontSize: 20,
+                                      )),
                             ),
                             DropdownButton(
                               items: [
@@ -1689,7 +1713,7 @@ class _BathroomUIState extends State<BathroomUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
                                 assesmentprovider.setdata(26, value,
-                                    'Client Can Get On/Off Toilet Independently?');
+                                    'Can Get On/Off Toilet Independently?');
                               },
                               value: assesmentprovider.getvalue(26),
                             )
@@ -1707,8 +1731,7 @@ class _BathroomUIState extends State<BathroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text(
-                                  'Client is Able to Flush Toilet Independently?',
+                              child: Text('Able to Flush Toilet Independently?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1734,7 +1757,7 @@ class _BathroomUIState extends State<BathroomUI> {
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
                                 assesmentprovider.setdata(27, value,
-                                    'Client is Able to Flush Toilet Independently?');
+                                    'Able to Flush Toilet Independently?');
                               },
                               value: assesmentprovider.getvalue(27),
                             )
@@ -1752,7 +1775,7 @@ class _BathroomUIState extends State<BathroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Observations:',
+                              child: Text('Observations',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1788,7 +1811,7 @@ class _BathroomUIState extends State<BathroomUI> {
                             new TextEditingController().clear();
                             // print(widget.accessname);
                             assesmentprovider.setdata(
-                                28, value, 'Observations:');
+                                28, value, 'Observations');
                           },
                         ))
                       ],
@@ -1798,11 +1821,11 @@ class _BathroomUIState extends State<BathroomUI> {
                       child: RaisedButton(
                     child: Text('Done'),
                     onPressed: () {
-                      listenbutton(assesmentprovider);
-                      NewAssesmentRepository()
-                          .setLatestChangeDate(widget.docID);
-                      NewAssesmentRepository()
-                          .setForm(widget.wholelist, widget.docID);
+                      listenbutton(assesmentprovider, context);
+                      // NewAssesmentRepository()
+                      //     .setLatestChangeDate(widget.docID);
+                      // NewAssesmentRepository()
+                      //     .setForm(widget.wholelist, widget.docID);
                     },
                   ))
                 ],
@@ -1814,8 +1837,9 @@ class _BathroomUIState extends State<BathroomUI> {
     );
   }
 
-  void listenbutton(assesmentprovider) {
-    var test = 0;
+  void listenbutton(BathroomPro assesmentprovider, BuildContext buildContext) {
+    var test = widget.wholelist[5][widget.accessname]['complete'];
+    print(test);
     for (int i = 0;
         i < widget.wholelist[5][widget.accessname]['question'].length;
         i++) {
@@ -1823,6 +1847,10 @@ class _BathroomUIState extends State<BathroomUI> {
       assesmentprovider.setdatalistenthera(i + 1);
     }
     if (test == 0) {
+      _showSnackBar("You Must Have To Fill The Details First", context);
+    } else {
+      NewAssesmentRepository().setLatestChangeDate(widget.docID);
+      NewAssesmentRepository().setForm(widget.wholelist, widget.docID);
       Navigator.pop(context, widget.wholelist[5][widget.accessname]);
     }
   }

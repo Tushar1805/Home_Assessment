@@ -9,6 +9,7 @@ class Patient extends StatelessWidget {
     return Scaffold(
         body: Center(
             child: ChangeNotifierProvider<PatientProvider>(
-                create: (_) => PatientProvider(), child: PatientUI())));
+                create: (_) => PatientProvider("patient"),
+                child: PatientUI())));
   }
 }
