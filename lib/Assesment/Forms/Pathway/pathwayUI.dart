@@ -236,6 +236,18 @@ class _PathwayUIState extends State<PathwayUI> {
           title: Text('Assesment'),
           automaticallyImplyLeading: false,
           backgroundColor: _colorgreen,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.done_all, color: Colors.white),
+              onPressed: () async {
+                try {
+                  listenbutton(context);
+                } catch (e) {
+                  print(e.toString());
+                }
+              },
+            )
+          ],
         ),
         body: Container(
           child: Padding(
@@ -1308,7 +1320,14 @@ class _PathwayUIState extends State<PathwayUI> {
                   ),
                   Container(
                       child: RaisedButton(
-                    child: Text('Done'),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(20),
+                    ),
+                    color: colorb,
+                    child: Text(
+                      'Submit',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
                     onPressed: () async {
                       listenbutton(context);
 
@@ -1342,7 +1361,7 @@ class _PathwayUIState extends State<PathwayUI> {
       // }
       setdatalisten(i + 1);
     }
-    if (test == 0) {
+    if (test < 12) {
       _showSnackBar("You Must Have to Fill The Details First", buildContext);
     } else {
       NewAssesmentRepository().setLatestChangeDate(widget.docID);

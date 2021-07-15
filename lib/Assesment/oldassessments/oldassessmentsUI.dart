@@ -582,7 +582,8 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
                   MaterialPageRoute(
                       builder: (context) => ReportBase(
                           assesspro.curretnassessmentdocref,
-                          assessmentdata["patient"])));
+                          assessmentdata["patient"],
+                          list)));
             } else if (assessmentdata.data['currentStatus'] ==
                     "Assessment Finished" &&
                 assessmentdata["therapist"] == user.uid) {

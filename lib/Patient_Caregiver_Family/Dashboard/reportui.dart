@@ -8,20 +8,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_full_pdf_viewer/full_pdf_viewer_scaffold.dart';
 import 'package:intl/intl.dart';
-import 'package:intl/intl.dart';
 import 'package:ndialog/ndialog.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:tryapp/Assesment/newassesment/newassesmentpro.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/pdfReview.dart';
 
 class ReportUI extends StatefulWidget {
-  // List<Map<String, dynamic>> list;
+  List<Map<String, dynamic>> assess;
   String docID, patientUid;
-  ReportUI(this.docID, this.patientUid);
+  ReportUI(this.docID, this.patientUid, this.assess);
   @override
   _ReportUIState createState() => _ReportUIState();
 }
@@ -48,13 +46,22 @@ class _ReportUIState extends State<ReportUI> {
   List<Map<String, dynamic>> assess = [];
   final pdf = pw.Document();
   Dio dio;
+  final Color colorb = Color.fromRGBO(10, 80, 106, 1);
+  List<Card> list4 = [];
+  List<Card> list5 = [];
+  List<Card> list6 = [];
 
   @override
   void initState() {
     super.initState();
-    dio = Dio();
+    print("hello first");
     getassessments();
     getUserName();
+    getLists();
+    // list4 = buildAssesmentUI("1");
+    // list5 = buildAssesmentUI("2");
+    // list6 = buildAssesmentUI("3");
+    print("hello");
     // print(patient);
     // getPermission();
   }
@@ -104,22 +111,18 @@ class _ReportUIState extends State<ReportUI> {
         .then(
       (value) {
         setState(() {
-          if (value != null) {
-            fname = (NewAssesmentProvider("")
-                .capitalize((value.data["firstName"].toString() ?? "First")));
-            lname = (NewAssesmentProvider("")
-                .capitalize(value.data["lastName"].toString() ?? "Last"));
-            gender = (NewAssesmentProvider("")
-                .capitalize(value.data["gender"].toString() ?? "Male"));
-            address = (NewAssesmentProvider("").capitalize(
-                value.data["houses"][0]["city"].toString() ?? "Nagpur"));
+          if (value.data != null) {
+            fname = (capitalize(value.data["firstName"].toString()) ?? "First");
+            lname = (capitalize(value.data["lastName"].toString()) ?? "Last");
+            gender = (capitalize(value.data["gender"].toString()) ?? "Male");
+            address = (capitalize(value.data["houses"][0]["city"].toString()) ??
+                "Nagpur");
             age = (value.data["age"].toString() ?? "21");
             phone = (value.data["mobileNo"].toString() ?? "1234567890");
             email = (value.data["email"].toString() ?? "user@gmail.com");
             height = (value.data["height"].toString() ?? "5.5");
             weight = (value.data["weight"].toString() ?? "50");
-            handDominance = (NewAssesmentProvider("")
-                .capitalize((value["handDominance"].toString() ?? "Right")));
+            handDominance = (value["handDominance"].toString() ?? "Right");
           }
           // docID = (value["docID"].toString());
         });
@@ -133,35 +136,37 @@ class _ReportUIState extends State<ReportUI> {
   }
 
   Future<void> getassessments() async {
-    firestoreInstance
+    await firestoreInstance
         .collection("assessments")
         .document(widget.docID)
         .get()
         .then(
       (value) {
         setState(() {
-          patient = (value["patient"].toString());
-          therapist = (value["therapist"].toString());
-          if (value.data["form"] != null) {
-            assess = List<Map<String, dynamic>>.generate(
-                value["form"].length,
-                (int index) => Map<String, dynamic>.from(
-                    value.data["form"].elementAt(index)));
-          }
-          // assess = List.castFrom(value["form"].toList());
-          if (value.data["date"] != null) {
-            startingTime = value.data["date"].toString();
-          }
-          if (value.data["assessmentCompletionDate"] != null) {
-            closingTime = DateFormat.yMd()
-                .format(value.data["assessmentCompletionDate"].toDate());
+          if (value.data != null) {
+            patient = (value["patient"].toString());
+            therapist = (value["therapist"].toString());
+            if (value.data["form"] != null) {
+              assess = List<Map<String, dynamic>>.generate(
+                  value["form"].length,
+                  (int index) => Map<String, dynamic>.from(
+                      value.data["form"].elementAt(index)));
+            }
+            // assess = List.castFrom(value["form"].toList());
+            if (value.data["date"] != null) {
+              startingTime = value.data["date"].toString();
+            }
+            if (value.data["assessmentCompletionDate"] != null) {
+              closingTime = DateFormat.yMd()
+                  .format(value.data["assessmentCompletionDate"].toDate());
+            }
           }
         });
       },
     );
-    // print(widget.docID);
+    // print("docID: ${widget.docID}");
     // print("//////////");
-    // print(assess);
+    // print("Map: $assess");
   }
 
   Widget getDate(String label, var date) {
@@ -376,7 +381,7 @@ class _ReportUIState extends State<ReportUI> {
             buildTableBlankRow("null", "null"),
             pw.Table(border: pw.TableBorder.all(width: 1), children: [
               // pw.TableRow(children: [pw.Center(child: pw.Text("Priority 1"))]),
-              buildPriority("Priority 1", PdfColors.red, PdfColors.white),
+              buildPriority("Priority 1", PdfColors.red, PdfColors.black),
             ]),
             pw.Table(border: pw.TableBorder.all(width: 1), columnWidths: {
               0: pw.FixedColumnWidth(200),
@@ -393,7 +398,7 @@ class _ReportUIState extends State<ReportUI> {
             buildTableBlankRow("null", "null"),
             pw.Table(border: pw.TableBorder.all(width: 1), children: [
               // pw.TableRow(children: [pw.Center(child: pw.Text("Priority 2"))]),
-              buildPriority("Priority 2", PdfColors.orange, PdfColors.white),
+              buildPriority("Priority 2", PdfColors.orange, PdfColors.black),
             ]),
             pw.Table(border: pw.TableBorder.all(width: 1), columnWidths: {
               0: pw.FixedColumnWidth(200),
@@ -454,6 +459,141 @@ class _ReportUIState extends State<ReportUI> {
     // print(documentPath);
   }
 
+  List<Card> buildAssesmentUI(priority) {
+    List<Card> list = [];
+    for (int index = 0; index < 12; index++) {
+      if (widget.assess != null) {
+        int count = widget.assess[index]['count'];
+        for (int i = 1; i <= count; i++) {
+          int queCount = widget.assess[index]['room$i']['complete'];
+          for (int j = 1; j <= queCount; j++) {
+            if (widget.assess[index]['room$i']['question']['$j'] != null) {
+              if (widget.assess[index]['room$i']['question']['$j']
+                          ['Priority'] ==
+                      priority &&
+                  widget.assess[index]['room$i']['question']['$j']
+                          ['Recommendationthera'] !=
+                      "") {
+                list.add(
+                  Card(
+                    shape: roundedRectangleBorder(),
+                    child: Padding(
+                      padding: EdgeInsets.fromLTRB(15, 10, 5, 10),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${widget.assess[index]['name']}: ${widget.assess[index]['room$i']['name']}',
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w900,
+                                color: colorb),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          // Text(
+                          //   'Recommendation For: ',
+                          //   style: TextStyle(
+                          //       fontSize: 18,
+                          //       fontWeight: FontWeight.bold,
+                          //       color: Colors.black45),
+                          // ),
+                          Wrap(
+                            spacing: 5.0,
+                            children: [
+                              Text("Question: ",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w200,
+                                      color: Colors.black45)),
+                              Text(
+                                  "${widget.assess[index]['room$i']['question']['$j']['Question']}",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w200)),
+                            ],
+                          ),
+
+                          Wrap(spacing: 5.0, children: [
+                            Text("Answer: ",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w200,
+                                    color: Colors.black45)),
+                            Text(
+                                "${widget.assess[index]['room$i']['question']['$j']['Answer']}",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.w200)),
+                          ]),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Wrap(children: [
+                            Text("Recommendations: ",
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w200,
+                                    color: Colors.black45)),
+                            Text(
+                                "${widget.assess[index]['room$i']['question']['$j']['Recommendationthera']}",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.w200)),
+                          ]),
+                          SizedBox(
+                            height: 10,
+                          )
+                          // Divider(),
+                        ],
+                      ),
+                    ),
+                  ),
+                  // pw.Column(
+                  //     crossAxisAlignment: pw.CrossAxisAlignment.start,
+                  //     mainAxisAlignment: pw.MainAxisAlignment.start,
+                  //     children: [
+                  //       pw.Container(
+                  //         padding: pw.EdgeInsets.only(left: 5, right: 5),
+                  //         child: pw.Text(
+                  //             ' ${assess[index]['room$i']['question']['$j']['Recommendationthera']}',
+                  //             style: pw.TextStyle(fontSize: 14)),
+                  //       ),
+                  //     ]),
+                  // ])
+                );
+              }
+            }
+          }
+        }
+      }
+    }
+    return list;
+  }
+
+  RoundedRectangleBorder roundedRectangleBorder() {
+    return RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(12.0),
+    );
+  }
+
+  getLists() {
+    list4 = buildAssesmentUI("1");
+    list5 = buildAssesmentUI("2");
+    list6 = buildAssesmentUI("3");
+  }
+
+  String capitalize(String s) {
+    if (s != null) {
+      var parts = s.split(' ');
+      // print(parts);
+      String sum = '';
+      parts.forEach(
+          (cur) => {sum += cur[0].toUpperCase() + cur.substring(1) + " "});
+      return sum;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     // getassessments();
@@ -466,25 +606,119 @@ class _ReportUIState extends State<ReportUI> {
           ),
         );
 
-    Widget assesment(index, priority) {
-      int count = assess[index]['count'];
-      for (int i = 1; i <= count; i++) {
-        int queCount = assess[index]['room$i']['complete'];
-        for (int j = 1; j <= queCount; j++) {
-          if (assess[index]['room$i']['question']['$j']['Priority'] ==
-                  priority &&
-              assess[index]['room$i']['question']['$j']
-                      ['Recommendationthera'] !=
-                  null) {
-            return Text('${assess[index]['name']}: ' +
-                '${assess[index]['room$i']['name']}: ' +
-                '${assess[index]['room$i']['question']['$j']['Question']}: ' +
-                '${assess[index]['room$i']['question']['$j']['Answer']}: ' +
-                '${assess[index]['room$i']['question']['$j']['Recommendationthera']}');
-          }
-        }
-      }
-    }
+    // Widget assesment(index, priority) {
+    //   int count = assess[index]['count'];
+    //   for (int i = 1; i <= count; i++) {
+    //     int queCount = assess[index]['room$i']['complete'];
+    //     for (int j = 1; j <= queCount; j++) {
+    //       if (assess[index]['room$i']['question']['$j']['Priority'] ==
+    //               priority &&
+    //           assess[index]['room$i']['question']['$j']
+    //                   ['Recommendationthera'] !=
+    //               "") {
+    //         // return Text('${assess[index]['name']}: ' +
+    //         //     '${assess[index]['room$i']['name']}: ' +
+    //         //     '${assess[index]['room$i']['question']['$j']['Question']}: ' +
+    //         //     '${assess[index]['room$i']['question']['$j']['Answer']}: ' +
+    //         //     '${assess[index]['room$i']['question']['$j']['Recommendationthera']}');
+    //         return Column(
+    //           mainAxisAlignment: MainAxisAlignment.start,
+    //           crossAxisAlignment: CrossAxisAlignment.start,
+    //           children: [
+    //             Text(
+    //               '${assess[index]['name']}: ${assess[index]['room$i']['name']}',
+    //               style: TextStyle(
+    //                   fontSize: 20, fontWeight: FontWeight.w900, color: colorb),
+    //             ),
+    //             Text(
+    //               'Recommendation For: ',
+    //               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w200),
+    //             ),
+    //             Text(
+    //                 "Question: ${assess[index]['room$i']['question']['$j']['Question']}",
+    //                 style:
+    //                     TextStyle(fontSize: 18, fontWeight: FontWeight.w200)),
+    //             Text(
+    //                 "Answer: ${assess[index]['room$i']['question']['$j']['Answer']}",
+    //                 style:
+    //                     TextStyle(fontSize: 18, fontWeight: FontWeight.w200)),
+    //             Text(
+    //                 "Recommendations: ${assess[index]['room$i']['question']['$j']['Recommendationthera']}",
+    //                 style:
+    //                     TextStyle(fontSize: 18, fontWeight: FontWeight.w200)),
+    //             Divider(),
+    //           ],
+    //         );
+    //       }
+    //     }
+    //   }
+    // }
+
+    // List<Column> buildAssesment(priority) {
+    //   List<Column> list = [];
+    //   for (int index = 0; index < 12; index++) {
+    //     int count = assess[index]['count'] ?? 0;
+    //     for (int i = 1; i <= count; i++) {
+    //       int queCount = assess[index]['room$i']['complete'];
+    //       for (int j = 1; j <= queCount; j++) {
+    //         if (assess[index]['room$i']['question']['$j'] != null) {
+    //           if (assess[index]['room$i']['question']['$j']['Priority'] ==
+    //                   priority &&
+    //               assess[index]['room$i']['question']['$j']
+    //                       ['Recommendationthera'] !=
+    //                   "") {
+    //             list.add(
+    //               Column(
+    //                 mainAxisAlignment: MainAxisAlignment.start,
+    //                 crossAxisAlignment: CrossAxisAlignment.start,
+    //                 children: [
+    //                   Text(
+    //                     '${assess[index]['name']}: ${assess[index]['room$i']['name']}',
+    //                     style: TextStyle(
+    //                         fontSize: 20,
+    //                         fontWeight: FontWeight.w900,
+    //                         color: colorb),
+    //                   ),
+    //                   Text(
+    //                     'Recommendation For: ',
+    //                     style: TextStyle(
+    //                         fontSize: 18, fontWeight: FontWeight.w200),
+    //                   ),
+    //                   Text(
+    //                       "Question: ${assess[index]['room$i']['question']['$j']['Question']}",
+    //                       style: TextStyle(
+    //                           fontSize: 18, fontWeight: FontWeight.w200)),
+    //                   Text(
+    //                       "Answer: ${assess[index]['room$i']['question']['$j']['Answer']}",
+    //                       style: TextStyle(
+    //                           fontSize: 18, fontWeight: FontWeight.w200)),
+    //                   Text(
+    //                       "Recommendations: ${assess[index]['room$i']['question']['$j']['Recommendationthera']}",
+    //                       style: TextStyle(
+    //                           fontSize: 18, fontWeight: FontWeight.w200)),
+    //                   Divider(),
+    //                 ],
+    //               ),
+    //               // pw.Column(
+    //               //     crossAxisAlignment: pw.CrossAxisAlignment.start,
+    //               //     mainAxisAlignment: pw.MainAxisAlignment.start,
+    //               //     children: [
+    //               //       pw.Container(
+    //               //         padding: pw.EdgeInsets.only(left: 5, right: 5),
+    //               //         child: pw.Text(
+    //               //             ' ${assess[index]['room$i']['question']['$j']['Recommendationthera']}',
+    //               //             style: pw.TextStyle(fontSize: 14)),
+    //               //       ),
+    //               //     ]),
+    //               // ])
+    //             );
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    //   return list;
+    // }
 
     RoundedRectangleBorder roundedRectangleBorder() {
       return RoundedRectangleBorder(
@@ -526,32 +760,35 @@ class _ReportUIState extends State<ReportUI> {
     }
 
     Row buildRow(label, value) {
-      return Row(
-        children: [
-          Container(
-            width: MediaQuery.of(context).size.width * 0.35,
-            padding: EdgeInsets.only(left: 10),
-            // alignment: Alignment.centerRight,
-            child: Text('$label',
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                    color: Colors.black54)),
-          ),
-          Container(
-            alignment: Alignment.center,
-            width: MediaQuery.of(context).size.width * 0.04,
-            decoration: _verticalDivider(),
-          ),
-          Container(
-            padding: EdgeInsets.only(left: 10),
-            width: MediaQuery.of(context).size.width * 0.35,
-            alignment: Alignment.centerLeft,
-            child: Text('$value',
-                style: TextStyle(fontWeight: FontWeight.normal, fontSize: 16)),
-          ),
-        ],
-      );
+      if (value != null) {
+        return Row(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width * 0.35,
+              padding: EdgeInsets.only(left: 10),
+              // alignment: Alignment.centerRight,
+              child: Text('$label',
+                  style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: Colors.black54)),
+            ),
+            Container(
+              alignment: Alignment.center,
+              width: MediaQuery.of(context).size.width * 0.04,
+              decoration: _verticalDivider(),
+            ),
+            Container(
+              padding: EdgeInsets.only(left: 10),
+              width: MediaQuery.of(context).size.width * 0.35,
+              alignment: Alignment.centerLeft,
+              child: Text('$value',
+                  style:
+                      TextStyle(fontWeight: FontWeight.normal, fontSize: 16)),
+            ),
+          ],
+        );
+      }
     }
 
     Widget buildUserCard() {
@@ -633,7 +870,7 @@ class _ReportUIState extends State<ReportUI> {
               // ),
               IntrinsicHeight(
                 child: buildRow(
-                    "Assessment Start Time", startingTime ?? "Yet To Begin"),
+                    "Assessment Start Date", startingTime ?? "Yet To Begin"),
               ),
               Divider(
                 thickness: 0.5,
@@ -641,230 +878,245 @@ class _ReportUIState extends State<ReportUI> {
               ),
               IntrinsicHeight(
                   child: buildRow(
-                      "Assessment End Time", closingTime ?? "Yet To Finish")),
+                      "Assessment End Date", closingTime ?? "Yet To Finish")),
             ],
           ),
         ),
       );
+    }
+
+    getList(
+      var list,
+    ) {
+      if (list != null && list.length != 0) {
+        return ListView.builder(
+            itemCount: list.length,
+            shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
+            itemBuilder: (context, index2) {
+              return Padding(
+                padding: EdgeInsets.fromLTRB(10, 0, 5, 5),
+                child: list[index2],
+              );
+
+              // assesment(
+              //     assesmentprovider.getlistdata()[index2]
+              //         ['name'],
+              //     index,
+              //     index2),
+            });
+      } else {
+        return SizedBox(height: 0);
+      }
     }
 
     Widget buildPrioOne() {
-      return Card(
-        shape: roundedRectangleBorder(),
-        child: Padding(
-          padding: EdgeInsets.only(left: 10.0, right: 10.0),
+      if (list4.length != 0) {
+        return Container(
+          // shape: roundedRectangleBorder(),
           child: Column(
             children: <Widget>[
-              Container(
-                height: 30,
-                color: Colors.red,
-                width: MediaQuery.of(context).size.width,
-                child: Center(
-                  child: Text(
-                    "Priority 1",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
-                  ),
+              SizedBox(height: 10),
+              RaisedButton(
+                onPressed: () {},
+                textColor: Colors.black,
+                padding: const EdgeInsets.all(0.0),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(80.0)),
+                child: Container(
+                  decoration: const BoxDecoration(
+                      color: Colors.red,
+                      // gradient: LinearGradient(
+                      //   colors: <Color>[
+                      //     Color.fromRGBO(255, 0, 0, 0.35),
+                      //     Color.fromRGBO(255, 0, 0, 0.71),
+                      //     Color.fromRGBO(255, 0, 0, 1),
+                      //   ],
+                      // ),
+                      borderRadius: BorderRadius.all(Radius.circular(80.0))),
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  child:
+                      const Text('Priority 1', style: TextStyle(fontSize: 18)),
                 ),
               ),
-              Divider(color: Colors.black),
-              IntrinsicHeight(
-                child: Row(
-                  children: [
-                    Text(
-                      'Recommendation for ',
-                      style: TextStyle(
-                          fontSize: 16, color: Color.fromRGBO(10, 80, 106, 1)),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Container(
-                      decoration: _verticalDivider(),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      "Recommendation",
-                      style: TextStyle(
-                          fontSize: 16, color: Color.fromRGBO(10, 80, 106, 1)),
-                    )
-                  ],
-                ),
+              SizedBox(
+                height: 10,
               ),
-              Divider(
-                color: Colors.black,
-              ),
-              ListView.builder(
-                  itemCount: assess.length,
-                  shrinkWrap: true,
-                  physics: ClampingScrollPhysics(),
-                  itemBuilder: (context, index2) {
-                    return Padding(
-                      padding: EdgeInsets.only(top: 10),
-                      child: assesment(index2, "1"),
-                    );
-
-                    // assesment(
-                    //     assesmentprovider.getlistdata()[index2]
-                    //         ['name'],
-                    //     index,
-                    //     index2),
-                  }),
+              // Divider(color: Colors.black),
+              // IntrinsicHeight(
+              //   child: Row(
+              //     children: [
+              //       Text(
+              //         'Recommendation for ',
+              //         style: TextStyle(
+              //             fontSize: 16, color: Color.fromRGBO(10, 80, 106, 1)),
+              //       ),
+              //       SizedBox(
+              //         width: 10,
+              //       ),
+              //       Container(
+              //         decoration: _verticalDivider(),
+              //       ),
+              //       SizedBox(
+              //         width: 10,
+              //       ),
+              //       Text(
+              //         "Recommendation",
+              //         style: TextStyle(
+              //             fontSize: 16, color: Color.fromRGBO(10, 80, 106, 1)),
+              //       )
+              //     ],
+              //   ),
+              // ),
+              // Divider(
+              //   color: Colors.black,
+              // ),
+              getList(list4),
             ],
           ),
-        ),
-      );
+        );
+      } else {
+        return SizedBox();
+      }
     }
 
     Widget buildPrioTwo() {
-      return Card(
-        shape: roundedRectangleBorder(),
-        child: Padding(
-          padding: EdgeInsets.only(left: 10.0, right: 10.0),
+      if (list5.length != 0) {
+        return Container(
+          // shape: roundedRectangleBorder(),
           child: Column(
             children: <Widget>[
-              Container(
-                height: 30,
-                color: Colors.orange,
-                width: MediaQuery.of(context).size.width,
-                child: Center(
-                  child: Text(
-                    "Priority 2",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: Colors.white,
-                    ),
-                  ),
+              SizedBox(height: 10),
+              RaisedButton(
+                onPressed: () {},
+                textColor: Colors.black,
+                padding: const EdgeInsets.all(0.0),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(80.0)),
+                child: Container(
+                  decoration: const BoxDecoration(
+                      color: Colors.orange,
+                      // gradient: LinearGradient(
+                      //   colors: <Color>[
+                      //     Color.fromRGBO(255, 80, 0, 0.50),
+                      //     Color.fromRGBO(226, 85, 8, 0.75),
+                      //     Color.fromRGBO(254, 89, 4, 1),
+                      //   ],
+                      // ),
+                      borderRadius: BorderRadius.all(Radius.circular(80.0))),
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  child:
+                      const Text('Priority 2', style: TextStyle(fontSize: 18)),
                 ),
               ),
-              Divider(color: Colors.black),
-              IntrinsicHeight(
-                child: Row(
-                  children: [
-                    Text(
-                      'Recommendation for ',
-                      style: TextStyle(
-                          fontSize: 16, color: Color.fromRGBO(10, 80, 106, 1)),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Container(
-                      decoration: _verticalDivider(),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      "Recommendation",
-                      style: TextStyle(
-                          fontSize: 16, color: Color.fromRGBO(10, 80, 106, 1)),
-                    )
-                  ],
-                ),
+              SizedBox(
+                height: 10,
               ),
-              Divider(
-                color: Colors.black,
-              ),
-              ListView.builder(
-                  itemCount: assess.length,
-                  shrinkWrap: true,
-                  physics: ClampingScrollPhysics(),
-                  itemBuilder: (context, index2) {
-                    return Padding(
-                      padding: EdgeInsets.only(top: 10),
-                      child: assesment(index2, "2"),
-                    );
-
-                    // assesment(
-                    //     assesmentprovider.getlistdata()[index2]
-                    //         ['name'],
-                    //     index,
-                    //     index2),
-                  }),
+              // Divider(color: Colors.black),
+              // IntrinsicHeight(
+              //   child: Row(
+              //     children: [
+              //       Text(
+              //         'Recommendation for ',
+              //         style: TextStyle(
+              //             fontSize: 16, color: Color.fromRGBO(10, 80, 106, 1)),
+              //       ),
+              //       SizedBox(
+              //         width: 10,
+              //       ),
+              //       Container(
+              //         decoration: _verticalDivider(),
+              //       ),
+              //       SizedBox(
+              //         width: 10,
+              //       ),
+              //       Text(
+              //         "Recommendation",
+              //         style: TextStyle(
+              //             fontSize: 16, color: Color.fromRGBO(10, 80, 106, 1)),
+              //       )
+              //     ],
+              //   ),
+              // ),
+              // Divider(
+              //   color: Colors.black,
+              // ),
+              getList(list5)
             ],
           ),
-        ),
-      );
+        );
+      } else {
+        return SizedBox();
+      }
     }
 
     Widget buildPrioThree() {
-      return Card(
-        shape: roundedRectangleBorder(),
-        child: Padding(
-          padding: EdgeInsets.only(left: 10.0, right: 10.0),
+      if (list6.length != 0) {
+        return Container(
           child: Column(
             children: <Widget>[
-              Container(
-                height: 30,
-                color: Colors.yellow,
-                width: MediaQuery.of(context).size.width,
-                child: Center(
-                  child: Text(
-                    "Priority 3",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: Colors.black,
-                    ),
-                  ),
+              SizedBox(height: 10),
+              RaisedButton(
+                onPressed: () {},
+                textColor: Colors.white,
+                padding: const EdgeInsets.all(0.0),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(80.0)),
+                child: Container(
+                  decoration: const BoxDecoration(
+                      color: Colors.yellow,
+                      // gradient: LinearGradient(
+                      //   colors: <Color>[
+                      //     Color.fromRGBO(232, 233, 96, 0.81),
+                      //     Color.fromRGBO(249, 251, 55, 0.85),
+                      //     Color.fromRGBO(253, 255, 0, 1),
+                      //   ],
+                      // ),
+                      borderRadius: BorderRadius.all(Radius.circular(80.0))),
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  child: const Text('Priority 3',
+                      style: TextStyle(color: Colors.black, fontSize: 18)),
                 ),
               ),
-              Divider(color: Colors.black),
-              IntrinsicHeight(
-                child: Row(
-                  children: [
-                    Text(
-                      'Recommendation for ',
-                      style: TextStyle(
-                          fontSize: 16, color: Color.fromRGBO(10, 80, 106, 1)),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Container(
-                      decoration: _verticalDivider(),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(
-                      "Recommendation",
-                      style: TextStyle(
-                          fontSize: 16, color: Color.fromRGBO(10, 80, 106, 1)),
-                    )
-                  ],
-                ),
+              SizedBox(
+                height: 10,
               ),
-              Divider(
-                color: Colors.black,
-              ),
-              ListView.builder(
-                  itemCount: assess.length,
-                  shrinkWrap: true,
-                  physics: ClampingScrollPhysics(),
-                  itemBuilder: (context, index2) {
-                    return Padding(
-                      padding: EdgeInsets.only(top: 10),
-                      child: assesment(index2, "3"),
-
-                      // assesment(
-                      //     assesmentprovider.getlistdata()[index2]
-                      //         ['name'],
-                      //     index,
-                      //     index2),
-                    );
-                  }),
+              // Divider(color: Colors.black),
+              // IntrinsicHeight(
+              //   child: Row(
+              //     children: [
+              //       Text(
+              //         'Recommendation for ',
+              //         style: TextStyle(
+              //             fontSize: 16, color: Color.fromRGBO(10, 80, 106, 1)),
+              //       ),
+              //       SizedBox(
+              //         width: 10,
+              //       ),
+              //       Container(
+              //         decoration: _verticalDivider(),
+              //       ),
+              //       SizedBox(
+              //         width: 10,
+              //       ),
+              //       Text(
+              //         "Recommendation",
+              //         style: TextStyle(
+              //             fontSize: 16, color: Color.fromRGBO(10, 80, 106, 1)),
+              //       )
+              //     ],
+              //   ),
+              // ),
+              // Divider(
+              //   color: Colors.black,
+              // ),
+              getList(list6)
             ],
           ),
-        ),
-      );
+        );
+      } else {
+        return SizedBox();
+      }
     }
 
     return Scaffold(
@@ -896,7 +1148,7 @@ class _ReportUIState extends State<ReportUI> {
               // String path = await ExtStorage.getExternalStoragePublicDirectory(
               //     ExtStorage.DIRECTORY_DOWNLOADS);
               // print(path);
-              SnackBar(content: Text("Report Downloade Successfully"));
+              // SnackBar(content: Text("Report Downloade Successfully"));
             },
           )
         ],
@@ -908,7 +1160,7 @@ class _ReportUIState extends State<ReportUI> {
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(20),
               child: buildUserCard(),
             ),
             Padding(padding: const EdgeInsets.all(10), child: buildPrioOne()),
@@ -917,7 +1169,7 @@ class _ReportUIState extends State<ReportUI> {
           ],
         ),
       ),
-      backgroundColor: Color(0xfff5f5f5),
+      backgroundColor: Colors.grey[200],
     );
   }
 }

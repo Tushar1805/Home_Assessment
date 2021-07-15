@@ -268,7 +268,7 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                         children: [
                           Expanded(
                             child: Text(
-                              "Number of ${prov.getlistdata()[index]['name']}: (?)",
+                              "Number of ${prov.getlistdata()[index]['name']} (s):",
                               style:
                                   TextStyle(fontSize: 15, color: _colorgreen),
                             ),

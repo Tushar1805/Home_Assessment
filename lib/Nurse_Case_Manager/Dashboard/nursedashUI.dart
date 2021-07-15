@@ -10,6 +10,7 @@ import 'package:tryapp/CompleteAssessment/completeAssessmentBase.dart';
 import 'package:tryapp/Nurse_Case_Manager/Dashboard/nursedashprov.dart';
 import 'package:tryapp/Nurse_Case_Manager/Dashboard/nursedashrepo.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/reportbase.dart';
+import 'package:tryapp/Patient_Caregiver_Family/Dashboard/reportui.dart';
 import 'package:tryapp/Therapist/Dashboard/homeAddresses.dart';
 import 'package:tryapp/Therapist/Dashboard/patients.dart';
 import 'package:tryapp/splash/assesment.dart';
@@ -184,7 +185,7 @@ class _NurseUIState extends State<NurseUI> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ReportBase(docID, patientUid)));
+                    builder: (context) => ReportUI(docID, patientUid, list)));
           },
           child: Text(
             "View Report",
@@ -599,7 +600,7 @@ class _NurseUIState extends State<NurseUI> {
             ],
           ),
           body: ongoingassess(assesspro, context),
-          backgroundColor: Colors.grey[200],
+          backgroundColor: Colors.grey[300],
         ));
   }
 }

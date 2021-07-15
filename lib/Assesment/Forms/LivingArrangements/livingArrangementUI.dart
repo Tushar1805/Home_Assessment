@@ -37,6 +37,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
   int flightcount = 0;
   Color colorb = Color.fromRGBO(10, 80, 106, 1);
   String role;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
@@ -143,8 +144,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
     if (widget.wholelist[1][widget.accessname]['question']["11"]
         .containsKey('Flights')) {
       setState(() {
-        flightcount = widget.wholelist[1][widget.accessname]['question']["11"]
-            ['Flights']["count"];
+        flightcount =
+            widget.wholelist[1][widget.accessname]['question']["11"]['Flights'];
       });
     } else {
       // print('hello');
@@ -227,10 +228,15 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
   }
 
   setrecothera(index, value) {
-    setState(() {
-      widget.wholelist[1][widget.accessname]['question']["$index"]
-          ['Recommendationthera'] = value;
-    });
+    final isValid = _formKey.currentState.validate();
+    if (!isValid) {
+      return;
+    } else {
+      setState(() {
+        widget.wholelist[1][widget.accessname]['question']["$index"]
+            ['Recommendationthera'] = value;
+      });
+    }
   }
 
   getrecothera(index) {
@@ -267,6 +273,41 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
           title: Text('Assesment'),
           automaticallyImplyLeading: false,
           backgroundColor: _colorgreen,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.done_all, color: Colors.white),
+              onPressed: () async {
+                try {
+                  var test = widget.wholelist[1][widget.accessname]["complete"];
+                  for (int i = 0;
+                      i <
+                          widget.wholelist[1][widget.accessname]['question']
+                              .length;
+                      i++) {
+                    setdatalisten(i + 1);
+                    setdatalistenthera(i + 1);
+                  }
+
+                  if (test < 13) {
+                    _showSnackBar(
+                        "You Must Have to Fill the Form First", context);
+                  } else {
+                    NewAssesmentRepository().setLatestChangeDate(widget.docID);
+                    NewAssesmentRepository()
+                        .setForm(widget.wholelist, widget.docID);
+                    Navigator.pop(
+                        context, widget.wholelist[1][widget.accessname]);
+                  }
+                } catch (e) {
+                  print(e.toString());
+                }
+              },
+              // label: Text(
+              //   'Logout',
+              //   style: TextStyle(color: Colors.white, fontSize: 16),
+              // ),
+            )
+          ],
         ),
         body: Container(
           child: Padding(
@@ -828,7 +869,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                               width: MediaQuery.of(context)
                                                       .size
                                                       .width *
-                                                  .3,
+                                                  .35,
                                               child: NumericStepButton(
                                                 counterval: roomatecount,
                                                 onChanged: (value) {
@@ -904,7 +945,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                                 padding: EdgeInsets.all(10),
                                                 child: ConstrainedBox(
                                                   constraints: BoxConstraints(
-                                                      maxHeight: 10000,
+                                                      maxHeight: 1000,
                                                       minHeight:
                                                           MediaQuery.of(context)
                                                                   .size
@@ -1326,8 +1367,10 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                             ["11"]['Flights']);
                                         if (value > 0) {
                                           widget.wholelist[1][widget.accessname]
-                                                  ['question']["11"]
-                                              ['Flights'] = "";
+                                                  ['question']["11"]['Flights']
+                                              ['flight${value + 1}'] = {
+                                            "flight": 0
+                                          };
 
                                           if (widget.wholelist[1]
                                                   [widget.accessname]
@@ -1363,13 +1406,13 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 ),
                               ]),
                         ),
-                        (flightcount ?? 0 > 0)
+                        (flightcount > 0)
                             ? Container(
                                 child: Padding(
                                   padding: EdgeInsets.all(10),
                                   child: ConstrainedBox(
                                     constraints: BoxConstraints(
-                                        maxHeight: 10000,
+                                        maxHeight: 1000,
                                         minHeight:
                                             MediaQuery.of(context).size.height /
                                                 10),
@@ -1522,32 +1565,46 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                   ),
                   Container(
                       child: RaisedButton(
-                    child: Text('Done'),
-                    onPressed: () {
-                      var test =
-                          widget.wholelist[1][widget.accessname]["complete"];
-                      for (int i = 0;
-                          i <
-                              widget.wholelist[1][widget.accessname]['question']
-                                  .length;
-                          i++) {
-                        setdatalisten(i + 1);
-                        setdatalistenthera(i + 1);
-                      }
-
-                      if (test == 0) {
-                        _showSnackBar(
-                            "You Must Have to Fill the Form First", context);
-                      } else {
-                        NewAssesmentRepository()
-                            .setLatestChangeDate(widget.docID);
-                        NewAssesmentRepository()
-                            .setForm(widget.wholelist, widget.docID);
-                        Navigator.pop(
-                            context, widget.wholelist[1][widget.accessname]);
-                      }
-                    },
-                  ))
+                          color: colorb,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            'Submit',
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                          onPressed: () {
+                            // bool isValid = _formKey.currentState.validate();
+                            var test = widget.wholelist[1][widget.accessname]
+                                ["complete"];
+                            for (int i = 0;
+                                i <
+                                    widget
+                                        .wholelist[1][widget.accessname]
+                                            ['question']
+                                        .length;
+                                i++) {
+                              setdatalisten(i + 1);
+                              setdatalistenthera(i + 1);
+                            }
+                            // if (!isValid) {
+                            // _showSnackBar("Recommendation Required", context);
+                            // } else {
+                            if (test < 13) {
+                              _showSnackBar(
+                                  "You Must Have to Fill the Form First",
+                                  context);
+                            } else {
+                              NewAssesmentRepository()
+                                  .setLatestChangeDate(widget.docID);
+                              NewAssesmentRepository()
+                                  .setForm(widget.wholelist, widget.docID);
+                              Navigator.pop(context,
+                                  widget.wholelist[1][widget.accessname]);
+                            }
+                          }
+                          // },
+                          ))
                 ],
               ),
             ),
@@ -1635,6 +1692,18 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
         SizedBox(height: 8),
         TextFormField(
           controller: _controllerstreco["field$index"],
+          validator: (String value) {
+            if (value.isEmpty) {
+              return 'Recommendation is Required';
+            }
+            return null;
+          },
+          onSaved: (value) {
+            FocusScope.of(context).requestFocus();
+            new TextEditingController().clear();
+            // print(widget.accessname);
+            setrecothera(index, value);
+          },
           decoration: InputDecoration(
               focusedBorder: OutlineInputBorder(
                 borderSide:
@@ -1670,12 +1739,12 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                 ]),
               ),
               labelText: 'Recomendation'),
-          onChanged: (value) {
-            FocusScope.of(context).requestFocus();
-            new TextEditingController().clear();
-            // print(widget.accessname);
-            setrecothera(index, value);
-          },
+          // onChanged: (value) {
+          //   FocusScope.of(context).requestFocus();
+          //   new TextEditingController().clear();
+          //   // print(widget.accessname);
+
+          // },
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1821,7 +1890,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
               width: MediaQuery.of(context).size.width * .35,
               child: TextFormField(
                 initialValue: widget.wholelist[1][widget.accessname]['question']
-                    ["11"]['Flights']['flight$index'],
+                    ["11"]['Flights']["flight$index"]["flight"],
                 keyboardType: TextInputType.phone,
                 decoration: InputDecoration(
                     focusedBorder: OutlineInputBorder(
@@ -1834,11 +1903,11 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                     ),
                     labelText: 'Number of steps in flight$index:'),
                 onChanged: (value) {
-                  // FocusScope.of(context).requestFocus();
-                  // new TextEditingController().clear();
+                  FocusScope.of(context).requestFocus();
+                  new TextEditingController().clear();
                   setState(() {
                     widget.wholelist[1][widget.accessname]['question']["11"]
-                        ['Flights']['flight$index'] = value;
+                        ['Flights']['flight$index']["flight"] = value;
                   });
                   // print(widget.wholelist[0][widget.accessname]['question']
                   //     [7]);

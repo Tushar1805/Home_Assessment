@@ -11,6 +11,7 @@ import 'package:tryapp/Assesment/Forms/LivingArrangements/livingArrangementbase.
 import 'package:tryapp/Assesment/Forms/Pathway/pathwaybase.dart';
 import 'package:tryapp/Assesment/Forms/Patio/patiobase.dart';
 import 'package:async_button_builder/async_button_builder.dart';
+import 'package:tryapp/Assesment/newassesment/newassesmentpro.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
 import 'package:tryapp/Nurse_Case_Manager/Dashboard/nursedash.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdash.dart';
@@ -242,7 +243,7 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    // AssesmentProvider assesmentProvider = AssesmentProvider();
+    // NewAssesmentProvider assesmentProvider = NewAssesmentProvider("");
     // ignore: missing_return
     return WillPopScope(
       // ignore: missing_return
@@ -376,33 +377,81 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
                       ),
                     ),
                     onPressed: () async {
+                      bool save = false;
                       await Future.delayed(const Duration(milliseconds: 1500),
                           () {
                         for (int i = 0; i < widget.wholelist.length; i++) {
-                          for (int j = 1;
-                              j <= widget.wholelist[i]['count'];
-                              j++) {
-                            print(widget.wholelist[i]['count']);
+                          int count = widget.wholelist[i]['count'];
+                          if (count > 0) {
+                            for (int j = 1; j <= count; j++) {
+                              if (widget.wholelist[i]["name"] ==
+                                  "Living Arrangements") {
+                                if (widget.wholelist[i]["room$j"]
+                                        ["completed"] ==
+                                    13) {
+                                  save = true;
+                                }
+                              } else if (widget.wholelist[i]["room$j"]
+                                      ["completed"] ==
+                                  gettotal(widget.wholelist[i]["name"])) {
+                                save = true;
+                              } else {
+                                save = false;
+                              }
+                            }
                           }
                         }
                       });
-                      // print(widget.wholelist);
+                      // print(widget.wholelist)
+                      // if (save) {
                       if (role == 'therapist') {
+                        // for (int i = 0; i < 12; i++) {
+                        //   if (widget.wholelist[i]["count"] > 0) {
+                        //     int count = widget.wholelist[i]["count"];
+                        //     for (int j = 1; j <= count; j++) {
+                        //       for (int k = 0;
+                        //           k <
+                        //               widget.wholelist[i]["room$j"]
+                        //                   ["completed"];
+                        //           k++) {
+                        //         if (widget.wholelist[i]["room$j"]["question"]
+                        //                     ["$k"]["Priority"] !=
+                        //                 "0" &&
+                        //             widget.wholelist[i]["room$j"]["question"]
+                        //                     ["$k"]["Recommendationthera"] !=
+                        //                 "") {
                         NewAssesmentRepository().setAssessmentCurrentStatus(
                             "Report Generated", widget.docID);
                         NewAssesmentRepository().setStatus("old", widget.docID);
                         NewAssesmentRepository()
                             .setAssessmentCompletionDate(widget.docID);
-                        _showSnackBar("Report Generated", context);
+                        // Navigator.of(context).pop();
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => Therapist()));
+                        // } else {
+                        //   _showSnackBar(
+                        //       "You Must Have To Give The Recommendations",
+                        //       context);
+                        // }
+                        //     }
+                        //   }
+                        // }
+                        // }
                       } else if (role == 'nurse/case manager') {
                         NewAssesmentRepository().setAssessmentCurrentStatus(
                             "Assessment Finished", widget.docID);
-                        _showSnackBar("Assessment Finished", context);
+                        Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) => Nurse()));
                       } else if (role == "patient") {
                         NewAssesmentRepository().setAssessmentCurrentStatus(
                             "Assessment Finished", widget.docID);
-                        _showSnackBar("Assessment Finished", context);
+                        Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) => Patient()));
                       }
+                      // } else {
+                      //   _showSnackBar(
+                      //       "You Must Have to Fill All Details", context);
+                      // }
                       NewAssesmentRepository()
                           .setLatestChangeDate(widget.docID);
 
@@ -443,6 +492,34 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
             ],
           )),
     );
+  }
+
+  gettotal(String classname) {
+    if (classname == 'Garage') {
+      return 12;
+    } else if (classname == 'Patio') {
+      return 12;
+    } else if (classname == 'Laundry') {
+      return 14;
+    } else if (classname == 'Bedroom') {
+      return 18;
+    } else if (classname == 'Bathroom') {
+      return 28;
+    } else if (classname == 'Dining Room') {
+      return 13;
+    } else if (classname == 'Kitchen') {
+      return 18;
+    } else if (classname == 'Living Room') {
+      return 12;
+    } else if (classname == 'Living Arrangements') {
+      return 14;
+    } else if (classname == 'Pathway') {
+      return 12;
+    } else if (classname == 'Basement') {
+      return 5;
+    } else if (classname == 'Swimming Pool') {
+      return 7;
+    }
   }
 
   /// This is the card function used to dispaly the card.

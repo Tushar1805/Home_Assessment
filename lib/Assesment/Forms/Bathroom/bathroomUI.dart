@@ -57,6 +57,18 @@ class _BathroomUIState extends State<BathroomUI> {
           title: Text('Assessment'),
           automaticallyImplyLeading: false,
           backgroundColor: _colorgreen,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.done_all, color: Colors.white),
+              onPressed: () async {
+                try {
+                  listenbutton(assesmentprovider, context);
+                } catch (e) {
+                  print(e.toString());
+                }
+              },
+            )
+          ],
         ),
         body: Container(
           child: Padding(
@@ -1819,7 +1831,14 @@ class _BathroomUIState extends State<BathroomUI> {
                   ),
                   Container(
                       child: RaisedButton(
-                    child: Text('Done'),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(20),
+                    ),
+                    color: _colorgreen,
+                    child: Text(
+                      'Submit',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
                     onPressed: () {
                       listenbutton(assesmentprovider, context);
                       // NewAssesmentRepository()
@@ -1846,7 +1865,7 @@ class _BathroomUIState extends State<BathroomUI> {
       assesmentprovider.setdatalisten(i + 1);
       assesmentprovider.setdatalistenthera(i + 1);
     }
-    if (test == 0) {
+    if (test < 28) {
       _showSnackBar("You Must Have To Fill The Details First", context);
     } else {
       NewAssesmentRepository().setLatestChangeDate(widget.docID);

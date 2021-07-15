@@ -422,15 +422,18 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                             "Report Generated", widget.docID);
                         NewAssesmentRepository()
                             .setAssessmentCompletionDate(widget.docID);
-                        _showSnackBar("Report Generated", context);
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => Therapist()));
                       } else if (role == 'nurse/case manager') {
                         NewAssesmentRepository().setAssessmentCurrentStatus(
                             "Assessment Finished", widget.docID);
-                        _showSnackBar("Assessment Finished", context);
+                        Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) => Nurse()));
                       } else if (role == 'patient') {
                         NewAssesmentRepository().setAssessmentCurrentStatus(
                             "Assessment Finished", widget.docID);
-                        _showSnackBar("Assessment Finished", context);
+                        Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) => Patient()));
                       }
                       NewAssesmentRepository()
                           .setLatestChangeDate(widget.docID);

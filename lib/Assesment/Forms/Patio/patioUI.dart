@@ -195,6 +195,40 @@ class _PatioUIState extends State<PatioUI> {
           title: Text('Assessment'),
           automaticallyImplyLeading: false,
           backgroundColor: _colorgreen,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.logout, color: Colors.white),
+              onPressed: () async {
+                try {
+                  var test = widget.wholelist[8][widget.accessname]['complete'];
+                  for (int i = 0;
+                      i <
+                          widget.wholelist[8][widget.accessname]['question']
+                              .length;
+                      i++) {
+                    setdatalisten(i + 1);
+                    setdatalistenthera(i + 1);
+                  }
+                  if (test < 12) {
+                    _showSnackBar(
+                        "You Must Have to Fill The Details First", context);
+                  } else {
+                    NewAssesmentRepository().setLatestChangeDate(widget.docID);
+                    NewAssesmentRepository()
+                        .setForm(widget.wholelist, widget.docID);
+                    Navigator.pop(
+                        context, widget.wholelist[8][widget.accessname]);
+                  }
+                } catch (e) {
+                  print(e.toString());
+                }
+              },
+              // label: Text(
+              //   'Logout',
+              //   style: TextStyle(color: Colors.white, fontSize: 16),
+              // ),
+            )
+          ],
         ),
         body: Container(
           child: Padding(
@@ -1271,7 +1305,14 @@ class _PatioUIState extends State<PatioUI> {
                   ),
                   Container(
                       child: RaisedButton(
-                    child: Text('Done'),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(20),
+                    ),
+                    color: colorb,
+                    child: Text(
+                      'Submit',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
                     onPressed: () {
                       var test =
                           widget.wholelist[8][widget.accessname]['complete'];
@@ -1283,7 +1324,7 @@ class _PatioUIState extends State<PatioUI> {
                         setdatalisten(i + 1);
                         setdatalistenthera(i + 1);
                       }
-                      if (test == 0) {
+                      if (test < 12) {
                         _showSnackBar(
                             "You Must Have to Fill The Details First", context);
                       } else {

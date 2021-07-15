@@ -70,6 +70,18 @@ class _KitchenUIState extends State<KitchenUI> {
           title: Text('Assessment'),
           automaticallyImplyLeading: false,
           backgroundColor: _colorgreen,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.done_all, color: Colors.white),
+              onPressed: () async {
+                try {
+                  listenbutton(assesmentprovider, context);
+                } catch (e) {
+                  print(e.toString());
+                }
+              },
+            )
+          ],
         ),
         body: Container(
           child: Padding(
@@ -1003,7 +1015,14 @@ class _KitchenUIState extends State<KitchenUI> {
                   ),
                   Container(
                       child: RaisedButton(
-                    child: Text('Done'),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(20),
+                    ),
+                    color: colorb,
+                    child: Text(
+                      'Submit',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
                     onPressed: () {
                       listenbutton(assesmentprovider, context);
                     },
@@ -1025,7 +1044,7 @@ class _KitchenUIState extends State<KitchenUI> {
       assesmentprovider.setdatalisten(i + 1);
       assesmentprovider.setdatalistenthera(i + 1);
     }
-    if (test == 0) {
+    if (test < 18) {
       _showSnackBar("You Must Have To Fill The Details First", buildContext);
     } else {
       NewAssesmentRepository().setLatestChangeDate(widget.docID);

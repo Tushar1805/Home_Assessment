@@ -178,6 +178,36 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
           title: Text('Assessment'),
           automaticallyImplyLeading: false,
           backgroundColor: _colorgreen,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.done_all, color: Colors.white),
+              onPressed: () async {
+                try {
+                  var test = widget.wholelist[4][widget.accessname]['complete'];
+                  for (int i = 0;
+                      i <
+                          widget.wholelist[4][widget.accessname]['question']
+                              .length;
+                      i++) {
+                    assesmentprovider.setdatalisten(i + 1);
+                    assesmentprovider.setdatalistenthera(i + 1);
+                  }
+                  if (test < 13) {
+                    _showSnackBar(
+                        "You Must Have To Fill The Details First", context);
+                  } else {
+                    NewAssesmentRepository().setLatestChangeDate(widget.docID);
+                    NewAssesmentRepository()
+                        .setForm(widget.wholelist, widget.docID);
+                    Navigator.pop(
+                        context, widget.wholelist[4][widget.accessname]);
+                  }
+                } catch (e) {
+                  print(e.toString());
+                }
+              },
+            )
+          ],
         ),
         body: Container(
           child: Padding(
@@ -990,7 +1020,14 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                   ),
                   Container(
                       child: RaisedButton(
-                    child: Text('Done'),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(20),
+                    ),
+                    color: colorb,
+                    child: Text(
+                      'Submit',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
                     onPressed: () {
                       var test =
                           widget.wholelist[4][widget.accessname]['complete'];
@@ -1002,7 +1039,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                         assesmentprovider.setdatalisten(i + 1);
                         assesmentprovider.setdatalistenthera(i + 1);
                       }
-                      if (test == 0) {
+                      if (test < 13) {
                         _showSnackBar(
                             "You Must Have To Fill The Details First", context);
                       } else {

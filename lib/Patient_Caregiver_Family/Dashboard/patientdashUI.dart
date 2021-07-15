@@ -9,6 +9,7 @@ import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdashprov.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdashrepo.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/provideMedicalHistory.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/reportbase.dart';
+import 'package:tryapp/Patient_Caregiver_Family/Dashboard/reportui.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/requestAssessment.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistdashrepo.dart';
 import 'package:tryapp/constants.dart';
@@ -224,7 +225,7 @@ class _PatientUIState extends State<PatientUI> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ReportBase(docID, patientUid)));
+                    builder: (context) => ReportUI(docID, patientUid, list)));
           },
           child: Text(
             "View Report",
@@ -416,6 +417,30 @@ class _PatientUIState extends State<PatientUI> {
       }
     }
 
+    Widget getName(var snap) {
+      if (snap != null) {
+        return Container(
+          width: double.infinity,
+          child: Text(
+            'Therapist Name: ${assesspro.capitalize(snap["firstName"])} ${assesspro.capitalize(snap["lastName"])}',
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          ),
+        );
+      } else {
+        return Container(
+          width: double.infinity,
+          child: Text(
+            'Therapist Name: Thrapist',
+            style: TextStyle(
+              fontSize: 16,
+            ),
+          ),
+        );
+      }
+    }
+
     // if (assesspro.data2 == null) {
     //   return Container(
     //     width: MediaQuery.of(context).size.width,
@@ -475,22 +500,16 @@ class _PatientUIState extends State<PatientUI> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Container(
-                                width: double.infinity,
-                                child: Text(
-                                  'Therapist Name: ${assesspro.capitalize(snapshot["firstName"])} ${assesspro.capitalize(snapshot["lastName"])}',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ),
+                              getName(snapshot),
                               SizedBox(height: 2.5),
                               Divider(),
                               getAddress(address),
                               SizedBox(height: 2.5),
                               Divider(),
-                              getDate("Completion Date: ",
-                                  snapshot["assessmentCompletionDate"]),
+                              getDate(
+                                  "Completion Date: ",
+                                  assessmentdata
+                                      .data["assessmentCompletionDate"]),
                               // SizedBox(height: 2.5),
                               // Divider(
                               //   height: 1,
@@ -726,7 +745,7 @@ class _PatientUIState extends State<PatientUI> {
               )
             ],
           ),
-          backgroundColor: Colors.grey[200],
+          backgroundColor: Colors.grey[300],
           body: ongoingassess(assesspro, context),
         ));
   }

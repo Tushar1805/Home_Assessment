@@ -172,6 +172,38 @@ class _BedroomUIState extends State<BedroomUI> {
           title: Text('Assessment'),
           automaticallyImplyLeading: false,
           backgroundColor: _colorgreen,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.done_all_rounded, color: Colors.white),
+              highlightColor: Colors.transparent,
+              onPressed: () async {
+                try {
+                  var test = widget.wholelist[6][widget.accessname]['complete'];
+                  print("test == $test");
+                  for (int i = 0;
+                      i <
+                          widget.wholelist[6][widget.accessname]['question']
+                              .length;
+                      i++) {
+                    assesmentprovider.setdatalisten(i + 1);
+                    assesmentprovider.setdatalistenthera(i + 1);
+                  }
+                  if (test == 18) {
+                    NewAssesmentRepository().setLatestChangeDate(widget.docID);
+                    NewAssesmentRepository()
+                        .setForm(widget.wholelist, widget.docID);
+                    Navigator.pop(
+                        context, widget.wholelist[6][widget.accessname]);
+                  } else {
+                    _showSnackBar(
+                        "You Must Have To Fill The Details First", context);
+                  }
+                } catch (e) {
+                  print(e.toString());
+                }
+              },
+            )
+          ],
         ),
         body: Container(
           child: Padding(
@@ -827,10 +859,10 @@ class _BedroomUIState extends State<BedroomUI> {
                                     child: Text('Two Twins Joined'),
                                     value: 'Two Twins Joined',
                                   ),
-                                  DropdownMenuItem(
-                                    child: Text('Two Twins Joined'),
-                                    value: 'Two Twins Joined',
-                                  ),
+                                  // DropdownMenuItem(
+                                  //   child: Text('Two Twins Joined'),
+                                  //   value: 'Two Twins Joined',
+                                  // ),
                                 ],
                                 onChanged: (value) {
                                   FocusScope.of(context).requestFocus();
@@ -1138,10 +1170,18 @@ class _BedroomUIState extends State<BedroomUI> {
                   ),
                   Container(
                       child: RaisedButton(
-                    child: Text('Done'),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(20),
+                    ),
+                    color: colorb,
+                    child: Text(
+                      'Submit',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
                     onPressed: () {
                       var test =
                           widget.wholelist[6][widget.accessname]['complete'];
+                      print("test == $test");
                       for (int i = 0;
                           i <
                               widget.wholelist[6][widget.accessname]['question']
@@ -1150,16 +1190,16 @@ class _BedroomUIState extends State<BedroomUI> {
                         assesmentprovider.setdatalisten(i + 1);
                         assesmentprovider.setdatalistenthera(i + 1);
                       }
-                      if (test == 0) {
-                        _showSnackBar(
-                            "You Must Have To Fill The Details First", context);
-                      } else {
+                      if (test == 18) {
                         NewAssesmentRepository()
                             .setLatestChangeDate(widget.docID);
                         NewAssesmentRepository()
                             .setForm(widget.wholelist, widget.docID);
                         Navigator.pop(
                             context, widget.wholelist[6][widget.accessname]);
+                      } else {
+                        _showSnackBar(
+                            "You Must Have To Fill The Details First", context);
                       }
                     },
                   ))

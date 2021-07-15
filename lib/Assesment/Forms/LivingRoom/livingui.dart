@@ -70,6 +70,44 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
           title: Text('Assessment'),
           automaticallyImplyLeading: false,
           backgroundColor: _colorgreen,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.done_all, color: Colors.white),
+              onPressed: () async {
+                try {
+                  var test = widget.wholelist[2][widget.accessname]["complete"];
+                  for (int i = 0;
+                      i <
+                          widget.wholelist[2][widget.accessname]['question']
+                              .length;
+                      i++) {
+                    // print(colorsset["field${i + 1}"]);
+                    // if (colorsset["field${i + 1}"] == Colors.red) {
+                    //   showDialog(
+                    //       context: context,
+                    //       builder: (context) => CustomDialog(
+                    //           title: "Not Saved",
+                    //           description:
+                    //               "Please click cancel button to save the field"));
+                    //   test = 1;
+                    // }
+                  }
+                  if (test < 12) {
+                    _showSnackBar(
+                        "You Must Have to Fill The Details First", context);
+                  } else {
+                    NewAssesmentRepository().setLatestChangeDate(widget.docID);
+                    NewAssesmentRepository()
+                        .setForm(widget.wholelist, widget.docID);
+                    Navigator.pop(
+                        context, widget.wholelist[0][widget.accessname]);
+                  }
+                } catch (e) {
+                  print(e.toString());
+                }
+              },
+            )
+          ],
         ),
         body: Container(
           child: Padding(
@@ -1513,7 +1551,14 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                   ),
                   Container(
                       child: RaisedButton(
-                    child: Text('Done'),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(20),
+                    ),
+                    color: colorb,
+                    child: Text(
+                      'Submit',
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
                     onPressed: () {
                       var test =
                           widget.wholelist[2][widget.accessname]["complete"];
@@ -1533,7 +1578,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                         //   test = 1;
                         // }
                       }
-                      if (test == 0) {
+                      if (test < 12) {
                         _showSnackBar(
                             "You Must Have to Fill The Details First", context);
                       } else {

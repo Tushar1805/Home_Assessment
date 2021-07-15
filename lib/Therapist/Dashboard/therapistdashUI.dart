@@ -9,6 +9,7 @@ import 'package:tryapp/Assesment/newassesment/newassesmentbase.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentui.dart';
 import 'package:tryapp/CompleteAssessment/completeAssessmentBase.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/reportbase.dart';
+import 'package:tryapp/Patient_Caregiver_Family/Dashboard/reportui.dart';
 import 'package:tryapp/Therapist/Dashboard/homeAddresses.dart';
 import 'package:tryapp/Therapist/Dashboard/nurses.dart';
 import 'package:tryapp/Therapist/Dashboard/patients.dart';
@@ -105,10 +106,10 @@ class _TherapistUIState extends State<TherapistUI> {
 
     if (status == "Assessment Scheduled" && assessorUid == curUid) {
       return Container(
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery.of(context).size.width * 0.5,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(10),
+            borderRadius: new BorderRadius.circular(20),
           ),
           padding: EdgeInsets.symmetric(
             vertical: 10,
@@ -133,10 +134,10 @@ class _TherapistUIState extends State<TherapistUI> {
       );
     } else if (status == "Assessment Scheduled" && assessorUid != curUid) {
       return Container(
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery.of(context).size.width * 0.5,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(10),
+            borderRadius: new BorderRadius.circular(20),
           ),
           padding: EdgeInsets.symmetric(
             vertical: 10,
@@ -160,10 +161,10 @@ class _TherapistUIState extends State<TherapistUI> {
       );
     } else if (status == "Assessment in Progress" && assessorUid == curUid) {
       return Container(
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery.of(context).size.width * 0.5,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(10),
+            borderRadius: new BorderRadius.circular(20),
           ),
           padding: EdgeInsets.symmetric(
             vertical: 10,
@@ -189,10 +190,10 @@ class _TherapistUIState extends State<TherapistUI> {
       );
     } else if (status == "Assessment in Progress" && assessorUid != curUid) {
       return Container(
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery.of(context).size.width * 0.5,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(10),
+            borderRadius: new BorderRadius.circular(20),
           ),
           padding: EdgeInsets.symmetric(
             vertical: 10,
@@ -214,10 +215,10 @@ class _TherapistUIState extends State<TherapistUI> {
       );
     } else if (status == "Report Generated") {
       return Container(
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery.of(context).size.width * 0.5,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(10),
+            borderRadius: new BorderRadius.circular(20),
           ),
           padding: EdgeInsets.symmetric(
             vertical: 10,
@@ -229,7 +230,7 @@ class _TherapistUIState extends State<TherapistUI> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ReportBase(docID, patientUid)));
+                    builder: (context) => ReportUI(docID, patientUid, list)));
           },
           child: Text(
             "View Report",
@@ -242,32 +243,29 @@ class _TherapistUIState extends State<TherapistUI> {
       );
     } else if (status == "Assessment Finished" && curUid != assessorUid) {
       return Container(
-        width: MediaQuery.of(context).size.width,
-        child: Positioned(
-          bottom: 0,
-          child: RaisedButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: new BorderRadius.circular(10),
-            ),
-            padding: EdgeInsets.symmetric(
-              vertical: 10,
-              horizontal: 10,
-            ),
-            elevation: 3,
-            color: Color.fromRGBO(10, 80, 106, 1),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          CompleteAssessmentBase(list, docID, "therapist")));
-            },
-            child: Text(
-              "Provide Recommendations",
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 15,
-              ),
+        width: MediaQuery.of(context).size.width * 0.5,
+        child: RaisedButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(20),
+          ),
+          padding: EdgeInsets.symmetric(
+            vertical: 10,
+            horizontal: 10,
+          ),
+          elevation: 3,
+          color: Color.fromRGBO(10, 80, 106, 1),
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        CompleteAssessmentBase(list, docID, "therapist")));
+          },
+          child: Text(
+            "Provide Recommendations",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 15,
             ),
           ),
         ),
@@ -406,39 +404,24 @@ class _TherapistUIState extends State<TherapistUI> {
 
     // assesspro.getfielddata(snapshot["patient"]);
 
-    if (assesspro.data2 == null) {
-      return Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: Padding(
-          padding: EdgeInsets.only(top: 0),
-          child:
-              Stack(alignment: AlignmentDirectional.center, children: <Widget>[
-            Positioned(
-                width: MediaQuery.of(context).size.width * .5,
-                height: MediaQuery.of(context).size.height * .5,
-                child: Center(child: Text("Loading Data......"))),
-          ]),
-        ),
-      );
-    } else {
-      return Container(
-          // decoration: new BoxDecoration(boxShadow: [
-          //   new BoxShadow(
-          //     color: Colors.grey[100],
-          //     blurRadius: 15.0,
-          //   ),
-          // ]
-          // ),
-          padding: EdgeInsets.only(left: 8, right: 8, bottom: 10),
-          // height: MediaQuery.of(context).size.height * 0.3,
-          child: GestureDetector(
-            child: Card(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                color: Colors.white,
-                child: Container(
-                    child: Column(
+    return Container(
+      // decoration: new BoxDecoration(boxShadow: [
+      //   new BoxShadow(
+      //     color: Colors.grey[100],
+      //     blurRadius: 15.0,
+      //   ),
+      // ]
+      // ),
+      padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+      // height: MediaQuery.of(context).size.height * 0.3,
+      child: GestureDetector(
+        child: Card(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            color: Colors.white,
+            child: Container(
+                padding: EdgeInsets.only(bottom: 0),
+                child: Column(
                   children: [
                     Row(
                       children: [
@@ -460,63 +443,79 @@ class _TherapistUIState extends State<TherapistUI> {
                           ),
                         ),
                         Container(
-                            width: MediaQuery.of(context).size.width * 0.55,
-                            // color: Colors.red,
-                            padding: EdgeInsets.all(10),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: double.infinity,
-                                  child: Text(
-                                    'Patient Name: ${assesspro.capitalize(snapshot["firstName"])}${assesspro.capitalize(snapshot["lastName"])}',
-                                    style: TextStyle(
-                                      fontSize: 16,
+                          width: MediaQuery.of(context).size.width * 0.55,
+                          // color: Colors.red,
+                          padding: EdgeInsets.all(10),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                child: Row(
+                                  // mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      child: Text(
+                                        'Patient Name: fhueuigtila',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black45),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                                SizedBox(height: 2.5),
-                                Divider(),
-                                Container(
-                                  width: double.infinity,
-                                  child: Text(
-                                    'Start Date: ${assessmentdata.data["date"]}' ??
-                                        "1/1/2021",
-                                    style: TextStyle(
-                                      fontSize: 16,
+                                    Container(
+                                      child: Text(
+                                        '${assesspro.capitalize(snapshot["firstName"])}${assesspro.capitalize(snapshot["lastName"])}',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                  ],
                                 ),
-                                SizedBox(height: 2.5),
-                                Divider(),
-                                getDate(
-                                    "Completion Date:",
-                                    assessmentdata
-                                        .data["assessmentCompletionDate"]),
-                                SizedBox(height: 2.5),
-                                Divider(),
-                                // getDate("Latest Change: ",
-                                //     snapshot["latestChangeDate"]),
-                                // SizedBox(height: 2.5),
-                                // Divider(),
-                                Container(
-                                  width: double.infinity,
-                                  child: Text(
-                                    'Status : ${assessmentdata.data["currentStatus"]}',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(height: 2.5),
-                                Divider(),
+                              ),
 
-                                getAddress(snapshot["houses"]),
+                              SizedBox(height: 2.5),
+                              Divider(),
+                              Container(
+                                width: double.infinity,
+                                child: Text(
+                                  'Start Date: ${assessmentdata.data["date"]}' ??
+                                      "1/1/2021",
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 2.5),
+                              Divider(),
+                              getDate(
+                                  "Completion Date:",
+                                  assessmentdata
+                                      .data["assessmentCompletionDate"]),
+                              SizedBox(height: 2.5),
+                              Divider(),
+                              // getDate("Latest Change: ",
+                              //     snapshot["latestChangeDate"]),
+                              // SizedBox(height: 2.5),
+                              // Divider(),
+                              Container(
+                                width: double.infinity,
+                                child: Text(
+                                  'Status : ${assessmentdata.data["currentStatus"]}',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: 2.5),
+                              Divider(),
 
-                                // Container(child: Text('${dataset.data}')),
-                              ],
-                            )),
+                              getAddress(snapshot["houses"]),
+
+                              // Container(child: Text('${dataset.data}')),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                     getButton(
@@ -527,30 +526,33 @@ class _TherapistUIState extends State<TherapistUI> {
                         list,
                         assessmentdata.data["docID"],
                         context),
+                    SizedBox(
+                      height: 10,
+                    )
                   ],
                 ))),
-            onTap: () async {
-              //   print("Hello");
-              //   await assesspro.getdocref(assessmentdata);
-              //   // print(assesspro.curretnassessmentdocref);
-              //   // print(assessmentdata.data);
+        onTap: () async {
+          //   print("Hello");
+          //   await assesspro.getdocref(assessmentdata);
+          //   // print(assesspro.curretnassessmentdocref);
+          //   // print(assessmentdata.data);
 
-              //   if (assessmentdata.data['Status'] == "new") {
-              //     Navigator.push(
-              //         context,
-              //         MaterialPageRoute(
-              //             builder: (context) =>
-              //                 NewAssesment(assesspro.curretnassessmentdocref)));
-              //   } else {
-              //     Navigator.push(
-              //         context,
-              //         MaterialPageRoute(
-              //             builder: (context) =>
-              //                 NewAssesment(assesspro.curretnassessmentdocref)));
-              //   }
-            },
-          ));
-    }
+          //   if (assessmentdata.data['Status'] == "new") {
+          //     Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //             builder: (context) =>
+          //                 NewAssesment(assesspro.curretnassessmentdocref)));
+          //   } else {
+          //     Navigator.push(
+          //         context,
+          //         MaterialPageRoute(
+          //             builder: (context) =>
+          //                 NewAssesment(assesspro.curretnassessmentdocref)));
+          //   }
+        },
+      ),
+    );
   }
 
   @override
@@ -700,7 +702,7 @@ class _TherapistUIState extends State<TherapistUI> {
               title: Text('Dashboard'),
               elevation: 0.0,
               actions: [
-                FlatButton.icon(
+                IconButton(
                   icon: Icon(Icons.logout, color: Colors.white),
                   onPressed: () async {
                     try {
@@ -711,10 +713,10 @@ class _TherapistUIState extends State<TherapistUI> {
                       print(e.toString());
                     }
                   },
-                  label: Text(
-                    'Logout',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
+                  // label: Text(
+                  //   'Logout',
+                  //   style: TextStyle(color: Colors.white, fontSize: 16),
+                  // ),
                 )
               ],
             ),
