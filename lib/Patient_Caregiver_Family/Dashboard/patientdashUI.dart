@@ -102,10 +102,10 @@ class _PatientUIState extends State<PatientUI> {
 
     if (status == "Assessment Scheduled" && curUid == assessorUid) {
       return Container(
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery.of(context).size.width * 0.5,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(10),
+            borderRadius: new BorderRadius.circular(20),
           ),
           padding: EdgeInsets.symmetric(
             vertical: 10,
@@ -131,10 +131,10 @@ class _PatientUIState extends State<PatientUI> {
     }
     if (status == "Assessment Scheduled" && curUid != assessorUid) {
       return Container(
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery.of(context).size.width * 0.5,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(10),
+            borderRadius: new BorderRadius.circular(20),
           ),
           padding: EdgeInsets.symmetric(
             vertical: 10,
@@ -156,10 +156,10 @@ class _PatientUIState extends State<PatientUI> {
       );
     } else if (status == "Assessment in Progress" && curUid == assessorUid) {
       return Container(
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery.of(context).size.width * 0.5,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(10),
+            borderRadius: new BorderRadius.circular(20),
           ),
           padding: EdgeInsets.symmetric(
             vertical: 10,
@@ -185,10 +185,10 @@ class _PatientUIState extends State<PatientUI> {
       );
     } else if (status == "Assessment in Progress" && assessorUid != curUid) {
       return Container(
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery.of(context).size.width * 0.5,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(10),
+            borderRadius: new BorderRadius.circular(20),
           ),
           padding: EdgeInsets.symmetric(
             vertical: 10,
@@ -210,10 +210,10 @@ class _PatientUIState extends State<PatientUI> {
       );
     } else if (status == "Report Generated") {
       return Container(
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery.of(context).size.width * 0.5,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(10),
+            borderRadius: new BorderRadius.circular(20),
           ),
           padding: EdgeInsets.symmetric(
             vertical: 10,
@@ -238,10 +238,10 @@ class _PatientUIState extends State<PatientUI> {
       );
     } else if (status == "Assessment Finished" && curUid == assessorUid) {
       return Container(
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery.of(context).size.width * 0.5,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(10),
+            borderRadius: new BorderRadius.circular(20),
           ),
           padding: EdgeInsets.symmetric(
             vertical: 10,
@@ -263,10 +263,10 @@ class _PatientUIState extends State<PatientUI> {
       );
     } else if (status == "Assessment Finished" && curUid != assessorUid) {
       return Container(
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery.of(context).size.width * 0.5,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(10),
+            borderRadius: new BorderRadius.circular(20),
           ),
           padding: EdgeInsets.symmetric(
             vertical: 10,
@@ -366,28 +366,49 @@ class _PatientUIState extends State<PatientUI> {
     Widget getDate(String label, var date) {
       if (date != null) {
         return Container(
-          width: double.infinity,
-          child: Text(
-            '$label ${DateFormat.yMd().format(date.toDate())} ',
-            style: TextStyle(
-              fontSize: 16,
+          child: Wrap(children: [
+            Text(
+              '$label ',
+              style: TextStyle(fontSize: 16, color: Colors.black45),
             ),
-          ),
+            Text(
+              '${DateFormat.yMd().format(date.toDate())} ',
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ]),
         );
       } else {
-        if (label == "Completion Date:") {
-          return Text(
-            "$label Yet to be Complete",
-            style: TextStyle(
-              fontSize: 16,
-            ),
+        if (label == "Completion Date: ") {
+          return Container(
+            child: Wrap(children: [
+              Text(
+                "$label ",
+                style: TextStyle(fontSize: 16, color: Colors.black45),
+              ),
+              Text(
+                "Yet to be Complete",
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+            ]),
           );
         } else {
-          return Text(
-            "$label Yet to be Begin",
-            style: TextStyle(
-              fontSize: 16,
-            ),
+          return Container(
+            child: Wrap(children: [
+              Text(
+                "$label ",
+                style: TextStyle(fontSize: 16, color: Colors.black45),
+              ),
+              Text(
+                "Yet to be Begin",
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+            ]),
           );
         }
       }
@@ -396,23 +417,34 @@ class _PatientUIState extends State<PatientUI> {
     Widget getAddress(var address1) {
       if (address1 != null) {
         return Container(
-          width: double.infinity,
-          child: Text(
-            'Patient Home Address : ${assesspro.capitalize(address1[0]["address1"])}, ${assesspro.capitalize(address1[0]["address2"])}, ${assesspro.capitalize(address1[0]["city"])} ' ??
-                "Patient Home Address: Nagpur",
-            style: TextStyle(
-              fontSize: 16,
+          child: Wrap(children: [
+            Text(
+              'Patient Home Address: ',
+              style: TextStyle(fontSize: 16, color: Colors.black45),
             ),
-          ),
+            Text(
+              '${assesspro.capitalize(address1[0]["address1"])}, ${assesspro.capitalize(address1[0]["address2"])}, ${assesspro.capitalize(address1[0]["city"])} ' ??
+                  "Patient Home Address: Nagpur",
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ]),
         );
       } else {
         return Container(
-          child: Text(
-            "Home Address: Home Address not Availabe",
-            style: TextStyle(
-              fontSize: 16,
+          child: Wrap(children: [
+            Text(
+              "Home Address: ",
+              style: TextStyle(fontSize: 16, color: Colors.black45),
             ),
-          ),
+            Text(
+              "Home Address not Availabe",
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ]),
         );
       }
     }
@@ -421,22 +453,34 @@ class _PatientUIState extends State<PatientUI> {
       if (snap != null) {
         return Container(
           width: double.infinity,
-          child: Text(
-            'Therapist Name: ${assesspro.capitalize(snap["firstName"])} ${assesspro.capitalize(snap["lastName"])}',
-            style: TextStyle(
-              fontSize: 16,
+          child: Wrap(children: [
+            Text(
+              'Therapist Name: ',
+              style: TextStyle(fontSize: 16, color: Colors.black45),
             ),
-          ),
+            Text(
+              '${assesspro.capitalize(snap["firstName"])} ${assesspro.capitalize(snap["lastName"])}',
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ]),
         );
       } else {
         return Container(
           width: double.infinity,
-          child: Text(
-            'Therapist Name: Thrapist',
-            style: TextStyle(
-              fontSize: 16,
+          child: Wrap(children: [
+            Text(
+              'Therapist Name: ',
+              style: TextStyle(fontSize: 16, color: Colors.black45),
             ),
-          ),
+            Text(
+              'Thrapist',
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ]),
         );
       }
     }
@@ -498,7 +542,7 @@ class _PatientUIState extends State<PatientUI> {
                           // color: Colors.red,
                           padding: EdgeInsets.all(10),
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               getName(snapshot),
                               SizedBox(height: 2.5),
@@ -519,13 +563,19 @@ class _PatientUIState extends State<PatientUI> {
                               SizedBox(height: 2.5),
                               Divider(),
                               Container(
-                                width: double.infinity,
-                                child: Text(
-                                  'Status : ${assessmentdata.data["currentStatus"]}',
-                                  style: TextStyle(
-                                    fontSize: 16,
+                                child: Wrap(children: [
+                                  Text(
+                                    'Status: ',
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.black45),
                                   ),
-                                ),
+                                  Text(
+                                    '${assessmentdata.data["currentStatus"]}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ]),
                               ),
                               // SizedBox(height: 2.5),
                               // Divider(),
@@ -557,6 +607,7 @@ class _PatientUIState extends State<PatientUI> {
                       list,
                       assessmentdata.data["docID"],
                       buildContext),
+                  SizedBox(height: 10),
                 ],
               ))),
           onTap: () async {

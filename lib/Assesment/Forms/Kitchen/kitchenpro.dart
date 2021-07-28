@@ -5,6 +5,8 @@ import 'package:tryapp/Assesment/Forms/Formsrepo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 
+import '../../../constants.dart';
+
 class KitchenPro extends ChangeNotifier {
   String roomname;
   var accessname;
@@ -23,7 +25,8 @@ class KitchenPro extends ChangeNotifier {
   Map<String, TextEditingController> controllerstreco = {};
   Map<String, bool> isListening = {};
   bool cur = true;
-  String type;
+  bool isColor = false;
+  String type, therapist, curUid, assessor;
   Color colorb = Color.fromRGBO(10, 80, 106, 1);
   var test = TextEditingController();
   final FormsRepository formsRepository = FormsRepository();
@@ -135,8 +138,35 @@ class KitchenPro extends ChangeNotifier {
         ['Recommendationthera'];
   }
 
+  void _showSnackBar(snackbar, BuildContext buildContext) {
+    final snackBar = SnackBar(
+      duration: const Duration(seconds: 3),
+      content: Container(
+        height: 30.0,
+        child: Center(
+          child: Text(
+            '$snackbar',
+            style: TextStyle(fontSize: 14.0, color: Colors.white),
+          ),
+        ),
+      ),
+      backgroundColor: lightBlack(),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+    );
+    ScaffoldMessenger.of(buildContext)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(snackBar);
+  }
+
   Widget getrecomain(
-      assesmentprovider, int index, bool isthera, String fieldlabel) {
+      assesmentprovider,
+      int index,
+      bool isthera,
+      String fieldlabel,
+      String assessor,
+      String therapist,
+      String role,
+      BuildContext bcontext) {
     return SingleChildScrollView(
       // reverse: true,
       child: Container(
@@ -188,8 +218,18 @@ class KitchenPro extends ChangeNotifier {
                                 size: 20,
                               ),
                               onPressed: () {
-                                listen(index);
-                                setdatalisten(index);
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  listen(index);
+                                  setdatalisten(index);
+                                } else if (role != "therapist") {
+                                  listen(index);
+                                  setdatalisten(index);
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      bcontext);
+                                }
                               },
                             ),
                           ),
@@ -198,12 +238,19 @@ class KitchenPro extends ChangeNotifier {
                     ),
                     labelText: fieldlabel),
                 onChanged: (value) {
+                  if (assessor == therapist && role == "therapist") {
+                    assesmentprovider.setreco(index, value);
+                  } else if (role != "therapist") {
+                    assesmentprovider.setreco(index, value);
+                  } else {
+                    _showSnackBar(
+                        "You can't change the other fields", bcontext);
+                  }
                   // print(accessname);
-                  assesmentprovider.setreco(index, value);
                 },
               ),
             ),
-            (assesmentprovider.type == 'therapist' && isthera)
+            (role == 'therapist' && isthera)
                 ? getrecowid(assesmentprovider, index)
                 : SizedBox(),
           ],
@@ -213,6 +260,12 @@ class KitchenPro extends ChangeNotifier {
   }
 
   Widget getrecowid(assesmentprovider, index) {
+    if (wholelist[3][accessname]["question"]["$index"]["Recommendationthera"] !=
+        "") {
+      isColor = true;
+    } else {
+      isColor = false;
+    }
     return Column(
       children: [
         SizedBox(height: 8),
@@ -220,11 +273,12 @@ class KitchenPro extends ChangeNotifier {
           controller: controllerstreco["field$index"],
           decoration: InputDecoration(
               focusedBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: Color.fromRGBO(10, 80, 106, 1), width: 1),
+                borderSide: BorderSide(
+                    color: (isColor) ? Colors.green : Colors.red, width: 1),
               ),
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(width: 1),
+                borderSide: BorderSide(
+                    width: 1, color: (isColor) ? Colors.green : Colors.red),
               ),
               suffix: Container(
                 // color: Colors.red,
@@ -252,11 +306,12 @@ class KitchenPro extends ChangeNotifier {
                   ),
                 ]),
               ),
+              labelStyle:
+                  TextStyle(color: (isColor) ? Colors.green : Colors.red),
               labelText: 'Recomendation'),
           onChanged: (value) {
             // print(accessname);
             assesmentprovider.setrecothera(index, value);
-            print('hejdfdf');
           },
         ),
         Row(

@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:avatar_glow/avatar_glow.dart';
@@ -20,12 +22,16 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
   stt.SpeechToText _speech;
   bool _isListening = false;
   double _confidence = 1.0;
-  bool available = false;
+  bool available = false, isColor = false;
   Map<String, Color> colorsset = {};
   Map<String, TextEditingController> _controllers = {};
+  Map<String, TextEditingController> _controllerstreco = {};
   Map<String, bool> isListening = {};
   bool cur = true;
   Color colorb = Color.fromRGBO(10, 80, 106, 1);
+  Firestore firestoreInstance = Firestore.instance;
+  FirebaseAuth _auth = FirebaseAuth.instance;
+  String assessor, curUid, therapist, role;
   @override
   void initState() {
     super.initState();
@@ -34,11 +40,119 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
         i < widget.wholelist[2][widget.accessname]['question'].length;
         i++) {
       _controllers["field${i + 1}"] = TextEditingController();
+      _controllerstreco["field${i + 1}"] = TextEditingController();
       isListening["field${i + 1}"] = false;
       _controllers["field${i + 1}"].text = widget.wholelist[2]
           [widget.accessname]['question']["${i + 1}"]['Recommendation'];
+      _controllerstreco["field${i + 1}"].text =
+          '${widget.wholelist[2][widget.accessname]['question']["${i + 1}"]['Recommendationthera']}';
       colorsset["field${i + 1}"] = Color.fromRGBO(10, 80, 106, 1);
     }
+    getAssessData();
+    getRole();
+    setinitials();
+  }
+
+  Future<void> setinitials() async {
+    if (widget.wholelist[2][widget.accessname]['question']["7"]
+        .containsKey('doorwidth')) {
+    } else {
+      widget.wholelist[2][widget.accessname]['question']["7"]['doorwidth'] = 0;
+    }
+  }
+
+  Future<void> getAssessData() async {
+    final FirebaseUser user = await _auth.currentUser();
+    firestoreInstance
+        .collection("assessments")
+        .document(widget.docID)
+        .get()
+        .then((value) => setState(() {
+              curUid = user.uid;
+              assessor = value.data["assessor"];
+              therapist = value.data["therapist"];
+            }));
+  }
+
+  Future<String> getRole() async {
+    final FirebaseUser useruid = await _auth.currentUser();
+    firestoreInstance.collection("users").document(useruid.uid).get().then(
+      (value) {
+        setState(() {
+          role = (value["role"].toString()).split(" ")[0];
+        });
+      },
+    );
+  }
+
+  setdata(index, value, que) {
+    widget.wholelist[2][widget.accessname]['question']["$index"]['Question'] =
+        que;
+    if (value.length == 0) {
+      if (widget.wholelist[2][widget.accessname]['question']["$index"]['Answer']
+              .length ==
+          0) {
+      } else {
+        setState(() {
+          widget.wholelist[2][widget.accessname]['complete'] -= 1;
+          widget.wholelist[2][widget.accessname]['question']["$index"]
+              ['Answer'] = value;
+        });
+      }
+    } else {
+      if (widget.wholelist[2][widget.accessname]['question']["$index"]['Answer']
+              .length ==
+          0) {
+        setState(() {
+          widget.wholelist[2][widget.accessname]['complete'] += 1;
+        });
+      }
+      setState(() {
+        widget.wholelist[2][widget.accessname]['question']["$index"]['Answer'] =
+            value;
+      });
+    }
+  }
+
+  setreco(index, value) {
+    setState(() {
+      widget.wholelist[2][widget.accessname]['question']["$index"]
+          ['Recommendation'] = value;
+    });
+  }
+
+  getvalue(index) {
+    return widget.wholelist[2][widget.accessname]['question']["$index"]
+        ['Answer'];
+  }
+
+  getreco(index) {
+    return widget.wholelist[2][widget.accessname]['question']["$index"]
+        ['Recommendation'];
+  }
+
+  setrecothera(index, value) {
+    setState(() {
+      widget.wholelist[2][widget.accessname]['question']["$index"]
+          ['Recommendationthera'] = value;
+    });
+  }
+
+  setprio(index, value) {
+    setState(() {
+      widget.wholelist[2][widget.accessname]['question']["$index"]['Priority'] =
+          value;
+    });
+  }
+
+  getprio(index) {
+    return widget.wholelist[2][widget.accessname]['question']["$index"]
+        ['Priority'];
+  }
+
+  getrecothera(index) {
+    return widget.wholelist[2][widget.accessname]['question']["$index"]
+        ['Recommendationthera'];
   }
 
   void _showSnackBar(snackbar, BuildContext buildContext) {
@@ -92,7 +206,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                     //   test = 1;
                     // }
                   }
-                  if (test < 12) {
+                  if (test == 0) {
                     _showSnackBar(
                         "You Must Have to Fill The Details First", context);
                   } else {
@@ -100,7 +214,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                     NewAssesmentRepository()
                         .setForm(widget.wholelist, widget.docID);
                     Navigator.pop(
-                        context, widget.wholelist[0][widget.accessname]);
+                        context, widget.wholelist[2][widget.accessname]);
                   }
                 } catch (e) {
                   print(e.toString());
@@ -168,7 +282,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                width: MediaQuery.of(context).size.width * .5,
+                                width: MediaQuery.of(context).size.width * .6,
                                 child: Text('Threshold to Living Room',
                                     style: TextStyle(
                                       color: Color.fromRGBO(10, 80, 106, 1),
@@ -176,7 +290,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                     )),
                               ),
                               SizedBox(
-                                width: MediaQuery.of(context).size.width * .3,
+                                width: MediaQuery.of(context).size.width * .25,
                                 child: TextFormField(
                                     initialValue: widget.wholelist[2]
                                             [widget.accessname]['question']["1"]
@@ -194,61 +308,41 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                         labelText: '(Inches)'),
                                     keyboardType: TextInputType.phone,
                                     onChanged: (value) {
-                                      FocusScope.of(context).requestFocus();
-                                      new TextEditingController().clear();
-                                      // print(widget.accessname);
-                                      widget.wholelist[2][widget.accessname]
-                                              ['question']["1"]['Question'] =
-                                          'Threshold to Living Room';
-
-                                      if (value.length == 0) {
-                                        if (widget
-                                                .wholelist[2][widget.accessname]
-                                                    ['question']["1"]['Answer']
-                                                .length ==
-                                            0) {
-                                        } else {
-                                          setState(() {
-                                            widget.wholelist[2]
-                                                    [widget.accessname]
-                                                ['complete'] -= 1;
-
-                                            widget.wholelist[2]
-                                                        [widget.accessname]
-                                                    ['question']["1"]
-                                                ['Answer'] = value;
-                                          });
-                                        }
+                                      if (assessor == therapist &&
+                                          role == "therapist") {
+                                        FocusScope.of(context).requestFocus();
+                                        new TextEditingController().clear();
+                                        // print(widget.accessname);
+                                        setdata(1, value,
+                                            'Threshold to Living Room');
+                                      } else if (role != "therapist") {
+                                        FocusScope.of(context).requestFocus();
+                                        new TextEditingController().clear();
+                                        // print(widget.accessname);
+                                        setdata(1, value,
+                                            'Threshold to Living Room');
                                       } else {
-                                        if (widget
-                                                .wholelist[2][widget.accessname]
-                                                    ['question']["1"]['Answer']
-                                                .length ==
-                                            0) {
-                                          setState(() {
-                                            widget.wholelist[2]
-                                                    [widget.accessname]
-                                                ['complete'] += 1;
-                                          });
-                                        }
-                                        setState(() {
-                                          widget.wholelist[2][widget.accessname]
-                                                  ['question']["1"]['Answer'] =
-                                              value;
-                                        });
+                                        _showSnackBar(
+                                            "You can't change the other fields",
+                                            context);
                                       }
-                                      // print(widget.wholelist[2]
-                                      //         [widget.accessname]['question'][1]
-                                      //     ['Answer']);
                                     }),
                               ),
                             ]),
-                        SizedBox(height: 15),
+                        SizedBox(height: 10),
+                        (getvalue(1) != "")
+                            ? (int.parse(getvalue(1)) > 5)
+                                ? getrecomain(1, true, "Comments (if any)")
+                                : SizedBox()
+                            : SizedBox(),
+                        SizedBox(
+                          height: 10,
+                        ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .5,
+                              width: MediaQuery.of(context).size.width * .4,
                               child: Text('Flooring Type',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
@@ -257,142 +351,63 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                             ),
                             Container(
                               child: DropdownButton(
-                                items: [
-                                  DropdownMenuItem(
-                                    child: Text('--'),
-                                    value: '',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Ceramic Tiles'),
-                                    value: 'Tile',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Hardwood'),
-                                    value: 'Hardwood',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Laminate'),
-                                    value: 'Laminate',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Carpet'),
-                                    value: 'Carpet',
-                                  ),
-                                ],
-                                onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  widget.wholelist[2][widget.accessname]
-                                          ['question']["2"]['Question'] =
-                                      'Flooring Type';
-                                  if (value.length == 0) {
-                                    if (widget
-                                            .wholelist[2][widget.accessname]
-                                                ['question']["2"]['Answer']
-                                            .length ==
-                                        0) {
+                                  items: [
+                                    DropdownMenuItem(
+                                      child: Text('--'),
+                                      value: '',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Wood - Smooth Finish'),
+                                      value: 'Wood - Smooth Finish',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Wood - Friction Finish'),
+                                      value: 'Wood - Friction Finish',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Carpet'),
+                                      value: 'Carpet',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Concrete'),
+                                      value: 'Concrete',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Tile - Smooth Finish'),
+                                      value: 'Tile - Smooth Finish',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Tile - Friction Finish'),
+                                      value: 'Tile - Friction Finish',
+                                    ),
+                                  ],
+                                  onChanged: (value) {
+                                    if (assessor == therapist &&
+                                        role == "therapist") {
+                                      FocusScope.of(context).requestFocus();
+                                      new TextEditingController().clear();
+                                      // print(widget.accessname);
+                                      setdata(2, value, 'Flooring Type');
+                                    } else if (role != "therapist") {
+                                      FocusScope.of(context).requestFocus();
+                                      new TextEditingController().clear();
+                                      // print(widget.accessname);
+                                      setdata(2, value, 'Flooring Type');
                                     } else {
-                                      setState(() {
-                                        widget.wholelist[2][widget.accessname]
-                                            ['complete'] -= 1;
-                                        widget.wholelist[2][widget.accessname]
-                                            ['question']["2"]['Answer'] = value;
-                                      });
+                                      _showSnackBar(
+                                          "You can't change the other fields",
+                                          context);
                                     }
-                                  } else {
-                                    if (widget
-                                            .wholelist[2][widget.accessname]
-                                                ['question']["2"]['Answer']
-                                            .length ==
-                                        0) {
-                                      setState(() {
-                                        widget.wholelist[2][widget.accessname]
-                                            ['complete'] += 1;
-                                      });
-                                    }
-                                    setState(() {
-                                      widget.wholelist[2][widget.accessname]
-                                          ['question']["2"]['Answer'] = value;
-                                    });
-                                  }
-                                },
-                                value: widget.wholelist[2][widget.accessname]
-                                    ['question']["2"]['Answer'],
-                              ),
+                                  },
+                                  value: getvalue(2)),
                             )
                           ],
                         ),
-                        (widget
-                                    .wholelist[2][widget.accessname]['question']
-                                        ["2"]['Answer']
-                                    .length >
-                                0)
-                            ? TextFormField(
-                                maxLines: null,
-                                controller: _controllers["field${2}"],
-                                decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: colorsset["field${2}"],
-                                          width: 1),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          width: 1,
-                                          color: colorsset["field${2}"]),
-                                    ),
-                                    suffix: Container(
-                                      padding: EdgeInsets.all(0),
-                                      child: Column(children: [
-                                        Container(
-                                          alignment: Alignment.topRight,
-                                          width: 58,
-                                          height: 30,
-                                          margin: EdgeInsets.all(0),
-                                          child: AvatarGlow(
-                                            animate: isListening['field${2}'],
-                                            glowColor:
-                                                Theme.of(context).primaryColor,
-                                            endRadius: 300.0,
-                                            duration: const Duration(
-                                                milliseconds: 2000),
-                                            repeatPauseDuration: const Duration(
-                                                milliseconds: 100),
-                                            repeat: true,
-                                            child: FlatButton(
-                                              child: Icon(
-                                                  isListening['field${2}']
-                                                      ? Icons.cancel
-                                                      : Icons.mic),
-                                              onPressed: () {
-                                                _listen(2);
-                                                setdatalisten(2);
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ]),
-                                    ),
-                                    labelText: 'Enter Comments (if any)'),
-                                onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-
-                                  setState(() {
-                                    widget.wholelist[2][widget.accessname]
-                                            ['question']["2"]
-                                        ['Recommendation'] = value;
-                                  });
-                                },
-                              )
+                        (getvalue(2) == 'Wood - Smooth Finish' ||
+                                getvalue(2) == 'Tile - Smooth Finish')
+                            ? getrecomain(2, true, "Comments (if any)")
                             : SizedBox(),
                         SizedBox(height: 15),
-                        // Divider(
-                        //   height: dividerheight,
-                        //   color: Color.fromRGBO(10, 20, 102, 1),
-                        // ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -412,141 +427,45 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                     value: '',
                                   ),
                                   DropdownMenuItem(
-                                    child: Text('Ceramic Tiles'),
-                                    value: 'Tile',
+                                    child: Text('Large Rug'),
+                                    value: 'Large Rug',
                                   ),
                                   DropdownMenuItem(
-                                    child: Text('Hardwood'),
-                                    value: 'Hardwood',
+                                    child: Text('Small Rug'),
+                                    value: 'Small Rug',
                                   ),
                                   DropdownMenuItem(
-                                    child: Text('Laminate'),
-                                    value: 'Laminate',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Carpet'),
-                                    value: 'Carpet',
+                                    child: Text('No covering'),
+                                    value: 'No covering',
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  widget.wholelist[2][widget.accessname]
-                                          ['question']["3"]['Question'] =
-                                      'Floor Coverage';
-
-                                  if (value.length == 0) {
-                                    if (widget
-                                            .wholelist[2][widget.accessname]
-                                                ['question']["3"]['Answer']
-                                            .length ==
-                                        0) {
-                                    } else {
-                                      setState(() {
-                                        widget.wholelist[2][widget.accessname]
-                                            ['complete'] -= 1;
-                                        widget.wholelist[2][widget.accessname]
-                                            ['question']["3"]['Answer'] = value;
-                                      });
-                                    }
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(3, value, 'Floor Coverage');
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(3, value, 'Floor Coverage');
                                   } else {
-                                    if (widget
-                                            .wholelist[2][widget.accessname]
-                                                ['question']["3"]['Answer']
-                                            .length ==
-                                        0) {
-                                      setState(() {
-                                        widget.wholelist[2][widget.accessname]
-                                            ['complete'] += 1;
-                                      });
-                                    }
-                                    setState(() {
-                                      widget.wholelist[2][widget.accessname]
-                                          ['question']["3"]['Answer'] = value;
-                                    });
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
                                   }
                                 },
-                                value: widget.wholelist[2][widget.accessname]
-                                    ['question']['3']['Answer'],
+                                value: getvalue(3),
                               ),
                             )
                           ],
                         ),
-                        (widget
-                                    .wholelist[2][widget.accessname]['question']
-                                        ["3"]['Answer']
-                                    .length >
-                                0)
-                            ? TextFormField(
-                                maxLines: null,
-                                controller: _controllers["field${3}"],
-                                decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: colorsset["field${3}"],
-                                          width: 1),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          width: 1,
-                                          color: colorsset["field${3}"]),
-                                    ),
-                                    suffix: Container(
-                                      padding: EdgeInsets.all(0),
-                                      child: Column(children: [
-                                        Container(
-                                          alignment: Alignment.topRight,
-                                          width: 58,
-                                          height: 30,
-                                          margin: EdgeInsets.all(0),
-                                          child: AvatarGlow(
-                                            animate: isListening['field${3}'],
-                                            glowColor:
-                                                Theme.of(context).primaryColor,
-                                            endRadius: 300.0,
-                                            duration: const Duration(
-                                                milliseconds: 2000),
-                                            repeatPauseDuration: const Duration(
-                                                milliseconds: 100),
-                                            repeat: true,
-                                            child: FlatButton(
-                                              child: Icon(
-                                                  isListening['field${3}']
-                                                      ? Icons.cancel
-                                                      : Icons.mic),
-                                              onPressed: () {
-                                                _listen(3);
-                                                setdatalisten(3);
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ]),
-                                    ),
-                                    labelText: 'Specify Coverage (if any)'),
-                                onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-
-                                  setState(() {
-                                    widget.wholelist[2][widget.accessname]
-                                            ['question']["3"]
-                                        ['Recommendation'] = value;
-
-                                    // print(assesmentprovider.listofRooms[2]);
-                                    // print(
-                                    //     widget.wholelist[2][widget.accessname]);
-                                  });
-                                },
-                              )
+                        (getvalue(3) != 'No covering' && getvalue(3) != '')
+                            ? getrecomain(3, true, 'Comments (if any)')
                             : SizedBox(),
                         SizedBox(height: 15),
-                        // Divider(
-                        //   height: dividerheight,
-                        //   color: Color.fromRGBO(10, 20, 102, 1),
-                        // ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -560,142 +479,44 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                             ),
                             Container(
                               child: DropdownButton(
-                                items: [
-                                  DropdownMenuItem(
-                                    child: Text('--'),
-                                    value: '',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Incandescent'),
-                                    value: 'Bulb',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Halogen'),
-                                    value: 'Halogen',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('LED'),
-                                    value: 'LED',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('CFLs'),
-                                    value: 'CFLs',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('WiFi Capable'),
-                                    value: 'WiFi Capable',
-                                  ),
-                                ],
-                                onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-
-                                  widget.wholelist[2][widget.accessname]
-                                          ['question']["4"]['Question'] =
-                                      'Lighting Types';
-
-                                  if (value.length == 0) {
-                                    if (widget
-                                            .wholelist[2][widget.accessname]
-                                                ['question']["4"]['Answer']
-                                            .length ==
-                                        0) {
+                                  items: [
+                                    DropdownMenuItem(
+                                      child: Text('--'),
+                                      value: '',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Adequate'),
+                                      value: 'Adequate',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Inadequate'),
+                                      value: 'Inadequate',
+                                    ),
+                                  ],
+                                  onChanged: (value) {
+                                    if (assessor == therapist &&
+                                        role == "therapist") {
+                                      FocusScope.of(context).requestFocus();
+                                      new TextEditingController().clear();
+                                      // print(widget.accessname);
+                                      setdata(4, value, 'Lighting Types');
+                                    } else if (role != "therapist") {
+                                      FocusScope.of(context).requestFocus();
+                                      new TextEditingController().clear();
+                                      // print(widget.accessname);
+                                      setdata(4, value, 'Lighting Types');
                                     } else {
-                                      setState(() {
-                                        widget.wholelist[2][widget.accessname]
-                                            ['complete'] -= 1;
-                                        widget.wholelist[2][widget.accessname]
-                                            ['question']["4"]['Answer'] = value;
-                                      });
+                                      _showSnackBar(
+                                          "You can't change the other fields",
+                                          context);
                                     }
-                                  } else {
-                                    if (widget
-                                            .wholelist[2][widget.accessname]
-                                                ['question']["4"]['Answer']
-                                            .length ==
-                                        0) {
-                                      setState(() {
-                                        widget.wholelist[2][widget.accessname]
-                                            ['complete'] += 1;
-                                      });
-                                    }
-                                    setState(() {
-                                      widget.wholelist[2][widget.accessname]
-                                          ['question']['4']['Answer'] = value;
-                                    });
-                                  }
-                                },
-                                value: widget.wholelist[2][widget.accessname]
-                                    ['question']["4"]['Answer'],
-                              ),
+                                  },
+                                  value: getvalue(4)),
                             )
                           ],
                         ),
-                        (widget
-                                    .wholelist[2][widget.accessname]['question']
-                                        ["4"]['Answer']
-                                    .length >
-                                0)
-                            ? TextFormField(
-                                maxLines: null,
-                                controller: _controllers["field${4}"],
-                                decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: colorsset["field${4}"],
-                                          width: 1),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          width: 1,
-                                          color: colorsset["field${4}"]),
-                                    ),
-                                    suffix: Container(
-                                      padding: EdgeInsets.all(0),
-                                      child: Column(children: [
-                                        Container(
-                                          alignment: Alignment.topRight,
-                                          width: 58,
-                                          height: 30,
-                                          margin: EdgeInsets.all(0),
-                                          child: AvatarGlow(
-                                            animate: isListening['field${4}'],
-                                            glowColor:
-                                                Theme.of(context).primaryColor,
-                                            endRadius: 300.0,
-                                            duration: const Duration(
-                                                milliseconds: 2000),
-                                            repeatPauseDuration: const Duration(
-                                                milliseconds: 100),
-                                            repeat: true,
-                                            child: FlatButton(
-                                              child: Icon(
-                                                  isListening['field${4}']
-                                                      ? Icons.cancel
-                                                      : Icons.mic),
-                                              onPressed: () {
-                                                _listen(4);
-                                                setdatalisten(4);
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ]),
-                                    ),
-                                    labelText: 'Specify Lighting Type'),
-                                onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-
-                                  setState(() {
-                                    widget.wholelist[2][widget.accessname]
-                                            ['question']["4"]
-                                        ['Recommendation'] = value;
-                                  });
-                                },
-                              )
+                        (getvalue(4) == 'Inadequate')
+                            ? getrecomain(4, true, 'Specify Type')
                             : SizedBox(),
                         SizedBox(height: 15),
                         // Divider(
@@ -706,7 +527,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .5,
+                              width: MediaQuery.of(context).size.width * .6,
                               child: Text('Switches Able to Operate',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
@@ -715,67 +536,49 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                             ),
                             Container(
                               child: DropdownButton(
-                                items: [
-                                  DropdownMenuItem(
-                                    child: Text('--'),
-                                    value: '',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Yes'),
-                                    value: 'Yes',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('No'),
-                                    value: 'No',
-                                  ),
-                                ],
-                                onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  widget.wholelist[2][widget.accessname]
-                                          ['question']["5"]['Question'] =
-                                      'Switches Able to Operate';
-
-                                  if (value.length == 0) {
-                                    if (widget
-                                            .wholelist[2][widget.accessname]
-                                                ['question']["5"]['Answer']
-                                            .length ==
-                                        0) {
+                                  items: [
+                                    DropdownMenuItem(
+                                      child: Text('--'),
+                                      value: '',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Yes'),
+                                      value: 'Yes',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('No'),
+                                      value: 'No',
+                                    ),
+                                  ],
+                                  onChanged: (value) {
+                                    if (assessor == therapist &&
+                                        role == "therapist") {
+                                      FocusScope.of(context).requestFocus();
+                                      new TextEditingController().clear();
+                                      // print(widget.accessname);
+                                      setdata(
+                                          5, value, 'Switches Able to Operate');
+                                    } else if (role != "therapist") {
+                                      FocusScope.of(context).requestFocus();
+                                      new TextEditingController().clear();
+                                      // print(widget.accessname);
+                                      setdata(
+                                          5, value, 'Switches Able to Operate');
                                     } else {
-                                      setState(() {
-                                        widget.wholelist[2][widget.accessname]
-                                            ['complete'] -= 1;
-                                        widget.wholelist[2][widget.accessname]
-                                            ['question']["5"]['Answer'] = value;
-                                      });
+                                      _showSnackBar(
+                                          "You can't change the other fields",
+                                          context);
                                     }
-                                  } else {
-                                    if (widget
-                                            .wholelist[2][widget.accessname]
-                                                ['question']["5"]['Answer']
-                                            .length ==
-                                        0) {
-                                      setState(() {
-                                        widget.wholelist[2][widget.accessname]
-                                            ['complete'] += 1;
-                                      });
-                                    }
-                                    setState(() {
-                                      widget.wholelist[2][widget.accessname]
-                                          ['question']["5"]['Answer'] = value;
-                                    });
-                                  }
-                                },
-                                value: widget.wholelist[2][widget.accessname]
-                                    ['question']["5"]['Answer'],
-                              ),
+                                  },
+                                  value: getvalue(5)),
                             ),
                           ],
                         ),
-                        SizedBox(height: 15),
+                        (getvalue(5) == 'No' && getvalue(5) != '')
+                            ? getrecomain(5, true, 'Comments(if any)')
+                            : SizedBox(),
 
+                        SizedBox(height: 15),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -789,138 +592,84 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                             ),
                             Container(
                               child: DropdownButton(
-                                items: [
-                                  DropdownMenuItem(
-                                    child: Text('--'),
-                                    value: '',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Push Button'),
-                                    value: 'pushbutton',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Rotary'),
-                                    value: 'rotary',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Toggle'),
-                                    value: 'toggle',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Slide'),
-                                    value: 'slide',
-                                  ),
-                                ],
-                                onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  widget.wholelist[2][widget.accessname]
-                                          ['question']["6"]['Question'] =
-                                      'Switch Types';
-
-                                  if (value.length == 0) {
-                                    if (widget
-                                            .wholelist[2][widget.accessname]
-                                                ['question']["6"]['Answer']
-                                            .length ==
-                                        0) {
+                                  // items: [
+                                  //   DropdownMenuItem(
+                                  //     child: Text('--'),
+                                  //     value: '',
+                                  //   ),
+                                  //   DropdownMenuItem(
+                                  //     child: Text('Push Button'),
+                                  //     value: 'pushbutton',
+                                  //   ),
+                                  //   DropdownMenuItem(
+                                  //     child: Text('Rotary'),
+                                  //     value: 'rotary',
+                                  //   ),
+                                  //   DropdownMenuItem(
+                                  //     child: Text('Toggle'),
+                                  //     value: 'toggle',
+                                  //   ),
+                                  //   DropdownMenuItem(
+                                  //     child: Text('Slide'),
+                                  //     value: 'slide',
+                                  //   ),
+                                  // ],
+                                  items: [
+                                    DropdownMenuItem(
+                                      child: Text('--'),
+                                      value: '',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Single Pole'),
+                                      value: 'Single Pole',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('3 Way'),
+                                      value: '3 Way',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('4 Way'),
+                                      value: '4 Way',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Mutlti Location'),
+                                      value: 'Mutlti Location',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Double Switch'),
+                                      value: 'Double Switch',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Dimmers'),
+                                      value: 'Dimmers',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Remote Control'),
+                                      value: 'Remote Control',
+                                    ),
+                                  ],
+                                  onChanged: (value) {
+                                    if (assessor == therapist &&
+                                        role == "therapist") {
+                                      FocusScope.of(context).requestFocus();
+                                      new TextEditingController().clear();
+                                      // print(widget.accessname);
+                                      setdata(6, value, 'Switch Types');
+                                    } else if (role != "therapist") {
+                                      FocusScope.of(context).requestFocus();
+                                      new TextEditingController().clear();
+                                      // print(widget.accessname);
+                                      setdata(6, value, 'Switch Types');
                                     } else {
-                                      setState(() {
-                                        widget.wholelist[2][widget.accessname]
-                                            ['complete'] -= 1;
-                                        widget.wholelist[2][widget.accessname]
-                                            ['question']["6"]['Answer'] = value;
-                                      });
+                                      _showSnackBar(
+                                          "You can't change the other fields",
+                                          context);
                                     }
-                                  } else {
-                                    if (widget
-                                            .wholelist[2][widget.accessname]
-                                                ['question']["6"]['Answer']
-                                            .length ==
-                                        0) {
-                                      setState(() {
-                                        widget.wholelist[2][widget.accessname]
-                                            ['complete'] += 1;
-                                      });
-                                    }
-                                    setState(() {
-                                      widget.wholelist[2][widget.accessname]
-                                          ['question']["6"]['Answer'] = value;
-                                    });
-                                  }
-                                },
-                                value: widget.wholelist[2][widget.accessname]
-                                    ['question']["6"]['Answer'],
-                              ),
+                                  },
+                                  value: getvalue(6)),
                             ),
                           ],
                         ),
-                        (widget
-                                    .wholelist[2][widget.accessname]['question']
-                                        ["6"]['Answer']
-                                    .length >
-                                0)
-                            ? TextFormField(
-                                maxLines: null,
-                                controller: _controllers["field${6}"],
-                                decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: colorsset["field${6}"],
-                                          width: 1),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          width: 1,
-                                          color: colorsset["field${6}"]),
-                                    ),
-                                    suffix: Container(
-                                      padding: EdgeInsets.all(0),
-                                      child: Column(children: [
-                                        Container(
-                                          alignment: Alignment.topRight,
-                                          width: 58,
-                                          height: 30,
-                                          margin: EdgeInsets.all(0),
-                                          child: AvatarGlow(
-                                            animate: isListening['field${6}'],
-                                            glowColor:
-                                                Theme.of(context).primaryColor,
-                                            endRadius: 300.0,
-                                            duration: const Duration(
-                                                milliseconds: 2000),
-                                            repeatPauseDuration: const Duration(
-                                                milliseconds: 100),
-                                            repeat: true,
-                                            child: FlatButton(
-                                              child: Icon(
-                                                  isListening['field${6}']
-                                                      ? Icons.cancel
-                                                      : Icons.mic),
-                                              onPressed: () {
-                                                _listen(6);
-                                                setdatalisten(6);
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ]),
-                                    ),
-                                    labelText: 'Specify Switch Type'),
-                                onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-
-                                  setState(() {
-                                    widget.wholelist[2][widget.accessname]
-                                            ['question']["6"]
-                                        ['Recommendation'] = value;
-                                  });
-                                },
-                              )
-                            : SizedBox(),
                         SizedBox(height: 15),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -936,9 +685,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                             SizedBox(
                               width: MediaQuery.of(context).size.width * .3,
                               child: TextFormField(
-                                  initialValue: widget.wholelist[2]
-                                          [widget.accessname]['question']["7"]
-                                      ['Answer'],
+                                  initialValue: getvalue(7),
                                   decoration: InputDecoration(
                                       focusedBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
@@ -952,47 +699,36 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                       labelText: '(Inches)'),
                                   keyboardType: TextInputType.phone,
                                   onChanged: (value) {
-                                    FocusScope.of(context).requestFocus();
-                                    new TextEditingController().clear();
-                                    // print(widget.accessname);
-                                    widget.wholelist[2][widget.accessname]
-                                            ['question']["7"]['Question'] =
-                                        'Door Width';
-
-                                    if (value.length == 0) {
-                                      if (widget
-                                              .wholelist[2][widget.accessname]
-                                                  ['question']["7"]['Answer']
-                                              .length ==
-                                          0) {
-                                      } else {
-                                        setState(() {
-                                          widget.wholelist[7][widget.accessname]
-                                              ['complete'] -= 1;
-                                          widget.wholelist[2][widget.accessname]
-                                                  ['question']["7"]['Answer'] =
-                                              value;
-                                        });
-                                      }
-                                    } else {
-                                      if (widget
-                                              .wholelist[2][widget.accessname]
-                                                  ['question']['7']['Answer']
-                                              .length ==
-                                          0) {
-                                        setState(() {
-                                          widget.wholelist[2][widget.accessname]
-                                              ['complete'] += 1;
-                                        });
-                                      }
+                                    if (assessor == therapist &&
+                                        role == "therapist") {
+                                      FocusScope.of(context).requestFocus();
+                                      new TextEditingController().clear();
+                                      // print(widget.accessname);
+                                      setdata(7, value, 'Door Width');
                                       setState(() {
                                         widget.wholelist[2][widget.accessname]
-                                            ['question']["7"]['Answer'] = value;
+                                            ['question']["7"]['doorwidth'] = 0;
+
+                                        widget.wholelist[2][widget.accessname]
+                                                ['question']["7"]['doorwidth'] =
+                                            int.parse(value);
                                       });
+                                    } else if (role != "therapist") {
+                                      FocusScope.of(context).requestFocus();
+                                      new TextEditingController().clear();
+                                      // print(widget.accessname);
+                                      setdata(7, value, 'Door Width');
+                                      widget.wholelist[2][widget.accessname]
+                                          ['question']["7"]['doorwidth'] = 0;
+
+                                      widget.wholelist[2][widget.accessname]
+                                              ['question']["7"]['doorwidth'] =
+                                          int.parse(value);
+                                    } else {
+                                      _showSnackBar(
+                                          "You can't change the other fields",
+                                          context);
                                     }
-                                    // print(widget.wholelist[8]
-                                    //         [widget.accessname]['question'][7]
-                                    //     ['Answer']);
                                   }),
                             ),
                           ],
@@ -1000,66 +736,16 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                         SizedBox(
                           height: 5,
                         ),
-                        (true)
-                            ? TextFormField(
-                                maxLines: null,
-                                controller: _controllers["field${7}"],
-                                decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: colorsset["field${7}"],
-                                          width: 1),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          width: 1,
-                                          color: colorsset["field${7}"]),
-                                    ),
-                                    suffix: Container(
-                                      padding: EdgeInsets.all(0),
-                                      child: Column(children: [
-                                        Container(
-                                          alignment: Alignment.topRight,
-                                          width: 58,
-                                          height: 30,
-                                          margin: EdgeInsets.all(0),
-                                          child: AvatarGlow(
-                                            animate: isListening['field${7}'],
-                                            glowColor:
-                                                Theme.of(context).primaryColor,
-                                            endRadius: 300.0,
-                                            duration: const Duration(
-                                                milliseconds: 2000),
-                                            repeatPauseDuration: const Duration(
-                                                milliseconds: 100),
-                                            repeat: true,
-                                            child: FlatButton(
-                                              child: Icon(
-                                                  isListening['field${7}']
-                                                      ? Icons.cancel
-                                                      : Icons.mic),
-                                              onPressed: () {
-                                                _listen(7);
-                                                setdatalisten(7);
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ]),
-                                    ),
-                                    labelText: 'Enter Comments (if any)'),
-                                onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-
-                                  setState(() {
-                                    widget.wholelist[2][widget.accessname]
-                                            ['question']["7"]
-                                        ['Recommendation'] = value;
-                                  });
-                                },
-                              )
+                        (widget.wholelist[2][widget.accessname]['question']["7"]
+                                        ['doorwidth'] <
+                                    30 &&
+                                widget.wholelist[2][widget.accessname]
+                                        ['question']["7"]['doorwidth'] >
+                                    0 &&
+                                widget.wholelist[2][widget.accessname]
+                                        ['question']["7"]['doorwidth'] !=
+                                    '')
+                            ? getrecomain(7, true, 'Comments (if any)')
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -1072,7 +758,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .5,
+                              width: MediaQuery.of(context).size.width * .6,
                               child: Text('Obstacle/Clutter Present?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
@@ -1095,118 +781,38 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                 )
                               ],
                               onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                widget.wholelist[2][widget.accessname]
-                                        ['question']["8"]['Question'] =
-                                    'Obstacle/Clutter Present?';
-
-                                if (value.length == 0) {
-                                  if (widget
-                                          .wholelist[2][widget.accessname]
-                                              ['question']["8"]['Answer']
-                                          .length ==
-                                      0) {
-                                  } else {
-                                    setState(() {
-                                      widget.wholelist[2][widget.accessname]
-                                          ['complete'] -= 1;
-                                      widget.wholelist[2][widget.accessname]
-                                          ['question']["8"]['Answer'] = value;
-                                    });
-                                  }
-                                } else {
-                                  if (widget
-                                          .wholelist[2][widget.accessname]
-                                              ['question']["8"]['Answer']
-                                          .length ==
-                                      0) {
-                                    setState(() {
-                                      widget.wholelist[2][widget.accessname]
-                                          ['complete'] += 1;
-                                    });
-                                  }
-                                  setState(() {
-                                    widget.wholelist[2][widget.accessname]
-                                        ['question']["8"]['Answer'] = value;
-                                  });
-                                }
-                              },
-                              value: widget.wholelist[2][widget.accessname]
-                                  ['question']["8"]['Answer'],
-                            )
-                          ],
-                        ),
-                        (widget.wholelist[2][widget.accessname]['question']["8"]
-                                    ['Answer'] ==
-                                'Yes')
-                            ? TextFormField(
-                                maxLines: null,
-                                controller: _controllers["field${8}"],
-                                decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: colorsset["field${8}"],
-                                          width: 1),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          width: 1,
-                                          color: colorsset["field${8}"]),
-                                    ),
-                                    suffix: Container(
-                                      padding: EdgeInsets.all(0),
-                                      child: Column(children: [
-                                        Container(
-                                          alignment: Alignment.topRight,
-                                          width: 58,
-                                          height: 30,
-                                          margin: EdgeInsets.all(0),
-                                          child: AvatarGlow(
-                                            animate: isListening['field${8}'],
-                                            glowColor:
-                                                Theme.of(context).primaryColor,
-                                            endRadius: 300.0,
-                                            duration: const Duration(
-                                                milliseconds: 2000),
-                                            repeatPauseDuration: const Duration(
-                                                milliseconds: 100),
-                                            repeat: true,
-                                            child: FlatButton(
-                                              child: Icon(
-                                                  isListening['field${8}']
-                                                      ? Icons.cancel
-                                                      : Icons.mic),
-                                              onPressed: () {
-                                                _listen(8);
-                                                setdatalisten(8);
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ]),
-                                    ),
-                                    labelText: 'Specify clutter'),
-                                onChanged: (value) {
+                                if (assessor == therapist &&
+                                    role == "therapist") {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-
-                                  setState(() {
-                                    widget.wholelist[2][widget.accessname]
-                                            ['question']["8"]
-                                        ['Recommendation'] = value;
-                                  });
-                                },
-                              )
+                                  setdata(
+                                      8, value, 'Obstacle/Clutter Present?');
+                                } else if (role != "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  setdata(
+                                      8, value, 'Obstacle/Clutter Present?');
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
+                              },
+                              value: getvalue(8),
+                            )
+                          ],
+                        ),
+                        (getvalue(8) == 'Yes')
+                            ? getrecomain(8, true, 'Specify Clutter')
                             : SizedBox(),
                         SizedBox(height: 15),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .5,
+                              width: MediaQuery.of(context).size.width * .6,
                               child: Text('Able to Access Telephone?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
@@ -1214,127 +820,121 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                   )),
                             ),
                             DropdownButton(
-                              items: [
-                                DropdownMenuItem(
-                                  child: Text('--'),
-                                  value: '',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Yes'),
-                                  value: 'Yes',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('No'),
-                                  value: 'No',
-                                ),
-                              ],
-                              onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                widget.wholelist[2][widget.accessname]
-                                        ['question']["9"]['Question'] =
-                                    'Able to Access Telephone?';
-
-                                if (value.length == 0) {
-                                  if (widget
-                                          .wholelist[2][widget.accessname]
-                                              ['question']["9"]['Answer']
-                                          .length ==
-                                      0) {
+                                items: [
+                                  DropdownMenuItem(
+                                    child: Text('--'),
+                                    value: '',
+                                  ),
+                                  DropdownMenuItem(
+                                    child: Text('Yes'),
+                                    value: 'Yes',
+                                  ),
+                                  DropdownMenuItem(
+                                    child: Text('No'),
+                                    value: 'No',
+                                  ),
+                                ],
+                                onChanged: (value) {
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(
+                                        9, value, 'Able to Access Telephone?');
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(
+                                        9, value, 'Able to Access Telephone?');
                                   } else {
-                                    setState(() {
-                                      widget.wholelist[2][widget.accessname]
-                                          ['complete'] -= 1;
-                                      widget.wholelist[2][widget.accessname]
-                                          ['question']["9"]['Answer'] = value;
-                                    });
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
                                   }
-                                } else {
-                                  if (widget
-                                          .wholelist[2][widget.accessname]
-                                              ['question']["9"]['Answer']
-                                          .length ==
-                                      0) {
-                                    setState(() {
-                                      widget.wholelist[2][widget.accessname]
-                                          ['complete'] += 1;
-                                    });
-                                  }
-                                  setState(() {
-                                    widget.wholelist[2][widget.accessname]
-                                        ['question']["9"]['Answer'] = value;
-                                  });
-                                }
-                              },
-                              value: widget.wholelist[2][widget.accessname]
-                                  ['question']["9"]['Answer'],
-                            )
+                                },
+                                value: getvalue(9))
                           ],
                         ),
-                        (widget.wholelist[2][widget.accessname]['question']["9"]
-                                    ['Answer'] ==
-                                'Yes')
-                            ? TextFormField(
-                                maxLines: null,
-                                controller: _controllers["field${9}"],
-                                decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: colorsset["field${9}"],
-                                          width: 1),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          width: 1,
-                                          color: colorsset["field${9}"]),
-                                    ),
-                                    suffix: Container(
-                                      padding: EdgeInsets.all(0),
-                                      child: Column(children: [
-                                        Container(
-                                          alignment: Alignment.topRight,
-                                          width: 58,
-                                          height: 30,
-                                          margin: EdgeInsets.all(0),
-                                          child: AvatarGlow(
-                                            animate: isListening['field${9}'],
-                                            glowColor:
-                                                Theme.of(context).primaryColor,
-                                            endRadius: 300.0,
-                                            duration: const Duration(
-                                                milliseconds: 2000),
-                                            repeatPauseDuration: const Duration(
-                                                milliseconds: 100),
-                                            repeat: true,
-                                            child: FlatButton(
-                                              child: Icon(
-                                                  isListening['field${9}']
-                                                      ? Icons.cancel
-                                                      : Icons.mic),
-                                              onPressed: () {
-                                                _listen(9);
-                                                setdatalisten(9);
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ]),
-                                    ),
-                                    labelText: 'Specify Phone Type'),
-                                onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-
-                                  setState(() {
-                                    widget.wholelist[2][widget.accessname]
-                                            ['question']["9"]
-                                        ['Recommendation'] = value;
-                                  });
-                                },
+                        (getvalue(9) != 'Yes' && getvalue(9) != '')
+                            ? getrecomain(
+                                9,
+                                true,
+                                'Comments (if any)',
                               )
-                            : SizedBox(),
+                            : Padding(
+                                padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                .6,
+                                        child: Text('Telephone Type?',
+                                            style: TextStyle(
+                                              color: Color.fromRGBO(
+                                                  10, 80, 106, 1),
+                                              fontSize: 20,
+                                            )),
+                                      ),
+                                      DropdownButton(
+                                        items: [
+                                          DropdownMenuItem(
+                                            child: Text('--'),
+                                            value: '',
+                                          ),
+                                          DropdownMenuItem(
+                                            child: Text('Wired'),
+                                            value: 'Wired',
+                                          ),
+                                          DropdownMenuItem(
+                                            child: Text('Cordless'),
+                                            value: 'Cordless',
+                                          ),
+                                          DropdownMenuItem(
+                                            child: Text('Cellphone'),
+                                            value: 'Cellphone',
+                                          ),
+                                          DropdownMenuItem(
+                                            child: Text('Intercom'),
+                                            value: 'Intercom',
+                                          ),
+                                        ],
+                                        onChanged: (value) {
+                                          if (assessor == therapist &&
+                                              role == "therapist") {
+                                            FocusScope.of(context)
+                                                .requestFocus();
+                                            new TextEditingController().clear();
+                                            // print(widget.accessname);
+                                            widget.wholelist[2]
+                                                        [widget.accessname]
+                                                    ['question']["9"]
+                                                ['telephoneType'] = value;
+                                          } else if (role != "therapist") {
+                                            FocusScope.of(context)
+                                                .requestFocus();
+                                            new TextEditingController().clear();
+                                            // print(widget.accessname);
+                                            widget.wholelist[2]
+                                                        [widget.accessname]
+                                                    ['question']["9"]
+                                                ['telephoneType'] = value;
+                                          } else {
+                                            _showSnackBar(
+                                                "You can't change the other fields",
+                                                context);
+                                          }
+                                        },
+                                        value: widget.wholelist[2]
+                                                [widget.accessname]['question']
+                                            ["9"]['telephoneType'],
+                                      ),
+                                    ]),
+                              ),
                         SizedBox(
                           height: 15,
                         ),
@@ -1350,128 +950,40 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                   )),
                             ),
                             DropdownButton(
-                              items: [
-                                DropdownMenuItem(
-                                  child: Text('--'),
-                                  value: '',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Yes'),
-                                  value: 'Yes',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('No'),
-                                  value: 'No',
-                                ),
-                              ],
-                              onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                widget.wholelist[2][widget.accessname]
-                                        ['question']["10"]['Question'] =
-                                    'Smoke Detector?';
-
-                                if (value.length == 0) {
-                                  if (widget
-                                          .wholelist[2][widget.accessname]
-                                              ['question']["10"]['Answer']
-                                          .length ==
-                                      0) {
-                                  } else {
-                                    setState(() {
-                                      widget.wholelist[2][widget.accessname]
-                                          ['complete'] -= 1;
-                                      widget.wholelist[2][widget.accessname]
-                                          ['question']["10"]['Answer'] = value;
-                                    });
-                                  }
-                                } else {
-                                  if (widget
-                                          .wholelist[2][widget.accessname]
-                                              ['question']['10']['Answer']
-                                          .length ==
-                                      0) {
-                                    setState(() {
-                                      widget.wholelist[2][widget.accessname]
-                                          ['complete'] += 1;
-                                    });
-                                  }
-                                  setState(() {
-                                    widget.wholelist[2][widget.accessname]
-                                        ['question']["10"]['Answer'] = value;
-                                  });
-                                }
-                              },
-                              value: widget.wholelist[2][widget.accessname]
-                                  ['question']["10"]['Answer'],
-                            )
-                          ],
-                        ),
-                        (widget.wholelist[2][widget.accessname]['question']
-                                    ["10"]['Answer'] ==
-                                'Yes')
-                            ? TextFormField(
-                                maxLines: null,
-                                controller: _controllers["field${10}"],
-                                decoration: InputDecoration(
-                                    focusedBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          color: colorsset["field${10}"],
-                                          width: 1),
-                                    ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderSide: BorderSide(
-                                          width: 1,
-                                          color: colorsset["field${10}"]),
-                                    ),
-                                    suffix: Container(
-                                      padding: EdgeInsets.all(0),
-                                      child: Column(children: [
-                                        Container(
-                                          alignment: Alignment.topRight,
-                                          width: 58,
-                                          height: 30,
-                                          margin: EdgeInsets.all(0),
-                                          child: AvatarGlow(
-                                            animate: isListening['field${10}'],
-                                            glowColor:
-                                                Theme.of(context).primaryColor,
-                                            endRadius: 300.0,
-                                            duration: const Duration(
-                                                milliseconds: 2000),
-                                            repeatPauseDuration: const Duration(
-                                                milliseconds: 100),
-                                            repeat: true,
-                                            child: FlatButton(
-                                              child: Icon(
-                                                  isListening['field${10}']
-                                                      ? Icons.cancel
-                                                      : Icons.mic),
-                                              onPressed: () {
-                                                _listen(10);
-                                                setdatalisten(10);
-                                              },
-                                            ),
-                                          ),
-                                        ),
-                                      ]),
-                                    ),
-                                    labelText: 'Enter Comments (if any)'),
+                                items: [
+                                  DropdownMenuItem(
+                                    child: Text('--'),
+                                    value: '',
+                                  ),
+                                  DropdownMenuItem(
+                                    child: Text('Yes'),
+                                    value: 'Yes',
+                                  ),
+                                  DropdownMenuItem(
+                                    child: Text('No'),
+                                    value: 'No',
+                                  ),
+                                ],
                                 onChanged: (value) {
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                  } else if (role != "therapist") {
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-
-                                  setState(() {
-                                    widget.wholelist[2][widget.accessname]
-                                            ['question']["10"]
-                                        ['Recommendation'] = value;
-                                  });
+                                  setdata(10, value, 'Smoke Detector?');
                                 },
-                              )
+                                value: getvalue(10))
+                          ],
+                        ),
+                        (getvalue(10) == 'No')
+                            ? getrecomain(10, true, 'Comments (if any)')
                             : SizedBox(),
-
                         SizedBox(height: 15),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1508,6 +1020,12 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                             suffix: Icon(Icons.mic),
                           ),
                           onChanged: (value) {
+                            if (assessor == therapist && role == "therapist") {
+                            } else if (role != "therapist") {
+                            } else {
+                              _showSnackBar(
+                                  "You can't change the other fields", context);
+                            }
                             FocusScope.of(context).requestFocus();
                             new TextEditingController().clear();
                             // print(widget.accessname);
@@ -1578,7 +1096,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                         //   test = 1;
                         // }
                       }
-                      if (test < 12) {
+                      if (test == 0) {
                         _showSnackBar(
                             "You Must Have to Fill The Details First", context);
                       } else {
@@ -1597,6 +1115,190 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget getrecomain(int index, bool isthera, String fieldlabel) {
+    return SingleChildScrollView(
+      // reverse: true,
+      child: Container(
+        // color: Colors.yellow,
+        child: Column(
+          children: [
+            SizedBox(height: 5),
+            Container(
+              child: TextFormField(
+                maxLines: null,
+                showCursor: cur,
+                controller: _controllers["field$index"],
+                decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: colorsset["field$index"], width: 1),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(width: 1, color: colorsset["field$index"]),
+                    ),
+                    suffix: Container(
+                      // color: Colors.red,
+                      width: 40,
+                      height: 30,
+                      padding: EdgeInsets.all(0),
+                      child: Row(children: [
+                        Container(
+                          // color: Colors.green,
+                          alignment: Alignment.center,
+                          width: 40,
+                          height: 60,
+                          margin: EdgeInsets.all(0),
+
+                          child: FloatingActionButton(
+                            heroTag: "btn$index",
+                            child: Icon(
+                              Icons.mic,
+                              size: 20,
+                            ),
+                            onPressed: () {
+                              if (assessor == therapist &&
+                                  role == "therapist") {
+                                _listen(index);
+                                setdatalisten(index);
+                              } else if (role != "therapist") {
+                                _listen(index);
+                                setdatalisten(index);
+                              } else {
+                                _showSnackBar(
+                                    "You can't change the other fields",
+                                    context);
+                              }
+                            },
+                          ),
+                        ),
+                      ]),
+                    ),
+                    labelText: fieldlabel),
+                onChanged: (value) {
+                  if (assessor == therapist && role == "therapist") {
+                    FocusScope.of(context).requestFocus();
+                    new TextEditingController().clear();
+                    // print(widget.accessname);
+                    setreco(index, value);
+                  } else if (role != "therapist") {
+                    FocusScope.of(context).requestFocus();
+                    new TextEditingController().clear();
+                    // print(widget.accessname);
+                    setreco(index, value);
+                  } else {
+                    _showSnackBar("You can't change the other fields", context);
+                  }
+                },
+              ),
+            ),
+            (role == 'therapist' && isthera) ? getrecowid(index) : SizedBox(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget getrecowid(index) {
+    if (widget.wholelist[2][widget.accessname]["question"]["$index"]
+            ["Recommendationthera"] !=
+        "") {
+      isColor = true;
+    } else {
+      isColor = false;
+    }
+    return Column(
+      children: [
+        SizedBox(height: 8),
+        TextFormField(
+          controller: _controllerstreco["field$index"],
+          decoration: InputDecoration(
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: (isColor) ? Colors.green : Colors.red, width: 1),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    width: 1, color: (isColor) ? Colors.green : Colors.red),
+              ),
+              suffix: Container(
+                // color: Colors.red,
+                width: 40,
+                height: 30,
+                padding: EdgeInsets.all(0),
+                child: Row(children: [
+                  Container(
+                    // color: Colors.green,
+                    alignment: Alignment.center,
+                    width: 40,
+                    height: 60,
+                    margin: EdgeInsets.all(0),
+                    child: FloatingActionButton(
+                      heroTag: "btn${index + 1}",
+                      child: Icon(
+                        Icons.mic,
+                        size: 20,
+                      ),
+                      onPressed: () {
+                        _listenthera(index);
+                        setdatalistenthera(index);
+                      },
+                    ),
+                  ),
+                ]),
+              ),
+              labelStyle:
+                  TextStyle(color: (isColor) ? Colors.green : Colors.red),
+              labelText: 'Recomendation'),
+          onChanged: (value) {
+            FocusScope.of(context).requestFocus();
+            new TextEditingController().clear();
+            // print(widget.accessname);
+            setrecothera(index, value);
+          },
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('Priority'),
+            Row(
+              children: [
+                Radio(
+                  value: '1',
+                  onChanged: (value) {
+                    setprio(index, value);
+                  },
+                  groupValue: getprio(index),
+                ),
+                Text('1'),
+                Radio(
+                  value: '2',
+                  onChanged: (value) {
+                    setState(() {
+                      setprio(index, value);
+                    });
+                  },
+                  groupValue: getprio(index),
+                ),
+                Text('2'),
+                Radio(
+                  value: '3',
+                  onChanged: (value) {
+                    setState(() {
+                      setprio(index, value);
+                    });
+                  },
+                  groupValue: getprio(index),
+                ),
+                Text('3'),
+              ],
+            )
+          ],
+        )
+      ],
     );
   }
 
@@ -1639,6 +1341,52 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
       });
       _speech.stop();
     }
+  }
+
+  void _listenthera(index) async {
+    if (!_isListening) {
+      bool available = await _speech.initialize(
+        onStatus: (val) {
+          print('onStatus: $val');
+          setState(() {
+            // _isListening = false;
+            //
+          });
+        },
+        onError: (val) => print('onError: $val'),
+      );
+      if (available) {
+        setState(() {
+          _isListening = true;
+          // colorsset["field$index"] = Colors.red;
+          isListening['field$index'] = true;
+        });
+        _speech.listen(
+          onResult: (val) => setState(() {
+            _controllerstreco["field$index"].text = widget.wholelist[8]
+                        [widget.accessname]['question']["$index"]
+                    ['Recommendationthera'] +
+                " " +
+                val.recognizedWords;
+          }),
+        );
+      }
+    } else {
+      setState(() {
+        _isListening = false;
+        isListening['field$index'] = false;
+        colorsset["field$index"] = Color.fromRGBO(10, 80, 106, 1);
+      });
+      _speech.stop();
+    }
+  }
+
+  setdatalistenthera(index) {
+    setState(() {
+      widget.wholelist[8][widget.accessname]['question']["$index"]
+          ['Recommendationthera'] = _controllerstreco["field$index"].text;
+      cur = !cur;
+    });
   }
 
   setdatalisten(index) {

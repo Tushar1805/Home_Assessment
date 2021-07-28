@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_full_pdf_viewer/full_pdf_viewer_scaffold.dart';
 import 'package:intl/intl.dart';
@@ -61,15 +63,15 @@ class _ReportUIState extends State<ReportUI> {
     // list4 = buildAssesmentUI("1");
     // list5 = buildAssesmentUI("2");
     // list6 = buildAssesmentUI("3");
-    print("hello");
+    // print("hello");
     // print(patient);
     // getPermission();
   }
 
-  // void getPermission() async {
-  //   Map<PermissionGroup, PermissionStatus> permissions =
-  //       await PermissionHandler().requestPermissions([PermissionGroup.storage]);
-  // }
+  void getPermission() async {
+    Map<PermissionGroup, PermissionStatus> permissions =
+        await PermissionHandler().requestPermissions([PermissionGroup.storage]);
+  }
 
   Future<String> getDirectoryPath() async {
     Directory appDocDirectory = await getApplicationDocumentsDirectory();
@@ -81,26 +83,26 @@ class _ReportUIState extends State<ReportUI> {
     return directory.path;
   }
 
-  Future downloadFile(path) async {
-    try {
-      ProgressDialog progressDialog = ProgressDialog(context,
-          dialogTransitionType: DialogTransitionType.Bubble,
-          title: Text("Downloading File"));
+  // Future downloadFile(Uri uri, path) async {
+  //   try {
+  //     ProgressDialog progressDialog = ProgressDialog(context,
+  //         dialogTransitionType: DialogTransitionType.Bubble,
+  //         title: Text("Downloading File"));
 
-      progressDialog.show();
+  //     progressDialog.show();
 
-      // await dio.download(path, onReceiveProgress: (rec, total) {
-      //   setState(() {
-      //     bool isLoading = true;
-      //     String progress = ((rec / total) * 100).toStringAsFixed(0) + "%";
-      //     progressDialog.setMessage(Text("Dowloading $progress"));
-      //   });
-      // });
-      progressDialog.dismiss();
-    } catch (e) {
-      print(e.toString());
-    }
-  }
+  //     await dio.download("", path, onReceiveProgress: (rec, total) {
+  //       setState(() {
+  //         bool isLoading = true;
+  //         String progress = ((rec / total) * 100).toStringAsFixed(0) + "%";
+  //         progressDialog.setMessage(Text("Dowloading $progress"));
+  //       });
+  //     });
+  //     progressDialog.dismiss();
+  //   } catch (e) {
+  //     print("dio error" + e.toString());
+  //   }
+  // }
 
   Future<void> getUserName() async {
     final FirebaseUser useruid = await auth.currentUser();
@@ -457,6 +459,7 @@ class _ReportUIState extends State<ReportUI> {
     file.writeAsBytesSync(pdf.save());
     // print(documentDirectory);
     // print(documentPath);
+    // downloadFile(file.uri, '$documentPath/report.pdf');
   }
 
   List<Card> buildAssesmentUI(priority) {

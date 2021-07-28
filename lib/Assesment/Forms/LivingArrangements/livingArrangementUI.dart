@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tryapp/Assesment/Forms/LivingArrangements/livingArrangementpro.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
 import 'package:tryapp/constants.dart';
 
@@ -36,12 +38,13 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
   int roomatecount = 0;
   int flightcount = 0;
   Color colorb = Color.fromRGBO(10, 80, 106, 1);
-  String role;
+  String role, assessor, curUid, therapist;
+  bool isColor = false;
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   void initState() {
     super.initState();
-    print('helo');
     time1 = TimeOfDay.now();
     time2 = TimeOfDay.now();
     _speech = stt.SpeechToText();
@@ -58,32 +61,87 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
       colorsset["field${i + 1}"] = Color.fromRGBO(10, 80, 106, 1);
     }
     getRole();
+    getAssessData();
     setinitialsdata();
-    print(role);
   }
 
   Future<Null> selectTime1(BuildContext context) async {
-    picked1 = await showTimePicker(context: context, initialTime: time1);
-
-    if (picked1 != null) {
-      setState(() {
-        time1 = picked1;
-        widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
-            ['From'] = time1.toString() ?? "";
-      });
+    if (assessor == curUid) {
+      picked1 = await showTimePicker(context: context, initialTime: time1);
+      if (picked1 != null) {
+        setState(() {
+          time1 = picked1;
+          widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
+              ['From'] = '${time1.hour % 12}:${time1.minute % 60}';
+          // widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
+          //     ['From'] = time1;
+        });
+      }
+    } else if (role != "therapist") {
+      picked1 = await showTimePicker(context: context, initialTime: time1);
+      if (picked1 != null) {
+        setState(() {
+          time1 = picked1;
+          widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
+              ['From'] = '${time1.hour % 12}:${time1.minute % 60}';
+          // widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
+          //     ['From'] = time1;
+        });
+      }
+    } else {
+      _showSnackBar("You can't change the other fields", context);
     }
+
+    // if (picked1 != null ) {
+    //   setState(() {
+    //     time1 = picked1;
+    //     widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
+    //         ['From'] = '${time1.hour % 12}:${time1.minute % 60}';
+    //     // widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
+    //     //     ['From'] = time1;
+    //   });
+    // }
   }
 
   Future<Null> selectTime2(BuildContext context) async {
-    picked2 = await showTimePicker(context: context, initialTime: time2);
-
-    if (picked2 != null) {
-      setState(() {
-        time2 = picked2;
-        widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
-            ['Till'] = time2.toString() ?? "";
-      });
+    if (assessor == curUid) {
+      picked2 = await showTimePicker(context: context, initialTime: time2);
+      if (picked2 != null) {
+        setState(() {
+          time2 = picked2;
+          widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
+              ['Till'] = "${time2.hour % 12}:${time2.minute % 60}";
+          // widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
+          //     ['Till'] = time2;
+        });
+      }
+    } else if (role != "therapist") {
+      picked2 = await showTimePicker(context: context, initialTime: time2);
+      if (picked2 != null) {
+        setState(() {
+          time2 = picked2;
+          widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
+              ['Till'] = "${time2.hour % 12}:${time2.minute % 60}";
+          // widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
+          //     ['Till'] = time2;
+        });
+      }
+    } else {
+      _showSnackBar("You can't change the other fields", context);
     }
+  }
+
+  Future<void> getAssessData() async {
+    final FirebaseUser user = await _auth.currentUser();
+    firestoreInstance
+        .collection("assessments")
+        .document(widget.docID)
+        .get()
+        .then((value) => setState(() {
+              curUid = user.uid;
+              assessor = value.data["assessor"];
+              therapist = value.data["therapist"];
+            }));
   }
 
   Future<void> setinitialsdata() async {
@@ -105,18 +163,31 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
             .containsKey('From')) {
           // time1 = int.parse(wholelist[1][widget.accessname]['question']["4"]
           //     ['Alone']['From']);
-          time1 = TimeOfDay(
-              hour: int.parse(widget.wholelist[1][widget.accessname]['question']
-                      ["4"]['Alone']['From']
-                  .split(":")[0]),
-              minute: int.parse(widget.wholelist[1][widget.accessname]
-                      ['question']["4"]['Alone']['From']
-                  .split(":")[1]));
+          if (widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
+                  ['From'] !=
+              "") {
+            time1 = TimeOfDay(
+                hour: int.parse(widget.wholelist[1][widget.accessname]
+                        ['question']["4"]['Alone']['From']
+                    .split(":")[0]),
+                minute: int.parse(widget.wholelist[1][widget.accessname]
+                        ['question']["4"]['Alone']['From']
+                    .split(":")[1]));
+          }
         }
         if (widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
             .containsKey('Till')) {
-          time2 = widget.wholelist[1][widget.accessname]['question']["4"]
-              ['Alone']['Till'];
+          if (widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
+                  ['Till'] !=
+              "") {
+            time2 = TimeOfDay(
+                hour: int.parse(widget.wholelist[1][widget.accessname]
+                        ['question']["4"]['Alone']['Till']
+                    .split(":")[0]),
+                minute: int.parse(widget.wholelist[1][widget.accessname]
+                        ['question']["4"]['Alone']['Till']
+                    .split(":")[1]));
+          }
         }
       });
     } else {
@@ -143,15 +214,19 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
 
     if (widget.wholelist[1][widget.accessname]['question']["11"]
         .containsKey('Flights')) {
-      setState(() {
-        flightcount =
-            widget.wholelist[1][widget.accessname]['question']["11"]['Flights'];
-      });
+      if (widget.wholelist[1][widget.accessname]['question']["11"]['Flights']
+          .containsKey('count')) {
+        setState(() {
+          flightcount = widget.wholelist[1][widget.accessname]['question']["11"]
+              ['Flights']["count"];
+        });
+      }
     } else {
       // print('hello');
       setState(() {
         widget.wholelist[1][widget.accessname]['question']["11"]
             ['Flights'] = {};
+        widget.wholelist[1][widget.accessname]['question']["11"]['Answer'] = 0;
       });
     }
   }
@@ -170,32 +245,6 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
   setdata(index, value, que) {
     widget.wholelist[1][widget.accessname]['question']["$index"]['Question'] =
         que;
-    if (value.length == 0) {
-      if (widget.wholelist[1][widget.accessname]['question']["$index"]['Answer']
-              .length ==
-          0) {
-      } else {
-        setState(() {
-          widget.wholelist[1][widget.accessname]['complete'] -= 1;
-          widget.wholelist[1][widget.accessname]['question']["$index"]
-              ['Answer'] = value;
-        });
-      }
-    } else {
-      if (widget.wholelist[1][widget.accessname]['question']["$index"]['Answer']
-              .length ==
-          0) {
-        setState(() {
-          widget.wholelist[1][widget.accessname]['complete'] += 1;
-        });
-      }
-      setState(() {
-        widget.wholelist[1][widget.accessname]['question']["$index"]['Answer'] =
-            value;
-        widget.wholelist[1][widget.accessname]['question']["$index"]
-            ['Question'] = que;
-      });
-    }
   }
 
   setreco(index, value) {
@@ -228,15 +277,15 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
   }
 
   setrecothera(index, value) {
-    final isValid = _formKey.currentState.validate();
-    if (!isValid) {
-      return;
-    } else {
-      setState(() {
-        widget.wholelist[1][widget.accessname]['question']["$index"]
-            ['Recommendationthera'] = value;
-      });
-    }
+    // final isValid = _formKey.currentState.validate();
+    // if (!isValid) {
+    //   return;
+    // } else {
+    setState(() {
+      widget.wholelist[1][widget.accessname]['question']["$index"]
+          ['Recommendationthera'] = value;
+    });
+    // }
   }
 
   getrecothera(index) {
@@ -266,6 +315,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
 
   @override
   Widget build(BuildContext context) {
+    LivingArrangementsProvider assesspro =
+        Provider.of<LivingArrangementsProvider>(context);
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -288,7 +339,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                     setdatalistenthera(i + 1);
                   }
 
-                  if (test < 13) {
+                  if (test == 0) {
                     _showSnackBar(
                         "You Must Have to Fill the Form First", context);
                   } else {
@@ -409,7 +460,18 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 onChanged: (value) {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
-                                  setdata(1, value, 'House Type');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    assesspro.setdata(1, value, 'House Type');
+                                  } else if (role != "therapist" &&
+                                      (role == "patient" ||
+                                          role == "nurse/case manager")) {
+                                    assesspro.setdata(1, value, 'House Type');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: getvalue(1),
                               ),
@@ -467,13 +529,27 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(2, value, 'Number of Levels');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    assesspro.setdata(
+                                        2, value, 'Number of Levels');
+                                  } else if (role != "therapist") {
+                                    assesspro.setdata(
+                                        2, value, 'Number of Levels');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: getvalue(2),
                               ),
                             )
                           ],
                         ),
+                        // (getvalue(2) == "Other")
+                        //     ? getrecomain(2, false)
+                        //     : SizedBox(),
                         (getvalue(2) != '' &&
                                 getvalue(2) != '0' &&
                                 getvalue(2) != '1')
@@ -490,7 +566,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                             width: MediaQuery.of(context)
                                                     .size
                                                     .width *
-                                                .5,
+                                                .65,
                                             child:
                                                 Text('Mode Of Transportation',
                                                     style: TextStyle(
@@ -528,10 +604,23 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                             ],
                                             onChanged: (value) {
                                               setState(() {
-                                                widget.wholelist[1]
-                                                            [widget.accessname]
-                                                        ['question']["2"]
-                                                    ['Modetrnas'] = value;
+                                                if (assessor == therapist &&
+                                                    role == "therapist") {
+                                                  widget.wholelist[1][
+                                                              widget.accessname]
+                                                          ['question']["2"]
+                                                      ['Modetrnas'] = value;
+                                                }
+                                                if (role != "therapist") {
+                                                  widget.wholelist[1][
+                                                              widget.accessname]
+                                                          ['question']["2"]
+                                                      ['Modetrnas'] = value;
+                                                } else {
+                                                  _showSnackBar(
+                                                      "You can't change the other fields",
+                                                      context);
+                                                }
                                               });
                                               // setdata(
                                               //   2,
@@ -548,9 +637,10 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                     ),
                                     SizedBox(height: 10),
                                     (widget.wholelist[1][widget.accessname]
-                                                    ['question']["2"]
-                                                ['Modetrnas'] ==
-                                            'Other')
+                                                        ['question']["2"]
+                                                    ['Modetrnas'] ==
+                                                'Other' ||
+                                            getvalue(2) == "Other")
                                         ? getrecomain(2, false)
                                         : SizedBox(),
                                   ],
@@ -611,7 +701,18 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(3, value, 'Living on Level');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    assesspro.setdata(
+                                        3, value, 'Living on Level');
+                                  } else if (role != "therapist") {
+                                    assesspro.setdata(
+                                        3, value, 'Living on Level');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: getvalue(3),
                               ),
@@ -626,7 +727,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .4,
+                              width: MediaQuery.of(context).size.width * .5,
                               child: Text('Living Arrangements',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
@@ -657,7 +758,18 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(4, value, 'Living Arrangements');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    assesspro.setdata(
+                                        4, value, 'Living Arrangements');
+                                  } else if (role != "therapist") {
+                                    assesspro.setdata(
+                                        4, value, 'Living Arrangements');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: getvalue(4),
                               ),
@@ -834,8 +946,16 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-
-                                setdata(5, value, 'Has Roomate?');
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  assesspro.setdata(5, value, 'Has Roomate?');
+                                } else if (role != "therapist") {
+                                  assesspro.setdata(5, value, 'Has Roomate?');
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
                               },
                               value: getvalue(5),
                             )
@@ -858,7 +978,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                                       .size
                                                       .width *
                                                   .5,
-                                              child: Text('Number Of Roomate:',
+                                              child: Text('Number of Roomate',
                                                   style: TextStyle(
                                                     color: Color.fromRGBO(
                                                         10, 80, 106, 1),
@@ -866,83 +986,173 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                                   )),
                                             ),
                                             SizedBox(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  .35,
-                                              child: NumericStepButton(
-                                                counterval: roomatecount,
-                                                onChanged: (value) {
-                                                  setState(() {
-                                                    widget.wholelist[1][widget
-                                                                    .accessname]
-                                                                ['question']
-                                                            ["5"]['Roomate']
-                                                        ['count'] = value;
-                                                    roomatecount = widget
-                                                                    .wholelist[1]
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    .35,
+                                                child: NumericStepButton(
+                                                  counterval: roomatecount,
+                                                  onChanged: (value) {
+                                                    if (assessor == therapist &&
+                                                        role == "therapist") {
+                                                      setState(() {
+                                                        widget.wholelist[1][widget
+                                                                        .accessname]
+                                                                    ['question']
+                                                                ["5"]['Roomate']
+                                                            ['count'] = value;
+                                                        roomatecount = widget
+                                                                        .wholelist[1]
+                                                                    [
+                                                                    widget
+                                                                        .accessname]
                                                                 [
-                                                                widget
-                                                                    .accessname]
-                                                            ['question']["5"]
-                                                        ['Roomate']['count'];
-                                                    if (value > 0) {
-                                                      widget.wholelist[1][widget
+                                                                'question']["5"]
+                                                            [
+                                                            'Roomate']['count'];
+                                                        if (value > 0) {
+                                                          widget.wholelist[1][widget
+                                                                          .accessname]
+                                                                      [
+                                                                      'question']
+                                                                  [
+                                                                  "5"]['Roomate']
+                                                              [
+                                                              'roomate$value'] = {
+                                                            'Relationship': '',
+                                                            'FirstName': '',
+                                                            'LastName': '',
+                                                          };
+
+                                                          if (widget
+                                                              .wholelist[1][
+                                                                  widget
                                                                       .accessname]
                                                                   ['question']
-                                                              ["5"]['Roomate']
-                                                          ['roomate$value'] = {
-                                                        'Relationship': '',
-                                                        'FirstName': '',
-                                                        'LastName': '',
-                                                      };
-
-                                                      if (widget.wholelist[1][
-                                                              widget.accessname]
-                                                              ['question']["5"]
-                                                              ['Roomate']
-                                                          .containsKey(
-                                                              'roomate${value + 1}')) {
-                                                        widget.wholelist[1][
-                                                                widget
-                                                                    .accessname]
-                                                                ['question']
-                                                                ["5"]['Roomate']
-                                                            .remove(
-                                                                'roomate${value + 1}');
-                                                      }
-                                                    } else if (value == 0) {
-                                                      if (widget.wholelist[1][
-                                                              widget.accessname]
-                                                              ['question']["5"]
-                                                              ['Roomate']
-                                                          .containsKey(
-                                                              'roomate${value + 1}')) {
-                                                        widget.wholelist[1][
-                                                                widget
-                                                                    .accessname]
-                                                                ['question']
-                                                                ["5"]['Roomate']
-                                                            .remove(
-                                                                'roomate${value + 1}');
-                                                      }
+                                                                  ["5"]
+                                                                  ['Roomate']
+                                                              .containsKey(
+                                                                  'roomate${value + 1}')) {
+                                                            widget.wholelist[1][
+                                                                    widget
+                                                                        .accessname]
+                                                                    ['question']
+                                                                    ["5"]
+                                                                    ['Roomate']
+                                                                .remove(
+                                                                    'roomate${value + 1}');
+                                                          }
+                                                        } else if (value == 0) {
+                                                          if (widget
+                                                              .wholelist[1][
+                                                                  widget
+                                                                      .accessname]
+                                                                  ['question']
+                                                                  ["5"]
+                                                                  ['Roomate']
+                                                              .containsKey(
+                                                                  'roomate${value + 1}')) {
+                                                            widget.wholelist[1][
+                                                                    widget
+                                                                        .accessname]
+                                                                    ['question']
+                                                                    ["5"]
+                                                                    ['Roomate']
+                                                                .remove(
+                                                                    'roomate${value + 1}');
+                                                          }
+                                                        }
+                                                      });
                                                     }
-                                                  });
+                                                    if (role != "therapist") {
+                                                      setState(() {
+                                                        widget.wholelist[1][widget
+                                                                        .accessname]
+                                                                    ['question']
+                                                                ["5"]['Roomate']
+                                                            ['count'] = value;
+                                                        roomatecount = widget
+                                                                        .wholelist[1]
+                                                                    [
+                                                                    widget
+                                                                        .accessname]
+                                                                [
+                                                                'question']["5"]
+                                                            [
+                                                            'Roomate']['count'];
+                                                        if (value > 0) {
+                                                          widget.wholelist[1][widget
+                                                                          .accessname]
+                                                                      [
+                                                                      'question']
+                                                                  [
+                                                                  "5"]['Roomate']
+                                                              [
+                                                              'roomate$value'] = {
+                                                            'Relationship': '',
+                                                            'FirstName': '',
+                                                            'LastName': '',
+                                                          };
 
-                                                  // print(widget.wholelist[1][
-                                                  //             widget.accessname]
-                                                  //         ['question']["5"]
-                                                  //     ['Roomate']);
-                                                },
-                                              ),
-                                            ),
+                                                          if (widget
+                                                              .wholelist[1][
+                                                                  widget
+                                                                      .accessname]
+                                                                  ['question']
+                                                                  ["5"]
+                                                                  ['Roomate']
+                                                              .containsKey(
+                                                                  'roomate${value + 1}')) {
+                                                            widget.wholelist[1][
+                                                                    widget
+                                                                        .accessname]
+                                                                    ['question']
+                                                                    ["5"]
+                                                                    ['Roomate']
+                                                                .remove(
+                                                                    'roomate${value + 1}');
+                                                          }
+                                                        } else if (value == 0) {
+                                                          if (widget
+                                                              .wholelist[1][
+                                                                  widget
+                                                                      .accessname]
+                                                                  ['question']
+                                                                  ["5"]
+                                                                  ['Roomate']
+                                                              .containsKey(
+                                                                  'roomate${value + 1}')) {
+                                                            widget.wholelist[1][
+                                                                    widget
+                                                                        .accessname]
+                                                                    ['question']
+                                                                    ["5"]
+                                                                    ['Roomate']
+                                                                .remove(
+                                                                    'roomate${value + 1}');
+                                                          }
+                                                        }
+                                                      });
+                                                    } else {
+                                                      _showSnackBar(
+                                                          "You can't change the other fields",
+                                                          context);
+                                                    }
+
+                                                    // print(widget.wholelist[1][
+                                                    //             widget.accessname]
+                                                    //         ['question']["5"]
+                                                    //     ['Roomate']);
+                                                  },
+                                                )),
                                           ],
                                         ),
                                       ),
                                       (roomatecount > 0)
                                           ? Container(
                                               child: Padding(
-                                                padding: EdgeInsets.all(10),
+                                                padding: EdgeInsets.fromLTRB(
+                                                    0, 10, 0, 10),
                                                 child: ConstrainedBox(
                                                   constraints: BoxConstraints(
                                                       maxHeight: 1000,
@@ -979,12 +1189,12 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .5,
-                              child: Text(
-                                  'Able to Get In and Out of Doors and Steps?',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(10, 80, 106, 1),
-                                    fontSize: 20,
-                                  )),
+                              child:
+                                  Text('Able to get in & out of doors & steps?',
+                                      style: TextStyle(
+                                        color: Color.fromRGBO(10, 80, 106, 1),
+                                        fontSize: 20,
+                                      )),
                             ),
                             DropdownButton(
                               items: [
@@ -1021,9 +1231,18 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-
-                                setdata(6, value,
-                                    'Able to Get In and Out of Doors and Steps?');
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  assesspro.setdata(6, value,
+                                      'Able to get in & out of doors & steps?');
+                                } else if (role != "therapist") {
+                                  assesspro.setdata(6, value,
+                                      'Able to get in & out of doors & steps?');
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
                               },
                               value: getvalue(6),
                             )
@@ -1040,7 +1259,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .5,
-                              child: Text('Using Assistive Device?',
+                              child: Text('Using assistive device?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1065,8 +1284,19 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-
-                                setdata(7, value, 'Using Assistive Device?');
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  assesspro.setdata(
+                                      7, value, 'Using assistive device?');
+                                }
+                                if (role != "therapist") {
+                                  assesspro.setdata(
+                                      7, value, 'Using assistive device?');
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
                               },
                               value: getvalue(7),
                             )
@@ -1080,8 +1310,6 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          .35,
                                       child: Text('Assistive Device?',
                                           style: TextStyle(
                                             color:
@@ -1112,7 +1340,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                           value: 'Front Wheel Walker',
                                         ),
                                         DropdownMenuItem(
-                                          child: Text('4 Whl. Whalker'),
+                                          child: Text('4 Whl. Walker'),
                                           value: '4 Whl. Whalker',
                                         ),
                                         DropdownMenuItem(
@@ -1136,10 +1364,29 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                         FocusScope.of(context).requestFocus();
                                         new TextEditingController().clear();
                                         // print(widget.accessname);
+                                        if (assessor == therapist &&
+                                            role == "therapist") {
+                                          widget.wholelist[1][widget.accessname]
+                                                      ['question']["7"]
+                                                  ['additional']
+                                              ["assistiveDevice"] = value;
+                                        } else if (role != "therapist") {
+                                          widget.wholelist[1][widget.accessname]
+                                                      ['question']["7"]
+                                                  ['additional']
+                                              ["assistiveDevice"] = value;
+                                        } else {
+                                          _showSnackBar(
+                                              "You can't change the other fields",
+                                              context);
+                                        }
 
-                                        setrecothera(7, value);
+                                        // setrecothera(7, value);
                                       },
-                                      value: getrecothera(7),
+                                      value: widget.wholelist[1]
+                                                  [widget.accessname]
+                                              ['question']["7"]['additional']
+                                          ["assistiveDevice"],
                                     )
                                   ],
                                 ),
@@ -1153,7 +1400,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Gait Pattern Noted',
+                              child: Text('Gait pattern noted',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1192,8 +1439,18 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-
-                                  setdata(8, value, 'Gait Pattern Noted');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    assesspro.setdata(
+                                        8, value, 'Gait pattern noted');
+                                  } else if (role != "therapist") {
+                                    assesspro.setdata(
+                                        8, value, 'Gait pattern noted');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: getvalue(8),
                               ),
@@ -1208,7 +1465,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .3,
+                              width: MediaQuery.of(context).size.width * .5,
                               child: Text('Access to Curbside',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
@@ -1216,7 +1473,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                   )),
                             ),
                             Container(
-                              width: MediaQuery.of(context).size.width * .4,
+                              width: MediaQuery.of(context).size.width * .35,
                               child: DropdownButton(
                                 isExpanded: true,
                                 items: [
@@ -1246,8 +1503,18 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-
-                                  setdata(9, value, 'Access to Curbside');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    assesspro.setdata(
+                                        9, value, 'Access to Curbside');
+                                  } else if (role != "therapist") {
+                                    assesspro.setdata(
+                                        9, value, 'Access to Curbside');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: getvalue(9),
                               ),
@@ -1255,7 +1522,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           ],
                         ),
                         (getvalue(9) != 'Never goes to the curbside' &&
-                                getvalue(9) != 'Other' &&
+                                // getvalue(9) != 'Other' &&
                                 getvalue(9) != '')
                             ? getrecomain(9, true)
                             : SizedBox(),
@@ -1266,7 +1533,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .5,
+                              width: MediaQuery.of(context).size.width * .6,
                               child: Text('Access to Curbside Specify',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
@@ -1276,7 +1543,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           ],
                         ),
                         SizedBox(
-                          height: 5,
+                          height: 10,
                         ),
                         Container(
                             // height: 10000,
@@ -1314,8 +1581,18 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                           ? Icons.cancel
                                           : Icons.mic),
                                       onPressed: () {
-                                        _listen(10);
-                                        setdatalisten(10);
+                                        if (assessor == therapist &&
+                                            role == "therapist") {
+                                          _listen(10);
+                                          setdatalisten(10);
+                                        } else if (role != "therapist") {
+                                          _listen(10);
+                                          setdatalisten(10);
+                                        } else {
+                                          _showSnackBar(
+                                              "You can't change the other fields",
+                                              context);
+                                        }
                                       },
                                     ),
                                   ),
@@ -1327,8 +1604,16 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             FocusScope.of(context).requestFocus();
                             new TextEditingController().clear();
                             // print(widget.accessname);
-
-                            setdata(10, value, 'Access to Curbside Specify');
+                            if (assessor == therapist && role == "therapist") {
+                              assesspro.setdata(
+                                  10, value, 'Access to Curbside Specify');
+                            } else if (role != "therapist") {
+                              assesspro.setdata(
+                                  10, value, 'Access to Curbside Specify');
+                            } else {
+                              _showSnackBar(
+                                  "You can't change the other fields", context);
+                            }
                           },
                         )),
                         SizedBox(
@@ -1339,7 +1624,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Container(
-                                  width: MediaQuery.of(context).size.width * .5,
+                                  width:
+                                      MediaQuery.of(context).size.width * .50,
                                   child: Text('Number of Flight of Stairs',
                                       style: TextStyle(
                                         color: Color.fromRGBO(10, 80, 106, 1),
@@ -1352,55 +1638,225 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                   child: NumericStepButton(
                                     counterval: flightcount,
                                     onChanged: (value) {
-                                      setState(() {
-                                        widget.wholelist[1][widget.accessname]
-                                                ['question']["11"]['Question'] =
-                                            'Number of Flight of Stairs';
-                                        widget.wholelist[1][widget.accessname]
-                                                ['question']["11"]['Flights'] =
-                                            value;
-                                        flightcount = widget.wholelist[1]
-                                                [widget.accessname]['question']
-                                            ["11"]['Flights'];
-                                        print(widget.wholelist[1]
-                                                [widget.accessname]['question']
-                                            ["11"]['Flights']);
-                                        if (value > 0) {
+                                      if (assessor == therapist &&
+                                          role == "therapist") {
+                                        setState(() {
+                                          widget.wholelist[1][widget.accessname]
+                                                      ['question']["11"]
+                                                  ['Question'] =
+                                              'Number of Flight of Stairs';
                                           widget.wholelist[1][widget.accessname]
                                                   ['question']["11"]['Flights']
-                                              ['flight${value + 1}'] = {
-                                            "flight": 0
-                                          };
-
-                                          if (widget.wholelist[1]
-                                                  [widget.accessname]
+                                              ["count"] = value;
+                                          // widget.wholelist[1][widget.accessname]
+                                          //         ['question']["11"]['Answer'] =
+                                          //     value;
+                                          flightcount = widget.wholelist[1]
+                                                      [widget.accessname]
                                                   ['question']["11"]['Flights']
-                                              .containsKey(
-                                                  'flight${value + 1}')) {
+                                              ["count"];
+                                          print(widget.wholelist[1]
+                                                      [widget.accessname]
+                                                  ['question']["11"]['Flights']
+                                              ["count"]);
+                                          if (value == 0) {
+                                            if (widget.wholelist[1][widget
+                                                                .accessname]
+                                                            ['question']["11"]
+                                                        ["Answer"] ==
+                                                    0 ||
+                                                widget.wholelist[1][widget
+                                                                .accessname]
+                                                            ['question']["11"]
+                                                        ["Answer"] ==
+                                                    "") {
+                                            } else {
+                                              widget.wholelist[1]
+                                                      [widget.accessname]
+                                                  ['complete'] -= 1;
+                                              widget.wholelist[1]
+                                                          [widget.accessname]
+                                                      ['question']["11"]
+                                                  ["Answer"] = value;
+                                            }
+                                          } else {
+                                            if (widget.wholelist[1][widget
+                                                                .accessname]
+                                                            ['question']["11"]
+                                                        ["Answer"] !=
+                                                    0 ||
+                                                widget.wholelist[1][widget
+                                                                .accessname]
+                                                            ['question']["11"]
+                                                        ["Answer"] !=
+                                                    "") {
+                                            } else {
+                                              widget.wholelist[1]
+                                                      [widget.accessname]
+                                                  ['complete'] += 1;
+                                            }
                                             widget.wholelist[1]
+                                                        [widget.accessname]
+                                                    ['question']["11"]
+                                                ["Answer"] = value;
+                                          }
+                                          if (value > 0) {
+                                            widget.wholelist[1]
+                                                        [widget.accessname]
+                                                    ['question']["11"]
+                                                ['Flights']['flight$value'] = {
+                                              "flight": ''
+                                            };
+
+                                            if (widget.wholelist[1]
                                                     [widget.accessname]
                                                     ['question']["11"]
                                                     ['Flights']
-                                                .remove('flight${value + 1}');
-                                          }
-                                        } else if (value == 0) {
-                                          if (widget.wholelist[1]
-                                                  [widget.accessname]
-                                                  ['question']["11"]['Flights']
-                                              .containsKey(
-                                                  'flight${value + 1}')) {
-                                            widget.wholelist[1]
+                                                .containsKey(
+                                                    'flight${value + 1}')) {
+                                              widget.wholelist[1]
+                                                      [widget.accessname]
+                                                      ['question']["11"]
+                                                      ['Flights']
+                                                  .remove('flight${value + 1}');
+                                            }
+                                          } else if (value == 0) {
+                                            if (widget.wholelist[1]
                                                     [widget.accessname]
                                                     ['question']["11"]
                                                     ['Flights']
-                                                .remove('flight${value + 1}');
+                                                .containsKey(
+                                                    'flight${value + 1}')) {
+                                              widget.wholelist[1]
+                                                      [widget.accessname]
+                                                      ['question']["11"]
+                                                      ['Flights']
+                                                  .remove('flight${value + 1}');
+                                            }
                                           }
-                                        }
-                                      });
+                                        });
+                                      }
+                                      if (role != "therapist") {
+                                        setState(() {
+                                          widget.wholelist[1][widget.accessname]
+                                                      ['question']["11"]
+                                                  ['Question'] =
+                                              'Number of Flight of Stairs';
+                                          widget.wholelist[1][widget.accessname]
+                                                  ['question']["11"]['Flights']
+                                              ["count"] = value;
+                                          // widget.wholelist[1][widget.accessname]
+                                          //         ['question']["11"]['Answer'] =
+                                          //     value;
+                                          flightcount = widget.wholelist[1]
+                                                      [widget.accessname]
+                                                  ['question']["11"]['Flights']
+                                              ["count"];
+                                          print(widget.wholelist[1]
+                                                      [widget.accessname]
+                                                  ['question']["11"]['Flights']
+                                              ["count"]);
+                                          if (value == 0) {
+                                            if (widget.wholelist[1]
+                                                            [widget.accessname]
+                                                        ['question']["11"]
+                                                    ["Answer"] ==
+                                                0) {
+                                            } else {
+                                              widget.wholelist[1]
+                                                      [widget.accessname]
+                                                  ['complete'] -= 1;
+                                              widget.wholelist[1]
+                                                          [widget.accessname]
+                                                      ['question']["11"]
+                                                  ["Answer"] = value;
+                                            }
+                                          } else {
+                                            if (widget.wholelist[1]
+                                                            [widget.accessname]
+                                                        ['question']["11"]
+                                                    ["Answer"] !=
+                                                0) {
+                                            } else {
+                                              widget.wholelist[1]
+                                                      [widget.accessname]
+                                                  ['complete'] += 1;
+                                            }
+                                            widget.wholelist[1]
+                                                        [widget.accessname]
+                                                    ['question']["11"]
+                                                ["Answer"] = value;
+                                          }
+                                          if (value > 0) {
+                                            widget.wholelist[1]
+                                                        [widget.accessname]
+                                                    ['question']["11"]
+                                                ['Flights']['flight$value'] = {
+                                              "flight": ''
+                                            };
 
-                                      print(widget.wholelist[1]
-                                              [widget.accessname]['question']
-                                          ["11"]['Flights']);
+                                            if (widget.wholelist[1]
+                                                    [widget.accessname]
+                                                    ['question']["11"]
+                                                    ['Flights']
+                                                .containsKey(
+                                                    'flight${value + 1}')) {
+                                              widget.wholelist[1]
+                                                      [widget.accessname]
+                                                      ['question']["11"]
+                                                      ['Flights']
+                                                  .remove('flight${value + 1}');
+                                            }
+                                            if (widget.wholelist[1]
+                                                            [widget.accessname]
+                                                        ['question']["11"]
+                                                    ["Answer"] ==
+                                                0) {
+                                              widget.wholelist[1]
+                                                      [widget.accessname]
+                                                  ['complete'] += 1;
+                                              widget.wholelist[1]
+                                                          [widget.accessname]
+                                                      ['question']["11"]
+                                                  ["Answer"] = value;
+                                            }
+                                          } else if (value == 0) {
+                                            if (widget.wholelist[1]
+                                                    [widget.accessname]
+                                                    ['question']["11"]
+                                                    ['Flights']
+                                                .containsKey(
+                                                    'flight${value + 1}')) {
+                                              widget.wholelist[1]
+                                                      [widget.accessname]
+                                                      ['question']["11"]
+                                                      ['Flights']
+                                                  .remove('flight${value + 1}');
+                                            }
+                                            if (widget.wholelist[1]
+                                                            [widget.accessname]
+                                                        ['question']["11"]
+                                                    ["Answer"] !=
+                                                0) {
+                                              widget.wholelist[1]
+                                                      [widget.accessname]
+                                                  ['complete'] -= 1;
+                                              widget.wholelist[1]
+                                                          [widget.accessname]
+                                                      ['question']["11"]
+                                                  ["Answer"] = value;
+                                            }
+                                          }
+                                        });
+                                      } else {
+                                        _showSnackBar(
+                                            "You can't change the other fields",
+                                            context);
+                                      }
+
+                                      // print(widget.wholelist[1]
+                                      //         [widget.accessname]['question']
+                                      //     ["11"]['Flights']);
                                     },
                                   ),
                                 ),
@@ -1409,7 +1865,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                         (flightcount > 0)
                             ? Container(
                                 child: Padding(
-                                  padding: EdgeInsets.all(10),
+                                  padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                                   child: ConstrainedBox(
                                     constraints: BoxConstraints(
                                         maxHeight: 1000,
@@ -1436,9 +1892,9 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .5,
+                              width: MediaQuery.of(context).size.width * .6,
                               child: Text(
-                                  'Smoke Detector Batteries Checked Annualy/Replaced?',
+                                  'Smoke Detector Batteries Checked Anually/Replaced?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1463,9 +1919,19 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-
-                                setdata(12, value,
-                                    'Smoke Detector Batteries Checked Annualy/Replaced?');
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  assesspro.setdata(12, value,
+                                      'Smoke Detector Batteries Checked Anually/Replaced?');
+                                }
+                                if (role != "therapist") {
+                                  assesspro.setdata(12, value,
+                                      'Smoke Detector Batteries Checked Anually/Replaced?');
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
                               },
                               value: getvalue(12),
                             )
@@ -1479,7 +1945,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .5,
+                              width: MediaQuery.of(context).size.width * 0.8,
                               child: Text(
                                   'Person Responsible to Change Smoke Detector batteries',
                                   style: TextStyle(
@@ -1490,7 +1956,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           ],
                         ),
                         SizedBox(
-                          height: 5,
+                          height: 10,
                         ),
                         Container(
                             // height: 10000,
@@ -1513,8 +1979,16 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             FocusScope.of(context).requestFocus();
                             new TextEditingController().clear();
                             // print(widget.accessname);
-                            setdata(13, value,
-                                'Person Responsible to Change Smoke Detector batteries');
+                            if (assessor == therapist && role == "therapist") {
+                              assesspro.setdata(13, value,
+                                  'Person Responsible to Change Smoke Detector batteries');
+                            } else if (role != "therapist") {
+                              assesspro.setdata(13, value,
+                                  'Person Responsible to Change Smoke Detector batteries');
+                            } else {
+                              _showSnackBar(
+                                  "You can't change the other fields", context);
+                            }
                           },
                         )),
                         SizedBox(
@@ -1557,7 +2031,14 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             FocusScope.of(context).requestFocus();
                             new TextEditingController().clear();
                             // print(widget.accessname);
-                            setdata(14, value, 'Observations');
+                            if (assessor == therapist && role == "therapist") {
+                              assesspro.setdata(14, value, 'Observations');
+                            } else if (role != "therapist") {
+                              assesspro.setdata(14, value, 'Observations');
+                            } else {
+                              _showSnackBar(
+                                  "You can't change the other fields", context);
+                            }
                           },
                         )),
                       ],
@@ -1590,7 +2071,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             // if (!isValid) {
                             // _showSnackBar("Recommendation Required", context);
                             // } else {
-                            if (test < 13) {
+                            if (test == 0) {
                               _showSnackBar(
                                   "You Must Have to Fill the Form First",
                                   context);
@@ -1618,7 +2099,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
     return SingleChildScrollView(
       // reverse: true,
       child: Container(
-        // color: Colors.yellow,
+        // color: Colors.red,
         child: Column(
           children: [
             Container(
@@ -1662,8 +2143,18 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 size: 20,
                               ),
                               onPressed: () {
-                                _listen(index);
-                                setdatalisten(index);
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  _listen(index);
+                                  setdatalisten(index);
+                                } else if (role != "therapist") {
+                                  _listen(index);
+                                  setdatalisten(index);
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
                               },
                             ),
                           ),
@@ -1672,10 +2163,18 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                     ),
                     labelText: 'Comments'),
                 onChanged: (value) {
-                  FocusScope.of(context).requestFocus();
-                  new TextEditingController().clear();
                   // print(widget.accessname);
-                  setreco(index, value);
+                  if (assessor == therapist && role == "therapist") {
+                    setreco(index, value);
+                    FocusScope.of(context).requestFocus();
+                    new TextEditingController().clear();
+                  } else if (role != "therapist") {
+                    setreco(index, value);
+                    FocusScope.of(context).requestFocus();
+                    new TextEditingController().clear();
+                  } else {
+                    _showSnackBar("You can't change the other fields", context);
+                  }
                 },
               ),
             ),
@@ -1687,30 +2186,40 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
   }
 
   Widget getrecowid(index) {
+    if (widget.wholelist[1][widget.accessname]["question"]["$index"]
+            ["Recommendationthera"] !=
+        "") {
+      isColor = true;
+    } else {
+      isColor = false;
+    }
     return Column(
       children: [
         SizedBox(height: 8),
         TextFormField(
-          controller: _controllerstreco["field$index"],
-          validator: (String value) {
-            if (value.isEmpty) {
-              return 'Recommendation is Required';
-            }
-            return null;
-          },
-          onSaved: (value) {
+          onChanged: (value) {
             FocusScope.of(context).requestFocus();
             new TextEditingController().clear();
-            // print(widget.accessname);
             setrecothera(index, value);
+            // setState(() {
+            //   // print("Color Changed");
+            //   if (value.length != 0) {
+            //     isColor = true;
+            //   } else {
+            //     isColor = false;
+            //   }
+            // });
           },
+          controller: _controllerstreco["field$index"],
+          cursorColor: (isColor) ? Colors.green : Colors.red,
           decoration: InputDecoration(
               focusedBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: Color.fromRGBO(10, 80, 106, 1), width: 1),
+                borderSide: BorderSide(
+                    color: (isColor) ? Colors.green : Colors.red, width: 1),
               ),
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(width: 1),
+                borderSide: BorderSide(
+                    color: (isColor) ? Colors.green : Colors.red, width: 1),
               ),
               suffix: Container(
                 // color: Colors.red,
@@ -1725,7 +2234,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                     height: 60,
                     margin: EdgeInsets.all(0),
                     child: FloatingActionButton(
-                      heroTag: "btn${index + 1}",
+                      heroTag: "btn${index * 10}",
                       child: Icon(
                         Icons.mic,
                         size: 20,
@@ -1738,13 +2247,9 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                   ),
                 ]),
               ),
+              labelStyle:
+                  TextStyle(color: (isColor) ? Colors.green : Colors.red),
               labelText: 'Recomendation'),
-          // onChanged: (value) {
-          //   FocusScope.of(context).requestFocus();
-          //   new TextEditingController().clear();
-          //   // print(widget.accessname);
-
-          // },
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1885,9 +2390,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.all(5),
             child: Container(
-              width: MediaQuery.of(context).size.width * .35,
+              width: MediaQuery.of(context).size.width,
               child: TextFormField(
                 initialValue: widget.wholelist[1][widget.accessname]['question']
                     ["11"]['Flights']["flight$index"]["flight"],
@@ -1905,10 +2409,20 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                 onChanged: (value) {
                   FocusScope.of(context).requestFocus();
                   new TextEditingController().clear();
-                  setState(() {
-                    widget.wholelist[1][widget.accessname]['question']["11"]
-                        ['Flights']['flight$index']["flight"] = value;
-                  });
+                  if (assessor == therapist && role == "therapist") {
+                    setState(() {
+                      widget.wholelist[1][widget.accessname]['question']["11"]
+                          ['Flights']['flight$index']["flight"] = value;
+                    });
+                  }
+                  if (role != "therapist") {
+                    setState(() {
+                      widget.wholelist[1][widget.accessname]['question']["11"]
+                          ['Flights']['flight$index']["flight"] = value;
+                    });
+                  } else {
+                    _showSnackBar("You can't change the other fields", context);
+                  }
                   // print(widget.wholelist[0][widget.accessname]['question']
                   //     [7]);
                 },
@@ -1931,7 +2445,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
               children: [
                 Container(
                   width: MediaQuery.of(context).size.width * .3,
-                  child: Text('Relationship:',
+                  child: Text('Relationship',
                       style: TextStyle(
                         color: Color.fromRGBO(10, 80, 106, 1),
                         fontSize: 20,
@@ -2004,11 +2518,22 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                       FocusScope.of(context).requestFocus();
                       new TextEditingController().clear();
                       // print(widget.accessname);
-                      setState(() {
-                        widget.wholelist[1][widget.accessname]['question']["5"]
-                                ['Roomate']['roomate$index']['Relationship'] =
-                            value;
-                      });
+                      if (assessor == therapist && role == "therapist") {
+                        setState(() {
+                          widget.wholelist[1][widget.accessname]['question']
+                                  ["5"]['Roomate']['roomate$index']
+                              ['Relationship'] = value;
+                        });
+                      } else if (role != "therapist") {
+                        setState(() {
+                          widget.wholelist[1][widget.accessname]['question']
+                                  ["5"]['Roomate']['roomate$index']
+                              ['Relationship'] = value;
+                        });
+                      } else {
+                        _showSnackBar(
+                            "You can't change the other fields", context);
+                      }
                     },
                     value: widget.wholelist[1][widget.accessname]['question']
                         ["5"]['Roomate']['roomate$index']['Relationship'])
@@ -2042,9 +2567,18 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           FocusScope.of(context).requestFocus();
                           new TextEditingController().clear();
                           // print(widget.accessname);
-                          widget.wholelist[1][widget.accessname]['question']
-                                  ["5"]['Roomate']['roomate$index']
-                              ['FirstName'] = value;
+                          if (assessor == therapist && role == "therapist") {
+                            widget.wholelist[1][widget.accessname]['question']
+                                    ["5"]['Roomate']['roomate$index']
+                                ['FirstName'] = value;
+                          } else if (role != "therapist") {
+                            widget.wholelist[1][widget.accessname]['question']
+                                    ["5"]['Roomate']['roomate$index']
+                                ['FirstName'] = value;
+                          } else {
+                            _showSnackBar(
+                                "You can't change the other fields", context);
+                          }
                         },
                       ),
                     ),
@@ -2054,7 +2588,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
             ),
           ),
           SizedBox(
-            height: 5,
+            height: 10,
           ),
           Container(
             child: SingleChildScrollView(
@@ -2083,9 +2617,19 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           FocusScope.of(context).requestFocus();
                           new TextEditingController().clear();
                           // print(widget.accessname);
-                          widget.wholelist[1][widget.accessname]['question']
-                                  ["5"]['Roomate']['roomate$index']
-                              ['LastName'] = value;
+                          if (assessor == therapist && role == "therapist") {
+                            widget.wholelist[1][widget.accessname]['question']
+                                    ["5"]['Roomate']['roomate$index']
+                                ['LastName'] = value;
+                          }
+                          if (role != "therapist") {
+                            widget.wholelist[1][widget.accessname]['question']
+                                    ["5"]['Roomate']['roomate$index']
+                                ['LastName'] = value;
+                          } else {
+                            _showSnackBar(
+                                "You can't change the other fields", context);
+                          }
                         },
                       ),
                     ),

@@ -78,12 +78,27 @@ class LivingArrangementsProvider extends ChangeNotifier {
     if (wholelist[1][accessname]['question']["4"].containsKey('Alone')) {
       if (wholelist[1][accessname]['question']["4"]['Alone']
           .containsKey('From')) {
-        time1 = wholelist[1][accessname]['question']['4']['Alone']['From'];
+        // time1 = int.parse(wholelist[1][widget.accessname]['question']["4"]
+        //     ['Alone']['From']);
+        time1 = TimeOfDay(
+            hour: int.parse(wholelist[1][accessname]['question']["4"]['Alone']
+                    ['From']
+                .split(":")[0]),
+            minute: int.parse(wholelist[1][accessname]['question']["4"]['Alone']
+                    ['From']
+                .split(":")[1]));
       }
       if (wholelist[1][accessname]['question']["4"]['Alone']
           .containsKey('Till')) {
-        time2 = wholelist[1][accessname]['question']["4"]['Alone']['Till'];
+        time2 = TimeOfDay(
+            hour: int.parse(wholelist[1][accessname]['question']["4"]['Alone']
+                    ['Till']
+                .split(":")[0]),
+            minute: int.parse(wholelist[1][accessname]['question']["4"]['Alone']
+                    ['Till']
+                .split(":")[1]));
       }
+
       notifyListeners();
     } else {
       wholelist[1][accessname]['question']["4"]['Alone'] = {};
@@ -112,6 +127,7 @@ class LivingArrangementsProvider extends ChangeNotifier {
       print('hello');
 
       wholelist[1][accessname]['question']["11"]['Flights'] = {};
+      wholelist[1][accessname]['question']["11"]['Answer'] = 0;
       notifyListeners();
     }
   }
@@ -129,7 +145,8 @@ class LivingArrangementsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  setdata(index, value) {
+  setdata(index, String value, que) {
+    wholelist[1][accessname]['question']["$index"]['Question'] = que;
     if (value.length == 0) {
       if (wholelist[1][accessname]['question']["$index"]['Answer'].length ==
           0) {

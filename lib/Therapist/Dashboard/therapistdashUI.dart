@@ -352,28 +352,52 @@ class _TherapistUIState extends State<TherapistUI> {
       if (date != null) {
         return Container(
           width: double.infinity,
-          child: Text(
-            '$label ${DateFormat.yMd().format(date.toDate())} ',
-            style: TextStyle(
-              fontSize: 16,
+          child: Wrap(children: [
+            Text(
+              '$label ',
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black45,
+              ),
             ),
-          ),
+            Text(
+              '${DateFormat.yMd().format(date.toDate())}',
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ]),
         );
       } else {
         if (label == "Completion Date:") {
-          return Text(
-            "$label Yet to be Complete",
-            style: TextStyle(
-              fontSize: 16,
+          return Wrap(children: [
+            Text(
+              "$label ",
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.black45,
+              ),
             ),
-          );
+            Text(
+              "Yet to be Complete",
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ]);
         } else {
-          return Text(
-            "$label Yet to be Begin",
-            style: TextStyle(
-              fontSize: 16,
+          return Wrap(children: [
+            Text(
+              "$label ",
+              style: TextStyle(fontSize: 16, color: Colors.black45),
             ),
-          );
+            Text(
+              "Yet to be Begin",
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ]);
         }
       }
     }
@@ -382,22 +406,34 @@ class _TherapistUIState extends State<TherapistUI> {
       if (address != null) {
         return Container(
           width: double.infinity,
-          child: Text(
-            'Home Address : ${assesspro.capitalize(snapshot["houses"][0]["address1"])}, ${assesspro.capitalize(snapshot["houses"][0]["address2"])}, ${assesspro.capitalize(snapshot["houses"][0]["city"])} ' ??
-                "Home Address: Nagpur",
-            style: TextStyle(
-              fontSize: 16,
+          child: Wrap(children: [
+            Text(
+              'Home Address : ',
+              style: TextStyle(fontSize: 16, color: Colors.black45),
             ),
-          ),
+            Text(
+              '${assesspro.capitalize(snapshot["houses"][0]["address1"])}, ${assesspro.capitalize(snapshot["houses"][0]["address2"])}, ${assesspro.capitalize(snapshot["houses"][0]["city"])} ' ??
+                  "Home Address: Nagpur",
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ]),
         );
       } else {
         return Container(
-          child: Text(
-            "Home Address: Home Address not Availabe",
-            style: TextStyle(
-              fontSize: 16,
+          child: Wrap(children: [
+            Text(
+              "Home Address: ",
+              style: TextStyle(fontSize: 16, color: Colors.black45),
             ),
-          ),
+            Text(
+              "Home Address not Availabe",
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ]),
         );
       }
     }
@@ -451,12 +487,12 @@ class _TherapistUIState extends State<TherapistUI> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
-                                child: Row(
+                                child: Wrap(
                                   // mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Container(
                                       child: Text(
-                                        'Patient Name: fhueuigtila',
+                                        'Patient Name: ',
                                         style: TextStyle(
                                             fontSize: 16,
                                             color: Colors.black45),
@@ -464,7 +500,8 @@ class _TherapistUIState extends State<TherapistUI> {
                                     ),
                                     Container(
                                       child: Text(
-                                        '${assesspro.capitalize(snapshot["firstName"])}${assesspro.capitalize(snapshot["lastName"])}',
+                                        '${assesspro.capitalize(snapshot["firstName"])}${assesspro.capitalize(snapshot["lastName"])}' ??
+                                            "First Last",
                                         style: TextStyle(
                                           fontSize: 16,
                                         ),
@@ -473,18 +510,24 @@ class _TherapistUIState extends State<TherapistUI> {
                                   ],
                                 ),
                               ),
-
                               SizedBox(height: 2.5),
                               Divider(),
                               Container(
                                 width: double.infinity,
-                                child: Text(
-                                  'Start Date: ${assessmentdata.data["date"]}' ??
-                                      "1/1/2021",
-                                  style: TextStyle(
-                                    fontSize: 16,
+                                child: Wrap(children: [
+                                  Text(
+                                    'Start Date: ',
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.black45),
                                   ),
-                                ),
+                                  Text(
+                                    '${assessmentdata.data["date"]}' ??
+                                        "1/1/2021",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ]),
                               ),
                               SizedBox(height: 2.5),
                               Divider(),
@@ -500,12 +543,19 @@ class _TherapistUIState extends State<TherapistUI> {
                               // Divider(),
                               Container(
                                 width: double.infinity,
-                                child: Text(
-                                  'Status : ${assessmentdata.data["currentStatus"]}',
-                                  style: TextStyle(
-                                    fontSize: 16,
+                                child: Wrap(children: [
+                                  Text(
+                                    'Status: ',
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.black45),
                                   ),
-                                ),
+                                  Text(
+                                    '${assessmentdata.data["currentStatus"]}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ]),
                               ),
                               SizedBox(height: 2.5),
                               Divider(),
@@ -704,6 +754,7 @@ class _TherapistUIState extends State<TherapistUI> {
               actions: [
                 IconButton(
                   icon: Icon(Icons.logout, color: Colors.white),
+
                   onPressed: () async {
                     try {
                       await _auth.signOut();

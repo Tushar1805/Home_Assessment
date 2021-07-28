@@ -46,10 +46,11 @@ class _PathwayUIState extends State<PathwayUI> {
   bool cur = true;
   Color colorb = Color.fromRGBO(10, 80, 106, 1);
   var _textfield = TextEditingController();
-  String type;
+  String role, assessor, curUid, therapist;
   int sizes = 30;
   int stepsizes = 0;
   int stepcount = 0;
+  bool isColor = false;
   var test = TextEditingController();
   @override
   void initState() {
@@ -70,7 +71,7 @@ class _PathwayUIState extends State<PathwayUI> {
       colorsset["field${i + 1}"] = Color.fromRGBO(10, 80, 106, 1);
     }
     getRole();
-
+    getAssessData();
     setinitials();
   }
 
@@ -108,10 +109,23 @@ class _PathwayUIState extends State<PathwayUI> {
     firestoreInstance.collection("users").document(useruid.uid).get().then(
       (value) {
         setState(() {
-          type = (value["role"].toString()).split(" ")[0];
+          role = (value["role"]);
         });
       },
     );
+  }
+
+  Future<void> getAssessData() async {
+    final FirebaseUser user = await _auth.currentUser();
+    firestoreInstance
+        .collection("assessments")
+        .document(widget.docID)
+        .get()
+        .then((value) => setState(() {
+              curUid = user.uid;
+              assessor = value.data["assessor"];
+              therapist = value.data["therapist"];
+            }));
   }
 
 // This function is used to set data i.e to take data from thr field and feed it in
@@ -311,7 +325,7 @@ class _PathwayUIState extends State<PathwayUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .5,
+                              width: MediaQuery.of(context).size.width * .6,
                               child: Text('Obstacle/Clutter Present?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
@@ -337,7 +351,18 @@ class _PathwayUIState extends State<PathwayUI> {
                                 FocusScope.of(context).requestFocus();
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
-                                setdata(1, value, 'Obstacle/Clutter Present?');
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  setdata(
+                                      1, value, 'Obstacle/Clutter Present?');
+                                } else if (role != "therapist") {
+                                  setdata(
+                                      1, value, 'Obstacle/Clutter Present?');
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
                               },
                               value: getvalue(1),
                             )
@@ -381,10 +406,22 @@ class _PathwayUIState extends State<PathwayUI> {
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  setdata(2, value, 'Typically Uses');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(2, value, 'Typically Uses');
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(2, value, 'Typically Uses');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: getvalue(2),
                               ),
@@ -428,10 +465,22 @@ class _PathwayUIState extends State<PathwayUI> {
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  setdata(3, value, 'Ocasionally Uses');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(3, value, 'Ocasionally Uses');
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(3, value, 'Ocasionally Uses');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: getvalue(3),
                               ),
@@ -466,10 +515,22 @@ class _PathwayUIState extends State<PathwayUI> {
                                 )
                               ],
                               onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                setdata(4, value, 'Entrance Has Lights?');
+                                if (role != "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  setdata(4, value, 'Entrance Has Lights?');
+                                } else if (assessor == therapist &&
+                                    role == "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  setdata(4, value, 'Entrance Has Lights?');
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
                               },
                               value: getvalue(4),
                             )
@@ -507,10 +568,22 @@ class _PathwayUIState extends State<PathwayUI> {
                                       labelText: '(Inches)'),
                                   keyboardType: TextInputType.phone,
                                   onChanged: (value) {
-                                    FocusScope.of(context).requestFocus();
-                                    new TextEditingController().clear();
-                                    // print(widget.accessname);
-                                    setdata(5, value, 'Door Width');
+                                    if (assessor == therapist &&
+                                        role == "therapist") {
+                                      FocusScope.of(context).requestFocus();
+                                      new TextEditingController().clear();
+                                      // print(widget.accessname);
+                                      setdata(5, value, 'Door Width');
+                                    } else if (role != "therapist") {
+                                      FocusScope.of(context).requestFocus();
+                                      new TextEditingController().clear();
+                                      // print(widget.accessname);
+                                      setdata(5, value, 'Door Width');
+                                    } else {
+                                      _showSnackBar(
+                                          "You can't change the other fields",
+                                          context);
+                                    }
                                   }),
                             ),
                           ],
@@ -518,7 +591,12 @@ class _PathwayUIState extends State<PathwayUI> {
                         SizedBox(
                           height: 5,
                         ),
-                        (getvalue(5) != "") ? getrecomain(5) : SizedBox(),
+                        (getvalue(5) != "")
+                            ? (int.parse(getvalue(5)) < 30 &&
+                                    int.parse(getvalue(5)) > 0)
+                                ? getrecomain(5)
+                                : SizedBox()
+                            : SizedBox(),
                         SizedBox(
                           height: 15,
                         ),
@@ -549,10 +627,22 @@ class _PathwayUIState extends State<PathwayUI> {
                                 ),
                               ],
                               onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                setdata(6, value, 'Smoke Detector?');
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  setdata(6, value, 'Smoke Detector?');
+                                } else if (role != "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  setdata(6, value, 'Smoke Detector?');
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
                               },
                               value: getvalue(6),
                             )
@@ -596,10 +686,22 @@ class _PathwayUIState extends State<PathwayUI> {
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  setdata(7, value, 'Type of Steps');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(7, value, 'Type of Steps');
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(7, value, 'Type of Steps');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: getvalue(7),
                               ),
@@ -625,7 +727,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                           .size
                                                           .width *
                                                       .5,
-                                                  child: Text('Number Of Steps',
+                                                  child: Text('Number of Steps',
                                                       style: TextStyle(
                                                         color: Color.fromRGBO(
                                                             10, 80, 106, 1),
@@ -671,14 +773,36 @@ class _PathwayUIState extends State<PathwayUI> {
                                                       keyboardType:
                                                           TextInputType.phone,
                                                       onChanged: (value) {
-                                                        setState(() {
-                                                          widget.wholelist[0][widget
-                                                                      .accessname]
-                                                                  [
-                                                                  'question']["7"]
-                                                              [
-                                                              'Recommendation'] = value;
-                                                        });
+                                                        if (assessor ==
+                                                                therapist &&
+                                                            role ==
+                                                                "therapist") {
+                                                          setState(() {
+                                                            widget.wholelist[0][
+                                                                        widget
+                                                                            .accessname]
+                                                                    [
+                                                                    'question']["7"]
+                                                                [
+                                                                'Recommendation'] = value;
+                                                          });
+                                                        } else if (role !=
+                                                            "therapist") {
+                                                          setState(() {
+                                                            widget.wholelist[0][
+                                                                        widget
+                                                                            .accessname]
+                                                                    [
+                                                                    'question']["7"]
+                                                                [
+                                                                'Recommendation'] = value;
+                                                          });
+                                                        } else {
+                                                          _showSnackBar(
+                                                              "You can't change the other fields",
+                                                              context);
+                                                        }
+
                                                         // print(widget.wholelist[
                                                         //             0][
                                                         //         widget
@@ -690,7 +814,8 @@ class _PathwayUIState extends State<PathwayUI> {
                                             ),
                                           ),
                                           Container(
-                                              padding: EdgeInsets.all(5),
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0, 10, 0, 5),
                                               child: Row(
                                                 mainAxisAlignment:
                                                     MainAxisAlignment
@@ -731,19 +856,41 @@ class _PathwayUIState extends State<PathwayUI> {
                                                               labelText:
                                                                   'Step Width:'),
                                                       onChanged: (value) {
-                                                        setState(() {
-                                                          widget.wholelist[0][widget
-                                                                      .accessname]
-                                                                  [
-                                                                  'question']["7"]
-                                                              [
-                                                              'Single Step Width'] = value;
-                                                        });
-                                                        print(widget.wholelist[
-                                                                    0][
-                                                                widget
-                                                                    .accessname]
-                                                            ['question']["7"]);
+                                                        if (assessor ==
+                                                                therapist &&
+                                                            role ==
+                                                                "therapist") {
+                                                          setState(() {
+                                                            widget.wholelist[0][
+                                                                        widget
+                                                                            .accessname]
+                                                                    [
+                                                                    'question']["7"]
+                                                                [
+                                                                'Single Step Width'] = value;
+                                                          });
+                                                        } else if (role !=
+                                                            "therapist") {
+                                                          setState(() {
+                                                            widget.wholelist[0][
+                                                                        widget
+                                                                            .accessname]
+                                                                    [
+                                                                    'question']["7"]
+                                                                [
+                                                                'Single Step Width'] = value;
+                                                          });
+                                                        } else {
+                                                          _showSnackBar(
+                                                              "You can't change the other fields",
+                                                              context);
+                                                        }
+
+                                                        // print(widget.wholelist[
+                                                        //             0][
+                                                        //         widget
+                                                        //             .accessname]
+                                                        //     ['question']["7"]);
                                                       },
                                                     ),
                                                   ),
@@ -782,14 +929,36 @@ class _PathwayUIState extends State<PathwayUI> {
                                                               labelText:
                                                                   'Step Height:'),
                                                       onChanged: (value) {
-                                                        setState(() {
-                                                          widget.wholelist[0][widget
-                                                                      .accessname]
-                                                                  [
-                                                                  'question']["7"]
-                                                              [
-                                                              'Single Step Height'] = value;
-                                                        });
+                                                        if (assessor ==
+                                                                therapist &&
+                                                            role ==
+                                                                "therapist") {
+                                                          setState(() {
+                                                            widget.wholelist[0][
+                                                                        widget
+                                                                            .accessname]
+                                                                    [
+                                                                    'question']["7"]
+                                                                [
+                                                                'Single Step Height'] = value;
+                                                          });
+                                                        } else if (role !=
+                                                            "therapist") {
+                                                          setState(() {
+                                                            widget.wholelist[0][
+                                                                        widget
+                                                                            .accessname]
+                                                                    [
+                                                                    'question']["7"]
+                                                                [
+                                                                'Single Step Height'] = value;
+                                                          });
+                                                        } else {
+                                                          _showSnackBar(
+                                                              "You can't change the other fields",
+                                                              context);
+                                                        }
+
                                                         // print(widget.wholelist[
                                                         //             0][
                                                         //         widget
@@ -821,7 +990,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                           .size
                                                           .width *
                                                       .5,
-                                                  child: Text('Number Of Steps',
+                                                  child: Text('Number of Steps',
                                                       style: TextStyle(
                                                         color: Color.fromRGBO(
                                                             10, 80, 106, 1),
@@ -836,81 +1005,178 @@ class _PathwayUIState extends State<PathwayUI> {
                                                   child: NumericStepButton(
                                                     counterval: stepcount,
                                                     onChanged: (value) {
-                                                      setState(() {
-                                                        widget.wholelist[0][widget
-                                                                        .accessname]
-                                                                    [
-                                                                    'question']["7"]
-                                                                [
-                                                                'MultipleStair']
-                                                            ['count'] = value;
-                                                        widget.wholelist[0][widget
-                                                                    .accessname]
-                                                                [
-                                                                'question']["7"]
-                                                            [
-                                                            'Recommendationthera'] = value;
-
-                                                        stepcount = widget
-                                                                        .wholelist[0]
-                                                                    [
-                                                                    widget
-                                                                        .accessname]
-                                                                [
-                                                                'question']["7"]
-                                                            [
-                                                            'Recommendationthera'];
-                                                        if (value > 0) {
+                                                      if (assessor ==
+                                                              therapist &&
+                                                          role == "therapist") {
+                                                        setState(() {
                                                           widget.wholelist[0][widget
                                                                           .accessname]
                                                                       [
                                                                       'question']["7"]
                                                                   [
                                                                   'MultipleStair']
-                                                              ['step$value'] = {
-                                                            'stepwidth': '',
-                                                            'stepheight': ''
-                                                          };
+                                                              ['count'] = value;
+                                                          widget.wholelist[0][widget
+                                                                      .accessname]
+                                                                  [
+                                                                  'question']["7"]
+                                                              [
+                                                              'Recommendationthera'] = value;
 
-                                                          if (widget
-                                                              .wholelist[0][
-                                                                  widget
-                                                                      .accessname]
-                                                                  ['question']
-                                                                  ["7"][
-                                                                  'MultipleStair']
-                                                              .containsKey(
-                                                                  'step${value + 1}')) {
+                                                          stepcount = widget
+                                                                          .wholelist[0]
+                                                                      [
+                                                                      widget
+                                                                          .accessname]
+                                                                  [
+                                                                  'question']["7"]
+                                                              [
+                                                              'Recommendationthera'];
+                                                          if (value > 0) {
                                                             widget.wholelist[0][
+                                                                            widget.accessname]
+                                                                        [
+                                                                        'question']["7"]
+                                                                    [
+                                                                    'MultipleStair']
+                                                                [
+                                                                'step$value'] = {
+                                                              'stepwidth': '',
+                                                              'stepheight': ''
+                                                            };
+
+                                                            if (widget
+                                                                .wholelist[0][
                                                                     widget
                                                                         .accessname]
                                                                     ['question']
                                                                     ["7"][
                                                                     'MultipleStair']
-                                                                .remove(
-                                                                    'step${value + 1}');
-                                                          }
-                                                        } else if (value == 0) {
-                                                          if (widget
-                                                              .wholelist[0][
-                                                                  widget
-                                                                      .accessname]
-                                                                  ['question']
-                                                                  ["7"][
-                                                                  'MultipleStair']
-                                                              .containsKey(
-                                                                  'step${value + 1}')) {
-                                                            widget.wholelist[0][
+                                                                .containsKey(
+                                                                    'step${value + 1}')) {
+                                                              widget
+                                                                  .wholelist[0][
+                                                                      widget
+                                                                          .accessname]
+                                                                      [
+                                                                      'question']
+                                                                      ["7"][
+                                                                      'MultipleStair']
+                                                                  .remove(
+                                                                      'step${value + 1}');
+                                                            }
+                                                          } else if (value ==
+                                                              0) {
+                                                            if (widget
+                                                                .wholelist[0][
                                                                     widget
                                                                         .accessname]
                                                                     ['question']
                                                                     ["7"][
                                                                     'MultipleStair']
-                                                                .remove(
-                                                                    'step${value + 1}');
+                                                                .containsKey(
+                                                                    'step${value + 1}')) {
+                                                              widget
+                                                                  .wholelist[0][
+                                                                      widget
+                                                                          .accessname]
+                                                                      [
+                                                                      'question']
+                                                                      ["7"][
+                                                                      'MultipleStair']
+                                                                  .remove(
+                                                                      'step${value + 1}');
+                                                            }
                                                           }
-                                                        }
-                                                      });
+                                                        });
+                                                      } else if (role !=
+                                                          "therapist") {
+                                                        setState(() {
+                                                          widget.wholelist[0][widget
+                                                                          .accessname]
+                                                                      [
+                                                                      'question']["7"]
+                                                                  [
+                                                                  'MultipleStair']
+                                                              ['count'] = value;
+                                                          widget.wholelist[0][widget
+                                                                      .accessname]
+                                                                  [
+                                                                  'question']["7"]
+                                                              [
+                                                              'Recommendationthera'] = value;
+
+                                                          stepcount = widget
+                                                                          .wholelist[0]
+                                                                      [
+                                                                      widget
+                                                                          .accessname]
+                                                                  [
+                                                                  'question']["7"]
+                                                              [
+                                                              'Recommendationthera'];
+                                                          if (value > 0) {
+                                                            widget.wholelist[0][
+                                                                            widget.accessname]
+                                                                        [
+                                                                        'question']["7"]
+                                                                    [
+                                                                    'MultipleStair']
+                                                                [
+                                                                'step$value'] = {
+                                                              'stepwidth': '',
+                                                              'stepheight': ''
+                                                            };
+
+                                                            if (widget
+                                                                .wholelist[0][
+                                                                    widget
+                                                                        .accessname]
+                                                                    ['question']
+                                                                    ["7"][
+                                                                    'MultipleStair']
+                                                                .containsKey(
+                                                                    'step${value + 1}')) {
+                                                              widget
+                                                                  .wholelist[0][
+                                                                      widget
+                                                                          .accessname]
+                                                                      [
+                                                                      'question']
+                                                                      ["7"][
+                                                                      'MultipleStair']
+                                                                  .remove(
+                                                                      'step${value + 1}');
+                                                            }
+                                                          } else if (value ==
+                                                              0) {
+                                                            if (widget
+                                                                .wholelist[0][
+                                                                    widget
+                                                                        .accessname]
+                                                                    ['question']
+                                                                    ["7"][
+                                                                    'MultipleStair']
+                                                                .containsKey(
+                                                                    'step${value + 1}')) {
+                                                              widget
+                                                                  .wholelist[0][
+                                                                      widget
+                                                                          .accessname]
+                                                                      [
+                                                                      'question']
+                                                                      ["7"][
+                                                                      'MultipleStair']
+                                                                  .remove(
+                                                                      'step${value + 1}');
+                                                            }
+                                                          }
+                                                        });
+                                                      } else {
+                                                        _showSnackBar(
+                                                            "You can't change the other fields",
+                                                            context);
+                                                      }
 
                                                       // print(widget.wholelist[0][
                                                       //             widget
@@ -988,10 +1254,22 @@ class _PathwayUIState extends State<PathwayUI> {
                                 ),
                               ],
                               onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                setdata(8, value, 'Railling');
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  setdata(8, value, 'Railling');
+                                } else if (role != "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  setdata(8, value, 'Railling');
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
                               },
                               value: getvalue(8),
                             )
@@ -1013,7 +1291,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                       .size
                                                       .width *
                                                   .5,
-                                              child: Text('Going Up:',
+                                              child: Text('Going Up',
                                                   style: TextStyle(
                                                     color: Color.fromRGBO(
                                                         10, 80, 106, 1),
@@ -1036,11 +1314,25 @@ class _PathwayUIState extends State<PathwayUI> {
                                                 ),
                                               ],
                                               onChanged: (value) {
-                                                widget.wholelist[0][widget
-                                                                .accessname]
-                                                            ['question']["8"]
-                                                        ['Railling']['OneSided']
-                                                    ['GoingUp'] = value;
+                                                if (assessor == therapist &&
+                                                    role == "therapist") {
+                                                  widget.wholelist[0][widget
+                                                                  .accessname]
+                                                              ['question']["8"][
+                                                          'Railling']['OneSided']
+                                                      ['GoingUp'] = value;
+                                                } else if (role !=
+                                                    "therapist") {
+                                                  widget.wholelist[0][widget
+                                                                  .accessname]
+                                                              ['question']["8"][
+                                                          'Railling']['OneSided']
+                                                      ['GoingUp'] = value;
+                                                } else {
+                                                  _showSnackBar(
+                                                      "You can't change the other fields",
+                                                      context);
+                                                }
                                               },
                                               value: widget.wholelist[0][
                                                               widget.accessname]
@@ -1084,11 +1376,25 @@ class _PathwayUIState extends State<PathwayUI> {
                                                 ),
                                               ],
                                               onChanged: (value) {
-                                                widget.wholelist[0][widget
-                                                                .accessname]
-                                                            ['question']["8"]
-                                                        ['Railling']['OneSided']
-                                                    ['GoingDown'] = value;
+                                                if (assessor == therapist &&
+                                                    role == "therapist") {
+                                                  widget.wholelist[0][widget
+                                                                  .accessname]
+                                                              ['question']["8"][
+                                                          'Railling']['OneSided']
+                                                      ['GoingDown'] = value;
+                                                } else if (role !=
+                                                    "therapist") {
+                                                  widget.wholelist[0][widget
+                                                                  .accessname]
+                                                              ['question']["8"][
+                                                          'Railling']['OneSided']
+                                                      ['GoingDown'] = value;
+                                                } else {
+                                                  _showSnackBar(
+                                                      "You can't change the other fields",
+                                                      context);
+                                                }
                                               },
                                               value: widget.wholelist[0][
                                                               widget.accessname]
@@ -1099,7 +1405,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                           ],
                                         ),
                                       ),
-                                      (type == 'therapist')
+                                      (role == 'therapist')
                                           ? getrecowid(8)
                                           : SizedBox()
                                     ],
@@ -1137,18 +1443,34 @@ class _PathwayUIState extends State<PathwayUI> {
                                         labelText: '(Inches)'),
                                     keyboardType: TextInputType.phone,
                                     onChanged: (value) {
-                                      FocusScope.of(context).requestFocus();
-                                      new TextEditingController().clear();
-                                      // print(widget.accessname);
+                                      if (assessor == therapist &&
+                                          role == "therapist") {
+                                        FocusScope.of(context).requestFocus();
+                                        new TextEditingController().clear();
+                                        // print(widget.accessname);
 
-                                      setdata(
-                                          9, value, 'Threshold to Front Door');
+                                        setdata(9, value,
+                                            'Threshold to Front Door');
+                                      } else if (role != "therapist") {
+                                        FocusScope.of(context).requestFocus();
+                                        new TextEditingController().clear();
+                                        // print(widget.accessname);
+
+                                        setdata(9, value,
+                                            'Threshold to Front Door');
+                                      } else {
+                                        _showSnackBar(
+                                            "You can't change the other fields",
+                                            context);
+                                      }
                                     }),
                               ),
                             ]),
-                        (getvalue(9) != "" && getvalue(9) != "0")
-                            ? (type == 'therapist')
-                                ? getrecowid(9)
+                        (getvalue(9) != "")
+                            ? (int.parse(getvalue(9)) > 5)
+                                ? (role == 'therapist')
+                                    ? getrecowid(9)
+                                    : SizedBox()
                                 : SizedBox()
                             : SizedBox(),
                         SizedBox(height: 15),
@@ -1196,11 +1518,24 @@ class _PathwayUIState extends State<PathwayUI> {
                                 )
                               ],
                               onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                setdata(10, value,
-                                    'Able to Manage Through Doors/Thresholds/ Door Sills?');
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  setdata(10, value,
+                                      'Able to Manage Through Doors/Thresholds/ Door Sills?');
+                                } else if (role != "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  setdata(10, value,
+                                      'Able to Manage Through Doors/Thresholds/ Door Sills?');
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
                               },
                               value: getvalue(10),
                             )
@@ -1255,11 +1590,24 @@ class _PathwayUIState extends State<PathwayUI> {
                                 )
                               ],
                               onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                setdata(
-                                    11, value, 'Able to Lock/Unlock Doors?');
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  setdata(
+                                      11, value, 'Able to Lock/Unlock Doors?');
+                                } else if (role != "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  setdata(
+                                      11, value, 'Able to Lock/Unlock Doors?');
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
                               },
                               value: getvalue(11),
                             )
@@ -1293,7 +1641,8 @@ class _PathwayUIState extends State<PathwayUI> {
                         Container(
                             // height: 10000,
                             child: TextFormField(
-                          initialValue: getreco(12),
+                          initialValue: widget.wholelist[0][widget.accessname]
+                              ["question"]["12"]["Answer"],
                           maxLines: 6,
                           decoration: InputDecoration(
                             focusedBorder: OutlineInputBorder(
@@ -1308,11 +1657,22 @@ class _PathwayUIState extends State<PathwayUI> {
                             // suffix: Icon(Icons.mic),
                           ),
                           onChanged: (value) {
-                            FocusScope.of(context).requestFocus();
-                            new TextEditingController().clear();
-                            // print(widget.accessname);
-                            setreco(12, value);
-                            setdata(12, value, 'Oberservations');
+                            if (assessor == therapist && role == "therapist") {
+                              FocusScope.of(context).requestFocus();
+                              new TextEditingController().clear();
+                              // print(widget.accessname);
+                              setreco(12, value);
+                              setdata(12, value, 'Oberservations');
+                            } else if (role != "therapist") {
+                              FocusScope.of(context).requestFocus();
+                              new TextEditingController().clear();
+                              // print(widget.accessname);
+                              setreco(12, value);
+                              setdata(12, value, 'Oberservations');
+                            } else {
+                              _showSnackBar(
+                                  "You can't change the other fields", context);
+                            }
                           },
                         ))
                       ],
@@ -1361,7 +1721,7 @@ class _PathwayUIState extends State<PathwayUI> {
       // }
       setdatalisten(i + 1);
     }
-    if (test < 12) {
+    if (test == 0) {
       _showSnackBar("You Must Have to Fill The Details First", buildContext);
     } else {
       NewAssesmentRepository().setLatestChangeDate(widget.docID);
@@ -1388,7 +1748,7 @@ class _PathwayUIState extends State<PathwayUI> {
       if (available) {
         setState(() {
           // _isListening = true;
-          colorsset["field$index"] = Colors.red;
+          colorsset["field$index"] = Color.fromRGBO(10, 80, 106, 1);
           isListening['field$index'] = true;
         });
         _speech.listen(
@@ -1403,7 +1763,6 @@ class _PathwayUIState extends State<PathwayUI> {
             // }
           }),
         );
-        print('karan');
       }
     } else {
       setState(() {
@@ -1484,8 +1843,18 @@ class _PathwayUIState extends State<PathwayUI> {
                                 size: 20,
                               ),
                               onPressed: () {
-                                _listen(index);
-                                setdatalisten(index);
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  _listen(index);
+                                  setdatalisten(index);
+                                } else if (role != "therapist") {
+                                  _listen(index);
+                                  setdatalisten(index);
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
                               },
                             ),
                           ),
@@ -1494,14 +1863,23 @@ class _PathwayUIState extends State<PathwayUI> {
                     ),
                     labelText: 'Comments'),
                 onChanged: (value) {
-                  FocusScope.of(context).requestFocus();
-                  new TextEditingController().clear();
-                  // print(widget.accessname);
-                  setreco(index, value);
+                  if (assessor == therapist && role == "therapist") {
+                    FocusScope.of(context).requestFocus();
+                    new TextEditingController().clear();
+                    // print(widget.accessname);
+                    setreco(index, value);
+                  } else if (role != "therapist") {
+                    FocusScope.of(context).requestFocus();
+                    new TextEditingController().clear();
+                    // print(widget.accessname);
+                    setreco(index, value);
+                  } else {
+                    _showSnackBar("You can't change the other fields", context);
+                  }
                 },
               ),
             ),
-            (type == 'therapist') ? getrecowid(index) : SizedBox(),
+            (role == 'therapist') ? getrecowid(index) : SizedBox(),
           ],
         ),
       ),
@@ -1509,6 +1887,13 @@ class _PathwayUIState extends State<PathwayUI> {
   }
 
   Widget getrecowid(index) {
+    if (widget.wholelist[0][widget.accessname]["question"]["$index"]
+            ["Recommendationthera"] !=
+        "") {
+      isColor = true;
+    } else {
+      isColor = false;
+    }
     return Column(
       children: [
         SizedBox(height: 8),
@@ -1516,13 +1901,16 @@ class _PathwayUIState extends State<PathwayUI> {
           controller: _controllerstreco["field$index"],
           decoration: InputDecoration(
               focusedBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: Color.fromRGBO(10, 80, 106, 1), width: 1),
+                borderSide: BorderSide(
+                    color: (isColor) ? Colors.green : Colors.red, width: 1),
               ),
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(width: 1),
+                borderSide: BorderSide(
+                    width: 1, color: (isColor) ? Colors.green : Colors.red),
               ),
               suffix: Icon(Icons.mic),
+              labelStyle:
+                  TextStyle(color: (isColor) ? Colors.green : Colors.red),
               labelText: 'Recomendation'),
           onChanged: (value) {
             FocusScope.of(context).requestFocus();
@@ -1603,11 +1991,23 @@ class _PathwayUIState extends State<PathwayUI> {
                         ),
                         labelText: 'Step Width$index:'),
                     onChanged: (value) {
-                      setState(() {
-                        widget.wholelist[0][widget.accessname]['question']["7"]
-                                ['MultipleStair']['step$index']['stepwidth'] =
-                            value;
-                      });
+                      if (assessor == therapist && role == "therapist") {
+                        setState(() {
+                          widget.wholelist[0][widget.accessname]['question']
+                                  ["7"]['MultipleStair']['step$index']
+                              ['stepwidth'] = value;
+                        });
+                      } else if (role != "therapist") {
+                        setState(() {
+                          widget.wholelist[0][widget.accessname]['question']
+                                  ["7"]['MultipleStair']['step$index']
+                              ['stepwidth'] = value;
+                        });
+                      } else {
+                        _showSnackBar(
+                            "You can't change the other fields", context);
+                      }
+
                       // print(widget.wholelist[0][widget.accessname]['question']
                       //     [7]);
                     },
@@ -1631,11 +2031,23 @@ class _PathwayUIState extends State<PathwayUI> {
                         ),
                         labelText: 'Step Height$index:'),
                     onChanged: (value) {
-                      setState(() {
-                        widget.wholelist[0][widget.accessname]['question']["7"]
-                                ['MultipleStair']['step$index']['stepheight'] =
-                            value;
-                      });
+                      if (assessor == therapist && role == "therapist") {
+                        setState(() {
+                          widget.wholelist[0][widget.accessname]['question']
+                                  ["7"]['MultipleStair']['step$index']
+                              ['stepheight'] = value;
+                        });
+                      } else if (role != "therapist") {
+                        setState(() {
+                          widget.wholelist[0][widget.accessname]['question']
+                                  ["7"]['MultipleStair']['step$index']
+                              ['stepheight'] = value;
+                        });
+                      } else {
+                        _showSnackBar(
+                            "You can't change the other fields", context);
+                      }
+
                       // print(widget.wholelist[0][widget.accessname]['question']
                       //     [7]);
                     },

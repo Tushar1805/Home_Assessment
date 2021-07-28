@@ -32,12 +32,38 @@ class _LaundryUIState extends State<LaundryUI> {
   Map<String, TextEditingController> _controllerstreco = {};
   Map<String, bool> isListening = {};
   bool cur = true;
-  String type;
+  String role, assessor, therapist, curUid;
   Color colorb = Color.fromRGBO(10, 80, 106, 1);
   var test = TextEditingController();
   @override
   void initState() {
+    getAssessData();
+    getRole();
     super.initState();
+  }
+
+  Future<void> getAssessData() async {
+    final FirebaseUser user = await _auth.currentUser();
+    firestoreInstance
+        .collection("assessments")
+        .document(widget.docID)
+        .get()
+        .then((value) => setState(() {
+              curUid = user.uid;
+              assessor = value.data["assessor"];
+              therapist = value.data["therapist"];
+            }));
+  }
+
+  Future<String> getRole() async {
+    final FirebaseUser useruid = await _auth.currentUser();
+    firestoreInstance.collection("users").document(useruid.uid).get().then(
+      (value) {
+        setState(() {
+          role = (value["role"]);
+        });
+      },
+    );
   }
 
   void _showSnackBar(snackbar, BuildContext buildContext) {
@@ -84,7 +110,7 @@ class _LaundryUIState extends State<LaundryUI> {
                     assesmentprovider.setdatalisten(i + 1);
                     assesmentprovider.setdatalistenthera(i + 1);
                   }
-                  if (test < 14) {
+                  if (test == 0) {
                     _showSnackBar(
                         "You Must Have To Fill The Details First", context);
                   } else {
@@ -160,7 +186,7 @@ class _LaundryUIState extends State<LaundryUI> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                width: MediaQuery.of(context).size.width * .4,
+                                width: MediaQuery.of(context).size.width * .6,
                                 child: Text('Threshold to Laundry Room',
                                     style: TextStyle(
                                       color: Color.fromRGBO(10, 80, 106, 1),
@@ -168,7 +194,7 @@ class _LaundryUIState extends State<LaundryUI> {
                                     )),
                               ),
                               SizedBox(
-                                width: MediaQuery.of(context).size.width * .3,
+                                width: MediaQuery.of(context).size.width * .25,
                                 child: TextFormField(
                                   initialValue: widget.wholelist[7]
                                           [widget.accessname]['question']["1"]
@@ -186,19 +212,40 @@ class _LaundryUIState extends State<LaundryUI> {
                                       labelText: '(Inches)'),
                                   keyboardType: TextInputType.phone,
                                   onChanged: (value) {
-                                    FocusScope.of(context).requestFocus();
-                                    new TextEditingController().clear();
-                                    // print(widget.accessname);
-                                    assesmentprovider.setdata(
-                                        1, value, 'Threshold to Laundry Room');
+                                    if (assessor == therapist &&
+                                        role == "therapist") {
+                                      FocusScope.of(context).requestFocus();
+                                      new TextEditingController().clear();
+                                      // print(widget.accessname);
+                                      assesmentprovider.setdata(1, value,
+                                          'Threshold to Laundry Room');
+                                    } else if (role != "therapist") {
+                                      FocusScope.of(context).requestFocus();
+                                      new TextEditingController().clear();
+                                      // print(widget.accessname);
+                                      assesmentprovider.setdata(1, value,
+                                          'Threshold to Laundry Room');
+                                    } else {
+                                      _showSnackBar(
+                                          "You can't change the other fields",
+                                          context);
+                                    }
                                   },
                                 ),
                               ),
                             ]),
-                        (assesmentprovider.getvalue(1) != '0' &&
-                                assesmentprovider.getvalue(1) != '')
-                            ? assesmentprovider.getrecomain(
-                                assesmentprovider, 1, true, 'Comments (if any)')
+                        (assesmentprovider.getvalue(1) != '')
+                            ? (int.parse(assesmentprovider.getvalue(1)) > 5)
+                                ? assesmentprovider.getrecomain(
+                                    assesmentprovider,
+                                    1,
+                                    true,
+                                    'Comments (if any)',
+                                    assessor,
+                                    therapist,
+                                    role,
+                                    context)
+                                : SizedBox()
                             : SizedBox(),
                         SizedBox(height: 15),
                         Row(
@@ -245,20 +292,43 @@ class _LaundryUIState extends State<LaundryUI> {
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  assesmentprovider.setdata(
-                                      2, value, 'Flooring Type');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        2, value, 'Flooring Type');
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        2, value, 'Flooring Type');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: assesmentprovider.getvalue(2),
                               ),
                             )
                           ],
                         ),
-                        (assesmentprovider.getvalue(2).length > 0)
+                        (assesmentprovider.getvalue(2) ==
+                                    'Wood - Smooth Finish' ||
+                                assesmentprovider.getvalue(2) ==
+                                    'Tile - Smooth Finish')
                             ? assesmentprovider.getrecomain(
-                                assesmentprovider, 2, true, 'Comments (if any)')
+                                assesmentprovider,
+                                2,
+                                true,
+                                'Comments (if any)',
+                                assessor,
+                                therapist,
+                                role,
+                                context)
                             : SizedBox(),
                         SizedBox(height: 15),
                         // Divider(
@@ -297,11 +367,24 @@ class _LaundryUIState extends State<LaundryUI> {
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  assesmentprovider.setdata(
-                                      3, value, 'Floor Coverage');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        3, value, 'Floor Coverage');
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        3, value, 'Floor Coverage');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: assesmentprovider.getvalue(3),
                               ),
@@ -311,7 +394,14 @@ class _LaundryUIState extends State<LaundryUI> {
                         (assesmentprovider.getvalue(3) != 'No covering' &&
                                 assesmentprovider.getvalue(3) != '')
                             ? assesmentprovider.getrecomain(
-                                assesmentprovider, 3, true, 'Comments (if any)')
+                                assesmentprovider,
+                                3,
+                                true,
+                                'Comments (if any)',
+                                assessor,
+                                therapist,
+                                role,
+                                context)
                             : SizedBox(),
                         SizedBox(height: 15),
                         // Divider(
@@ -346,20 +436,40 @@ class _LaundryUIState extends State<LaundryUI> {
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  assesmentprovider.setdata(
-                                      4, value, 'Lighting Types:');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        4, value, 'Lighting Types');
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        4, value, 'Lighting Types');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: assesmentprovider.getvalue(4),
                               ),
                             )
                           ],
                         ),
-                        (assesmentprovider.getvalue(4).length > 0)
+                        (assesmentprovider.getvalue(4) == 'Inadequate')
                             ? assesmentprovider.getrecomain(
-                                assesmentprovider, 4, true, 'Specify Type')
+                                assesmentprovider,
+                                4,
+                                true,
+                                'Specify Type',
+                                assessor,
+                                therapist,
+                                role,
+                                context)
                             : SizedBox(),
                         SizedBox(height: 15),
                         // Divider(
@@ -370,7 +480,7 @@ class _LaundryUIState extends State<LaundryUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .4,
+                              width: MediaQuery.of(context).size.width * .6,
                               child: Text('Switches Able to Operate',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
@@ -394,21 +504,41 @@ class _LaundryUIState extends State<LaundryUI> {
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  assesmentprovider.setdata(
-                                      5, value, 'Switches Able to Operate');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        5, value, 'Switches Able to Operate');
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        5, value, 'Switches Able to Operate');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: assesmentprovider.getvalue(5),
                               ),
                             ),
                           ],
                         ),
-                        (assesmentprovider.getvalue(5) != 'No' &&
+                        (assesmentprovider.getvalue(5) != 'Yes' &&
                                 assesmentprovider.getvalue(5) != '')
                             ? assesmentprovider.getrecomain(
-                                assesmentprovider, 5, true, 'Comments(if any)')
+                                assesmentprovider,
+                                5,
+                                true,
+                                'Comments(if any)',
+                                assessor,
+                                therapist,
+                                role,
+                                context)
                             : SizedBox(),
                         SizedBox(height: 15),
 
@@ -460,11 +590,24 @@ class _LaundryUIState extends State<LaundryUI> {
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  assesmentprovider.setdata(
-                                      6, value, 'Switch Types');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        6, value, 'Switch Types');
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        6, value, 'Switch Types');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: assesmentprovider.getvalue(6),
                               ),
@@ -484,7 +627,7 @@ class _LaundryUIState extends State<LaundryUI> {
                                   )),
                             ),
                             SizedBox(
-                              width: MediaQuery.of(context).size.width * .3,
+                              width: MediaQuery.of(context).size.width * .25,
                               child: TextFormField(
                                 initialValue: widget.wholelist[7]
                                         [widget.accessname]['question']["7"]
@@ -501,19 +644,40 @@ class _LaundryUIState extends State<LaundryUI> {
                                     labelText: '(Inches)'),
                                 keyboardType: TextInputType.phone,
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  assesmentprovider.setdata(
-                                      7, value, 'Door Width');
-                                  setState(() {
-                                    widget.wholelist[7][widget.accessname]
-                                        ['question']["7"]['doorwidth'] = 0;
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        7, value, 'Door Width');
+                                    setState(() {
+                                      widget.wholelist[7][widget.accessname]
+                                          ['question']["7"]['doorwidth'] = 0;
 
-                                    widget.wholelist[7][widget.accessname]
-                                            ['question']["7"]['doorwidth'] =
-                                        int.parse(value);
-                                  });
+                                      widget.wholelist[7][widget.accessname]
+                                              ['question']["7"]['doorwidth'] =
+                                          int.parse(value);
+                                    });
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        7, value, 'Door Width');
+                                    setState(() {
+                                      widget.wholelist[7][widget.accessname]
+                                          ['question']["7"]['doorwidth'] = 0;
+
+                                      widget.wholelist[7][widget.accessname]
+                                              ['question']["7"]['doorwidth'] =
+                                          int.parse(value);
+                                    });
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                               ),
                             ),
@@ -532,7 +696,14 @@ class _LaundryUIState extends State<LaundryUI> {
                                         ['question']["7"]['doorwidth'] !=
                                     '')
                             ? assesmentprovider.getrecomain(
-                                assesmentprovider, 7, true, 'Comments (if any)')
+                                assesmentprovider,
+                                7,
+                                true,
+                                'Comments (if any)',
+                                assessor,
+                                therapist,
+                                role,
+                                context)
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -545,7 +716,7 @@ class _LaundryUIState extends State<LaundryUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .4,
+                              width: MediaQuery.of(context).size.width * .6,
                               child: Text('Obstacle/Clutter Present?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
@@ -568,11 +739,24 @@ class _LaundryUIState extends State<LaundryUI> {
                                 )
                               ],
                               onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                assesmentprovider.setdata(
-                                    8, value, 'Obstacle/Clutter Present?');
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  assesmentprovider.setdata(
+                                      8, value, 'Obstacle/Clutter Present?');
+                                } else if (role != "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  assesmentprovider.setdata(
+                                      8, value, 'Obstacle/Clutter Present?');
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
                               },
                               value: assesmentprovider.getvalue(8),
                             )
@@ -580,7 +764,14 @@ class _LaundryUIState extends State<LaundryUI> {
                         ),
                         (assesmentprovider.getvalue(8) == 'Yes')
                             ? assesmentprovider.getrecomain(
-                                assesmentprovider, 8, true, 'Specify Clutter')
+                                assesmentprovider,
+                                8,
+                                true,
+                                'Specify Clutter',
+                                assessor,
+                                therapist,
+                                role,
+                                context)
                             : SizedBox(),
                         SizedBox(height: 15),
 
@@ -588,8 +779,8 @@ class _LaundryUIState extends State<LaundryUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Able to Access Washer and Dryer?',
+                              width: MediaQuery.of(context).size.width * .7,
+                              child: Text('Able to Access Washer & Dryer?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -611,20 +802,40 @@ class _LaundryUIState extends State<LaundryUI> {
                                 ),
                               ],
                               onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                assesmentprovider.setdata(9, value,
-                                    'Able to Access Washer and Dryer?');
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  assesmentprovider.setdata(9, value,
+                                      'Able to Access Washer and Dryer?');
+                                } else if (role != "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  assesmentprovider.setdata(9, value,
+                                      'Able to Access Washer and Dryer?');
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
                               },
                               value: assesmentprovider.getvalue(9),
                             )
                           ],
                         ),
                         (assesmentprovider.getvalue(9) == 'No' &&
-                                assesmentprovider.getvalue(10) != '')
+                                assesmentprovider.getvalue(9) != '')
                             ? assesmentprovider.getrecomain(
-                                assesmentprovider, 9, true, 'Comments (if any)')
+                                assesmentprovider,
+                                9,
+                                true,
+                                'Comments (if any)',
+                                assessor,
+                                therapist,
+                                role,
+                                context)
                             : SizedBox(),
                         SizedBox(height: 15),
                         Row(
@@ -632,7 +843,7 @@ class _LaundryUIState extends State<LaundryUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Type of Washer and Dryer',
+                              child: Text('Type of Washer & Dryer',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -665,11 +876,24 @@ class _LaundryUIState extends State<LaundryUI> {
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  assesmentprovider.setdata(
-                                      10, value, 'Type of Washer and Dryer:');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        10, value, 'Type of Washer & Dryer');
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        10, value, 'Type of Washer & Dryer');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: assesmentprovider.getvalue(10),
                               ),
@@ -680,8 +904,15 @@ class _LaundryUIState extends State<LaundryUI> {
                                     'Top open Washer & Dryer' ||
                                 assesmentprovider.getvalue(10) ==
                                     'Front open Washer & Dryer')
-                            ? assesmentprovider.getrecomain(assesmentprovider,
-                                10, true, 'Comments (if any)')
+                            ? assesmentprovider.getrecomain(
+                                assesmentprovider,
+                                10,
+                                true,
+                                'Comments (if any)',
+                                assessor,
+                                therapist,
+                                role,
+                                context)
                             : SizedBox(),
                         SizedBox(height: 15),
                         Row(
@@ -718,11 +949,24 @@ class _LaundryUIState extends State<LaundryUI> {
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  assesmentprovider.setdata(11, value,
-                                      'Detergent and Supplies Stored in?');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(11, value,
+                                        'Detergent and Supplies Stored in?');
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(11, value,
+                                        'Detergent and Supplies Stored in?');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: assesmentprovider.getvalue(11),
                               ),
@@ -734,7 +978,7 @@ class _LaundryUIState extends State<LaundryUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .4,
+                              width: MediaQuery.of(context).size.width * .7,
                               child: Text('Able to Access Laundry Cabinets?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
@@ -757,19 +1001,39 @@ class _LaundryUIState extends State<LaundryUI> {
                                 ),
                               ],
                               onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                assesmentprovider.setdata(12, value,
-                                    'Able to Access Laundry Cabinets?');
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  assesmentprovider.setdata(12, value,
+                                      'Able to Access Laundry Cabinets?');
+                                } else if (role != "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  assesmentprovider.setdata(12, value,
+                                      'Able to Access Laundry Cabinets?');
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
                               },
                               value: assesmentprovider.getvalue(12),
                             )
                           ],
                         ),
                         (assesmentprovider.getvalue(12) == 'No')
-                            ? assesmentprovider.getrecomain(assesmentprovider,
-                                12, true, 'Comments (if any)')
+                            ? assesmentprovider.getrecomain(
+                                assesmentprovider,
+                                12,
+                                true,
+                                'Comments (if any)',
+                                assessor,
+                                therapist,
+                                role,
+                                context)
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -802,19 +1066,39 @@ class _LaundryUIState extends State<LaundryUI> {
                                 ),
                               ],
                               onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                assesmentprovider.setdata(
-                                    13, value, 'Smoke Detector?');
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  assesmentprovider.setdata(
+                                      13, value, 'Smoke Detector?');
+                                } else if (role != "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  assesmentprovider.setdata(
+                                      13, value, 'Smoke Detector?');
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
                               },
                               value: assesmentprovider.getvalue(13),
                             )
                           ],
                         ),
                         (assesmentprovider.getvalue(13) == 'No')
-                            ? assesmentprovider.getrecomain(assesmentprovider,
-                                13, true, 'Comments (if any)')
+                            ? assesmentprovider.getrecomain(
+                                assesmentprovider,
+                                13,
+                                true,
+                                'Comments (if any)',
+                                assessor,
+                                therapist,
+                                role,
+                                context)
                             : SizedBox(),
 
                         SizedBox(height: 15),
@@ -853,41 +1137,21 @@ class _LaundryUIState extends State<LaundryUI> {
                             // suffix: Icon(Icons.mic),
                           ),
                           onChanged: (value) {
-                            FocusScope.of(context).requestFocus();
-                            new TextEditingController().clear();
-                            // print(widget.accessname);
-                            widget.wholelist[7][widget.accessname]['question']
-                                ["14"]['Question'] = 'Observations';
-
-                            if (value.length == 0) {
-                              if (widget
-                                      .wholelist[7][widget.accessname]
-                                          ['question']["14"]['Answer']
-                                      .length ==
-                                  0) {
-                              } else {
-                                setState(() {
-                                  widget.wholelist[7][widget.accessname]
-                                      ['complete'] -= 1;
-                                  widget.wholelist[7][widget.accessname]
-                                      ['question']["14"]['Answer'] = value;
-                                });
-                              }
+                            if (assessor == therapist && role == "therapist") {
+                              FocusScope.of(context).requestFocus();
+                              new TextEditingController().clear();
+                              // print(widget.accessname);
+                              assesmentprovider.setdata(
+                                  14, value, 'Observations');
+                            } else if (role != "therapist") {
+                              FocusScope.of(context).requestFocus();
+                              new TextEditingController().clear();
+                              // print(widget.accessname);
+                              assesmentprovider.setdata(
+                                  14, value, 'Observations');
                             } else {
-                              if (widget
-                                      .wholelist[7][widget.accessname]
-                                          ['question']["14"]['Answer']
-                                      .length ==
-                                  0) {
-                                setState(() {
-                                  widget.wholelist[7][widget.accessname]
-                                      ['complete'] += 1;
-                                });
-                              }
-                              setState(() {
-                                widget.wholelist[7][widget.accessname]
-                                    ['question']["14"]['Answer'] = value;
-                              });
+                              _showSnackBar(
+                                  "You can't change the other fields", context);
                             }
                           },
                         ))
@@ -915,7 +1179,7 @@ class _LaundryUIState extends State<LaundryUI> {
                         assesmentprovider.setdatalisten(i + 1);
                         assesmentprovider.setdatalistenthera(i + 1);
                       }
-                      if (test < 14) {
+                      if (test == 0) {
                         _showSnackBar(
                             "You Must Have To Fill The Details First", context);
                       } else {

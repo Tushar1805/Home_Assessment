@@ -23,13 +23,13 @@ class _PatioUIState extends State<PatioUI> {
   stt.SpeechToText _speech;
   bool _isListening = false;
   double _confidence = 1.0;
-  bool available = false;
+  bool available = false, isColor = false;
   Map<String, Color> colorsset = {};
   Map<String, TextEditingController> _controllers = {};
   Map<String, TextEditingController> _controllerstreco = {};
   Map<String, bool> isListening = {};
   bool cur = true;
-  String type;
+  String role, curUid, assessor, therapist;
   int stepcount = 0;
   Color colorb = Color.fromRGBO(10, 80, 106, 1);
   var test = TextEditingController();
@@ -49,6 +49,7 @@ class _PatioUIState extends State<PatioUI> {
       colorsset["field${i + 1}"] = Color.fromRGBO(10, 80, 106, 1);
     }
     getRole();
+    getAssessData();
     setinitials();
   }
 
@@ -66,7 +67,7 @@ class _PatioUIState extends State<PatioUI> {
               ['MultipleStair']
           .containsKey('count')) {
         setState(() {
-          stepcount = widget.wholelist[8][widget.accessname]['question'][9]
+          stepcount = widget.wholelist[8][widget.accessname]['question']["9"]
               ['MultipleStair']['count'];
         });
       }
@@ -85,12 +86,25 @@ class _PatioUIState extends State<PatioUI> {
     }
   }
 
+  Future<void> getAssessData() async {
+    final FirebaseUser user = await _auth.currentUser();
+    firestoreInstance
+        .collection("assessments")
+        .document(widget.docID)
+        .get()
+        .then((value) => setState(() {
+              curUid = user.uid;
+              assessor = value.data["assessor"];
+              therapist = value.data["therapist"];
+            }));
+  }
+
   Future<String> getRole() async {
     final FirebaseUser useruid = await _auth.currentUser();
     firestoreInstance.collection("users").document(useruid.uid).get().then(
       (value) {
         setState(() {
-          type = (value["role"].toString()).split(" ")[0];
+          role = (value["role"].toString()).split(" ")[0];
         });
       },
     );
@@ -197,7 +211,7 @@ class _PatioUIState extends State<PatioUI> {
           backgroundColor: _colorgreen,
           actions: [
             IconButton(
-              icon: Icon(Icons.logout, color: Colors.white),
+              icon: Icon(Icons.done_all, color: Colors.white),
               onPressed: () async {
                 try {
                   var test = widget.wholelist[8][widget.accessname]['complete'];
@@ -209,7 +223,7 @@ class _PatioUIState extends State<PatioUI> {
                     setdatalisten(i + 1);
                     setdatalistenthera(i + 1);
                   }
-                  if (test < 12) {
+                  if (test == 0) {
                     _showSnackBar(
                         "You Must Have to Fill The Details First", context);
                   } else {
@@ -315,16 +329,30 @@ class _PatioUIState extends State<PatioUI> {
                                       labelText: '(Inches)'),
                                   keyboardType: TextInputType.phone,
                                   onChanged: (value) {
-                                    FocusScope.of(context).requestFocus();
-                                    new TextEditingController().clear();
-                                    // print(widget.accessname);
-                                    setdata(1, value, 'Threshold to Patio');
+                                    if (assessor == therapist &&
+                                        role == "therapist") {
+                                      FocusScope.of(context).requestFocus();
+                                      new TextEditingController().clear();
+                                      // print(widget.accessname);
+                                      setdata(1, value, 'Threshold to Patio');
+                                    } else if (role != "therapist") {
+                                      FocusScope.of(context).requestFocus();
+                                      new TextEditingController().clear();
+                                      // print(widget.accessname);
+                                      setdata(1, value, 'Threshold to Patio');
+                                    } else {
+                                      _showSnackBar(
+                                          "You can't change the other fields",
+                                          context);
+                                    }
                                   },
                                 ),
                               ),
                             ]),
-                        (getvalue(1) != '0' && getvalue(1) != '')
-                            ? getrecomain(1, true, 'Comments (if any)')
+                        (getvalue(1) != '')
+                            ? (int.parse(getvalue(1)) > 5)
+                                ? getrecomain(1, true, 'Comments (if any)')
+                                : SizedBox()
                             : SizedBox(),
                         SizedBox(height: 15),
                         Row(
@@ -346,34 +374,55 @@ class _PatioUIState extends State<PatioUI> {
                                     value: '',
                                   ),
                                   DropdownMenuItem(
-                                    child: Text('Ceramic Tiles'),
-                                    value: 'Tile',
+                                    child: Text('Wood - Smooth Finish'),
+                                    value: 'Wood - Smooth Finish',
                                   ),
                                   DropdownMenuItem(
-                                    child: Text('Hardwood'),
-                                    value: 'Hardwood',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Laminate'),
-                                    value: 'Laminate',
+                                    child: Text('Wood - Friction Finish'),
+                                    value: 'Wood - Friction Finish',
                                   ),
                                   DropdownMenuItem(
                                     child: Text('Carpet'),
                                     value: 'Carpet',
                                   ),
+                                  DropdownMenuItem(
+                                    child: Text('Concrete'),
+                                    value: 'Concrete',
+                                  ),
+                                  DropdownMenuItem(
+                                    child: Text('Tile - Smooth Finish'),
+                                    value: 'Tile - Smooth Finish',
+                                  ),
+                                  DropdownMenuItem(
+                                    child: Text('Tile - Friction Finish'),
+                                    value: 'Tile - Friction Finish',
+                                  ),
                                 ],
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  setdata(2, value, 'Flooring Type');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(2, value, 'Flooring Type');
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(2, value, 'Flooring Type');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: getvalue(2),
                               ),
                             )
                           ],
                         ),
-                        (getvalue(2).length > 0)
+                        (getvalue(2) == 'Wood - Smooth Finish' ||
+                                getvalue(2) == 'Tile - Smooth Finish')
                             ? getrecomain(2, true, 'Comments (if any)')
                             : SizedBox(),
                         SizedBox(height: 15),
@@ -413,10 +462,22 @@ class _PatioUIState extends State<PatioUI> {
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  setdata(3, value, 'Floor Coverage');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(3, value, 'Floor Coverage');
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(3, value, 'Floor Coverage');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: getvalue(3),
                               ),
@@ -459,17 +520,29 @@ class _PatioUIState extends State<PatioUI> {
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  setdata(4, value, 'Lighting');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(4, value, 'Lighting');
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(4, value, 'Lighting');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: getvalue(4),
                               ),
                             )
                           ],
                         ),
-                        (getvalue(4).length > 0)
+                        (getvalue(4) == 'Inadequate')
                             ? getrecomain(4, true, 'Specify Type')
                             : SizedBox(),
                         SizedBox(height: 15),
@@ -481,7 +554,7 @@ class _PatioUIState extends State<PatioUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .4,
+                              width: MediaQuery.of(context).size.width * .6,
                               child: Text('Switches Able to Operate',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
@@ -505,10 +578,24 @@ class _PatioUIState extends State<PatioUI> {
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  setdata(5, value, 'Switches Able to Operate');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(
+                                        5, value, 'Switches Able to Operate');
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(
+                                        5, value, 'Switches Able to Operate');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: getvalue(5),
                               ),
@@ -516,7 +603,7 @@ class _PatioUIState extends State<PatioUI> {
                           ],
                         ),
 
-                        (getvalue(5) != 'No' && getvalue(5) != '')
+                        (getvalue(5) == 'No' && getvalue(5) != '')
                             ? getrecomain(5, true, 'Comments(if any)')
                             : SizedBox(),
                         SizedBox(height: 15),
@@ -569,10 +656,22 @@ class _PatioUIState extends State<PatioUI> {
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  setdata(6, value, 'Switch Types');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(6, value, 'Switch Types');
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(6, value, 'Switch Types');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: getvalue(6),
                               ),
@@ -592,7 +691,7 @@ class _PatioUIState extends State<PatioUI> {
                                   )),
                             ),
                             SizedBox(
-                              width: MediaQuery.of(context).size.width * .3,
+                              width: MediaQuery.of(context).size.width * .25,
                               child: TextFormField(
                                 initialValue: widget.wholelist[8]
                                         [widget.accessname]['question']["7"]
@@ -609,18 +708,38 @@ class _PatioUIState extends State<PatioUI> {
                                     labelText: '(Inches)'),
                                 keyboardType: TextInputType.phone,
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  setdata(7, value, 'Door Width');
-                                  setState(() {
-                                    widget.wholelist[8][widget.accessname]
-                                        ['question']["7"]['doorwidth'] = 0;
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(7, value, 'Door Width');
+                                    setState(() {
+                                      widget.wholelist[8][widget.accessname]
+                                          ['question']["7"]['doorwidth'] = 0;
 
-                                    widget.wholelist[8][widget.accessname]
-                                            ['question']["7"]['doorwidth'] =
-                                        int.parse(value);
-                                  });
+                                      widget.wholelist[8][widget.accessname]
+                                              ['question']["7"]['doorwidth'] =
+                                          int.parse(value);
+                                    });
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(7, value, 'Door Width');
+                                    setState(() {
+                                      widget.wholelist[8][widget.accessname]
+                                          ['question']["7"]['doorwidth'] = 0;
+
+                                      widget.wholelist[8][widget.accessname]
+                                              ['question']["7"]['doorwidth'] =
+                                          int.parse(value);
+                                    });
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                               ),
                             ),
@@ -651,7 +770,7 @@ class _PatioUIState extends State<PatioUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .4,
+                              width: MediaQuery.of(context).size.width * .6,
                               child: Text('Obstacle/Clutter Present?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
@@ -674,10 +793,24 @@ class _PatioUIState extends State<PatioUI> {
                                 )
                               ],
                               onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                setdata(8, value, 'Obstacle/Clutter Present?');
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  setdata(
+                                      8, value, 'Obstacle/Clutter Present?');
+                                } else if (role != "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  setdata(
+                                      8, value, 'Obstacle/Clutter Present?');
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
                               },
                               value: getvalue(8),
                             )
@@ -720,10 +853,22 @@ class _PatioUIState extends State<PatioUI> {
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  setdata(9, value, 'Type of Steps');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(9, value, 'Type of Steps');
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(9, value, 'Type of Steps');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: getvalue(9),
                               ),
@@ -762,14 +907,11 @@ class _PatioUIState extends State<PatioUI> {
                                                           .width *
                                                       .3,
                                                   child: TextFormField(
-                                                      initialValue: widget.wholelist[
-                                                                      8]
-                                                                  [
-                                                                  widget
-                                                                      .accessname]
-                                                              [
-                                                              'question']['9']
-                                                          ['Recommendation'],
+                                                      initialValue: widget.wholelist[8]
+                                                                      [widget.accessname]
+                                                                  ['question']
+                                                              ['9']['additional']
+                                                          ["count"],
                                                       decoration:
                                                           InputDecoration(
                                                               focusedBorder:
@@ -795,14 +937,37 @@ class _PatioUIState extends State<PatioUI> {
                                                       keyboardType:
                                                           TextInputType.phone,
                                                       onChanged: (value) {
-                                                        setState(() {
-                                                          widget.wholelist[8][widget
-                                                                      .accessname]
-                                                                  [
-                                                                  'question']["9"]
-                                                              [
-                                                              'Recommendation'] = value;
-                                                        });
+                                                        if (assessor ==
+                                                                therapist &&
+                                                            role ==
+                                                                "therapist") {
+                                                          setState(() {
+                                                            widget.wholelist[8][
+                                                                            widget.accessname]
+                                                                        [
+                                                                        'question']["9"]
+                                                                    [
+                                                                    'additional']
+                                                                [
+                                                                'count'] = value;
+                                                          });
+                                                        } else if (role !=
+                                                            "therapist") {
+                                                          setState(() {
+                                                            widget.wholelist[8][
+                                                                            widget.accessname]
+                                                                        [
+                                                                        'question']["9"]
+                                                                    [
+                                                                    'additional']
+                                                                [
+                                                                'count'] = value;
+                                                          });
+                                                        } else {
+                                                          _showSnackBar(
+                                                              "You can't change the other fields",
+                                                              context);
+                                                        }
                                                       }),
                                                 ),
                                               ],
@@ -850,19 +1015,35 @@ class _PatioUIState extends State<PatioUI> {
                                                               labelText:
                                                                   'Step Width:'),
                                                       onChanged: (value) {
-                                                        setState(() {
-                                                          widget.wholelist[8][widget
-                                                                      .accessname]
-                                                                  [
-                                                                  'question']["9"]
-                                                              [
-                                                              'Single Step Width'] = value;
-                                                        });
-                                                        print(widget.wholelist[
-                                                                    8][
-                                                                widget
-                                                                    .accessname]
-                                                            ['question']["9"]);
+                                                        if (assessor ==
+                                                                therapist &&
+                                                            role ==
+                                                                "therapist") {
+                                                          setState(() {
+                                                            widget.wholelist[8][
+                                                                        widget
+                                                                            .accessname]
+                                                                    [
+                                                                    'question']["9"]
+                                                                [
+                                                                'Single Step Width'] = value;
+                                                          });
+                                                        } else if (role !=
+                                                            "therapist") {
+                                                          setState(() {
+                                                            widget.wholelist[8][
+                                                                        widget
+                                                                            .accessname]
+                                                                    [
+                                                                    'question']["9"]
+                                                                [
+                                                                'Single Step Width'] = value;
+                                                          });
+                                                        } else {
+                                                          _showSnackBar(
+                                                              "You can't change the other fields",
+                                                              context);
+                                                        }
                                                       },
                                                     ),
                                                   ),
@@ -901,14 +1082,35 @@ class _PatioUIState extends State<PatioUI> {
                                                               labelText:
                                                                   'Step Height:'),
                                                       onChanged: (value) {
-                                                        setState(() {
-                                                          widget.wholelist[8][widget
-                                                                      .accessname]
-                                                                  [
-                                                                  'question']["9"]
-                                                              [
-                                                              'Single Step Height'] = value;
-                                                        });
+                                                        if (assessor ==
+                                                                therapist &&
+                                                            role ==
+                                                                "therapist") {
+                                                          setState(() {
+                                                            widget.wholelist[8][
+                                                                        widget
+                                                                            .accessname]
+                                                                    [
+                                                                    'question']["9"]
+                                                                [
+                                                                'Single Step Height'] = value;
+                                                          });
+                                                        } else if (role !=
+                                                            "therapist") {
+                                                          setState(() {
+                                                            widget.wholelist[8][
+                                                                        widget
+                                                                            .accessname]
+                                                                    [
+                                                                    'question']["9"]
+                                                                [
+                                                                'Single Step Height'] = value;
+                                                          });
+                                                        } else {
+                                                          _showSnackBar(
+                                                              "You can't change the other fields",
+                                                              context);
+                                                        }
                                                       },
                                                     ),
                                                   ),
@@ -950,81 +1152,165 @@ class _PatioUIState extends State<PatioUI> {
                                                   child: NumericStepButton(
                                                     counterval: stepcount,
                                                     onChanged: (value) {
-                                                      setState(() {
-                                                        widget.wholelist[8][widget
-                                                                        .accessname]
-                                                                    [
-                                                                    'question']["9"]
-                                                                [
-                                                                'MultipleStair']
-                                                            ['count'] = value;
-                                                        widget.wholelist[8][widget
-                                                                    .accessname]
-                                                                [
-                                                                'question']["9"]
-                                                            [
-                                                            'Recommendationthera'] = value;
-
-                                                        stepcount = widget
-                                                                        .wholelist[8]
-                                                                    [
-                                                                    widget
-                                                                        .accessname]
-                                                                [
-                                                                'question']["9"]
-                                                            [
-                                                            'Recommendationthera'];
-                                                        if (value > 0) {
+                                                      if (assessor ==
+                                                              therapist &&
+                                                          role == "therapist") {
+                                                        setState(() {
                                                           widget.wholelist[8][widget
                                                                           .accessname]
                                                                       [
                                                                       'question']["9"]
                                                                   [
                                                                   'MultipleStair']
-                                                              ['step$value'] = {
-                                                            'stepwidth': '',
-                                                            'stepheight': ''
-                                                          };
+                                                              ['count'] = value;
+                                                          stepcount = widget
+                                                                          .wholelist[8]
+                                                                      [
+                                                                      widget
+                                                                          .accessname]
+                                                                  [
+                                                                  'question']["9"]
+                                                              [
+                                                              'MultipleStair']['count'];
+                                                          if (value > 0) {
+                                                            widget.wholelist[8][
+                                                                            widget.accessname]
+                                                                        [
+                                                                        'question']["9"]
+                                                                    [
+                                                                    'MultipleStair']
+                                                                [
+                                                                'step$value'] = {
+                                                              'stepwidth': '',
+                                                              'stepheight': ''
+                                                            };
 
-                                                          if (widget
-                                                              .wholelist[8][
-                                                                  widget
-                                                                      .accessname]
-                                                                  ['question']
-                                                                  ["9"][
-                                                                  'MultipleStair']
-                                                              .containsKey(
-                                                                  'step${value + 1}')) {
-                                                            widget.wholelist[8][
+                                                            if (widget
+                                                                .wholelist[8][
                                                                     widget
                                                                         .accessname]
                                                                     ['question']
                                                                     ["9"][
                                                                     'MultipleStair']
-                                                                .remove(
-                                                                    'step${value + 1}');
-                                                          }
-                                                        } else if (value == 0) {
-                                                          if (widget
-                                                              .wholelist[8][
-                                                                  widget
-                                                                      .accessname]
-                                                                  ['question']
-                                                                  ["9"][
-                                                                  'MultipleStair']
-                                                              .containsKey(
-                                                                  'step${value + 1}')) {
-                                                            widget.wholelist[8][
+                                                                .containsKey(
+                                                                    'step${value + 1}')) {
+                                                              widget
+                                                                  .wholelist[8][
+                                                                      widget
+                                                                          .accessname]
+                                                                      [
+                                                                      'question']
+                                                                      ["9"][
+                                                                      'MultipleStair']
+                                                                  .remove(
+                                                                      'step${value + 1}');
+                                                            }
+                                                          } else if (value ==
+                                                              0) {
+                                                            if (widget
+                                                                .wholelist[8][
                                                                     widget
                                                                         .accessname]
                                                                     ['question']
                                                                     ["9"][
                                                                     'MultipleStair']
-                                                                .remove(
-                                                                    'step${value + 1}');
+                                                                .containsKey(
+                                                                    'step${value + 1}')) {
+                                                              widget
+                                                                  .wholelist[8][
+                                                                      widget
+                                                                          .accessname]
+                                                                      [
+                                                                      'question']
+                                                                      ["9"][
+                                                                      'MultipleStair']
+                                                                  .remove(
+                                                                      'step${value + 1}');
+                                                            }
                                                           }
-                                                        }
-                                                      });
+                                                        });
+                                                      } else if (role !=
+                                                          "therapist") {
+                                                        setState(() {
+                                                          widget.wholelist[8][widget
+                                                                          .accessname]
+                                                                      [
+                                                                      'question']["9"]
+                                                                  [
+                                                                  'MultipleStair']
+                                                              ['count'] = value;
+
+                                                          stepcount = widget
+                                                                          .wholelist[8]
+                                                                      [
+                                                                      widget
+                                                                          .accessname]
+                                                                  [
+                                                                  'question']["9"]
+                                                              [
+                                                              'MultipleStair']['count'];
+                                                          if (value > 0) {
+                                                            widget.wholelist[8][
+                                                                            widget.accessname]
+                                                                        [
+                                                                        'question']["9"]
+                                                                    [
+                                                                    'MultipleStair']
+                                                                [
+                                                                'step$value'] = {
+                                                              'stepwidth': '',
+                                                              'stepheight': ''
+                                                            };
+
+                                                            if (widget
+                                                                .wholelist[8][
+                                                                    widget
+                                                                        .accessname]
+                                                                    ['question']
+                                                                    ["9"][
+                                                                    'MultipleStair']
+                                                                .containsKey(
+                                                                    'step${value + 1}')) {
+                                                              widget
+                                                                  .wholelist[8][
+                                                                      widget
+                                                                          .accessname]
+                                                                      [
+                                                                      'question']
+                                                                      ["9"][
+                                                                      'MultipleStair']
+                                                                  .remove(
+                                                                      'step${value + 1}');
+                                                            }
+                                                          } else if (value ==
+                                                              0) {
+                                                            if (widget
+                                                                .wholelist[8][
+                                                                    widget
+                                                                        .accessname]
+                                                                    ['question']
+                                                                    ["9"][
+                                                                    'MultipleStair']
+                                                                .containsKey(
+                                                                    'step${value + 1}')) {
+                                                              widget
+                                                                  .wholelist[8][
+                                                                      widget
+                                                                          .accessname]
+                                                                      [
+                                                                      'question']
+                                                                      ["9"][
+                                                                      'MultipleStair']
+                                                                  .remove(
+                                                                      'step${value + 1}');
+                                                            }
+                                                          }
+                                                        });
+                                                      } else {
+                                                        _showSnackBar(
+                                                            "You can't change the other fields",
+                                                            context);
+                                                      }
                                                     },
                                                   ),
                                                 ),
@@ -1096,10 +1382,22 @@ class _PatioUIState extends State<PatioUI> {
                                 ),
                               ],
                               onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                setdata(10, value, 'Railling');
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  setdata(10, value, 'Railling');
+                                } else if (role != "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  setdata(10, value, 'Railling');
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
                               },
                               value: getvalue(10),
                             )
@@ -1144,11 +1442,27 @@ class _PatioUIState extends State<PatioUI> {
                                                 ),
                                               ],
                                               onChanged: (value) {
-                                                widget.wholelist[8][widget
-                                                                .accessname]
-                                                            ['question']["10"]
-                                                        ['Railling']['OneSided']
-                                                    ['GoingUp'] = value;
+                                                if (assessor == therapist &&
+                                                    role == "therapist") {
+                                                  widget.wholelist[8][widget
+                                                                  .accessname]
+                                                              ['question']["10"]
+                                                          [
+                                                          'Railling']['OneSided']
+                                                      ['GoingUp'] = value;
+                                                } else if (role !=
+                                                    "therapist") {
+                                                  widget.wholelist[8][widget
+                                                                  .accessname]
+                                                              ['question']["10"]
+                                                          [
+                                                          'Railling']['OneSided']
+                                                      ['GoingUp'] = value;
+                                                } else {
+                                                  _showSnackBar(
+                                                      "You can't change the other fields",
+                                                      context);
+                                                }
                                               },
                                               value: widget.wholelist[8][
                                                               widget.accessname]
@@ -1192,11 +1506,27 @@ class _PatioUIState extends State<PatioUI> {
                                                 ),
                                               ],
                                               onChanged: (value) {
-                                                widget.wholelist[8][widget
-                                                                .accessname]
-                                                            ['question']["10"]
-                                                        ['Railling']['OneSided']
-                                                    ['GoingDown'] = value;
+                                                if (assessor == therapist &&
+                                                    role == "therapist") {
+                                                  widget.wholelist[8][widget
+                                                                  .accessname]
+                                                              ['question']["10"]
+                                                          [
+                                                          'Railling']['OneSided']
+                                                      ['GoingDown'] = value;
+                                                } else if (role !=
+                                                    "therapist") {
+                                                  widget.wholelist[8][widget
+                                                                  .accessname]
+                                                              ['question']["10"]
+                                                          [
+                                                          'Railling']['OneSided']
+                                                      ['GoingDown'] = value;
+                                                } else {
+                                                  _showSnackBar(
+                                                      "You can't change the other fields",
+                                                      context);
+                                                }
                                               },
                                               value: widget.wholelist[8][
                                                               widget.accessname]
@@ -1207,7 +1537,7 @@ class _PatioUIState extends State<PatioUI> {
                                           ],
                                         ),
                                       ),
-                                      (type == 'therapist')
+                                      (role == 'therapist')
                                           ? getrecowid(10)
                                           : SizedBox()
                                     ],
@@ -1244,10 +1574,22 @@ class _PatioUIState extends State<PatioUI> {
                                 ),
                               ],
                               onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                setdata(11, value, 'Smoke Detector?');
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  setdata(11, value, 'Smoke Detector?');
+                                } else if (role != "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  setdata(11, value, 'Smoke Detector?');
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
                               },
                               value: getvalue(11),
                             )
@@ -1293,10 +1635,22 @@ class _PatioUIState extends State<PatioUI> {
                               // suffix: Icon(Icons.mic),
                             ),
                             onChanged: (value) {
-                              FocusScope.of(context).requestFocus();
-                              new TextEditingController().clear();
-                              // print(widget.accessname);
-                              setdata(12, value, 'Observations');
+                              if (assessor == therapist &&
+                                  role == "therapist") {
+                                FocusScope.of(context).requestFocus();
+                                new TextEditingController().clear();
+                                // print(widget.accessname);
+                                setdata(12, value, 'Observations');
+                              } else if (role != "therapist") {
+                                FocusScope.of(context).requestFocus();
+                                new TextEditingController().clear();
+                                // print(widget.accessname);
+                                setdata(12, value, 'Observations');
+                              } else {
+                                _showSnackBar(
+                                    "You can't change the other fields",
+                                    context);
+                              }
                             },
                           ),
                         ),
@@ -1324,7 +1678,7 @@ class _PatioUIState extends State<PatioUI> {
                         setdatalisten(i + 1);
                         setdatalistenthera(i + 1);
                       }
-                      if (test < 12) {
+                      if (test == 0) {
                         _showSnackBar(
                             "You Must Have to Fill The Details First", context);
                       } else {
@@ -1389,8 +1743,18 @@ class _PatioUIState extends State<PatioUI> {
                               size: 20,
                             ),
                             onPressed: () {
-                              _listen(index);
-                              setdatalisten(index);
+                              if (assessor == therapist &&
+                                  role == "therapist") {
+                                _listen(index);
+                                setdatalisten(index);
+                              } else if (role != "therapist") {
+                                _listen(index);
+                                setdatalisten(index);
+                              } else {
+                                _showSnackBar(
+                                    "You can't change the other fields",
+                                    context);
+                              }
                             },
                           ),
                         ),
@@ -1398,14 +1762,23 @@ class _PatioUIState extends State<PatioUI> {
                     ),
                     labelText: fieldlabel),
                 onChanged: (value) {
-                  FocusScope.of(context).requestFocus();
-                  new TextEditingController().clear();
-                  // print(widget.accessname);
-                  setreco(index, value);
+                  if (assessor == therapist && role == "therapist") {
+                    FocusScope.of(context).requestFocus();
+                    new TextEditingController().clear();
+                    // print(widget.accessname);
+                    setreco(index, value);
+                  } else if (role != "therapist") {
+                    FocusScope.of(context).requestFocus();
+                    new TextEditingController().clear();
+                    // print(widget.accessname);
+                    setreco(index, value);
+                  } else {
+                    _showSnackBar("You can't change the other fields", context);
+                  }
                 },
               ),
             ),
-            (type == 'therapist' && isthera) ? getrecowid(index) : SizedBox(),
+            (role == 'therapist' && isthera) ? getrecowid(index) : SizedBox(),
           ],
         ),
       ),
@@ -1413,6 +1786,13 @@ class _PatioUIState extends State<PatioUI> {
   }
 
   Widget getrecowid(index) {
+    if (widget.wholelist[8][widget.accessname]["question"]["$index"]
+            ["Recommendationthera"] !=
+        "") {
+      isColor = true;
+    } else {
+      isColor = false;
+    }
     return Column(
       children: [
         SizedBox(height: 8),
@@ -1420,11 +1800,12 @@ class _PatioUIState extends State<PatioUI> {
           controller: _controllerstreco["field$index"],
           decoration: InputDecoration(
               focusedBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: Color.fromRGBO(10, 80, 106, 1), width: 1),
+                borderSide: BorderSide(
+                    color: (isColor) ? Colors.green : Colors.red, width: 1),
               ),
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(width: 1),
+                borderSide: BorderSide(
+                    width: 1, color: (isColor) ? Colors.green : Colors.red),
               ),
               suffix: Container(
                 // color: Colors.red,
@@ -1452,6 +1833,8 @@ class _PatioUIState extends State<PatioUI> {
                   ),
                 ]),
               ),
+              labelStyle:
+                  TextStyle(color: (isColor) ? Colors.green : Colors.red),
               labelText: 'Recomendation'),
           onChanged: (value) {
             FocusScope.of(context).requestFocus();
@@ -1530,11 +1913,23 @@ class _PatioUIState extends State<PatioUI> {
                         ),
                         labelText: 'Step Width$index:'),
                     onChanged: (value) {
-                      setState(() {
-                        widget.wholelist[8][widget.accessname]['question']["9"]
-                                ['MultipleStair']['step$index']['stepwidth'] =
-                            value;
-                      });
+                      if (assessor == therapist && role == "therapist") {
+                        setState(() {
+                          widget.wholelist[8][widget.accessname]['question']
+                                  ["9"]['MultipleStair']['step$index']
+                              ['stepwidth'] = value;
+                        });
+                      } else if (role != "therapist") {
+                        setState(() {
+                          widget.wholelist[8][widget.accessname]['question']
+                                  ["9"]['MultipleStair']['step$index']
+                              ['stepwidth'] = value;
+                        });
+                      } else {
+                        _showSnackBar(
+                            "You can't change the other fields", context);
+                      }
+
                       // print(widget.wholelist[0][widget.accessname]['question']
                       //     [7]);
                     },
@@ -1558,11 +1953,23 @@ class _PatioUIState extends State<PatioUI> {
                         ),
                         labelText: 'Step Height$index:'),
                     onChanged: (value) {
-                      setState(() {
-                        widget.wholelist[8][widget.accessname]['question']["9"]
-                                ['MultipleStair']['step$index']['stepheight'] =
-                            value;
-                      });
+                      if (assessor == therapist && role == "therapist") {
+                        setState(() {
+                          widget.wholelist[8][widget.accessname]['question']
+                                  ["9"]['MultipleStair']['step$index']
+                              ['stepheight'] = value;
+                        });
+                      } else if (role != "therapist") {
+                        setState(() {
+                          widget.wholelist[8][widget.accessname]['question']
+                                  ["9"]['MultipleStair']['step$index']
+                              ['stepheight'] = value;
+                        });
+                      } else {
+                        _showSnackBar(
+                            "You can't change the other fields", context);
+                      }
+
                       // print(widget.wholelist[0][widget.accessname]['question']
                       //     [7]);
                     },

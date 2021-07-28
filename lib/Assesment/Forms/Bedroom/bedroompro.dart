@@ -5,6 +5,8 @@ import 'package:tryapp/Assesment/Forms/Formsrepo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 
+import '../../../constants.dart';
+
 class BedroomPro extends ChangeNotifier {
   String roomname;
   var accessname;
@@ -14,7 +16,7 @@ class BedroomPro extends ChangeNotifier {
   bool obstacle = false;
   bool grabbarneeded = false;
   stt.SpeechToText _speech;
-  bool _isListening = false;
+  bool _isListening = false, isColor = false;
   double _confidence = 1.0;
   int doorwidth = 0;
   bool available = false;
@@ -43,29 +45,52 @@ class BedroomPro extends ChangeNotifier {
     getRole();
     setinitials();
   }
+  void _showSnackBar(snackbar, BuildContext buildContext) {
+    final snackBar = SnackBar(
+      duration: const Duration(seconds: 3),
+      content: Container(
+        height: 30.0,
+        child: Center(
+          child: Text(
+            '$snackbar',
+            style: TextStyle(fontSize: 14.0, color: Colors.white),
+          ),
+        ),
+      ),
+      backgroundColor: lightBlack(),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+    );
+    ScaffoldMessenger.of(buildContext)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(snackBar);
+  }
 
   Future<void> setinitials() async {
     if (wholelist[6][accessname]['question']["7"].containsKey('doorwidth')) {
     } else {
-      print('getting created');
       wholelist[6][accessname]['question']["7"]['doorwidth'] = 0;
     }
-
-    if (wholelist[6][accessname]['question']["15"].containsKey('ManageInOut')) {
+    if (wholelist[6][accessname]['question']["9"]
+        .containsKey('telephoneType')) {
     } else {
-      wholelist[6][accessname]['question']["15"]['ManageInOut'] = '';
+      wholelist[6][accessname]['question']["9"]['telephoneType'] = "";
     }
 
-    if (wholelist[6][accessname]['question']["16"].containsKey('Grabbar')) {
-    } else {
-      wholelist[6][accessname]['question']["16"]['Grabbar'] = {};
-    }
+    // if (wholelist[6][accessname]['question']["15"].containsKey('ManageInOut')) {
+    // } else {
+    //   wholelist[6][accessname]['question']["15"]['ManageInOut'] = '';
+    // }
 
-    if (wholelist[6][accessname]['question']["17"]
-        .containsKey('sidefentrance')) {
-    } else {
-      wholelist[6][accessname]['question']["17"]['sidefentrance'] = '';
-    }
+    // if (wholelist[6][accessname]['question']["16"].containsKey('Grabbar')) {
+    // } else {
+    //   wholelist[6][accessname]['question']["16"]['Grabbar'] = {};
+    // }
+
+    // if (wholelist[6][accessname]['question']["17"]
+    //     .containsKey('sidefentrance')) {
+    // } else {
+    //   wholelist[6][accessname]['question']["17"]['sidefentrance'] = '';
+    // }
   }
 
   Future<String> getRole() async {
@@ -134,7 +159,14 @@ class BedroomPro extends ChangeNotifier {
   }
 
   Widget getrecomain(
-      assesmentprovider, int index, bool isthera, String fieldlabel) {
+      assesmentprovider,
+      int index,
+      bool isthera,
+      String fieldlabel,
+      String assessor,
+      String therapist,
+      String role,
+      BuildContext bcontext) {
     return SingleChildScrollView(
       // reverse: true,
       child: Container(
@@ -186,8 +218,18 @@ class BedroomPro extends ChangeNotifier {
                                 size: 20,
                               ),
                               onPressed: () {
-                                listen(index);
-                                setdatalisten(index);
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  listen(index);
+                                  setdatalisten(index);
+                                } else if (role != "therapist") {
+                                  listen(index);
+                                  setdatalisten(index);
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      bcontext);
+                                }
                               },
                             ),
                           ),
@@ -196,12 +238,19 @@ class BedroomPro extends ChangeNotifier {
                     ),
                     labelText: fieldlabel),
                 onChanged: (value) {
+                  if (assessor == therapist && role == "therapist") {
+                    assesmentprovider.setreco(index, value);
+                  } else if (role != "therapist") {
+                    assesmentprovider.setreco(index, value);
+                  } else {
+                    _showSnackBar(
+                        "You can't change the other fields", bcontext);
+                  }
                   // print(accessname);
-                  assesmentprovider.setreco(index, value);
                 },
               ),
             ),
-            (assesmentprovider.type == 'therapist' && isthera)
+            (role == 'therapist' && isthera)
                 ? getrecowid(assesmentprovider, index)
                 : SizedBox(),
           ],
@@ -211,6 +260,12 @@ class BedroomPro extends ChangeNotifier {
   }
 
   Widget getrecowid(assesmentprovider, index) {
+    if (wholelist[6][accessname]["question"]["$index"]["Recommendationthera"] !=
+        "") {
+      isColor = true;
+    } else {
+      isColor = false;
+    }
     return Column(
       children: [
         SizedBox(height: 8),
@@ -218,11 +273,12 @@ class BedroomPro extends ChangeNotifier {
           controller: controllerstreco["field$index"],
           decoration: InputDecoration(
               focusedBorder: OutlineInputBorder(
-                borderSide:
-                    BorderSide(color: Color.fromRGBO(10, 80, 106, 1), width: 1),
+                borderSide: BorderSide(
+                    color: (isColor) ? Colors.green : Colors.red, width: 1),
               ),
               enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(width: 1),
+                borderSide: BorderSide(
+                    width: 1, color: (isColor) ? Colors.green : Colors.red),
               ),
               suffix: Container(
                 // color: Colors.red,
@@ -250,6 +306,8 @@ class BedroomPro extends ChangeNotifier {
                   ),
                 ]),
               ),
+              labelStyle:
+                  TextStyle(color: (isColor) ? Colors.green : Colors.red),
               labelText: 'Recomendation'),
           onChanged: (value) {
             // print(accessname);

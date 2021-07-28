@@ -31,7 +31,7 @@ class _GarageUIState extends State<GarageUI> {
   Map<String, TextEditingController> _controllers = {};
   Map<String, TextEditingController> _controllerstreco = {};
   Map<String, bool> isListening = {};
-  String type;
+  String role, assessor, therapist, curUid;
   bool cur = true;
   int stepsizes = 0;
   int stepcount = 0;
@@ -40,6 +40,53 @@ class _GarageUIState extends State<GarageUI> {
   @override
   void initState() {
     super.initState();
+    getAssessData();
+    getRole();
+    setinitialsdata();
+  }
+
+  Future<void> setinitialsdata() async {
+    if (widget.wholelist[9][widget.accessname]['question']["9"]
+        .containsKey('MultipleStair')) {
+      if (widget.wholelist[9][widget.accessname]['question']["9"]
+              ['MultipleStair']
+          .containsKey('count')) {
+        setState(() {
+          stepcount = widget.wholelist[9][widget.accessname]['question']["9"]
+              ['MultipleStair']["count"];
+        });
+      }
+    } else {
+      // print('hello');
+      setState(() {
+        widget.wholelist[9][widget.accessname]['question']["9"]
+            ['MultipleStair'] = {};
+      });
+    }
+  }
+
+  Future<void> getAssessData() async {
+    final FirebaseUser user = await _auth.currentUser();
+    firestoreInstance
+        .collection("assessments")
+        .document(widget.docID)
+        .get()
+        .then((value) => setState(() {
+              curUid = user.uid;
+              assessor = value.data["assessor"];
+              therapist = value.data["therapist"];
+            }));
+  }
+
+  Future<String> getRole() async {
+    final FirebaseUser useruid = await _auth.currentUser();
+    firestoreInstance.collection("users").document(useruid.uid).get().then(
+      (value) {
+        setState(() {
+          role = (value["role"]);
+        });
+      },
+    );
   }
 
   void _showSnackBar(snackbar, BuildContext buildContext) {
@@ -87,7 +134,7 @@ class _GarageUIState extends State<GarageUI> {
                     assesmentprovider.setdatalisten(i + 1);
                     assesmentprovider.setdatalistenthera(i + 1);
                   }
-                  if (test < 12) {
+                  if (test == 0) {
                     _showSnackBar(
                         "You Must Have To Fill The Details First", context);
                   } else {
@@ -163,7 +210,7 @@ class _GarageUIState extends State<GarageUI> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                width: MediaQuery.of(context).size.width * .4,
+                                width: MediaQuery.of(context).size.width * .6,
                                 child: Text('Threshold to Garage',
                                     style: TextStyle(
                                       color: Color.fromRGBO(10, 80, 106, 1),
@@ -171,7 +218,7 @@ class _GarageUIState extends State<GarageUI> {
                                     )),
                               ),
                               SizedBox(
-                                width: MediaQuery.of(context).size.width * .3,
+                                width: MediaQuery.of(context).size.width * .25,
                                 child: TextFormField(
                                   initialValue: widget.wholelist[9]
                                           [widget.accessname]['question']["1"]
@@ -189,20 +236,41 @@ class _GarageUIState extends State<GarageUI> {
                                       labelText: '(Inches)'),
                                   keyboardType: TextInputType.phone,
                                   onChanged: (value) {
-                                    FocusScope.of(context).requestFocus();
-                                    new TextEditingController().clear();
-                                    // print(widget.accessname);
-                                    assesmentprovider.setdata(
-                                        1, value, 'Threshold to Garage');
+                                    if (assessor == therapist &&
+                                        role == "therapist") {
+                                      FocusScope.of(context).requestFocus();
+                                      new TextEditingController().clear();
+                                      // print(widget.accessname);
+                                      assesmentprovider.setdata(
+                                          1, value, 'Threshold to Garage');
+                                    } else if (role != "therapist") {
+                                      FocusScope.of(context).requestFocus();
+                                      new TextEditingController().clear();
+                                      // print(widget.accessname);
+                                      assesmentprovider.setdata(
+                                          1, value, 'Threshold to Garage');
+                                    } else {
+                                      _showSnackBar(
+                                          "You can't change the other fields",
+                                          context);
+                                    }
                                   },
                                 ),
                               ),
                             ]),
 
-                        (assesmentprovider.getvalue(1) != '0' &&
-                                assesmentprovider.getvalue(1) != '')
-                            ? assesmentprovider.getrecomain(
-                                assesmentprovider, 1, true, 'Comments(if any)')
+                        (assesmentprovider.getvalue(1) != '')
+                            ? (int.parse(assesmentprovider.getvalue(1)) > 5)
+                                ? assesmentprovider.getrecomain(
+                                    assesmentprovider,
+                                    1,
+                                    true,
+                                    'Comments(if any)',
+                                    assessor,
+                                    therapist,
+                                    role,
+                                    context)
+                                : SizedBox()
                             : SizedBox(),
                         // Divider(
                         //   height: dividerheight,
@@ -253,20 +321,43 @@ class _GarageUIState extends State<GarageUI> {
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  assesmentprovider.setdata(
-                                      2, value, 'Flooring Type');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        2, value, 'Flooring Type');
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        2, value, 'Flooring Type');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: assesmentprovider.getvalue(2),
                               ),
                             )
                           ],
                         ),
-                        (assesmentprovider.getvalue(2).length > 0)
+                        (assesmentprovider.getvalue(2) ==
+                                    'Wood - Smooth Finish' ||
+                                assesmentprovider.getvalue(2) ==
+                                    'Tile - Smooth Finish')
                             ? assesmentprovider.getrecomain(
-                                assesmentprovider, 2, true, 'Comments (if any)')
+                                assesmentprovider,
+                                2,
+                                true,
+                                'Comments (if any)',
+                                assessor,
+                                therapist,
+                                role,
+                                context)
                             : SizedBox(),
                         SizedBox(height: 15),
                         // Divider(
@@ -305,11 +396,24 @@ class _GarageUIState extends State<GarageUI> {
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  assesmentprovider.setdata(
-                                      3, value, 'Floor Coverage');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        3, value, 'Floor Coverage');
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        3, value, 'Floor Coverage');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: assesmentprovider.getvalue(3),
                               ),
@@ -319,7 +423,14 @@ class _GarageUIState extends State<GarageUI> {
                         (assesmentprovider.getvalue(3) != 'No covering' &&
                                 assesmentprovider.getvalue(3) != '')
                             ? assesmentprovider.getrecomain(
-                                assesmentprovider, 3, true, 'Comments (if any)')
+                                assesmentprovider,
+                                3,
+                                true,
+                                'Comments (if any)',
+                                assessor,
+                                therapist,
+                                role,
+                                context)
                             : SizedBox(),
                         SizedBox(height: 15),
                         // Divider(
@@ -354,27 +465,47 @@ class _GarageUIState extends State<GarageUI> {
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  assesmentprovider.setdata(
-                                      4, value, 'Lighting');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        4, value, 'Lighting');
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        4, value, 'Lighting');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: assesmentprovider.getvalue(4),
                               ),
                             )
                           ],
                         ),
-                        (assesmentprovider.getvalue(4).length > 0)
+                        (assesmentprovider.getvalue(4) == 'Inadequate')
                             ? assesmentprovider.getrecomain(
-                                assesmentprovider, 4, true, 'Specify Type')
+                                assesmentprovider,
+                                4,
+                                true,
+                                'Specify Type',
+                                assessor,
+                                therapist,
+                                role,
+                                context)
                             : SizedBox(),
                         SizedBox(height: 15),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .4,
+                              width: MediaQuery.of(context).size.width * .6,
                               child: Text('Switches Able to Operate',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
@@ -398,21 +529,41 @@ class _GarageUIState extends State<GarageUI> {
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  assesmentprovider.setdata(
-                                      5, value, 'Switches Able to Operate');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        5, value, 'Switches Able to Operate');
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        5, value, 'Switches Able to Operate');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: assesmentprovider.getvalue(5),
                               ),
                             ),
                           ],
                         ),
-                        (assesmentprovider.getvalue(5) != 'No' &&
+                        (assesmentprovider.getvalue(5) != 'Yes' &&
                                 assesmentprovider.getvalue(5) != '')
                             ? assesmentprovider.getrecomain(
-                                assesmentprovider, 5, true, 'Comments(if any)')
+                                assesmentprovider,
+                                5,
+                                true,
+                                'Comments(if any)',
+                                assessor,
+                                therapist,
+                                role,
+                                context)
                             : SizedBox(),
                         SizedBox(height: 15),
 
@@ -464,11 +615,24 @@ class _GarageUIState extends State<GarageUI> {
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  assesmentprovider.setdata(
-                                      6, value, 'Switch Types');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        6, value, 'Switch Types');
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        6, value, 'Switch Types');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: assesmentprovider.getvalue(6),
                               ),
@@ -488,7 +652,7 @@ class _GarageUIState extends State<GarageUI> {
                                   )),
                             ),
                             SizedBox(
-                              width: MediaQuery.of(context).size.width * .3,
+                              width: MediaQuery.of(context).size.width * .25,
                               child: TextFormField(
                                 initialValue: widget.wholelist[9]
                                         [widget.accessname]['question']["7"]
@@ -505,19 +669,40 @@ class _GarageUIState extends State<GarageUI> {
                                     labelText: '(Inches)'),
                                 keyboardType: TextInputType.phone,
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  assesmentprovider.setdata(
-                                      7, value, 'Door Width');
-                                  setState(() {
-                                    widget.wholelist[9][widget.accessname]
-                                        ['question']["7"]['doorwidth'] = 0;
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        7, value, 'Door Width');
+                                    setState(() {
+                                      widget.wholelist[9][widget.accessname]
+                                          ['question']["7"]['doorwidth'] = 0;
 
-                                    widget.wholelist[9][widget.accessname]
-                                            ['question']["7"]['doorwidth'] =
-                                        int.parse(value);
-                                  });
+                                      widget.wholelist[9][widget.accessname]
+                                              ['question']["7"]['doorwidth'] =
+                                          int.parse(value);
+                                    });
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        7, value, 'Door Width');
+                                    setState(() {
+                                      widget.wholelist[9][widget.accessname]
+                                          ['question']["7"]['doorwidth'] = 0;
+
+                                      widget.wholelist[9][widget.accessname]
+                                              ['question']["7"]['doorwidth'] =
+                                          int.parse(value);
+                                    });
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                               ),
                             ),
@@ -536,7 +721,14 @@ class _GarageUIState extends State<GarageUI> {
                                         ['question']["7"]['doorwidth'] !=
                                     '')
                             ? assesmentprovider.getrecomain(
-                                assesmentprovider, 7, true, 'Comments (if any)')
+                                assesmentprovider,
+                                7,
+                                true,
+                                'Comments (if any)',
+                                assessor,
+                                therapist,
+                                role,
+                                context)
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -549,7 +741,7 @@ class _GarageUIState extends State<GarageUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .4,
+                              width: MediaQuery.of(context).size.width * .6,
                               child: Text('Obstacle/Clutter Present?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
@@ -572,11 +764,24 @@ class _GarageUIState extends State<GarageUI> {
                                 )
                               ],
                               onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                assesmentprovider.setdata(
-                                    8, value, 'Obstacle/Clutter Present?');
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  assesmentprovider.setdata(
+                                      8, value, 'Obstacle/Clutter Present?');
+                                } else if (role != "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  assesmentprovider.setdata(
+                                      8, value, 'Obstacle/Clutter Present?');
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
                               },
                               value: assesmentprovider.getvalue(8),
                             )
@@ -585,7 +790,14 @@ class _GarageUIState extends State<GarageUI> {
 
                         (assesmentprovider.getvalue(8) == 'Yes')
                             ? assesmentprovider.getrecomain(
-                                assesmentprovider, 8, true, 'Specify Clutter')
+                                assesmentprovider,
+                                8,
+                                true,
+                                'Specify Clutter',
+                                assessor,
+                                therapist,
+                                role,
+                                context)
                             : SizedBox(),
                         SizedBox(height: 15),
                         Row(
@@ -621,11 +833,24 @@ class _GarageUIState extends State<GarageUI> {
                                   ),
                                 ],
                                 onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  assesmentprovider.setdata(
-                                      9, value, 'Type of Steps');
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        9, value, 'Type of Steps');
+                                  } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    assesmentprovider.setdata(
+                                        9, value, 'Type of Steps');
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
                                 },
                                 value: assesmentprovider.getvalue(9),
                               ),
@@ -666,14 +891,11 @@ class _GarageUIState extends State<GarageUI> {
                                                           .width *
                                                       .3,
                                                   child: TextFormField(
-                                                      initialValue: widget.wholelist[
-                                                                      9]
-                                                                  [
-                                                                  widget
-                                                                      .accessname]
-                                                              [
-                                                              'question']["9"]
-                                                          ['Recommendation'],
+                                                      initialValue: widget.wholelist[9]
+                                                                      [widget.accessname]
+                                                                  ['question']
+                                                              ["9"]['additional']
+                                                          ["count"],
                                                       decoration:
                                                           InputDecoration(
                                                               focusedBorder:
@@ -699,19 +921,31 @@ class _GarageUIState extends State<GarageUI> {
                                                       keyboardType:
                                                           TextInputType.phone,
                                                       onChanged: (value) {
-                                                        setState(() {
+                                                        if (assessor ==
+                                                                therapist &&
+                                                            role ==
+                                                                "therapist") {
                                                           widget.wholelist[9][widget
-                                                                      .accessname]
+                                                                          .accessname]
+                                                                      [
+                                                                      "question"]
                                                                   [
-                                                                  'question']["9"]
-                                                              [
-                                                              'Recommendation'] = value;
-                                                        });
-                                                        print(widget.wholelist[
-                                                                    0][
-                                                                widget
-                                                                    .accessname]
-                                                            ['question']);
+                                                                  "9"]['additional']
+                                                              ["count"] = value;
+                                                        } else if (role !=
+                                                            "therapist") {
+                                                          widget.wholelist[9][widget
+                                                                          .accessname]
+                                                                      [
+                                                                      'question']
+                                                                  [
+                                                                  "9"]['additional']
+                                                              ["count"] = value;
+                                                        } else {
+                                                          _showSnackBar(
+                                                              "You can't change the other fields",
+                                                              context);
+                                                        }
                                                       }),
                                                 ),
                                               ],
@@ -759,21 +993,37 @@ class _GarageUIState extends State<GarageUI> {
                                                                 ),
                                                               ),
                                                               labelText:
-                                                                  'Step Width:'),
+                                                                  'Step Width'),
                                                       onChanged: (value) {
-                                                        setState(() {
-                                                          widget.wholelist[9][widget
-                                                                      .accessname]
-                                                                  [
-                                                                  'question']["9"]
-                                                              [
-                                                              'Single Step Width'] = value;
-                                                        });
-                                                        print(widget.wholelist[
-                                                                    9][
-                                                                widget
-                                                                    .accessname]
-                                                            ['question']["9"]);
+                                                        if (assessor ==
+                                                                therapist &&
+                                                            role ==
+                                                                "therapist") {
+                                                          setState(() {
+                                                            widget.wholelist[9][
+                                                                        widget
+                                                                            .accessname]
+                                                                    [
+                                                                    'question']["9"]
+                                                                [
+                                                                'Single Step Width'] = value;
+                                                          });
+                                                        } else if (role !=
+                                                            "therapist") {
+                                                          setState(() {
+                                                            widget.wholelist[9][
+                                                                        widget
+                                                                            .accessname]
+                                                                    [
+                                                                    'question']["9"]
+                                                                [
+                                                                'Single Step Width'] = value;
+                                                          });
+                                                        } else {
+                                                          _showSnackBar(
+                                                              "You can't change the other fields",
+                                                              context);
+                                                        }
                                                       },
                                                     ),
                                                   ),
@@ -812,21 +1062,37 @@ class _GarageUIState extends State<GarageUI> {
                                                                 ),
                                                               ),
                                                               labelText:
-                                                                  'Step Height:'),
+                                                                  'Step Height'),
                                                       onChanged: (value) {
-                                                        setState(() {
-                                                          widget.wholelist[9][widget
-                                                                      .accessname]
-                                                                  [
-                                                                  'question']["9"]
-                                                              [
-                                                              'Single Step Height'] = value;
-                                                        });
-                                                        print(widget.wholelist[
-                                                                    9][
-                                                                widget
-                                                                    .accessname]
-                                                            ['question']["9"]);
+                                                        if (assessor ==
+                                                                therapist &&
+                                                            role ==
+                                                                "therapist") {
+                                                          setState(() {
+                                                            widget.wholelist[9][
+                                                                        widget
+                                                                            .accessname]
+                                                                    [
+                                                                    'question']["9"]
+                                                                [
+                                                                'Single Step Height'] = value;
+                                                          });
+                                                        } else if (role !=
+                                                            "therapist") {
+                                                          setState(() {
+                                                            widget.wholelist[9][
+                                                                        widget
+                                                                            .accessname]
+                                                                    [
+                                                                    'question']["9"]
+                                                                [
+                                                                'Single Step Height'] = value;
+                                                          });
+                                                        } else {
+                                                          _showSnackBar(
+                                                              "You can't change the other fields",
+                                                              context);
+                                                        }
                                                       },
                                                     ),
                                                   ),
@@ -839,7 +1105,6 @@ class _GarageUIState extends State<GarageUI> {
                                 : SingleChildScrollView(
                                     // reverse: true,
                                     child: Container(
-                                      color: Colors.yellow,
                                       child: Column(
                                         children: [
                                           Container(
@@ -868,87 +1133,166 @@ class _GarageUIState extends State<GarageUI> {
                                                   child: NumericStepButton(
                                                     counterval: stepcount,
                                                     onChanged: (value) {
-                                                      setState(() {
-                                                        widget.wholelist[9][widget
-                                                                        .accessname]
-                                                                    [
-                                                                    'question']["9"]
-                                                                [
-                                                                'MultipleStair']
-                                                            ['count'] = value;
-                                                        widget.wholelist[9][widget
-                                                                    .accessname]
-                                                                [
-                                                                'question']["9"]
-                                                            [
-                                                            'Recommendationthera'] = value;
-
-                                                        stepcount = widget
-                                                                        .wholelist[9]
-                                                                    [
-                                                                    widget
-                                                                        .accessname]
-                                                                [
-                                                                'question']["9"]
-                                                            [
-                                                            'Recommendationthera'];
-                                                        if (value > 0) {
+                                                      if (assessor ==
+                                                              therapist &&
+                                                          role == "therapist") {
+                                                        setState(() {
                                                           widget.wholelist[9][widget
                                                                           .accessname]
                                                                       [
                                                                       'question']["9"]
                                                                   [
                                                                   'MultipleStair']
-                                                              ['step$value'] = {
-                                                            'stepwidth': '',
-                                                            'stepheight': ''
-                                                          };
+                                                              ['count'] = value;
 
-                                                          if (widget
-                                                              .wholelist[9][
-                                                                  widget
-                                                                      .accessname]
-                                                                  ['question']
-                                                                  ["9"][
-                                                                  'MultipleStair']
-                                                              .containsKey(
-                                                                  'step${value + 1}')) {
+                                                          stepcount = widget
+                                                                          .wholelist[9]
+                                                                      [
+                                                                      widget
+                                                                          .accessname]
+                                                                  [
+                                                                  'question']["9"]
+                                                              [
+                                                              'MultipleStair']['count'];
+                                                          if (value > 0) {
                                                             widget.wholelist[9][
+                                                                            widget.accessname]
+                                                                        [
+                                                                        'question']["9"]
+                                                                    [
+                                                                    'MultipleStair']
+                                                                [
+                                                                'step$value'] = {
+                                                              'stepwidth': '',
+                                                              'stepheight': ''
+                                                            };
+
+                                                            if (widget
+                                                                .wholelist[9][
                                                                     widget
                                                                         .accessname]
                                                                     ['question']
                                                                     ["9"][
                                                                     'MultipleStair']
-                                                                .remove(
-                                                                    'step${value + 1}');
-                                                          }
-                                                        } else if (value == 0) {
-                                                          if (widget
-                                                              .wholelist[9][
-                                                                  widget
-                                                                      .accessname]
-                                                                  ['question']
-                                                                  ["9"][
-                                                                  'MultipleStair']
-                                                              .containsKey(
-                                                                  'step${value + 1}')) {
-                                                            widget.wholelist[9][
+                                                                .containsKey(
+                                                                    'step${value + 1}')) {
+                                                              widget
+                                                                  .wholelist[9][
+                                                                      widget
+                                                                          .accessname]
+                                                                      [
+                                                                      'question']
+                                                                      ["9"][
+                                                                      'MultipleStair']
+                                                                  .remove(
+                                                                      'step${value + 1}');
+                                                            }
+                                                          } else if (value ==
+                                                              0) {
+                                                            if (widget
+                                                                .wholelist[9][
                                                                     widget
                                                                         .accessname]
                                                                     ['question']
                                                                     ["9"][
                                                                     'MultipleStair']
-                                                                .remove(
-                                                                    'step${value + 1}');
+                                                                .containsKey(
+                                                                    'step${value + 1}')) {
+                                                              widget
+                                                                  .wholelist[9][
+                                                                      widget
+                                                                          .accessname]
+                                                                      [
+                                                                      'question']
+                                                                      ["9"][
+                                                                      'MultipleStair']
+                                                                  .remove(
+                                                                      'step${value + 1}');
+                                                            }
                                                           }
-                                                        }
-                                                      });
+                                                        });
+                                                      } else if (role !=
+                                                          "therapist") {
+                                                        setState(() {
+                                                          widget.wholelist[9][widget
+                                                                          .accessname]
+                                                                      [
+                                                                      'question']["9"]
+                                                                  [
+                                                                  'MultipleStair']
+                                                              ['count'] = value;
 
-                                                      print(widget.wholelist[9][
-                                                                  widget
-                                                                      .accessname]
-                                                              ['question']["9"]
-                                                          ['MultipleStair']);
+                                                          stepcount = widget
+                                                                          .wholelist[9]
+                                                                      [
+                                                                      widget
+                                                                          .accessname]
+                                                                  [
+                                                                  'question']["9"]
+                                                              [
+                                                              'MultipleStair']['count'];
+                                                          if (value > 0) {
+                                                            widget.wholelist[9][
+                                                                            widget.accessname]
+                                                                        [
+                                                                        'question']["9"]
+                                                                    [
+                                                                    'MultipleStair']
+                                                                [
+                                                                'step$value'] = {
+                                                              'stepwidth': '',
+                                                              'stepheight': ''
+                                                            };
+
+                                                            if (widget
+                                                                .wholelist[9][
+                                                                    widget
+                                                                        .accessname]
+                                                                    ['question']
+                                                                    ["9"][
+                                                                    'MultipleStair']
+                                                                .containsKey(
+                                                                    'step${value + 1}')) {
+                                                              widget
+                                                                  .wholelist[9][
+                                                                      widget
+                                                                          .accessname]
+                                                                      [
+                                                                      'question']
+                                                                      ["9"][
+                                                                      'MultipleStair']
+                                                                  .remove(
+                                                                      'step${value + 1}');
+                                                            }
+                                                          } else if (value ==
+                                                              0) {
+                                                            if (widget
+                                                                .wholelist[9][
+                                                                    widget
+                                                                        .accessname]
+                                                                    ['question']
+                                                                    ["9"][
+                                                                    'MultipleStair']
+                                                                .containsKey(
+                                                                    'step${value + 1}')) {
+                                                              widget
+                                                                  .wholelist[9][
+                                                                      widget
+                                                                          .accessname]
+                                                                      [
+                                                                      'question']
+                                                                      ["9"][
+                                                                      'MultipleStair']
+                                                                  .remove(
+                                                                      'step${value + 1}');
+                                                            }
+                                                          }
+                                                        });
+                                                      } else {
+                                                        _showSnackBar(
+                                                            "You can't change the other fields",
+                                                            context);
+                                                      }
                                                     },
                                                   ),
                                                 ),
@@ -1019,19 +1363,39 @@ class _GarageUIState extends State<GarageUI> {
                                 ),
                               ],
                               onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                assesmentprovider.setdata(
-                                    10, value, 'Railling');
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  assesmentprovider.setdata(
+                                      10, value, 'Railling');
+                                } else if (role != "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  assesmentprovider.setdata(
+                                      10, value, 'Railling');
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
                               },
                               value: assesmentprovider.getvalue(10),
                             )
                           ],
                         ),
                         (assesmentprovider.getvalue(10) == 'On Neither Side')
-                            ? assesmentprovider.getrecomain(assesmentprovider,
-                                10, true, 'Comments (if any)')
+                            ? assesmentprovider.getrecomain(
+                                assesmentprovider,
+                                10,
+                                true,
+                                'Comments (if any)',
+                                assessor,
+                                therapist,
+                                role,
+                                context)
                             : (assesmentprovider.getvalue(10) == 'One Side')
                                 ? Container(
                                     child: Column(
@@ -1069,11 +1433,27 @@ class _GarageUIState extends State<GarageUI> {
                                                 ),
                                               ],
                                               onChanged: (value) {
-                                                widget.wholelist[9][widget
-                                                                .accessname]
-                                                            ['question']["10"]
-                                                        ['Railling']['OneSided']
-                                                    ['GoingUp'] = value;
+                                                if (assessor == therapist &&
+                                                    role == "therapist") {
+                                                  widget.wholelist[9][widget
+                                                                  .accessname]
+                                                              ['question']["10"]
+                                                          [
+                                                          'Railling']['OneSided']
+                                                      ['GoingUp'] = value;
+                                                } else if (role !=
+                                                    "therapist") {
+                                                  widget.wholelist[9][widget
+                                                                  .accessname]
+                                                              ['question']["10"]
+                                                          [
+                                                          'Railling']['OneSided']
+                                                      ['GoingUp'] = value;
+                                                } else {
+                                                  _showSnackBar(
+                                                      "You can't change the other fields",
+                                                      context);
+                                                }
                                               },
                                               // value: widget.wholelist[9][
                                               //                 widget.accessname]
@@ -1117,11 +1497,27 @@ class _GarageUIState extends State<GarageUI> {
                                                 ),
                                               ],
                                               onChanged: (value) {
-                                                widget.wholelist[9][widget
-                                                                .accessname]
-                                                            ['question']["10"]
-                                                        ['Railling']['OneSided']
-                                                    ['GoingDown'] = value;
+                                                if (assessor == therapist &&
+                                                    role == "therapist") {
+                                                  widget.wholelist[9][widget
+                                                                  .accessname]
+                                                              ['question']["10"]
+                                                          [
+                                                          'Railling']['OneSided']
+                                                      ['GoingDown'] = value;
+                                                } else if (role !=
+                                                    "therapist") {
+                                                  widget.wholelist[9][widget
+                                                                  .accessname]
+                                                              ['question']["10"]
+                                                          [
+                                                          'Railling']['OneSided']
+                                                      ['GoingDown'] = value;
+                                                } else {
+                                                  _showSnackBar(
+                                                      "You can't change the other fields",
+                                                      context);
+                                                }
                                               },
                                               // value: widget.wholelist[9][
                                               //                 widget.accessname]
@@ -1132,7 +1528,7 @@ class _GarageUIState extends State<GarageUI> {
                                           ],
                                         ),
                                       ),
-                                      (type == 'therapist')
+                                      (role == 'therapist')
                                           ? assesmentprovider.getrecowid(
                                               assesmentprovider, 10)
                                           : SizedBox()
@@ -1170,19 +1566,39 @@ class _GarageUIState extends State<GarageUI> {
                                 ),
                               ],
                               onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                assesmentprovider.setdata(
-                                    11, value, 'Smoke Detector?');
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  assesmentprovider.setdata(
+                                      11, value, 'Smoke Detector?');
+                                } else if (role != "therapist") {
+                                  FocusScope.of(context).requestFocus();
+                                  new TextEditingController().clear();
+                                  // print(widget.accessname);
+                                  assesmentprovider.setdata(
+                                      11, value, 'Smoke Detector?');
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
                               },
                               value: assesmentprovider.getvalue(11),
                             )
                           ],
                         ),
                         (assesmentprovider.getvalue(11) == 'No')
-                            ? assesmentprovider.getrecomain(assesmentprovider,
-                                11, true, 'Comments (if any)')
+                            ? assesmentprovider.getrecomain(
+                                assesmentprovider,
+                                11,
+                                true,
+                                'Comments (if any)',
+                                assessor,
+                                therapist,
+                                role,
+                                context)
                             : SizedBox(),
 
                         SizedBox(height: 15),
@@ -1221,11 +1637,22 @@ class _GarageUIState extends State<GarageUI> {
                             suffix: Icon(Icons.mic),
                           ),
                           onChanged: (value) {
-                            FocusScope.of(context).requestFocus();
-                            new TextEditingController().clear();
-                            // print(widget.accessname);
-                            assesmentprovider.setdata(
-                                12, value, 'Observations');
+                            if (assessor == therapist && role == "therapist") {
+                              FocusScope.of(context).requestFocus();
+                              new TextEditingController().clear();
+                              // print(widget.accessname);
+                              assesmentprovider.setdata(
+                                  12, value, 'Observations');
+                            } else if (role != "therapist") {
+                              FocusScope.of(context).requestFocus();
+                              new TextEditingController().clear();
+                              // print(widget.accessname);
+                              assesmentprovider.setdata(
+                                  12, value, 'Observations');
+                            } else {
+                              _showSnackBar(
+                                  "You can't change the other fields", context);
+                            }
                           },
                         )),
                         SizedBox(
@@ -1295,7 +1722,7 @@ class _GarageUIState extends State<GarageUI> {
                         assesmentprovider.setdatalisten(i + 1);
                         assesmentprovider.setdatalistenthera(i + 1);
                       }
-                      if (test < 12) {
+                      if (test == 0) {
                         _showSnackBar(
                             "You Must Have To Fill The Details First", context);
                       } else {
@@ -1337,19 +1764,31 @@ class _GarageUIState extends State<GarageUI> {
                     decoration: InputDecoration(
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: colorsset["field${7}"], width: 1),
+                              color: Color.fromRGBO(10, 80, 106, 1), width: 1),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              width: 1, color: colorsset["field${7}"]),
+                              width: 1, color: Color.fromRGBO(10, 80, 106, 1)),
                         ),
-                        labelText: 'Step Width$index:'),
+                        labelText: 'Step Width$index'),
                     onChanged: (value) {
-                      setState(() {
-                        widget.wholelist[9][widget.accessname]['question']["9"]
-                                ['MultipleStair']['step$index']['stepwidth'] =
-                            value;
-                      });
+                      if (assessor == therapist && role == "therapist") {
+                        setState(() {
+                          widget.wholelist[9][widget.accessname]['question']
+                                  ["9"]['MultipleStair']['step$index']
+                              ['stepwidth'] = value;
+                        });
+                      } else if (role != "therapist") {
+                        setState(() {
+                          widget.wholelist[9][widget.accessname]['question']
+                                  ["9"]['MultipleStair']['step$index']
+                              ['stepwidth'] = value;
+                        });
+                      } else {
+                        _showSnackBar(
+                            "You can't change the other fields", context);
+                      }
+
                       // print(widget.wholelist[0][widget.accessname]['question']
                       //     [7]);
                     },
@@ -1365,19 +1804,31 @@ class _GarageUIState extends State<GarageUI> {
                     decoration: InputDecoration(
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: colorsset["field${7}"], width: 1),
+                              color: Color.fromRGBO(10, 80, 106, 1), width: 1),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide(
-                              width: 1, color: colorsset["field${7}"]),
+                              width: 1, color: Color.fromRGBO(10, 80, 106, 1)),
                         ),
-                        labelText: 'Step Height$index:'),
+                        labelText: 'Step Height$index'),
                     onChanged: (value) {
-                      setState(() {
-                        widget.wholelist[9][widget.accessname]['question']["9"]
-                                ['MultipleStair']['step$index']['stepheight'] =
-                            value;
-                      });
+                      if (assessor == therapist && role == "therapist") {
+                        setState(() {
+                          widget.wholelist[9][widget.accessname]['question']
+                                  ["9"]['MultipleStair']['step$index']
+                              ['stepheight'] = value;
+                        });
+                      } else if (role != "therapist") {
+                        setState(() {
+                          widget.wholelist[9][widget.accessname]['question']
+                                  ["9"]['MultipleStair']['step$index']
+                              ['stepheight'] = value;
+                        });
+                      } else {
+                        _showSnackBar(
+                            "You can't change the other fields", context);
+                      }
+
                       // print(widget.wholelist[0][widget.accessname]['question']
                       //     [7]);
                     },

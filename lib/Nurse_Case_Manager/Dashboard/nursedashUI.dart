@@ -110,10 +110,10 @@ class _NurseUIState extends State<NurseUI> {
 
     if (status == "Assessment Scheduled" && assessor == curUid) {
       return Container(
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery.of(context).size.width * 0.5,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(10),
+            borderRadius: new BorderRadius.circular(20),
           ),
           padding: EdgeInsets.symmetric(
             vertical: 10,
@@ -139,10 +139,10 @@ class _NurseUIState extends State<NurseUI> {
       );
     } else if (status == "Assessment in Progress" && curUid == assessor) {
       return Container(
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery.of(context).size.width * 0.5,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(10),
+            borderRadius: new BorderRadius.circular(20),
           ),
           padding: EdgeInsets.symmetric(
             vertical: 10,
@@ -170,10 +170,10 @@ class _NurseUIState extends State<NurseUI> {
       );
     } else if (status == "Report Generated") {
       return Container(
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery.of(context).size.width * 0.5,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(10),
+            borderRadius: new BorderRadius.circular(20),
           ),
           padding: EdgeInsets.symmetric(
             vertical: 10,
@@ -198,10 +198,10 @@ class _NurseUIState extends State<NurseUI> {
       );
     } else if (status == "Assessment Finished" && assessor == curUid) {
       return Container(
-        width: MediaQuery.of(context).size.width,
+        width: MediaQuery.of(context).size.width * 0.5,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(10),
+            borderRadius: new BorderRadius.circular(20),
           ),
           padding: EdgeInsets.symmetric(
             vertical: 10,
@@ -304,28 +304,50 @@ class _NurseUIState extends State<NurseUI> {
     Widget getDate(String label, var date) {
       if (date != null) {
         return Container(
-          width: double.infinity,
-          child: Text(
-            '$label ${DateFormat.yMd().format(date.toDate())} ',
-            style: TextStyle(
-              fontSize: 16,
+          // width: double.infinity,
+          child: Wrap(children: [
+            Text(
+              '$label ',
+              style: TextStyle(fontSize: 16, color: Colors.black45),
             ),
-          ),
+            Text(
+              '${DateFormat.yMd().format(date.toDate())} ',
+              style: TextStyle(
+                fontSize: 16,
+              ),
+            ),
+          ]),
         );
       } else {
         if (label == "Completion Date:") {
-          return Text(
-            "$label Yet to be Complete",
-            style: TextStyle(
-              fontSize: 16,
-            ),
+          return Container(
+            child: Wrap(children: [
+              Text(
+                "$label ",
+                style: TextStyle(fontSize: 16, color: Colors.black45),
+              ),
+              Text(
+                "Yet to be Complete",
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+            ]),
           );
         } else {
-          return Text(
-            "$label Yet to be Begin",
-            style: TextStyle(
-              fontSize: 16,
-            ),
+          return Container(
+            child: Wrap(children: [
+              Text(
+                "$label ",
+                style: TextStyle(fontSize: 16, color: Colors.black45),
+              ),
+              Text(
+                "Yet to be Begin",
+                style: TextStyle(
+                  fontSize: 16,
+                ),
+              ),
+            ]),
           );
         }
       }
@@ -374,28 +396,43 @@ class _NurseUIState extends State<NurseUI> {
                           // color: Colors.red,
                           padding: EdgeInsets.all(10),
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
                                 width: double.infinity,
-                                child: Text(
-                                  'Patient Name: ${assesspro.capitalize(snapshot["firstName"])}${assesspro.capitalize(snapshot["lastName"])}',
-                                  style: TextStyle(
-                                    fontSize: 16,
+                                child: Wrap(children: [
+                                  Text(
+                                    'Patient Name: ',
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.black45),
                                   ),
-                                ),
+                                  Text(
+                                    '${assesspro.capitalize(snapshot["firstName"])}${assesspro.capitalize(snapshot["lastName"])}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ]),
                               ),
                               SizedBox(height: 2.5),
                               Divider(),
                               Container(
                                 width: double.infinity,
-                                child: Text(
-                                  'Start Date: ${assessmentdata.data["date"]}' ??
-                                      "11/7/2021",
-                                  style: TextStyle(
-                                    fontSize: 16,
+                                child: Wrap(children: [
+                                  Text(
+                                    'Start Date: ',
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.black45),
                                   ),
-                                ),
+                                  Text(
+                                    '${assessmentdata.data["date"]}' ??
+                                        "11/7/2021",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ]),
                               ),
                               SizedBox(height: 2.5),
                               Divider(),
@@ -410,24 +447,38 @@ class _NurseUIState extends State<NurseUI> {
                               Divider(),
                               Container(
                                 width: double.infinity,
-                                child: Text(
-                                  'Status: ${assessmentdata.data["currentStatus"]}',
-                                  style: TextStyle(
-                                    fontSize: 16,
+                                child: Wrap(children: [
+                                  Text(
+                                    'Status: ',
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.black45),
                                   ),
-                                ),
+                                  Text(
+                                    '${assessmentdata.data["currentStatus"]}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ]),
                               ),
                               SizedBox(height: 2.5),
                               Divider(),
                               Container(
                                 width: double.infinity,
-                                child: Text(
-                                  'Home Address: ${assesspro.capitalize(snapshot["houses"][0]["address1"])}, ${assesspro.capitalize(snapshot["houses"][0]["address2"])}, ${assesspro.capitalize(snapshot["houses"][0]["city"])} ' ??
-                                      "Home Address: Nagpur",
-                                  style: TextStyle(
-                                    fontSize: 16,
+                                child: Wrap(children: [
+                                  Text(
+                                    'Home Address: ',
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.black45),
                                   ),
-                                ),
+                                  Text(
+                                    '${assesspro.capitalize(snapshot["houses"][0]["address1"])}, ${assesspro.capitalize(snapshot["houses"][0]["address2"])}, ${assesspro.capitalize(snapshot["houses"][0]["city"])} ' ??
+                                        "Home Address: Nagpur",
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ]),
                               ),
                               // Container(child: Text('${dataset.data}')),
                             ],
@@ -441,6 +492,9 @@ class _NurseUIState extends State<NurseUI> {
                       list,
                       assessmentdata.data["docID"],
                       buildContext),
+                  SizedBox(
+                    height: 10,
+                  )
                 ],
               ))),
           onTap: () async {

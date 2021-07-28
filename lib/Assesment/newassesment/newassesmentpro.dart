@@ -125,7 +125,7 @@ gettotal(String classname) {
   } else if (classname == 'Kitchen') {
     return 18;
   } else if (classname == 'Living Room') {
-    return 12;
+    return 11;
   } else if (classname == 'Living Arrangements') {
     return 14;
   } else if (classname == 'Pathway') {
