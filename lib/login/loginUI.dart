@@ -46,7 +46,7 @@ class _LoginFormState extends State<LoginForm> {
   Widget build(BuildContext context) {
     final loginProvider = Provider.of<LoginProvider>(context);
     return loading
-        ? Loading()
+        ? SplashScreen1Sub()
         : Scaffold(
             backgroundColor: Color.fromRGBO(10, 80, 106, 1),
             body: SingleChildScrollView(

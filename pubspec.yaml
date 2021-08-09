@@ -51,6 +51,7 @@ dependencies:
   video_player:
   chewie:
   cached_network_image:
+  animations:
 
   # speech_recognition: ^0.3.0+1
 

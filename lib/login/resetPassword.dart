@@ -63,7 +63,7 @@ class _ResetPassState extends State<ResetPass> {
   @override
   Widget build(BuildContext context) {
     return loading
-        ? Loading()
+        ? SplashScreen1Sub()
         : WillPopScope(
             onWillPop: () {
               Navigator.pushAndRemoveUntil(
