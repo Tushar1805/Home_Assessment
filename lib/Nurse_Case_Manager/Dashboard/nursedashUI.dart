@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,7 @@ import 'package:tryapp/splash/assesment.dart';
 import 'package:tryapp/constants.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../login/login.dart';
+import '../../viewPhoto.dart';
 
 class NurseUI extends StatefulWidget {
   @override
@@ -36,14 +38,40 @@ class _NurseUIState extends State<NurseUI> {
       lname,
       address,
       patientUid;
+  String imgUrl = "";
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    setImage();
     getUserDetails();
     getPatientDetails();
     getCurrentUid();
+  }
+
+  Future<void> setImage() async {
+    final FirebaseUser useruid = await _auth.currentUser();
+    firestoreInstance
+        .collection("users")
+        .document(useruid.uid)
+        .get()
+        .then((value) {
+      setState(() {
+        if (value["url"] != null) {
+          imgUrl = (value["url"].toString()) ?? "";
+        } else {
+          firestoreInstance
+              .collection("users")
+              .document(useruid.uid)
+              .setData({'url': ''}, merge: true);
+          imgUrl = "";
+        }
+
+        print(imgUrl);
+        // address = (value["houses"][0]["city"].toString());
+      });
+    });
   }
 
   Future<void> getUserDetails() async {
@@ -545,7 +573,7 @@ class _NurseUIState extends State<NurseUI> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Container(
-                              padding: EdgeInsets.only(top: 55),
+                              padding: EdgeInsets.only(top: 30),
                               alignment: Alignment.bottomLeft,
                               // color: Colors.red,
                               child: Text(
@@ -558,30 +586,67 @@ class _NurseUIState extends State<NurseUI> {
                             ),
                             Container(
                               alignment: Alignment.bottomLeft,
-                              child: Text(
-                                "${assesspro.capitalize(userFirstName)}",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 37,
-                                ),
-                              ),
+                              child: (userFirstName != '')
+                                  ? Text(
+                                      "${assesspro.capitalize(userFirstName)}",
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 37,
+                                      ),
+                                    )
+                                  : Text("Nurse"),
                             ),
                           ],
                         ),
                       ),
                       SizedBox(height: 7),
-                      Container(
-                        // height: 30,
-                        alignment: Alignment.centerRight,
-                        // width: double.infinity,
-                        // color: Colors.red,
-                        child: CircleAvatar(
-                          radius: 47,
-                          child: ClipOval(
-                            child: Image.asset('assets/nurseavatar.png'),
+                      InkWell(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => ViewPhoto(
+                                  imgUrl ?? "", "nurse/case manager")));
+                        },
+                        child: Container(
+                          // height: 30,
+                          alignment: Alignment.centerRight,
+                          // width: double.infinity,
+                          // color: Colors.red,
+                          child: CircleAvatar(
+                            backgroundColor: Colors.white,
+                            radius: 47,
+                            // backgroundImage: (imgUrl != "" && imgUrl != null)
+                            //     ? NetworkImage(imgUrl)
+                            //     : Image.asset('assets/therapistavatar.png'),
+                            child: ClipOval(
+                              clipBehavior: Clip.hardEdge,
+                              child: (imgUrl != "" && imgUrl != null)
+                                  ? CachedNetworkImage(
+                                      imageUrl: imgUrl,
+                                      fit: BoxFit.cover,
+                                      width: 400,
+                                      height: 400,
+                                      placeholder: (context, url) =>
+                                          new CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) =>
+                                          new Icon(Icons.error),
+                                    )
+                                  : Image.asset('assets/nurseavatar.png'),
+                            ),
                           ),
                         ),
                       ),
+                      // Container(
+                      //   // height: 30,
+                      //   alignment: Alignment.centerRight,
+                      //   // width: double.infinity,
+                      //   // color: Colors.red,
+                      //   child: CircleAvatar(
+                      //     radius: 47,
+                      //     child: ClipOval(
+                      //       child: Image.asset('assets/nurseavatar.png'),
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                   // child: Text("$name"),

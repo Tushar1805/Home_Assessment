@@ -1,12 +1,23 @@
+import 'dart:async';
+import 'dart:io';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:pdf/widgets/progress.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tryapp/Assesment/Forms/LivingArrangements/livingArrangementbase.dart';
 import 'package:tryapp/Assesment/Forms/LivingArrangements/livingArrangementpro.dart';
+import 'package:tryapp/Assesment/Forms/viewVideo.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
+import 'package:tryapp/CompleteAssessment/completeAssessmentBase.dart';
 import 'package:tryapp/constants.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+
+import 'package:path/path.dart';
 
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
@@ -27,6 +38,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
   TimeOfDay time2;
   TimeOfDay picked1;
   TimeOfDay picked2;
+
   bool available = false;
   Map<String, Color> colorsset = {};
   final firestoreInstance = Firestore.instance;
@@ -40,6 +52,16 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
   Color colorb = Color.fromRGBO(10, 80, 106, 1);
   String role, assessor, curUid, therapist;
   bool isColor = false;
+  String imageDownloadUrl;
+  var _mediaList = <String>[];
+  List<File> _image = [];
+  CollectionReference imgRef;
+  List<dynamic> mediaList = [];
+  bool uploading = false;
+  double value = 0;
+  List<String> path = [];
+  String videoDownloadUrl, videoUrl, videoName;
+  File video;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
@@ -141,10 +163,34 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
               curUid = user.uid;
               assessor = value.data["assessor"];
               therapist = value.data["therapist"];
+              videoUrl = widget.wholelist[1][widget.accessname]["videos"]["url"]
+                      .toString() ??
+                  "";
+              videoName = widget.wholelist[1][widget.accessname]["videos"]
+                          ["name"]
+                      .toString() ??
+                  "";
             }));
   }
 
   Future<void> setinitialsdata() async {
+    if (widget.wholelist[1][widget.accessname].containsKey('videos')) {
+      if (widget.wholelist[1][widget.accessname]['videos']
+          .containsKey('name')) {
+      } else {
+        widget.wholelist[1][widget.accessname]['videos']['name'] = "";
+      }
+      if (widget.wholelist[1][widget.accessname]['videos'].containsKey('url')) {
+      } else {
+        widget.wholelist[1][widget.accessname]['videos']['url'] = "";
+      }
+    } else {
+      // print('Yes,it is');
+
+      widget.wholelist[1][widget.accessname]
+          ["videos"] = {'name': '', 'url': ''};
+    }
+
     if (widget.wholelist[1][widget.accessname]['question']["2"]
         .containsKey('Modetrnas')) {
     } else {
@@ -153,6 +199,12 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
             '';
         widget.wholelist[1][widget.accessname]['question']["2"]
             ['Modetrnasother'] = '';
+      });
+    }
+    if (widget.wholelist[1][widget.accessname].containsKey('videos')) {
+    } else {
+      setState(() {
+        widget.wholelist[1][widget.accessname]['videos'] = [];
       });
     }
 
@@ -317,6 +369,245 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
   Widget build(BuildContext context) {
     LivingArrangementsProvider assesspro =
         Provider.of<LivingArrangementsProvider>(context);
+
+    Future<void> upload(File videos) async {
+      setState(() {
+        uploading = true;
+      });
+      try {
+        print("*************Uploading Video************");
+        String name = 'applicationVideos/' + DateTime.now().toIso8601String();
+        StorageReference ref = FirebaseStorage.instance.ref().child(name);
+
+        StorageUploadTask upload = ref.putFile(videos);
+        String url =
+            (await (await upload.onComplete).ref.getDownloadURL()).toString();
+        setState(() {
+          videoUrl = url;
+          print("************Url = $videoUrl**********");
+          videoName = basename(videos.path);
+          print("************Url = $videoName**********");
+          widget.wholelist[1][widget.accessname]["videos"]["url"] = videoUrl;
+          widget.wholelist[1][widget.accessname]["videos"]["name"] = videoName;
+          NewAssesmentRepository().setForm(widget.wholelist, widget.docID);
+          uploading = false;
+        });
+      } catch (e) {
+        print(e.toString());
+      }
+    }
+
+    Future<void> selectVideo(String source) async {
+      if (video == null) {
+        if (source == 'camera') {
+          final pickedVideo =
+              await ImagePicker().getVideo(source: ImageSource.camera);
+
+          if (pickedVideo != null) {
+            Navigator.pop(context);
+            assesspro.addVideo(pickedVideo.path);
+            // FocusScope.of(context).requestFocus(new FocusNode());
+            setState(() {
+              upload(File(pickedVideo?.path));
+            });
+          } else {
+            Navigator.pop(context);
+            setState(() {});
+            final snackBar = SnackBar(content: Text('Video Not Selected!'));
+            assesspro.notifyListeners();
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+        } else {
+          final pickedVideo =
+              await ImagePicker().getVideo(source: ImageSource.gallery);
+          if (pickedVideo != null) {
+            Navigator.pop(context);
+            assesspro.addVideo(pickedVideo.path);
+            setState(() {
+              upload(File(pickedVideo?.path));
+            });
+          } else {
+            Navigator.pop(context);
+            setState(() {});
+            final snackBar = SnackBar(content: Text('Video Not Selected!'));
+            assesspro.notifyListeners();
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+        }
+      } else {
+        final snackBar =
+            SnackBar(content: Text('Only One Video Can be Uploaded!'));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    }
+
+    void uploadVideo(BuildContext context) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              // actionsPadding: EdgeInsets.fromLTRB(20, 20, 20, 0),
+              title: Center(
+                  child: Text(
+                'Select Video From',
+                style: darkBlackTextStyle()
+                    .copyWith(fontSize: 18.0, fontWeight: FontWeight.w600),
+              )),
+              actions: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      // mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                            width: 200,
+                            height: 80.0,
+                            color: Color(0xFFf0f0fa),
+                            child: InkWell(
+                              onTap: () async {
+                                await selectVideo('camera');
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 25, vertical: 8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.add_a_photo_outlined,
+                                      color: Color.fromRGBO(10, 80, 106, 1),
+                                    ),
+                                    SizedBox(
+                                      height: 5.0,
+                                    ),
+                                    Text('Use Camera')
+                                  ],
+                                ),
+                              ),
+                            )),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                            width: 200,
+                            height: 80.0,
+                            color: Color(0xFFf0f0fa),
+                            child: InkWell(
+                              onTap: () async {
+                                await selectVideo('gallery');
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.photo_library_outlined,
+                                      color: Color.fromRGBO(10, 80, 106, 1),
+                                    ),
+                                    SizedBox(
+                                      height: 5.0,
+                                    ),
+                                    Text('Upload from Gallery')
+                                  ],
+                                ),
+                              ),
+                            )),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(43, 10, 20, 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Note: ",
+                              style: darkBlackTextStyle().copyWith(
+                                  fontSize: 16.0, fontWeight: FontWeight.w600)),
+                          Container(
+                            width: MediaQuery.of(context).size.width * .4,
+                            child: Text("Touch overlay background to exit."),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // SizedBox(height: 10),
+
+                    Container(
+                      padding: EdgeInsets.fromLTRB(28, 10, 20, 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Warning: ",
+                              style: darkBlackTextStyle().copyWith(
+                                  fontSize: 16.0, fontWeight: FontWeight.w600)),
+                          Container(
+                            width: MediaQuery.of(context).size.width * .4,
+                            child: Text(
+                                "You can select only one video so cover all parts of room in one video and make sure you are holding your device vertically."),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
+              ],
+            );
+          });
+    }
+
+    void deleteVideo() {
+      setState(() {
+        video = null;
+        videoName = '';
+        videoUrl = '';
+      });
+
+      assesspro.notifyListeners();
+    }
+
+    Future deleteFile(String imagePath) async {
+      String imagePath1 = 'asssessmentVideos/' + imagePath;
+      try {
+        // FirebaseStorage.instance
+        //     .ref()
+        //     .child(imagePath1)
+        //     .delete()
+        //     .then((_) => print('Successfully deleted $imagePath storage item'));
+        StorageReference ref = await FirebaseStorage.instance
+            .ref()
+            .getStorage()
+            .getReferenceFromUrl(imagePath);
+        ref.delete();
+
+        // FirebaseStorage firebaseStorege = FirebaseStorage.instance;
+        // StorageReference storageReference = firebaseStorege.getReferenceFromUrl(imagePath);
+
+        print('deleteFile(): file deleted');
+        // return url;
+      } catch (e) {
+        print('  deleteFile(): error: ${e.toString()}');
+        throw (e.toString());
+      }
+    }
+
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -325,9 +616,23 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
           automaticallyImplyLeading: false,
           backgroundColor: _colorgreen,
           actions: [
+            // (uploading)
+            //     ? Center(
+            //         child: Container(
+            //           child: Text(
+            //             "Uploading...${value.round()}%",
+            //             style: TextStyle(fontSize: 18),
+            //           ),
+            //         ),
+            //       )
+            //     :
             IconButton(
               icon: Icon(Icons.done_all, color: Colors.white),
               onPressed: () async {
+                // await uploadFile(_image);
+                // widget.wholelist[1][widget.accessname]["images"] =
+                //     mediaList.toList();
+
                 try {
                   var test = widget.wholelist[1][widget.accessname]["complete"];
                   for (int i = 0;
@@ -348,6 +653,9 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                         .setForm(widget.wholelist, widget.docID);
                     Navigator.pop(
                         context, widget.wholelist[1][widget.accessname]);
+                    // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                    //     builder: (context) => CompleteAssessmentBase(
+                    //         widget.wholelist, widget.docID, role)));
                   }
                 } catch (e) {
                   print(e.toString());
@@ -399,7 +707,20 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                       BorderRadius.all(Radius.circular(50))),
                               // color: Colors.red,
                               child: RawMaterialButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  if (videoUrl == "" && videoName == "") {
+                                    if (curUid == assessor) {
+                                      uploadVideo(context);
+                                    } else {
+                                      _showSnackBar(
+                                          "You are not allowed to upload video",
+                                          context);
+                                    }
+                                  } else {
+                                    _showSnackBar(
+                                        "You can add only one video", context);
+                                  }
+                                },
                                 child: Icon(
                                   Icons.camera_alt,
                                   color: Colors.white,
@@ -411,6 +732,248 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                       ),
                     ),
                   ),
+                  SizedBox(height: 10),
+                  (uploading)
+                      ? Center(
+                          child: Text("Getting Video...."),
+                        )
+                      : (videoUrl != "" &&
+                              videoUrl != null &&
+                              videoName != "" &&
+                              videoName != null)
+                          ? InkWell(
+                              // ignore: missing_return
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        ViewVideo(videoUrl, widget.roomname)));
+                              },
+                              child: Container(
+                                decoration: new BoxDecoration(
+                                  color: Color(0xFFeeeef5),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(40.0),
+                                  ),
+                                ),
+                                width: (videoName == '' || videoName == null)
+                                    ? 0.0
+                                    : MediaQuery.of(context).size.width - 50,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(
+                                      width: (videoName == '' ||
+                                              videoName == null)
+                                          ? 0.0
+                                          : MediaQuery.of(context).size.width -
+                                              150,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 15.0, vertical: 15.0),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Flexible(
+                                              child: (videoName == null ||
+                                                      videoName == "")
+                                                  ? SizedBox()
+                                                  : Text(
+                                                      "$videoName",
+                                                      style: normalTextStyle()
+                                                          .copyWith(
+                                                              fontSize: 14.0),
+                                                      overflow:
+                                                          TextOverflow.fade,
+                                                      maxLines: 1,
+                                                      softWrap: false,
+                                                    ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Spacer(),
+                                    (videoName == '')
+                                        ? SizedBox()
+                                        : IconButton(
+                                            onPressed: () {
+                                              if (therapist == assessor &&
+                                                  role == "therapist") {
+                                                setState(() {
+                                                  widget.wholelist[1]
+                                                          [widget.accessname]
+                                                      ["videos"]["name"] = "";
+                                                  widget.wholelist[1]
+                                                          [widget.accessname]
+                                                      ["videos"]["url"] = "";
+                                                  deleteFile(videoUrl);
+                                                  deleteVideo();
+                                                  NewAssesmentRepository()
+                                                      .setForm(widget.wholelist,
+                                                          widget.docID);
+                                                });
+                                              } else if (role != "therapist") {
+                                                setState(() {
+                                                  widget.wholelist[1]
+                                                          [widget.accessname]
+                                                      ["videos"]["name"] = "";
+                                                  widget.wholelist[1]
+                                                          [widget.accessname]
+                                                      ["videos"]["url"] = "";
+                                                  deleteFile(videoUrl);
+                                                  deleteVideo();
+                                                  NewAssesmentRepository()
+                                                      .setForm(widget.wholelist,
+                                                          widget.docID);
+                                                });
+                                              } else {
+                                                _showSnackBar(
+                                                    "You can't change the other fields",
+                                                    context);
+                                              }
+                                            },
+                                            icon: Icon(
+                                              Icons.delete_outline_rounded,
+                                              color: Color.fromRGBO(
+                                                  10, 80, 106, 1),
+                                            ),
+                                          ),
+                                    SizedBox(
+                                      width: 15.0,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
+                          : SizedBox(),
+
+                  // Container(
+                  //   height: 200.0,
+                  //   child: ListView.builder(
+                  //       scrollDirection: Axis.horizontal,
+                  //       itemCount: widget
+                  //           .wholelist[1][widget.accessname]["images"].length,
+                  //       itemBuilder: (BuildContext context, int index) {
+                  //         return Padding(
+                  //           padding: const EdgeInsets.only(right: 8.0),
+                  //           child: Column(
+                  //             children: <Widget>[
+                  //               ExtendedImage.network(
+                  //                 widget.wholelist[1][widget.accessname]
+                  //                     ["images"][index],
+                  //                 width: 150.0,
+                  //                 height: 150.0,
+                  //                 fit: BoxFit.cover,
+                  //                 cache: true,
+                  //                 loadStateChanged: (ExtendedImageState state) {
+                  //                   switch (state.extendedImageLoadState) {
+                  //                     case LoadState.loading:
+                  //                       return Center(
+                  //                           child: Container(
+                  //                         height: 32.0,
+                  //                         width: 32.0,
+                  //                         child: CircularProgressIndicator(),
+                  //                       ));
+                  //                       break;
+                  //                     case LoadState.completed:
+                  //                       return ExtendedRawImage(
+                  //                         image: state.extendedImageInfo?.image,
+                  //                         width: 150.0,
+                  //                         height: 150.0,
+                  //                       );
+                  //                       break;
+                  //                     case LoadState.failed:
+                  //                       return Center(
+                  //                           child: Container(
+                  //                         height: 32.0,
+                  //                         width: 32.0,
+                  //                         child: Icon(
+                  //                           Icons.error,
+                  //                           color:
+                  //                               Color.fromRGBO(10, 80, 106, 1),
+                  //                         ),
+                  //                       ));
+                  //                       break;
+                  //                     default:
+                  //                       return Center(
+                  //                           child: Container(
+                  //                         height: 32.0,
+                  //                         width: 32.0,
+                  //                         child: CircularProgressIndicator(),
+                  //                       ));
+                  //                   }
+                  //                 },
+                  //               ),
+                  //               IconButton(
+                  //                   icon: Icon(Icons.delete,
+                  //                       size: 16.0,
+                  //                       color: Color.fromRGBO(10, 80, 106, 1)),
+                  //                   onPressed: () {
+                  //                     _deleteMedia(index, assesspro);
+                  //                   })
+                  //             ],
+                  //           ),
+                  //         );
+                  //       }),
+                  // ),
+                  // Container(
+                  //   decoration: new BoxDecoration(
+                  //     color: Color(0xFFeeeef5),
+                  //     borderRadius: BorderRadius.all(
+                  //       Radius.circular(40.0),
+                  //     ),
+                  //   ),
+                  //   width: assesspro.imageName == ''
+                  //       ? 0.0
+                  //       : MediaQuery.of(context).size.width - 50,
+                  //   child: Row(
+                  //     mainAxisSize: MainAxisSize.min,
+                  //     children: [
+                  //       SizedBox(
+                  //         width: assesspro.imageName == ''
+                  //             ? 0.0
+                  //             : MediaQuery.of(context).size.width - 150,
+                  //         child: Padding(
+                  //           padding: const EdgeInsets.symmetric(
+                  //               horizontal: 15.0, vertical: 15.0),
+                  //           child: Row(
+                  //             mainAxisSize: MainAxisSize.min,
+                  //             children: [
+                  //               Flexible(
+                  //                 child: Text(
+                  //                   assesspro.imageName == ''
+                  //                       ? ''
+                  //                       : assesspro.imageName,
+                  //                   style: normalTextStyle()
+                  //                       .copyWith(fontSize: 14.0),
+                  //                   overflow: TextOverflow.fade,
+                  //                   maxLines: 1,
+                  //                   softWrap: false,
+                  //                 ),
+                  //               )
+                  //             ],
+                  //           ),
+                  //         ),
+                  //       ),
+                  //       Spacer(),
+                  //       assesspro.imageName == ''
+                  //           ? SizedBox()
+                  //           : IconButton(
+                  //               onPressed: () {
+                  //                 assesspro.deleteImage();
+                  //                 setState(() {});
+                  //               },
+                  //               icon: Icon(
+                  //                 Icons.delete_outline_rounded,
+                  //                 color: Color.fromRGBO(10, 80, 106, 1),
+                  //               ),
+                  //             ),
+                  //       SizedBox(
+                  //         width: 15.0,
+                  //       )
+                  //     ],
+                  //   ),
+                  // ),
                   Container(
                     padding: EdgeInsets.all(15),
                     child: Column(
@@ -479,7 +1042,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           ],
                         ),
                         (getvalue(1) == "Other")
-                            ? getrecomain(1, false)
+                            ? getrecomain(1, false, context)
                             : SizedBox(),
                         SizedBox(height: 15),
                         Row(
@@ -641,7 +1204,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                                     ['Modetrnas'] ==
                                                 'Other' ||
                                             getvalue(2) == "Other")
-                                        ? getrecomain(2, false)
+                                        ? getrecomain(2, false, context)
                                         : SizedBox(),
                                   ],
                                 ),
@@ -720,7 +1283,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           ],
                         ),
                         (getvalue(3) == 'Other')
-                            ? getrecomain(3, false)
+                            ? getrecomain(3, false, context)
                             : SizedBox(),
                         SizedBox(height: 15),
                         Row(
@@ -778,7 +1341,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                         ),
                         (getvalue(4) != 'Never Alone' && getvalue(4) != '')
                             ? (getvalue(4) == 'Alone')
-                                ? getrecomain(4, true)
+                                ? getrecomain(4, true, context)
                                 : Container(
                                     padding: EdgeInsets.fromLTRB(5, 5, 5, 0),
                                     child: Column(
@@ -1063,8 +1626,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                                           }
                                                         }
                                                       });
-                                                    }
-                                                    if (role != "therapist") {
+                                                    } else if (role !=
+                                                        "therapist") {
                                                       setState(() {
                                                         widget.wholelist[1][widget
                                                                         .accessname]
@@ -1169,7 +1732,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                                     itemBuilder:
                                                         (context, index1) {
                                                       return roomatecountwidget(
-                                                          index1 + 1);
+                                                          index1 + 1, context);
                                                     },
                                                   ),
                                                 ),
@@ -1249,7 +1812,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           ],
                         ),
                         (getvalue(6) != 'Fairy Well' && getvalue(6) != '')
-                            ? getrecomain(6, true)
+                            ? getrecomain(6, true, context)
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -1288,8 +1851,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                     role == "therapist") {
                                   assesspro.setdata(
                                       7, value, 'Using assistive device?');
-                                }
-                                if (role != "therapist") {
+                                } else if (role != "therapist") {
                                   assesspro.setdata(
                                       7, value, 'Using assistive device?');
                                 } else {
@@ -1458,7 +2020,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           ],
                         ),
                         (getvalue(8) != 'Normal')
-                            ? getrecomain(8, true)
+                            ? getrecomain(8, true, context)
                             : SizedBox(),
                         SizedBox(height: 15),
                         Row(
@@ -1524,7 +2086,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                         (getvalue(9) != 'Never goes to the curbside' &&
                                 // getvalue(9) != 'Other' &&
                                 getvalue(9) != '')
-                            ? getrecomain(9, true)
+                            ? getrecomain(9, true, context)
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -1640,11 +2202,13 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                     onChanged: (value) {
                                       if (assessor == therapist &&
                                           role == "therapist") {
+                                        assesspro.setFlightData(11, value,
+                                            'Number of Flight of Stairs');
                                         setState(() {
-                                          widget.wholelist[1][widget.accessname]
-                                                      ['question']["11"]
-                                                  ['Question'] =
-                                              'Number of Flight of Stairs';
+                                          // widget.wholelist[1][widget.accessname]
+                                          //             ['question']["11"]
+                                          //         ['Question'] =
+                                          //     'Number of Flight of Stairs';
                                           widget.wholelist[1][widget.accessname]
                                                   ['question']["11"]['Flights']
                                               ["count"] = value;
@@ -1659,47 +2223,42 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                                       [widget.accessname]
                                                   ['question']["11"]['Flights']
                                               ["count"]);
-                                          if (value == 0) {
-                                            if (widget.wholelist[1][widget
-                                                                .accessname]
-                                                            ['question']["11"]
-                                                        ["Answer"] ==
-                                                    0 ||
-                                                widget.wholelist[1][widget
-                                                                .accessname]
-                                                            ['question']["11"]
-                                                        ["Answer"] ==
-                                                    "") {
-                                            } else {
-                                              widget.wholelist[1]
-                                                      [widget.accessname]
-                                                  ['complete'] -= 1;
-                                              widget.wholelist[1]
-                                                          [widget.accessname]
-                                                      ['question']["11"]
-                                                  ["Answer"] = value;
-                                            }
-                                          } else {
-                                            if (widget.wholelist[1][widget
-                                                                .accessname]
-                                                            ['question']["11"]
-                                                        ["Answer"] !=
-                                                    0 ||
-                                                widget.wholelist[1][widget
-                                                                .accessname]
-                                                            ['question']["11"]
-                                                        ["Answer"] !=
-                                                    "") {
-                                            } else {
-                                              widget.wholelist[1]
-                                                      [widget.accessname]
-                                                  ['complete'] += 1;
-                                            }
-                                            widget.wholelist[1]
-                                                        [widget.accessname]
-                                                    ['question']["11"]
-                                                ["Answer"] = value;
-                                          }
+                                          // if (value == 0) {
+                                          //   if (widget.wholelist[1][widget
+                                          //                       .accessname]
+                                          //                   ['question']["11"]
+                                          //               ["Answer"] ==
+                                          //           0 ||
+                                          //       widget.wholelist[1][widget
+                                          //                       .accessname]
+                                          //                   ['question']["11"]
+                                          //               ["Answer"] ==
+                                          //           "") {
+                                          //   } else {
+                                          //     widget.wholelist[1]
+                                          //             [widget.accessname]
+                                          //         ['complete'] -= 1;
+                                          //     widget.wholelist[1]
+                                          //                 [widget.accessname]
+                                          //             ['question']["11"]
+                                          //         ["Answer"] = value;
+                                          //   }
+                                          // } else {
+                                          //   if (widget.wholelist[1]
+                                          //                   [widget.accessname]
+                                          //               ['question']["11"]
+                                          //           ["Answer"] ==
+                                          //       value) {
+                                          //   } else {
+                                          //     widget.wholelist[1]
+                                          //             [widget.accessname]
+                                          //         ['complete'] += 1;
+                                          //   }
+                                          //   widget.wholelist[1]
+                                          //               [widget.accessname]
+                                          //           ['question']["11"]
+                                          //       ["Answer"] = value;
+                                          // }
                                           if (value > 0) {
                                             widget.wholelist[1]
                                                         [widget.accessname]
@@ -1735,13 +2294,14 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                             }
                                           }
                                         });
-                                      }
-                                      if (role != "therapist") {
+                                      } else if (role != "therapist") {
+                                        assesspro.setFlightData(11, value,
+                                            'Number of Flight of Stairs');
                                         setState(() {
-                                          widget.wholelist[1][widget.accessname]
-                                                      ['question']["11"]
-                                                  ['Question'] =
-                                              'Number of Flight of Stairs';
+                                          // widget.wholelist[1][widget.accessname]
+                                          //             ['question']["11"]
+                                          //         ['Question'] =
+                                          //     'Number of Flight of Stairs';
                                           widget.wholelist[1][widget.accessname]
                                                   ['question']["11"]['Flights']
                                               ["count"] = value;
@@ -1756,37 +2316,37 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                                       [widget.accessname]
                                                   ['question']["11"]['Flights']
                                               ["count"]);
-                                          if (value == 0) {
-                                            if (widget.wholelist[1]
-                                                            [widget.accessname]
-                                                        ['question']["11"]
-                                                    ["Answer"] ==
-                                                0) {
-                                            } else {
-                                              widget.wholelist[1]
-                                                      [widget.accessname]
-                                                  ['complete'] -= 1;
-                                              widget.wholelist[1]
-                                                          [widget.accessname]
-                                                      ['question']["11"]
-                                                  ["Answer"] = value;
-                                            }
-                                          } else {
-                                            if (widget.wholelist[1]
-                                                            [widget.accessname]
-                                                        ['question']["11"]
-                                                    ["Answer"] !=
-                                                0) {
-                                            } else {
-                                              widget.wholelist[1]
-                                                      [widget.accessname]
-                                                  ['complete'] += 1;
-                                            }
-                                            widget.wholelist[1]
-                                                        [widget.accessname]
-                                                    ['question']["11"]
-                                                ["Answer"] = value;
-                                          }
+                                          // if (value == 0) {
+                                          //   if (widget.wholelist[1]
+                                          //                   [widget.accessname]
+                                          //               ['question']["11"]
+                                          //           ["Answer"] ==
+                                          //       0) {
+                                          //   } else {
+                                          //     widget.wholelist[1]
+                                          //             [widget.accessname]
+                                          //         ['complete'] -= 1;
+                                          //     widget.wholelist[1]
+                                          //                 [widget.accessname]
+                                          //             ['question']["11"]
+                                          //         ["Answer"] = value;
+                                          //   }
+                                          // } else {
+                                          //   if (widget.wholelist[1]
+                                          //                   [widget.accessname]
+                                          //               ['question']["11"]
+                                          //           ["Answer"] !=
+                                          //       0) {
+                                          //   } else {
+                                          //     widget.wholelist[1]
+                                          //             [widget.accessname]
+                                          //         ['complete'] += 1;
+                                          //   }
+                                          //   widget.wholelist[1]
+                                          //               [widget.accessname]
+                                          //           ['question']["11"]
+                                          //       ["Answer"] = value;
+                                          // }
                                           if (value > 0) {
                                             widget.wholelist[1]
                                                         [widget.accessname]
@@ -1878,7 +2438,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                       shrinkWrap: true,
                                       itemCount: flightcount,
                                       itemBuilder: (context, index1) {
-                                        return flightcountwidget(index1 + 1);
+                                        return flightcountwidget(
+                                            index1 + 1, context);
                                       },
                                     ),
                                   ),
@@ -1923,8 +2484,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                     role == "therapist") {
                                   assesspro.setdata(12, value,
                                       'Smoke Detector Batteries Checked Anually/Replaced?');
-                                }
-                                if (role != "therapist") {
+                                } else if (role != "therapist") {
                                   assesspro.setdata(12, value,
                                       'Smoke Detector Batteries Checked Anually/Replaced?');
                                 } else {
@@ -1938,7 +2498,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           ],
                         ),
                         (getvalue(12) == 'No')
-                            ? getrecomain(12, true)
+                            ? getrecomain(12, true, context)
                             : SizedBox(),
                         SizedBox(height: 15),
                         Row(
@@ -2055,6 +2615,10 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             style: TextStyle(color: Colors.white, fontSize: 16),
                           ),
                           onPressed: () {
+                            // uploadFile(_image);
+                            // // _mediaList.add(assesspro.uploadImage().toString());
+                            // widget.wholelist[1][widget.accessname]["images"] =
+                            //     _mediaList;
                             // bool isValid = _formKey.currentState.validate();
                             var test = widget.wholelist[1][widget.accessname]
                                 ["complete"];
@@ -2080,8 +2644,15 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                   .setLatestChangeDate(widget.docID);
                               NewAssesmentRepository()
                                   .setForm(widget.wholelist, widget.docID);
-                              Navigator.pop(context,
-                                  widget.wholelist[1][widget.accessname]);
+                              // Navigator.pop(context,
+                              //     widget.wholelist[1][widget.accessname]);
+                              Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          CompleteAssessmentBase(
+                                              widget.wholelist,
+                                              widget.docID,
+                                              role)));
                             }
                           }
                           // },
@@ -2095,7 +2666,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
     );
   }
 
-  Widget getrecomain(int index, bool isthera) {
+  Widget getrecomain(int index, bool isthera, BuildContext context) {
     return SingleChildScrollView(
       // reverse: true,
       child: Container(
@@ -2178,14 +2749,16 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                 },
               ),
             ),
-            (role == 'therapist' && isthera) ? getrecowid(index) : SizedBox(),
+            (role == 'therapist' && isthera)
+                ? getrecowid(index, context)
+                : SizedBox(),
           ],
         ),
       ),
     );
   }
 
-  Widget getrecowid(index) {
+  Widget getrecowid(index, BuildContext context) {
     if (widget.wholelist[1][widget.accessname]["question"]["$index"]
             ["Recommendationthera"] !=
         "") {
@@ -2385,7 +2958,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
     });
   }
 
-  Widget flightcountwidget(index) {
+  Widget flightcountwidget(index, BuildContext context) {
     return Container(
       child: Column(
         children: [
@@ -2414,8 +2987,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                       widget.wholelist[1][widget.accessname]['question']["11"]
                           ['Flights']['flight$index']["flight"] = value;
                     });
-                  }
-                  if (role != "therapist") {
+                  } else if (role != "therapist") {
                     setState(() {
                       widget.wholelist[1][widget.accessname]['question']["11"]
                           ['Flights']['flight$index']["flight"] = value;
@@ -2435,7 +3007,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
     );
   }
 
-  Widget roomatecountwidget(index) {
+  Widget roomatecountwidget(index, BuildContext context) {
     return Container(
       child: Column(
         children: [
@@ -2621,8 +3193,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             widget.wholelist[1][widget.accessname]['question']
                                     ["5"]['Roomate']['roomate$index']
                                 ['LastName'] = value;
-                          }
-                          if (role != "therapist") {
+                          } else if (role != "therapist") {
                             widget.wholelist[1][widget.accessname]['question']
                                     ["5"]['Roomate']['roomate$index']
                                 ['LastName'] = value;

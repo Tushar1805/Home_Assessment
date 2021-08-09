@@ -18,7 +18,9 @@ import 'package:tryapp/Therapist/Dashboard/therapistpro.dart';
 import 'package:tryapp/constants.dart';
 import 'package:tryapp/splash/assesment.dart';
 import 'package:tryapp/splash/midassessment.dart';
+import 'package:tryapp/viewPhoto.dart';
 import '../../login/login.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class TherapistUI extends StatefulWidget {
   @override
@@ -31,14 +33,39 @@ class _TherapistUIState extends State<TherapistUI> {
   final firestoreInstance = Firestore.instance;
   FirebaseUser curuser;
   var fname, lname, address, userFirstName, userLastName, curUid, patientUid;
+  String imgUrl = "";
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    setImage();
     getUserDetails();
     getCurrentUid();
-    getCurrentUid();
+  }
+
+  Future<void> setImage() async {
+    final FirebaseUser useruid = await _auth.currentUser();
+    firestoreInstance
+        .collection("users")
+        .document(useruid.uid)
+        .get()
+        .then((value) {
+      setState(() {
+        if (value["url"] != null) {
+          imgUrl = (value["url"].toString()) ?? "";
+        } else {
+          firestoreInstance
+              .collection("users")
+              .document(useruid.uid)
+              .setData({'url': ''}, merge: true);
+          imgUrl = "";
+        }
+
+        print(imgUrl);
+        // address = (value["houses"][0]["city"].toString());
+      });
+    });
   }
 
   Future<void> getUserDetails() async {
@@ -48,6 +75,8 @@ class _TherapistUIState extends State<TherapistUI> {
         setState(() {
           userFirstName = (value["firstName"].toString());
           userLastName = (value["lastName"].toString());
+          // imgUrl = (value['url'].toString()) ?? "";
+          // print("**********imgUrl = $imgUrl");
           // address = (value["houses"][0]["city"].toString());
         });
       },
@@ -467,6 +496,9 @@ class _TherapistUIState extends State<TherapistUI> {
                           child: CircleAvatar(
                             backgroundColor: Colors.white,
                             radius: 47,
+                            // backgroundImage: (imgUrl != "" && imgUrl != null)
+                            //       ? new NetworkImage(imgUrl)
+                            //       : Image.asset('assets/therapistavatar.png'),
                             child: ClipOval(
                               child: Image.asset('assets/therapistavatar.png'),
                             ),
@@ -671,18 +703,47 @@ class _TherapistUIState extends State<TherapistUI> {
                           ),
                         ),
                         SizedBox(height: 7),
-                        Container(
-                          // height: 30,
-                          alignment: Alignment.centerRight,
-                          // width: double.infinity,
-                          // color: Colors.red,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            radius: 47,
-                            child: ClipOval(
-                              child: Image.asset('assets/therapistavatar.png'),
-                            ),
-                          ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) =>
+                                    ViewPhoto(imgUrl ?? "", "therapist")));
+                          },
+                          child: Container(
+                              // height: 30,
+                              alignment: Alignment.centerRight,
+                              // width: double.infinity,
+                              // color: Colors.red,
+                              child: (imgUrl != "" && imgUrl != null)
+                                  ? CircleAvatar(
+                                      backgroundColor: Colors.white,
+                                      radius: 47,
+                                      // backgroundImage: (imgUrl != "" && imgUrl != null)
+                                      //     ? NetworkImage(imgUrl)
+                                      //     : Image.asset('assets/therapistavatar.png'),
+                                      child: ClipOval(
+                                          clipBehavior: Clip.hardEdge,
+                                          child: CachedNetworkImage(
+                                            imageUrl: imgUrl,
+                                            fit: BoxFit.cover,
+                                            width: 400,
+                                            height: 400,
+                                            placeholder: (context, url) =>
+                                                new CircularProgressIndicator(),
+                                            errorWidget:
+                                                (context, url, error) =>
+                                                    new Icon(Icons.error),
+                                          )),
+                                    )
+                                  : CircleAvatar(
+                                      radius: 47,
+                                      backgroundColor: Colors.white,
+                                      child: ClipOval(
+                                        child: Image.asset(
+                                          'assets/therapistavatar.png',
+                                        ),
+                                      ),
+                                    )),
                         ),
                       ],
                     ),
@@ -753,12 +814,14 @@ class _TherapistUIState extends State<TherapistUI> {
               elevation: 0.0,
               actions: [
                 IconButton(
+                  tooltip: "Logout",
+
                   icon: Icon(Icons.logout, color: Colors.white),
 
                   onPressed: () async {
                     try {
                       await _auth.signOut();
-                      Navigator.pushReplacement(context,
+                      Navigator.of(context).pushReplacement(
                           MaterialPageRoute(builder: (context) => Login()));
                     } catch (e) {
                       print(e.toString());

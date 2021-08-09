@@ -380,23 +380,50 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
                       bool save = false;
                       await Future.delayed(const Duration(milliseconds: 1500),
                           () {
-                        for (int i = 0; i < widget.wholelist.length; i++) {
-                          int count = widget.wholelist[i]['count'];
+                        for (int i = 0; i < 12; i++) {
+                          int count = widget.wholelist[i]['count'] ?? 0;
                           if (count > 0) {
                             for (int j = 1; j <= count; j++) {
-                              if (widget.wholelist[i]["name"] ==
-                                  "Living Arrangements") {
-                                if (widget.wholelist[i]["room$j"]
-                                        ["completed"] ==
-                                    13) {
-                                  save = true;
-                                }
-                              } else if (widget.wholelist[i]["room$j"]
-                                      ["completed"] ==
+                              if (widget.wholelist[i]["room$j"]["completed"] ==
                                   gettotal(widget.wholelist[i]["name"])) {
-                                save = true;
+                                if (role == "therapist") {
+                                  for (int k = 1;
+                                      k <=
+                                          widget.wholelist[i]["room$j"]
+                                              ["completed"];
+                                      k++) {
+                                    if (widget.wholelist[i]["room$j"]
+                                                    ["question"]["$k"]
+                                                ["Priority"] !=
+                                            "0" &&
+                                        widget.wholelist[i]["room$j"]
+                                                    ["question"]["$k"]
+                                                ["Recommendationthera"] !=
+                                            "") {
+                                      setState(() {
+                                        save = true;
+                                      });
+                                      print("***********1************");
+                                    } else {
+                                      setState(() {
+                                        save = false;
+                                      });
+                                      print("***********2************");
+                                      break;
+                                    }
+                                  }
+                                } else {
+                                  setState(() {
+                                    save = true;
+                                  });
+                                  print("***********3************");
+                                }
                               } else {
-                                save = false;
+                                setState(() {
+                                  save = false;
+                                });
+                                print("***********4************");
+                                break;
                               }
                             }
                           }
@@ -405,7 +432,7 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
                       // print(widget.wholelist)
                       // if (save) {
                       if (role == 'therapist') {
-                        // for (int i = 0; i < 12; i++) {
+                        // for (int i = 0; i < widget.wholelist.length; i++) {
                         //   if (widget.wholelist[i]["count"] > 0) {
                         //     int count = widget.wholelist[i]["count"];
                         //     for (int j = 1; j <= count; j++) {
@@ -420,45 +447,71 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
                         //             widget.wholelist[i]["room$j"]["question"]
                         //                     ["$k"]["Recommendationthera"] !=
                         //                 "") {
-                        NewAssesmentRepository().setAssessmentCurrentStatus(
-                            "Report Generated", widget.docID);
-                        NewAssesmentRepository().setStatus("old", widget.docID);
-                        NewAssesmentRepository()
-                            .setAssessmentCompletionDate(widget.docID);
-                        // Navigator.of(context).pop();
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) => Therapist()));
-                        // } else {
-                        //   _showSnackBar(
-                        //       "You Must Have To Give The Recommendations",
-                        //       context);
-                        // }
+                        //           setState(() {
+                        //             saved = true;
+                        //           });
+                        //         } else {
+                        //           setState(() {
+                        //             saved = false;
+                        //           });
+
+                        //           break;
+                        //         }
+                        //       }
                         //     }
                         //   }
                         // }
-                        // }
+                        if (save == true) {
+                          NewAssesmentRepository().setAssessmentCurrentStatus(
+                              "Report Generated", widget.docID);
+                          NewAssesmentRepository()
+                              .setStatus("old", widget.docID);
+                          NewAssesmentRepository()
+                              .setAssessmentCompletionDate(widget.docID);
+                          // Navigator.of(context).pop();
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => Therapist()));
+                        } else {
+                          _showSnackBar(
+                              "You Must Have To Give The Recommendations",
+                              context);
+                        }
                       } else if (role == 'nurse/case manager') {
-                        NewAssesmentRepository().setAssessmentCurrentStatus(
-                            "Assessment Finished", widget.docID);
-                        Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(builder: (context) => Nurse()));
+                        if (save == true) {
+                          NewAssesmentRepository().setAssessmentCurrentStatus(
+                              "Assessment Finished", widget.docID);
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (context) => Nurse()));
+                        } else {
+                          _showSnackBar("Complete the forms first", context);
+                        }
                       } else if (role == "patient") {
-                        NewAssesmentRepository().setAssessmentCurrentStatus(
-                            "Assessment Finished", widget.docID);
-                        Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(builder: (context) => Patient()));
+                        if (save == true) {
+                          NewAssesmentRepository().setAssessmentCurrentStatus(
+                              "Assessment Finished", widget.docID);
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => Patient()));
+                        } else {
+                          _showSnackBar("Complete the forms first", context);
+                        }
                       }
                       // } else {
                       //   _showSnackBar(
                       //       "You Must Have to Fill All Details", context);
                       // }
-                      NewAssesmentRepository()
-                          .setLatestChangeDate(widget.docID);
+                      if (save == true) {
+                        NewAssesmentRepository()
+                            .setLatestChangeDate(widget.docID);
 
-                      NewAssesmentRepository()
-                          .setForm(widget.wholelist, widget.docID);
-                      // _showSnackBar(
-                      //     "Assessment Submitted Successfully", context);
+                        NewAssesmentRepository()
+                            .setForm(widget.wholelist, widget.docID);
+                        _showSnackBar(
+                            "Assessment Submitted Successfully", context);
+                      } else {
+                        _showSnackBar("Complete the forms first", context);
+                      }
                     },
                     loadingSwitchInCurve: Curves.bounceInOut,
                     loadingTransitionBuilder: (child, animation) {

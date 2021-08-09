@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +9,7 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistdash.dart';
 
 import '../../../constants.dart';
+import 'package:path/path.dart';
 
 class GaragePro extends ChangeNotifier {
   String roomname;
@@ -31,6 +34,12 @@ class GaragePro extends ChangeNotifier {
   var test = TextEditingController();
   final FormsRepository formsRepository = FormsRepository();
   final FirebaseAuth auth = FirebaseAuth.instance;
+  String videoName = '';
+  String videoDownloadUrl;
+  String selectedRequestId;
+  String videoUrl;
+  File video;
+  bool isVideoSelected = false;
 
   GaragePro(this.roomname, this.wholelist, this.accessname) {
     _speech = stt.SpeechToText();
@@ -68,6 +77,20 @@ class GaragePro extends ChangeNotifier {
   }
 
   Future<void> setinitials() async {
+    if (wholelist[9][accessname].containsKey('videos')) {
+      if (wholelist[9][accessname]['videos'].containsKey('name')) {
+      } else {
+        wholelist[9][accessname]['videos']['name'] = "";
+      }
+      if (wholelist[9][accessname]['videos'].containsKey('url')) {
+      } else {
+        wholelist[9][accessname]['videos']['url'] = "";
+      }
+    } else {
+      // print('Yes,it is');
+
+      wholelist[9][accessname]["videos"] = {'name': '', 'url': ''};
+    }
     if (wholelist[9][accessname]['question']["7"].containsKey('doorwidth')) {
     } else {
       print('getting created');
@@ -102,6 +125,13 @@ class GaragePro extends ChangeNotifier {
     // } else {
     //   wholelist[9][accessname]['question']['17']['sidefentrance'] = '';
     // }
+  }
+
+  Future<void> addVideo(String path) {
+    video = File(path);
+    videoName = basename(video.path);
+    isVideoSelected = true;
+    notifyListeners();
   }
 
   Future<String> getRole() async {
@@ -304,7 +334,7 @@ class GaragePro extends ChangeNotifier {
                     height: 60,
                     margin: EdgeInsets.all(0),
                     child: FloatingActionButton(
-                      heroTag: "btn${index + 1}",
+                      heroTag: "btn${index + 100}",
                       child: Icon(
                         Icons.mic,
                         size: 20,

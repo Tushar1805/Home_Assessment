@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,6 +17,7 @@ import 'package:tryapp/constants.dart';
 import '../../splash/assesment.dart';
 import '../../Assesment/newassesment/newassesmentbase.dart';
 import '../../login/login.dart';
+import '../../viewPhoto.dart';
 
 class PatientUI extends StatefulWidget {
   @override
@@ -27,14 +29,40 @@ class _PatientUIState extends State<PatientUI> {
   final firestoreInstance = Firestore.instance;
   FirebaseUser curuser;
   var fname, lname, curUid, address, therapistUid, theraFName, theraLName;
+  String imgUrl = "";
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    setImage();
     getUserName();
     getCurrentUid();
     // print("First name: " + fname);
+  }
+
+  Future<void> setImage() async {
+    final FirebaseUser useruid = await auth.currentUser();
+    firestoreInstance
+        .collection("users")
+        .document(useruid.uid)
+        .get()
+        .then((value) {
+      setState(() {
+        if (value["url"] != null) {
+          imgUrl = (value["url"].toString()) ?? "";
+        } else {
+          firestoreInstance
+              .collection("users")
+              .document(useruid.uid)
+              .setData({'url': ''}, merge: true);
+          imgUrl = "";
+        }
+
+        print(imgUrl);
+        // address = (value["houses"][0]["city"].toString());
+      });
+    });
   }
 
   Future<String> getUserName() async {
@@ -45,6 +73,8 @@ class _PatientUIState extends State<PatientUI> {
           fname = (value["firstName"].toString());
           lname = (value["lastName"].toString());
           address = (value["houses"]);
+          // imgUrl = (value["url"].toString()) ?? "";
+          // print("**************imageUrl = $imgUrl");
         });
       },
     );
@@ -684,15 +714,40 @@ class _PatientUIState extends State<PatientUI> {
                           ),
                         ),
                         SizedBox(height: 7),
-                        Container(
-                          // height: 30,
-                          alignment: Alignment.centerRight,
-                          // width: double.infinity,
-                          // color: Colors.red,
-                          child: CircleAvatar(
-                            radius: 47,
-                            child: ClipOval(
-                              child: Image.asset('assets/patientavatar.png'),
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) =>
+                                    ViewPhoto(imgUrl ?? "", "patient")));
+                          },
+                          child: Container(
+                            // height: 30,
+                            alignment: Alignment.centerRight,
+                            // width: double.infinity,
+                            // color: Colors.red,
+                            child: CircleAvatar(
+                              backgroundColor: Colors.white,
+                              radius: 47,
+                              // backgroundImage: (imgUrl != "" && imgUrl != null)
+                              //     ? NetworkImage(imgUrl)
+                              //     : Image.asset('assets/therapistavatar.png'),
+                              child: ClipOval(
+                                clipBehavior: Clip.hardEdge,
+                                child: (imgUrl != "" && imgUrl != null)
+                                    ? CachedNetworkImage(
+                                        imageUrl: imgUrl,
+                                        fit: BoxFit.cover,
+                                        width: 400,
+                                        height: 400,
+                                        placeholder: (context, url) =>
+                                            new CircularProgressIndicator(),
+                                        errorWidget: (context, url, error) =>
+                                            new Icon(Icons.error),
+                                      )
+                                    : Image.asset(
+                                        'assets/patientavatar.png',
+                                      ),
+                              ),
                             ),
                           ),
                         ),
@@ -783,7 +838,7 @@ class _PatientUIState extends State<PatientUI> {
                 onPressed: () async {
                   try {
                     await auth.signOut();
-                    Navigator.pushReplacement(context,
+                    Navigator.of(context).pushReplacement(
                         MaterialPageRoute(builder: (context) => Login()));
                   } catch (e) {
                     print(e.toString());

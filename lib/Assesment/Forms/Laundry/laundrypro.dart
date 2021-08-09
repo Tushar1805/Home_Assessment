@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +9,7 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistdash.dart';
 
 import '../../../constants.dart';
+import 'package:path/path.dart';
 
 ///Frame of this page:
 ///       contructor function:
@@ -42,6 +45,12 @@ class LaundryPro extends ChangeNotifier {
   var test = TextEditingController();
   final FormsRepository formsRepository = FormsRepository();
   final FirebaseAuth auth = FirebaseAuth.instance;
+  String videoName = '';
+  String videoDownloadUrl;
+  String selectedRequestId;
+  String videoUrl;
+  File video;
+  bool isVideoSelected = false;
 
   LaundryPro(this.roomname, this.wholelist, this.accessname) {
     _speech = stt.SpeechToText();
@@ -83,11 +92,32 @@ class LaundryPro extends ChangeNotifier {
   /// This fucntion helps us to create such fields which will be needed to fill extra
   /// data sunch as fields generated dynamically.
   Future<void> setinitials() async {
+    if (wholelist[7][accessname].containsKey('videos')) {
+      if (wholelist[7][accessname]['videos'].containsKey('name')) {
+      } else {
+        wholelist[7][accessname]['videos']['name'] = "";
+      }
+      if (wholelist[7][accessname]['videos'].containsKey('url')) {
+      } else {
+        wholelist[7][accessname]['videos']['url'] = "";
+      }
+    } else {
+      // print('Yes,it is');
+
+      wholelist[7][accessname]["videos"] = {'name': '', 'url': ''};
+    }
     if (wholelist[7][accessname]['question']["7"].containsKey('doorwidth')) {
     } else {
       print('getting created');
       wholelist[7][accessname]['question']["7"]['doorwidth'] = 0;
     }
+  }
+
+  Future<void> addVideo(String path) {
+    video = File(path);
+    videoName = basename(video.path);
+    isVideoSelected = true;
+    notifyListeners();
   }
 
   /// This fucntion will help us to get role of the logged in user

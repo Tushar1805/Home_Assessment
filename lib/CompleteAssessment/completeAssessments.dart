@@ -564,15 +564,15 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
   Widget getRoute(innerlist, roomname, accessname, index) {
     if (innerlist['name'] == 'Living Room') {
       Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => LivingRoom(
-                      roomname, widget.wholelist, accessname, widget.docID)))
-          .then((value) => setState(() {
-                widget.wholelist[index][accessname]['complete'] =
-                    value['complete'];
-                // widget.wholelist[index]['']
-              }));
+          context,
+          MaterialPageRoute(
+              builder: (context) => LivingRoom(
+                  roomname, widget.wholelist, accessname, widget.docID)));
+      // .then((value) => setState(() {
+      //       widget.wholelist[index][accessname]['complete'] =
+      //           value['complete'];
+      //       // widget.wholelist[index]['']
+      //     }));
     } else if (innerlist['name'] == 'Kitchen') {
       Navigator.push(
               context,

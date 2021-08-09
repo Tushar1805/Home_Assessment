@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 
 import '../../../constants.dart';
+import 'package:path/path.dart';
 
 class BathroomPro extends ChangeNotifier {
   String roomname, docID;
@@ -30,6 +33,12 @@ class BathroomPro extends ChangeNotifier {
   var test = TextEditingController();
   final FormsRepository formsRepository = FormsRepository();
   final FirebaseAuth auth = FirebaseAuth.instance;
+  String videoName = '';
+  String videoDownloadUrl;
+  String selectedRequestId;
+  String videoUrl;
+  File video;
+  bool isVideoSelected = false;
 
   BathroomPro(this.roomname, this.wholelist, this.accessname, this.docID) {
     _speech = stt.SpeechToText();
@@ -67,6 +76,20 @@ class BathroomPro extends ChangeNotifier {
   }
 
   Future<void> setinitials() async {
+    if (wholelist[5][accessname].containsKey('videos')) {
+      if (wholelist[5][accessname]['videos'].containsKey('name')) {
+      } else {
+        wholelist[5][accessname]['videos']['name'] = "";
+      }
+      if (wholelist[5][accessname]['videos'].containsKey('url')) {
+      } else {
+        wholelist[5][accessname]['videos']['url'] = "";
+      }
+    } else {
+      // print('Yes,it is');
+
+      wholelist[5][accessname]["videos"] = {'name': '', 'url': ''};
+    }
     if (wholelist[5][accessname]['question']["7"].containsKey('doorwidth')) {
     } else {
       print('getting created');
@@ -93,6 +116,13 @@ class BathroomPro extends ChangeNotifier {
     } else {
       wholelist[5][accessname]['question']["17"]['sidefentrance'] = '';
     }
+  }
+
+  Future<void> addVideo(String path) {
+    video = File(path);
+    videoName = basename(video.path);
+    isVideoSelected = true;
+    notifyListeners();
   }
 
   Future<String> getRole() async {

@@ -1,13 +1,19 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
 import 'package:tryapp/constants.dart';
+import '../ViewVideo.dart';
 import './garagepro.dart';
+import 'package:path/path.dart';
 
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
@@ -36,6 +42,9 @@ class _GarageUIState extends State<GarageUI> {
   int stepsizes = 0;
   int stepcount = 0;
   Color colorb = Color.fromRGBO(10, 80, 106, 1);
+  String videoDownloadUrl, videoUrl, videoName;
+  File video;
+  bool uploading = false;
   var test = TextEditingController();
   @override
   void initState() {
@@ -46,6 +55,22 @@ class _GarageUIState extends State<GarageUI> {
   }
 
   Future<void> setinitialsdata() async {
+    if (widget.wholelist[9][widget.accessname].containsKey('videos')) {
+      if (widget.wholelist[9][widget.accessname]['videos']
+          .containsKey('name')) {
+      } else {
+        widget.wholelist[9][widget.accessname]['videos']['name'] = "";
+      }
+      if (widget.wholelist[9][widget.accessname]['videos'].containsKey('url')) {
+      } else {
+        widget.wholelist[9][widget.accessname]['videos']['url'] = "";
+      }
+    } else {
+      // print('Yes,it is');
+
+      widget.wholelist[9][widget.accessname]
+          ["videos"] = {'name': '', 'url': ''};
+    }
     if (widget.wholelist[9][widget.accessname]['question']["9"]
         .containsKey('MultipleStair')) {
       if (widget.wholelist[9][widget.accessname]['question']["9"]
@@ -75,6 +100,13 @@ class _GarageUIState extends State<GarageUI> {
               curUid = user.uid;
               assessor = value.data["assessor"];
               therapist = value.data["therapist"];
+              videoUrl = widget.wholelist[9][widget.accessname]["videos"]["url"]
+                      .toString() ??
+                  "";
+              videoName = widget.wholelist[9][widget.accessname]["videos"]
+                          ["name"]
+                      .toString() ??
+                  "";
             }));
   }
 
@@ -113,6 +145,244 @@ class _GarageUIState extends State<GarageUI> {
   Widget build(BuildContext context) {
     final assesmentprovider = Provider.of<GaragePro>(context);
     // final NewAssesmentProvider assesmentprovider = NewAssesmentProvider();
+    Future<void> upload(File videos) async {
+      setState(() {
+        uploading = true;
+      });
+      try {
+        print("*************Uploading Video************");
+        String name = 'applicationVideos/' + DateTime.now().toIso8601String();
+        StorageReference ref = FirebaseStorage.instance.ref().child(name);
+
+        StorageUploadTask upload = ref.putFile(videos);
+        String url =
+            (await (await upload.onComplete).ref.getDownloadURL()).toString();
+        setState(() {
+          videoUrl = url;
+          print("************Url = $videoUrl**********");
+          videoName = basename(videos.path);
+          print("************Url = $videoName**********");
+          widget.wholelist[9][widget.accessname]["videos"]["url"] = videoUrl;
+          widget.wholelist[9][widget.accessname]["videos"]["name"] = videoName;
+          NewAssesmentRepository().setForm(widget.wholelist, widget.docID);
+          uploading = false;
+        });
+      } catch (e) {
+        print(e.toString());
+      }
+    }
+
+    Future<void> selectVideo(String source) async {
+      if (video == null) {
+        if (source == 'camera') {
+          final pickedVideo =
+              await ImagePicker().getVideo(source: ImageSource.camera);
+
+          if (pickedVideo != null) {
+            Navigator.pop(context);
+            assesmentprovider.addVideo(pickedVideo.path);
+            // FocusScope.of(context).requestFocus(new FocusNode());
+            setState(() {
+              upload(File(pickedVideo?.path));
+            });
+          } else {
+            Navigator.pop(context);
+            setState(() {});
+            final snackBar = SnackBar(content: Text('Video Not Selected!'));
+            assesmentprovider.notifyListeners();
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+        } else {
+          final pickedVideo =
+              await ImagePicker().getVideo(source: ImageSource.gallery);
+          if (pickedVideo != null) {
+            Navigator.pop(context);
+            assesmentprovider.addVideo(pickedVideo.path);
+            setState(() {
+              upload(File(pickedVideo?.path));
+            });
+          } else {
+            Navigator.pop(context);
+            setState(() {});
+            final snackBar = SnackBar(content: Text('Video Not Selected!'));
+            assesmentprovider.notifyListeners();
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+        }
+      } else {
+        final snackBar =
+            SnackBar(content: Text('Only One Video Can be Uploaded!'));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    }
+
+    void uploadVideo(BuildContext context) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              // actionsPadding: EdgeInsets.fromLTRB(20, 20, 20, 0),
+              title: Center(
+                  child: Text(
+                'Select Video From',
+                style: darkBlackTextStyle()
+                    .copyWith(fontSize: 18.0, fontWeight: FontWeight.w600),
+              )),
+              actions: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      // mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                            width: 200,
+                            height: 80.0,
+                            color: Color(0xFFf0f0fa),
+                            child: InkWell(
+                              onTap: () async {
+                                await selectVideo('camera');
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 25, vertical: 8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.add_a_photo_outlined,
+                                      color: Color.fromRGBO(10, 80, 106, 1),
+                                    ),
+                                    SizedBox(
+                                      height: 5.0,
+                                    ),
+                                    Text('Use Camera')
+                                  ],
+                                ),
+                              ),
+                            )),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                            width: 200,
+                            height: 80.0,
+                            color: Color(0xFFf0f0fa),
+                            child: InkWell(
+                              onTap: () async {
+                                await selectVideo('gallery');
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.photo_library_outlined,
+                                      color: Color.fromRGBO(10, 80, 106, 1),
+                                    ),
+                                    SizedBox(
+                                      height: 5.0,
+                                    ),
+                                    Text('Upload from Gallery')
+                                  ],
+                                ),
+                              ),
+                            )),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(43, 10, 20, 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Note: ",
+                              style: darkBlackTextStyle().copyWith(
+                                  fontSize: 16.0, fontWeight: FontWeight.w600)),
+                          Container(
+                            width: MediaQuery.of(context).size.width * .4,
+                            child: Text("Touch overlay background to exit."),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // SizedBox(height: 10),
+
+                    Container(
+                      padding: EdgeInsets.fromLTRB(28, 10, 20, 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Warning: ",
+                              style: darkBlackTextStyle().copyWith(
+                                  fontSize: 16.0, fontWeight: FontWeight.w600)),
+                          Container(
+                            width: MediaQuery.of(context).size.width * .4,
+                            child: Text(
+                                "You can select only one video so cover all parts of room in one video and make sure you are holding your device vertically."),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
+              ],
+            );
+          });
+    }
+
+    void deleteVideo() {
+      setState(() {
+        video = null;
+        videoName = '';
+        videoUrl = '';
+      });
+
+      assesmentprovider.notifyListeners();
+    }
+
+    Future deleteFile(String imagePath) async {
+      String imagePath1 = 'asssessmentVideos/' + imagePath;
+      try {
+        // FirebaseStorage.instance
+        //     .ref()
+        //     .child(imagePath1)
+        //     .delete()
+        //     .then((_) => print('Successfully deleted $imagePath storage item'));
+        StorageReference ref = await FirebaseStorage.instance
+            .ref()
+            .getStorage()
+            .getReferenceFromUrl(imagePath);
+        ref.delete();
+
+        // FirebaseStorage firebaseStorege = FirebaseStorage.instance;
+        // StorageReference storageReference = firebaseStorege.getReferenceFromUrl(imagePath);
+
+        print('deleteFile(): file deleted');
+        // return url;
+      } catch (e) {
+        print('  deleteFile(): error: ${e.toString()}');
+        throw (e.toString());
+      }
+    }
+
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -189,7 +459,20 @@ class _GarageUIState extends State<GarageUI> {
                                       BorderRadius.all(Radius.circular(50))),
                               // color: Colors.red,
                               child: RawMaterialButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  if (videoUrl == "" && videoName == "") {
+                                    if (curUid == assessor) {
+                                      uploadVideo(context);
+                                    } else {
+                                      _showSnackBar(
+                                          "You are not allowed to upload video",
+                                          context);
+                                    }
+                                  } else {
+                                    _showSnackBar(
+                                        "You can add only one video", context);
+                                  }
+                                },
                                 child: Icon(
                                   Icons.camera_alt,
                                   color: Colors.white,
@@ -201,6 +484,120 @@ class _GarageUIState extends State<GarageUI> {
                       ),
                     ),
                   ),
+                  SizedBox(height: 10),
+                  (uploading)
+                      ? Center(
+                          child: Text("Getting Video...."),
+                        )
+                      : (videoUrl != "" &&
+                              videoUrl != null &&
+                              videoName != "" &&
+                              videoName != null)
+                          ? InkWell(
+                              // ignore: missing_return
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        ViewVideo(videoUrl, widget.roomname)));
+                              },
+                              child: Container(
+                                decoration: new BoxDecoration(
+                                  color: Color(0xFFeeeef5),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(40.0),
+                                  ),
+                                ),
+                                width: (videoName == '' || videoName == null)
+                                    ? 0.0
+                                    : MediaQuery.of(context).size.width - 50,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(
+                                      width: (videoName == '' ||
+                                              videoName == null)
+                                          ? 0.0
+                                          : MediaQuery.of(context).size.width -
+                                              150,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 15.0, vertical: 15.0),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Flexible(
+                                              child: (videoName == null ||
+                                                      videoName == "")
+                                                  ? SizedBox()
+                                                  : Text(
+                                                      "$videoName",
+                                                      style: normalTextStyle()
+                                                          .copyWith(
+                                                              fontSize: 14.0),
+                                                      overflow:
+                                                          TextOverflow.fade,
+                                                      maxLines: 1,
+                                                      softWrap: false,
+                                                    ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Spacer(),
+                                    (videoName == '')
+                                        ? SizedBox()
+                                        : IconButton(
+                                            onPressed: () {
+                                              if (therapist == assessor &&
+                                                  role == "therapist") {
+                                                setState(() {
+                                                  widget.wholelist[9]
+                                                          [widget.accessname]
+                                                      ["videos"]["name"] = "";
+                                                  widget.wholelist[9]
+                                                          [widget.accessname]
+                                                      ["videos"]["url"] = "";
+                                                  deleteFile(videoUrl);
+                                                  deleteVideo();
+                                                  NewAssesmentRepository()
+                                                      .setForm(widget.wholelist,
+                                                          widget.docID);
+                                                });
+                                              } else if (role != "therapist") {
+                                                setState(() {
+                                                  widget.wholelist[9]
+                                                          [widget.accessname]
+                                                      ["videos"]["name"] = "";
+                                                  widget.wholelist[9]
+                                                          [widget.accessname]
+                                                      ["videos"]["url"] = "";
+                                                  deleteFile(videoUrl);
+                                                  deleteVideo();
+                                                  NewAssesmentRepository()
+                                                      .setForm(widget.wholelist,
+                                                          widget.docID);
+                                                });
+                                              } else {
+                                                _showSnackBar(
+                                                    "You can't change the other fields",
+                                                    context);
+                                              }
+                                            },
+                                            icon: Icon(
+                                              Icons.delete_outline_rounded,
+                                              color: Color.fromRGBO(
+                                                  10, 80, 106, 1),
+                                            ),
+                                          ),
+                                    SizedBox(
+                                      width: 15.0,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            )
+                          : SizedBox(),
                   Container(
                     padding: EdgeInsets.all(15),
                     child: Column(
@@ -1320,7 +1717,8 @@ class _GarageUIState extends State<GarageUI> {
                                                         itemBuilder:
                                                             (context, index1) {
                                                           return stepcountswid(
-                                                              index1 + 1);
+                                                              index1 + 1,
+                                                              context);
                                                         },
                                                       ),
                                                     ),
@@ -1744,7 +2142,7 @@ class _GarageUIState extends State<GarageUI> {
     );
   }
 
-  Widget stepcountswid(index) {
+  Widget stepcountswid(index, BuildContext context) {
     return Container(
       child: Column(
         children: [

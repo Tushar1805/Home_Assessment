@@ -1,9 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tryapp/Assesment/Forms/Formsrepo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:path/path.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
+import '../../../constants.dart';
 
 class LivingArrangementsProvider extends ChangeNotifier {
   stt.SpeechToText _speech;
@@ -27,6 +34,18 @@ class LivingArrangementsProvider extends ChangeNotifier {
   String roomname;
   var accessname;
   List<Map<String, dynamic>> wholelist;
+  String imageName = '';
+  String imageDownloadUrl;
+  String imageUrl;
+  File image;
+  bool isImageSelected = false;
+  List<String> mediaList = [];
+  String videoName = '';
+  String videoDownloadUrl;
+  String selectedRequestId;
+  String videoUrl;
+  File video;
+  bool isVideoSelected = false;
 
   LivingArrangementsProvider(this.roomname, this.wholelist, this.accessname) {
     print('helo');
@@ -68,6 +87,20 @@ class LivingArrangementsProvider extends ChangeNotifier {
   }
 
   Future<void> setinitialsdata() async {
+    if (wholelist[1][accessname].containsKey('videos')) {
+      if (wholelist[1][accessname]['videos'].containsKey('name')) {
+      } else {
+        wholelist[1][accessname]['videos']['name'] = "";
+      }
+      if (wholelist[1][accessname]['videos'].containsKey('url')) {
+      } else {
+        wholelist[1][accessname]['videos']['url'] = "";
+      }
+    } else {
+      // print('Yes,it is');
+
+      wholelist[1][accessname]["videos"] = {'name': '', 'url': ''};
+    }
     if (wholelist[1][accessname]['question']["2"].containsKey('Modetrnas')) {
     } else {
       wholelist[1][accessname]['question']["2"]['Modetrnas'] = '';
@@ -145,6 +178,125 @@ class LivingArrangementsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> addVideo(String path) {
+    video = File(path);
+    videoName = basename(video.path);
+    isVideoSelected = true;
+    notifyListeners();
+  }
+
+  void _showSnackBar(snackbar, BuildContext buildContext) {
+    final snackBar = SnackBar(
+      duration: const Duration(seconds: 3),
+      content: Container(
+        height: 30.0,
+        child: Center(
+          child: Text(
+            '$snackbar',
+            style: TextStyle(fontSize: 14.0, color: Colors.white),
+          ),
+        ),
+      ),
+      backgroundColor: lightBlack(),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+    );
+    ScaffoldMessenger.of(buildContext)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(snackBar);
+  }
+
+  Future<void> addImage(String path) {
+    image = File(path);
+    imageName = basename(image.path);
+    isImageSelected = true;
+    notifyListeners();
+  }
+
+  void deleteImage() {
+    image = null;
+    imageName = '';
+    isImageSelected = false;
+    notifyListeners();
+  }
+
+  void addMedia(String url) {
+    if (mediaList.length < 3) {
+      mediaList.add(url);
+      notifyListeners();
+    }
+  }
+
+  void deleteMedia(int index) {
+    mediaList.removeAt(index);
+    notifyListeners();
+  }
+
+  Future<String> uploadImage(image) async {
+    try {
+      String name = 'applicationImages/' + DateTime.now().toIso8601String();
+      final ref = FirebaseStorage.instance.ref().child(name);
+      ref.putFile(image);
+      String url = (await ref.getDownloadURL()).toString();
+      imageDownloadUrl = url;
+      print(imageDownloadUrl);
+      return imageDownloadUrl;
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+  // String name = 'applicationImages/' + DateTime.now().toIso8601String();
+  // final ref = FirebaseStorage.instance.ref().child(name);
+  // ref.putFile(image);
+  // String url = await ref.getDownloadURL();
+  // imageDownloadUrl = url;
+  // return imageDownloadUrl;
+
+  // Future chooseFile() async {
+  //   final picker = ImagePicker();
+  //   String path =
+  //       (await picker.getImage(source: ImageSource.gallery, imageQuality: 40))
+  //           .path;
+
+  //   uploadFile(File(path));
+  // }
+
+  Future uploadFile(List<File> image) async {
+    try {
+      for (var img in image) {
+        print("***********this is the line of error************");
+        String url = await uploadImage(img);
+        mediaList.add(url);
+      }
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future deleteFile(String imagePath, context) async {
+    String imagePath1 = 'asssessmentImages/' + imagePath;
+    try {
+      // FirebaseStorage.instance
+      //     .ref()
+      //     .child(imagePath1)
+      //     .delete()
+      //     .then((_) => print('Successfully deleted $imagePath storage item'));
+      StorageReference ref = await FirebaseStorage.instance
+          .ref()
+          .getStorage()
+          .getReferenceFromUrl(imagePath);
+      ref.delete();
+
+      // FirebaseStorage firebaseStorege = FirebaseStorage.instance;
+      // StorageReference storageReference = firebaseStorege.getReferenceFromUrl(imagePath);
+
+      print('deleteFile(): file deleted');
+      // return url;
+    } catch (e) {
+      print('  deleteFile(): error: ${e.toString()}');
+      throw (e.toString());
+    }
+  }
+
   setdata(index, String value, que) {
     wholelist[1][accessname]['question']["$index"]['Question'] = que;
     if (value.length == 0) {
@@ -158,6 +310,26 @@ class LivingArrangementsProvider extends ChangeNotifier {
     } else {
       if (wholelist[1][accessname]['question']["$index"]['Answer'].length ==
           0) {
+        wholelist[1][accessname]['complete'] += 1;
+        notifyListeners();
+      }
+
+      wholelist[1][accessname]['question']["$index"]['Answer'] = value;
+      notifyListeners();
+    }
+  }
+
+  setFlightData(index, int value, que) {
+    wholelist[1][accessname]['question']["$index"]['Question'] = que;
+    if (value == 0) {
+      if (wholelist[1][accessname]['question']["$index"]['Answer'] == 0) {
+      } else {
+        wholelist[1][accessname]['complete'] -= 1;
+        wholelist[1][accessname]['question']["$index"]['Answer'] = value;
+        notifyListeners();
+      }
+    } else {
+      if (wholelist[1][accessname]['question']["$index"]['Answer'] == 0) {
         wholelist[1][accessname]['complete'] += 1;
         notifyListeners();
       }

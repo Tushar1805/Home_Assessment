@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 Color lightBlack() {
   return Color(0XFF555555);
@@ -6,6 +7,47 @@ Color lightBlack() {
 
 Color lightGray() {
   return Color(0XFFd9d9d9);
+}
+
+Color darkBlack() {
+  return Color(0XFF000000);
+}
+
+Color gray() {
+  return Color(0XFF999999);
+}
+
+Color orangeColor() {
+  return Color(0XFFf59629);
+}
+
+Color redOrangeColor() {
+  return Color(0XFFe76a4b);
+}
+
+TextStyle darkBlackTextStyle() {
+  return TextStyle(
+      fontFamily: 'Source Sans Pro',
+      fontSize: 15,
+      color: darkBlack(),
+      decoration: TextDecoration.none,
+      fontWeight: FontWeight.w900);
+}
+
+TextStyle normalTextStyle() {
+  return TextStyle(
+      fontFamily: 'Source Sans Pro',
+      fontSize: 15,
+      color: lightBlack(),
+      fontWeight: FontWeight.w300);
+}
+
+TextStyle titleBarWhiteTextStyle() {
+  return TextStyle(
+      color: Colors.white,
+      fontSize: 17,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 1.0);
 }
 
 InputDecoration formInputDecoration(hint) {
@@ -48,6 +90,18 @@ void _showSnackBar(snackbar, BuildContext buildContext) {
   ScaffoldMessenger.of(buildContext)
     ..hideCurrentSnackBar()
     ..showSnackBar(snackBar);
+}
+
+Widget loading() {
+  return Container(
+    color: Colors.white,
+    child: Center(
+      child: SpinKitThreeBounce(
+        color: Color.fromRGBO(10, 80, 106, 1),
+        size: 40.0,
+      ),
+    ),
+  );
 }
 
 

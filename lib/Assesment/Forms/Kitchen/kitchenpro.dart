@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 
 import '../../../constants.dart';
+import 'package:path/path.dart';
 
 class KitchenPro extends ChangeNotifier {
   String roomname;
@@ -31,6 +34,12 @@ class KitchenPro extends ChangeNotifier {
   var test = TextEditingController();
   final FormsRepository formsRepository = FormsRepository();
   final FirebaseAuth auth = FirebaseAuth.instance;
+  String videoName = '';
+  String videoDownloadUrl;
+  String selectedRequestId;
+  String videoUrl;
+  File video;
+  bool isVideoSelected = false;
 
   KitchenPro(this.roomname, this.wholelist, this.accessname) {
     _speech = stt.SpeechToText();
@@ -50,6 +59,20 @@ class KitchenPro extends ChangeNotifier {
   }
 
   Future<void> setinitials() async {
+    if (wholelist[3][accessname].containsKey('videos')) {
+      if (wholelist[3][accessname]['videos'].containsKey('name')) {
+      } else {
+        wholelist[3][accessname]['videos']['name'] = "";
+      }
+      if (wholelist[3][accessname]['videos'].containsKey('url')) {
+      } else {
+        wholelist[3][accessname]['videos']['url'] = "";
+      }
+    } else {
+      // print('Yes,it is');
+
+      wholelist[3][accessname]["videos"] = {'name': '', 'url': ''};
+    }
     if (wholelist[3][accessname]['question']["7"].containsKey('doorwidth')) {
     } else {
       print('getting created');
@@ -81,6 +104,13 @@ class KitchenPro extends ChangeNotifier {
         notifyListeners();
       },
     );
+  }
+
+  Future<void> addVideo(String path) {
+    video = File(path);
+    videoName = basename(video.path);
+    isVideoSelected = true;
+    notifyListeners();
   }
 
   setdata(index, value, que) {
@@ -293,7 +323,7 @@ class KitchenPro extends ChangeNotifier {
                     height: 60,
                     margin: EdgeInsets.all(0),
                     child: FloatingActionButton(
-                      heroTag: "btn${index + 1}",
+                      heroTag: "btn${index + 10}",
                       child: Icon(
                         Icons.mic,
                         size: 20,

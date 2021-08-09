@@ -1,14 +1,21 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tryapp/Assesment/Forms/Pathway/pathwaybase.dart';
 import 'dart:io';
 import 'package:tryapp/Assesment/Forms/Pathway/pathwaypro.dart';
 import 'package:provider/provider.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
+import 'package:tryapp/CompleteAssessment/completeAssessmentBase.dart';
 import 'package:tryapp/constants.dart';
+import 'package:path/path.dart';
+
+import '../ViewVideo.dart';
 
 ///Frame of this page:
 ///       init function:
@@ -44,6 +51,7 @@ class _PathwayUIState extends State<PathwayUI> {
   final firestoreInstance = Firestore.instance;
   Map<String, bool> isListening = {};
   bool cur = true;
+  bool curThera = true;
   Color colorb = Color.fromRGBO(10, 80, 106, 1);
   var _textfield = TextEditingController();
   String role, assessor, curUid, therapist;
@@ -52,6 +60,17 @@ class _PathwayUIState extends State<PathwayUI> {
   int stepcount = 0;
   bool isColor = false;
   var test = TextEditingController();
+  String imageDownloadUrl;
+  var _mediaList = <String>[];
+  List<File> _image = [];
+  CollectionReference imgRef;
+  List<dynamic> mediaList = [];
+  bool uploading = false;
+  double value = 0;
+  List<String> path = [];
+  String videoDownloadUrl, videoUrl, videoName;
+  File video;
+
   @override
   void initState() {
     super.initState();
@@ -70,38 +89,37 @@ class _PathwayUIState extends State<PathwayUI> {
           '${widget.wholelist[0][widget.accessname]['question']["${i + 1}"]['Recommendationthera']}';
       colorsset["field${i + 1}"] = Color.fromRGBO(10, 80, 106, 1);
     }
+    // setinitials();
     getRole();
     getAssessData();
-    setinitials();
   }
 
-  /// This fucntion helps us to create such fields which will be needed to fill extra
-  /// data sunch as fields generated dynamically.
-  setinitials() {
-    if (widget.wholelist[0][widget.accessname]['question']["8"]
-        .containsKey('Railling')) {
-    } else {
-      widget.wholelist[0][widget.accessname]['question']["8"]['Railling'] = {
-        'OneSided': {},
-      };
-    }
-    if (widget.wholelist[0][widget.accessname]['question']["7"]
-        .containsKey('MultipleStair')) {
-      if (widget.wholelist[0][widget.accessname]['question']["7"]
-              ['MultipleStair']
-          .containsKey('count')) {
-        setState(() {
-          stepcount = widget.wholelist[0][widget.accessname]['question']["7"]
-              ['MultipleStair']['count'];
-        });
-      }
-    } else {
-      widget.wholelist[0][widget.accessname]['question']["7"]
-          ['MultipleStair'] = {};
-    }
-    print(widget.wholelist[0][widget.accessname]['question']["7"]
-        ['MultipleStair']);
-  }
+  // setinitials() {
+
+  //   if (widget.wholelist[0][widget.accessname]['question']["8"]
+  //       .containsKey('Railling')) {
+  //   } else {
+  //     widget.wholelist[0][widget.accessname]['question']["8"]['Railling'] = {
+  //       'OneSided': {},
+  //     };
+  //   }
+  //   if (widget.wholelist[0][widget.accessname]['question']["7"]
+  //       .containsKey('MultipleStair')) {
+  //     if (widget.wholelist[0][widget.accessname]['question']["7"]
+  //             ['MultipleStair']
+  //         .containsKey('count')) {
+  //       setState(() {
+  //         stepcount = widget.wholelist[0][widget.accessname]['question']["7"]
+  //             ['MultipleStair']['count'];
+  //       });
+  //     }
+  //   } else {
+  //     widget.wholelist[0][widget.accessname]['question']["7"]
+  //         ['MultipleStair'] = {};
+  //   }
+  //   print(widget.wholelist[0][widget.accessname]['question']["7"]
+  //       ['MultipleStair']);
+  // }
 
   /// This fucntion will help us to get role of the logged in user
   Future<String> getRole() async {
@@ -125,6 +143,13 @@ class _PathwayUIState extends State<PathwayUI> {
               curUid = user.uid;
               assessor = value.data["assessor"];
               therapist = value.data["therapist"];
+              videoUrl = widget.wholelist[0][widget.accessname]["videos"]["url"]
+                      .toString() ??
+                  "";
+              videoName = widget.wholelist[0][widget.accessname]["videos"]
+                          ["name"]
+                      .toString() ??
+                  "";
             }));
   }
 
@@ -203,22 +228,255 @@ class _PathwayUIState extends State<PathwayUI> {
     });
   }
 
+  // Future<void> selectImage(String source, PathwayPro pathwaypro) async {
+  //   if (source == 'camera') {
+  //     final pickedImage =
+  //         await ImagePicker().getImage(source: ImageSource.camera);
+  //     if (pickedImage != null) {
+  //       // Navigator.pop(context);
+  //       pathwaypro.addImage(pickedImage.path);
+
+  //       setState(() async {
+  //         path.add(pickedImage.path);
+  //         _image.add(File(pickedImage?.path));
+  //         // print("image = $_image");
+  //         uploading = true;
+  //         await uploadFile(_image);
+  //         widget.wholelist[0][widget.accessname]["images"] = mediaList.toList();
+  //       });
+  //       // Navigator.of(context).pushReplacement(MaterialPageRoute(
+  //       //     builder: (context) => Pathway(widget.roomname,
+  //       //         widget.wholelist, widget.accessname, widget.docID)));
+  //     } else {
+  //       // Navigator.pop(context);
+  //       setState(() {});
+  //       final snackBar = SnackBar(content: Text('Image Not Selected!'));
+  //       pathwaypro.notifyListeners();
+  //       ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  //     }
+  //   } else {
+  //     final pickedImage =
+  //         await ImagePicker().getImage(source: ImageSource.gallery);
+  //     if (pickedImage != null) {
+  //       // Navigator.pop(context);
+  //       pathwaypro.addImage(pickedImage.path);
+
+  //       setState(() async {
+  //         // Navigator.pop(context);
+  //         path.add(pickedImage.path);
+  //         _image.add(File(pickedImage?.path));
+  //         uploading = true;
+  //         await uploadFile(_image);
+  //         // print("selected image= ${_image.toList()}");
+
+  //         widget.wholelist[0][widget.accessname]["images"] = mediaList.toList();
+  //       });
+  //     } else {
+  //       // Navigator.pop(context);
+  //       setState(() {});
+  //       final snackBar = SnackBar(content: Text('Image Not Selected!'));
+  //       pathwaypro.notifyListeners();
+  //       ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  //     }
+  //   }
+  // }
+
+  // void uploadImageClicked(BuildContext context, PathwayPro pathwaypro) {
+  //   showDialog(
+  //       context: context,
+  //       builder: (context) {
+  //         return WillPopScope(
+  //           // ignore: missing_return
+  //           onWillPop: () {
+  //             if (uploading == false) {
+  //               Navigator.of(context).push(MaterialPageRoute(
+  //                   builder: (context) => Pathway(widget.roomname,
+  //                       widget.wholelist, widget.accessname, widget.docID)));
+  //               _showSnackBar("Images Uploaded Successfully", context);
+  //             } else {
+  //               _showSnackBar("Uploading images ", context);
+  //             }
+  //           },
+  //           child: AlertDialog(
+  //             actionsPadding: EdgeInsets.all(20),
+  //             title: Center(
+  //                 child: Text(
+  //               'Select Image From',
+  //               style: darkBlackTextStyle()
+  //                   .copyWith(fontSize: 18.0, fontWeight: FontWeight.w600),
+  //             )),
+  //             actions: [
+  //               Column(
+  //                 crossAxisAlignment: CrossAxisAlignment.center,
+  //                 mainAxisAlignment: MainAxisAlignment.center,
+  //                 children: [
+  //                   Row(
+  //                     // mainAxisSize: MainAxisSize.max,
+  //                     mainAxisAlignment: MainAxisAlignment.center,
+  //                     children: [
+  //                       Container(
+  //                           width: 200,
+  //                           height: 80.0,
+  //                           color: Color(0xFFf0f0fa),
+  //                           child: InkWell(
+  //                             onTap: () async {
+  //                               await selectImage('camera', pathwaypro);
+  //                               print("pressed");
+  //                             },
+  //                             child: Padding(
+  //                               padding: const EdgeInsets.symmetric(
+  //                                   horizontal: 25, vertical: 8.0),
+  //                               child: Column(
+  //                                 mainAxisAlignment: MainAxisAlignment.center,
+  //                                 children: [
+  //                                   Icon(
+  //                                     Icons.add_a_photo_outlined,
+  //                                     color: Color.fromRGBO(10, 80, 106, 1),
+  //                                   ),
+  //                                   SizedBox(
+  //                                     height: 5.0,
+  //                                   ),
+  //                                   Text('Use Camera')
+  //                                 ],
+  //                               ),
+  //                             ),
+  //                           )),
+  //                     ],
+  //                   ),
+  //                   SizedBox(
+  //                     height: 20.0,
+  //                   ),
+  //                   Row(
+  //                     mainAxisSize: MainAxisSize.max,
+  //                     mainAxisAlignment: MainAxisAlignment.center,
+  //                     children: [
+  //                       Container(
+  //                           width: 200,
+  //                           height: 80.0,
+  //                           color: Color(0xFFf0f0fa),
+  //                           child: InkWell(
+  //                             onTap: () async {
+  //                               await selectImage('gallery', pathwaypro);
+  //                             },
+  //                             child: Padding(
+  //                               padding: const EdgeInsets.all(8.0),
+  //                               child: Column(
+  //                                 mainAxisAlignment: MainAxisAlignment.center,
+  //                                 children: [
+  //                                   Icon(
+  //                                     Icons.photo_library_outlined,
+  //                                     color: Color.fromRGBO(10, 80, 106, 1),
+  //                                   ),
+  //                                   SizedBox(
+  //                                     height: 5.0,
+  //                                   ),
+  //                                   Text('Upload from Gallery')
+  //                                 ],
+  //                               ),
+  //                             ),
+  //                           )),
+  //                     ],
+  //                   ),
+  //                   SizedBox(
+  //                     height: 20.0,
+  //                   ),
+  //                   Container(
+  //                     padding: EdgeInsets.fromLTRB(43, 10, 20, 10),
+  //                     child: Row(
+  //                       mainAxisAlignment: MainAxisAlignment.start,
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: [
+  //                         Text("Note: ",
+  //                             style: darkBlackTextStyle().copyWith(
+  //                                 fontSize: 16.0, fontWeight: FontWeight.w600)),
+  //                         Container(
+  //                           width: MediaQuery.of(context).size.width * .4,
+  //                           child: Text("Touch overlay background to exit."),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+
+  //                   // SizedBox(height: 10),
+
+  //                   Container(
+  //                     padding: EdgeInsets.fromLTRB(28, 10, 20, 10),
+  //                     child: Row(
+  //                       mainAxisAlignment: MainAxisAlignment.start,
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       children: [
+  //                         Text("Warning: ",
+  //                             style: darkBlackTextStyle().copyWith(
+  //                                 fontSize: 16.0, fontWeight: FontWeight.w600)),
+  //                         Container(
+  //                           width: MediaQuery.of(context).size.width * .4,
+  //                           child: Text(
+  //                               "You can select only one video so cover all parts of room in one video."),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+
+  //                   // SizedBox(height: 10),
+  //                   // Text("Note: Touch overlay background to exit"),
+  //                 ],
+  //               ),
+  //               SizedBox(
+  //                 height: 20.0,
+  //               ),
+  //             ],
+  //           ),
+  //         );
+  //       });
+  // }
+
+  // Future uploadFile(List<File> image) async {
+  //   print("**************Uploading image***************");
+
+  //   int i = 1;
+  //   for (var img in image) {
+  //     setState(() {
+  //       value = i / image.length * 100;
+  //     });
+  //     try {
+  //       String name = 'applicationImages/' + DateTime.now().toIso8601String();
+  //       StorageReference ref = FirebaseStorage.instance.ref().child(name);
+
+  //       StorageUploadTask upload = ref.putFile(img);
+  //       String url =
+  //           (await (await upload.onComplete).ref.getDownloadURL()).toString();
+  //       // imageDownloadUrl = url;
+  //       mediaList.add(url);
+  //       print("URL = $url");
+  //       i++;
+  //     } catch (e) {
+  //       print(e.toString());
+  //     }
+  //   }
+  //   setState(() {
+  //     uploading = false;
+  //   });
+  // }
+
+  /// This fucntion helps us to create such fields which will be needed to fill extra
+  /// data sunch as fields generated dynamically.
+
 // This function is used to control and camera button
 //
 //  Note: Image picker do not work with speech_to_text.
-  Future getImage(bool isCamera) async {
-    // File image;
-    // if (isCamera) {
-    //   // ignore: deprecated_member_use
-    //   image = await ImagePicker.pickImage(source: ImageSource.camera);
-    // } else {
-    //   // ignore: deprecated_member_use
-    //   image = await ImagePicker.pickImage(source: ImageSource.gallery);
-    // }
-    // setState(() {
-    //   _image = image;
-    // });
-  }
+  // Future getImage(bool isCamera) async {
+  // File image;
+  // if (isCamera) {
+  //   // ignore: deprecated_member_use
+  //   image = await ImagePicker.pickImage(source: ImageSource.camera);
+  // } else {
+  //   // ignore: deprecated_member_use
+  //   image = await ImagePicker.pickImage(source: ImageSource.gallery);
+  // }
+  // setState(() {
+  //   _image = image;
+  // });
+  // }
   void _showSnackBar(snackbar, BuildContext buildContext) {
     final snackBar = SnackBar(
       duration: const Duration(seconds: 3),
@@ -243,6 +501,245 @@ class _PathwayUIState extends State<PathwayUI> {
   @override
   Widget build(BuildContext context) {
     final pathwaypro = Provider.of<PathwayPro>(context);
+
+    Future<void> upload(File videos) async {
+      setState(() {
+        uploading = true;
+      });
+      try {
+        print("*************Uploading Video************");
+        String name = 'applicationVideos/' + DateTime.now().toIso8601String();
+        StorageReference ref = FirebaseStorage.instance.ref().child(name);
+
+        StorageUploadTask upload = ref.putFile(videos);
+        String url =
+            (await (await upload.onComplete).ref.getDownloadURL()).toString();
+        setState(() {
+          videoUrl = url;
+          print("************Url = $videoUrl**********");
+          videoName = basename(videos.path);
+          print("************Url = $videoName**********");
+          widget.wholelist[0][widget.accessname]["videos"]["url"] = videoUrl;
+          widget.wholelist[0][widget.accessname]["videos"]["name"] = videoName;
+          NewAssesmentRepository().setForm(widget.wholelist, widget.docID);
+          uploading = false;
+        });
+      } catch (e) {
+        print(e.toString());
+      }
+    }
+
+    Future<void> selectVideo(String source) async {
+      if (video == null) {
+        if (source == 'camera') {
+          final pickedVideo =
+              await ImagePicker().getVideo(source: ImageSource.camera);
+
+          if (pickedVideo != null) {
+            Navigator.pop(context);
+            pathwaypro.addVideo(pickedVideo.path);
+            // FocusScope.of(context).requestFocus(new FocusNode());
+            setState(() {
+              upload(File(pickedVideo?.path));
+            });
+          } else {
+            Navigator.pop(context);
+            setState(() {});
+            final snackBar = SnackBar(content: Text('Video Not Selected!'));
+            pathwaypro.notifyListeners();
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+        } else {
+          final pickedVideo =
+              await ImagePicker().getVideo(source: ImageSource.gallery);
+          if (pickedVideo != null) {
+            Navigator.pop(context);
+            pathwaypro.addVideo(pickedVideo.path);
+            setState(() {
+              upload(File(pickedVideo?.path));
+            });
+          } else {
+            Navigator.pop(context);
+            setState(() {});
+            final snackBar = SnackBar(content: Text('Video Not Selected!'));
+            pathwaypro.notifyListeners();
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+        }
+      } else {
+        final snackBar =
+            SnackBar(content: Text('Only One Video Can be Uploaded!'));
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
+    }
+
+    void uploadVideo(BuildContext context) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              // actionsPadding: EdgeInsets.fromLTRB(20, 20, 20, 0),
+              title: Center(
+                  child: Text(
+                'Select Video From',
+                style: darkBlackTextStyle()
+                    .copyWith(fontSize: 18.0, fontWeight: FontWeight.w600),
+              )),
+              actions: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      // mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                            width: 200,
+                            height: 80.0,
+                            color: Color(0xFFf0f0fa),
+                            child: InkWell(
+                              onTap: () async {
+                                await selectVideo('camera');
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 25, vertical: 8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.add_a_photo_outlined,
+                                      color: Color.fromRGBO(10, 80, 106, 1),
+                                    ),
+                                    SizedBox(
+                                      height: 5.0,
+                                    ),
+                                    Text('Use Camera')
+                                  ],
+                                ),
+                              ),
+                            )),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                            width: 200,
+                            height: 80.0,
+                            color: Color(0xFFf0f0fa),
+                            child: InkWell(
+                              onTap: () async {
+                                await selectVideo('gallery');
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Icon(
+                                      Icons.photo_library_outlined,
+                                      color: Color.fromRGBO(10, 80, 106, 1),
+                                    ),
+                                    SizedBox(
+                                      height: 5.0,
+                                    ),
+                                    Text('Upload from Gallery')
+                                  ],
+                                ),
+                              ),
+                            )),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20.0,
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(43, 10, 20, 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Note: ",
+                              style: darkBlackTextStyle().copyWith(
+                                  fontSize: 16.0, fontWeight: FontWeight.w600)),
+                          Container(
+                            width: MediaQuery.of(context).size.width * .4,
+                            child: Text("Touch overlay background to exit."),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // SizedBox(height: 10),
+
+                    Container(
+                      padding: EdgeInsets.fromLTRB(28, 10, 20, 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Warning: ",
+                              style: darkBlackTextStyle().copyWith(
+                                  fontSize: 16.0, fontWeight: FontWeight.w600)),
+                          Container(
+                            width: MediaQuery.of(context).size.width * .4,
+                            child: Text(
+                                "You can select only one video so cover all parts of room in one video and make sure you are holding your device vertically."),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
+              ],
+            );
+          });
+    }
+
+    void deleteVideo() {
+      setState(() {
+        video = null;
+        videoName = '';
+        videoUrl = '';
+      });
+
+      pathwaypro.notifyListeners();
+    }
+
+    Future deleteFile(String imagePath) async {
+      String imagePath1 = 'asssessmentVideos/' + imagePath;
+      try {
+        // FirebaseStorage.instance
+        //     .ref()
+        //     .child(imagePath1)
+        //     .delete()
+        //     .then((_) => print('Successfully deleted $imagePath storage item'));
+        StorageReference ref = await FirebaseStorage.instance
+            .ref()
+            .getStorage()
+            .getReferenceFromUrl(imagePath);
+        ref.delete();
+
+        // FirebaseStorage firebaseStorege = FirebaseStorage.instance;
+        // StorageReference storageReference = firebaseStorege.getReferenceFromUrl(imagePath);
+
+        print('deleteFile(): file deleted');
+        // return url;
+      } catch (e) {
+        print('  deleteFile(): error: ${e.toString()}');
+        throw (e.toString());
+      }
+    }
+
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -301,7 +798,18 @@ class _PathwayUIState extends State<PathwayUI> {
                               // color: Colors.red,
                               child: RawMaterialButton(
                                 onPressed: () {
-                                  getImage(true);
+                                  if (videoUrl == "" && videoName == "") {
+                                    if (curUid == assessor) {
+                                      uploadVideo(context);
+                                    } else {
+                                      _showSnackBar(
+                                          "You are not allowed to upload video",
+                                          context);
+                                    }
+                                  } else {
+                                    _showSnackBar(
+                                        "You can add only one video", context);
+                                  }
                                 },
                                 child: Icon(
                                   Icons.camera_alt,
@@ -314,6 +822,263 @@ class _PathwayUIState extends State<PathwayUI> {
                       ),
                     ),
                   ),
+                  // SizedBox(height: 10),
+                  // (widget.wholelist[0][widget.accessname]["images"].length != 0)
+                  //     ? Row(
+                  //         children: [
+                  //           Expanded(
+                  //             child: SizedBox(
+                  //                 height: 120.0,
+                  //                 child: GridView.builder(
+                  //                     scrollDirection: Axis.horizontal,
+                  //                     itemCount: mediaList.length ?? 0,
+                  //                     // gridDelegate:
+                  //                     //     SliverGridDelegateWithMaxCrossAxisExtent(
+                  //                     //         maxCrossAxisExtent: 180,
+                  //                     //         childAspectRatio: 1.5,
+                  //                     //         crossAxisSpacing: 20,
+                  //                     //         mainAxisSpacing: 10),
+                  //                     gridDelegate:
+                  //                         SliverGridDelegateWithMaxCrossAxisExtent(
+                  //                       maxCrossAxisExtent: 150,
+                  //                       mainAxisSpacing: 10,
+                  //                       crossAxisSpacing: 10,
+                  //                     ),
+                  //                     itemBuilder: (context, index) {
+                  //                       return Stack(
+                  //                         children: [
+                  //                           InkWell(
+                  //                             onTap: () {
+                  //                               Navigator.of(context).push(
+                  //                                   MaterialPageRoute(
+                  //                                       builder: (context) =>
+                  //                                           ViewPhoto(
+                  //                                               mediaList[
+                  //                                                   index],
+                  //                                               widget
+                  //                                                   .roomname)));
+                  //                             },
+                  //                             child: Card(
+                  //                               color: Colors.grey[300],
+                  //                               elevation: 0,
+                  //                               child: Container(
+                  //                                 margin: EdgeInsets.all(5),
+                  //                                 alignment: Alignment.center,
+                  //                                 decoration: BoxDecoration(
+                  //                                   borderRadius:
+                  //                                       BorderRadius.circular(
+                  //                                           20),
+                  //                                 ),
+
+                  //                                 child: Image.network(
+                  //                                     mediaList[index],
+                  //                                     fit: BoxFit.cover),
+
+                  //                                 // child: ,
+                  //                               ),
+                  //                             ),
+                  //                           ),
+                  //                           Positioned(
+                  //                             right: 0.0,
+                  //                             child: GestureDetector(
+                  //                               onTap: () {
+                  //                                 if (therapist == assessor &&
+                  //                                     role == "therapist") {
+                  //                                   widget.wholelist[0]
+                  //                                           [widget.accessname]
+                  //                                           ["images"]
+                  //                                       .removeAt(index);
+                  //                                   pathwaypro.deleteFile(
+                  //                                       mediaList[index],
+                  //                                       context);
+                  //                                   mediaList.removeAt(index);
+                  //                                   _image.removeAt(index);
+                  //                                   path.removeAt(index);
+
+                  //                                   Navigator.of(context).pushReplacement(
+                  //                                       MaterialPageRoute(
+                  //                                           builder: (context) => Pathway(
+                  //                                               widget.roomname,
+                  //                                               widget
+                  //                                                   .wholelist,
+                  //                                               widget
+                  //                                                   .accessname,
+                  //                                               widget.docID)));
+                  //                                 } else if (role !=
+                  //                                     "therapist") {
+                  //                                   widget.wholelist[0]
+                  //                                           [widget.accessname]
+                  //                                           ["images"]
+                  //                                       .removeAt(index);
+                  //                                   pathwaypro.deleteFile(
+                  //                                       mediaList[index],
+                  //                                       context);
+                  //                                   mediaList.removeAt(index);
+                  //                                   _image.removeAt(index);
+                  //                                   path.removeAt(index);
+
+                  //                                   Navigator.of(context).pushReplacement(
+                  //                                       MaterialPageRoute(
+                  //                                           builder: (context) => Pathway(
+                  //                                               widget.roomname,
+                  //                                               widget
+                  //                                                   .wholelist,
+                  //                                               widget
+                  //                                                   .accessname,
+                  //                                               widget.docID)));
+                  //                                 } else {
+                  //                                   _showSnackBar(
+                  //                                       "You are not allowed to delete images",
+                  //                                       context);
+                  //                                 }
+                  //                               },
+                  //                               child: Align(
+                  //                                 alignment: Alignment.topRight,
+                  //                                 child: CircleAvatar(
+                  //                                   radius: 14.0,
+                  //                                   backgroundColor:
+                  //                                       Colors.white,
+                  //                                   child: Icon(Icons.close,
+                  //                                       color: Colors.red),
+                  //                                 ),
+                  //                               ),
+                  //                             ),
+                  //                           ),
+                  //                           // Align(
+                  //                           //   alignment: Alignment.topRight,
+                  //                           //   child: CircleAvatar(
+                  //                           //     radius: 14.0,
+                  //                           //     backgroundColor: Colors.white,
+                  //                           //     child: IconButton(
+                  //                           //         icon: Icon(Icons.close),
+                  //                           //         color: Colors.red,
+                  //                           //         onPressed: () {}),
+                  //                           //   ),
+                  //                           // )
+                  //                         ],
+                  //                       );
+                  //                       // IconButton(
+                  //                       //     icon: Icon(Icons.delete),
+                  //                       //     onPressed: () {})
+                  //                     })),
+                  //           ),
+                  //         ],
+                  //       )
+                  //     : SizedBox(),
+                  SizedBox(height: 10),
+                  (uploading)
+                      ? Center(
+                          child: Text("Getting Video...."),
+                        )
+                      : (videoUrl != "" &&
+                              videoUrl != null &&
+                              videoName != "" &&
+                              videoName != null)
+                          ? InkWell(
+                              // ignore: missing_return
+                              onTap: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        ViewVideo(videoUrl, widget.roomname)));
+                              },
+                              child: Container(
+                                decoration: new BoxDecoration(
+                                  color: Color(0xFFeeeef5),
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(40.0),
+                                  ),
+                                ),
+                                width: (videoName == '' || videoName == null)
+                                    ? 0.0
+                                    : MediaQuery.of(context).size.width - 50,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(
+                                      width: (videoName == '' ||
+                                              videoName == null)
+                                          ? 0.0
+                                          : MediaQuery.of(context).size.width -
+                                              150,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 15.0, vertical: 15.0),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Flexible(
+                                              child: (videoName == null ||
+                                                      videoName == "")
+                                                  ? SizedBox()
+                                                  : Text(
+                                                      "$videoName",
+                                                      style: normalTextStyle()
+                                                          .copyWith(
+                                                              fontSize: 14.0),
+                                                      overflow:
+                                                          TextOverflow.fade,
+                                                      maxLines: 1,
+                                                      softWrap: false,
+                                                    ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Spacer(),
+                                    (videoName == '')
+                                        ? SizedBox()
+                                        : IconButton(
+                                            onPressed: () {
+                                              if (therapist == assessor &&
+                                                  role == "therapist") {
+                                                setState(() {
+                                                  widget.wholelist[0]
+                                                          [widget.accessname]
+                                                      ["videos"]["name"] = "";
+                                                  widget.wholelist[0]
+                                                          [widget.accessname]
+                                                      ["videos"]["url"] = "";
+                                                  deleteFile(videoUrl);
+                                                  deleteVideo();
+                                                  NewAssesmentRepository()
+                                                      .setForm(widget.wholelist,
+                                                          widget.docID);
+                                                });
+                                              } else if (role != "therapist") {
+                                                setState(() {
+                                                  widget.wholelist[0]
+                                                          [widget.accessname]
+                                                      ["videos"]["name"] = "";
+                                                  widget.wholelist[0]
+                                                          [widget.accessname]
+                                                      ["videos"]["url"] = "";
+                                                  deleteFile(videoUrl);
+                                                  deleteVideo();
+                                                  NewAssesmentRepository()
+                                                      .setForm(widget.wholelist,
+                                                          widget.docID);
+                                                });
+                                              } else {
+                                                _showSnackBar(
+                                                    "You can't change the other fields",
+                                                    context);
+                                              }
+                                            },
+                                            icon: Icon(
+                                              Icons.delete_outline_rounded,
+                                              color: Color.fromRGBO(
+                                                  10, 80, 106, 1),
+                                            ),
+                                          ),
+                                    // SizedBox(
+                                    //   width: 15.0,
+                                    // )
+                                  ],
+                                ),
+                              ),
+                            )
+                          : SizedBox(),
                   Container(
                     padding: EdgeInsets.all(15),
                     child: Column(
@@ -368,7 +1133,9 @@ class _PathwayUIState extends State<PathwayUI> {
                             )
                           ],
                         ),
-                        (getvalue(1) == 'Yes') ? getrecomain(1) : SizedBox(),
+                        (getvalue(1) == 'Yes')
+                            ? getrecomain(1, false, context)
+                            : SizedBox(),
                         SizedBox(height: 15),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -536,7 +1303,9 @@ class _PathwayUIState extends State<PathwayUI> {
                             )
                           ],
                         ),
-                        (getvalue(4) == 'No') ? getrecomain(4) : SizedBox(),
+                        (getvalue(4) == 'No')
+                            ? getrecomain(4, true, context)
+                            : SizedBox(),
                         SizedBox(
                           height: 15,
                         ),
@@ -594,7 +1363,7 @@ class _PathwayUIState extends State<PathwayUI> {
                         (getvalue(5) != "")
                             ? (int.parse(getvalue(5)) < 30 &&
                                     int.parse(getvalue(5)) > 0)
-                                ? getrecomain(5)
+                                ? getrecomain(5, true, context)
                                 : SizedBox()
                             : SizedBox(),
                         SizedBox(
@@ -648,7 +1417,9 @@ class _PathwayUIState extends State<PathwayUI> {
                             )
                           ],
                         ),
-                        (getvalue(6) == 'No') ? getrecomain(6) : SizedBox(),
+                        (getvalue(6) == 'No')
+                            ? getrecomain(6, true, context)
+                            : SizedBox(),
 
                         SizedBox(
                           height: 15,
@@ -1210,7 +1981,8 @@ class _PathwayUIState extends State<PathwayUI> {
                                                         itemBuilder:
                                                             (context, index1) {
                                                           return stepcountswid(
-                                                              index1 + 1);
+                                                              index1 + 1,
+                                                              context);
                                                         },
                                                       ),
                                                     ),
@@ -1276,7 +2048,7 @@ class _PathwayUIState extends State<PathwayUI> {
                           ],
                         ),
                         (getvalue(8) == 'On Neither Side')
-                            ? getrecomain(8)
+                            ? getrecomain(8, true, context)
                             : (getvalue(8) == 'One Side')
                                 ? Container(
                                     child: Column(
@@ -1406,7 +2178,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                         ),
                                       ),
                                       (role == 'therapist')
-                                          ? getrecowid(8)
+                                          ? getrecowid(8, true, context)
                                           : SizedBox()
                                     ],
                                   ))
@@ -1469,7 +2241,7 @@ class _PathwayUIState extends State<PathwayUI> {
                         (getvalue(9) != "")
                             ? (int.parse(getvalue(9)) > 5)
                                 ? (role == 'therapist')
-                                    ? getrecowid(9)
+                                    ? getrecowid(9, true, context)
                                     : SizedBox()
                                 : SizedBox()
                             : SizedBox(),
@@ -1542,7 +2314,7 @@ class _PathwayUIState extends State<PathwayUI> {
                           ],
                         ),
                         (getvalue(10) != 'Fairy Well' && getvalue(10) != '')
-                            ? getrecomain(10)
+                            ? getrecomain(10, true, context)
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -1614,7 +2386,7 @@ class _PathwayUIState extends State<PathwayUI> {
                           ],
                         ),
                         (getvalue(11) != 'Fairy Well' && getvalue(11) != '')
-                            ? getrecomain(11)
+                            ? getrecomain(11, true, context)
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -1705,7 +2477,7 @@ class _PathwayUIState extends State<PathwayUI> {
   }
 
   /// this fucntion helps us to listent to hte done button at the bottom
-  void listenbutton(BuildContext buildContext) {
+  void listenbutton(BuildContext context) {
     var test = widget.wholelist[0][widget.accessname]["complete"];
     for (int i = 0;
         i < widget.wholelist[0][widget.accessname]['question'].length;
@@ -1722,17 +2494,20 @@ class _PathwayUIState extends State<PathwayUI> {
       setdatalisten(i + 1);
     }
     if (test == 0) {
-      _showSnackBar("You Must Have to Fill The Details First", buildContext);
+      _showSnackBar("You Must Have to Fill The Details First", context);
     } else {
       NewAssesmentRepository().setLatestChangeDate(widget.docID);
       NewAssesmentRepository().setForm(widget.wholelist, widget.docID);
       Navigator.pop(context, widget.wholelist[0][widget.accessname]);
+      // Navigator.of(buildContext).pushReplacement(MaterialPageRoute(
+      //     builder: (context) =>
+      //         CompleteAssessmentBase(widget.wholelist, widget.docID, role)));
     }
   }
 
   /// This fucntion is to take care of speeck to text mic button and place the text in
   /// the particular field.
-  void _listen(index) async {
+  void _listen(index, bool isthera) async {
     if (!isListening['field$index']) {
       bool available = await _speech.initialize(
         onStatus: (val) {
@@ -1751,18 +2526,33 @@ class _PathwayUIState extends State<PathwayUI> {
           colorsset["field$index"] = Color.fromRGBO(10, 80, 106, 1);
           isListening['field$index'] = true;
         });
-        _speech.listen(
-          onResult: (val) => setState(() {
-            _controllers["field$index"].text = widget.wholelist[0]
-                        [widget.accessname]['question']["$index"]
-                    ['Recommendation'] +
-                " " +
-                val.recognizedWords;
-            // if (val.hasConfidenceRating && val.confidence > 0) {
-            //   _confidence = val.confidence;
-            // }
-          }),
-        );
+        if (isthera) {
+          _speech.listen(
+            onResult: (val) => setState(() {
+              _controllerstreco["field$index"].text = widget.wholelist[0]
+                          [widget.accessname]['question']["$index"]
+                      ['Recommendationthera'] +
+                  " " +
+                  val.recognizedWords;
+              // if (val.hasConfidenceRating && val.confidence > 0) {
+              //   _confidence = val.confidence;
+              // }
+            }),
+          );
+        } else {
+          _speech.listen(
+            onResult: (val) => setState(() {
+              _controllers["field$index"].text = widget.wholelist[0]
+                          [widget.accessname]['question']["$index"]
+                      ['Recommendation'] +
+                  " " +
+                  val.recognizedWords;
+              // if (val.hasConfidenceRating && val.confidence > 0) {
+              //   _confidence = val.confidence;
+              // }
+            }),
+          );
+        }
       }
     } else {
       setState(() {
@@ -1793,9 +2583,17 @@ class _PathwayUIState extends State<PathwayUI> {
     });
   }
 
+  setdatalistenThera(index) {
+    setState(() {
+      widget.wholelist[0][widget.accessname]['question']["$index"]
+          ['Recommendationthera'] = _controllerstreco["field$index"].text;
+      curThera = !curThera;
+    });
+  }
+
   /// This is a widget function which returns is the recommendation fields and the
   /// priority field.
-  Widget getrecomain(int index) {
+  Widget getrecomain(int index, bool isthera, BuildContext context) {
     return SingleChildScrollView(
       // reverse: true,
       child: Container(
@@ -1837,7 +2635,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                 const Duration(milliseconds: 100),
                             repeat: true,
                             child: FloatingActionButton(
-                              heroTag: "btn$index",
+                              heroTag: "btn${index + 100}",
                               child: Icon(
                                 Icons.mic,
                                 size: 20,
@@ -1845,10 +2643,10 @@ class _PathwayUIState extends State<PathwayUI> {
                               onPressed: () {
                                 if (assessor == therapist &&
                                     role == "therapist") {
-                                  _listen(index);
+                                  _listen(index, false);
                                   setdatalisten(index);
                                 } else if (role != "therapist") {
-                                  _listen(index);
+                                  _listen(index, false);
                                   setdatalisten(index);
                                 } else {
                                   _showSnackBar(
@@ -1879,14 +2677,16 @@ class _PathwayUIState extends State<PathwayUI> {
                 },
               ),
             ),
-            (role == 'therapist') ? getrecowid(index) : SizedBox(),
+            (role == 'therapist')
+                ? getrecowid(index, isthera, context)
+                : SizedBox(),
           ],
         ),
       ),
     );
   }
 
-  Widget getrecowid(index) {
+  Widget getrecowid(index, bool isthera, BuildContext context) {
     if (widget.wholelist[0][widget.accessname]["question"]["$index"]
             ["Recommendationthera"] !=
         "") {
@@ -1908,7 +2708,40 @@ class _PathwayUIState extends State<PathwayUI> {
                 borderSide: BorderSide(
                     width: 1, color: (isColor) ? Colors.green : Colors.red),
               ),
-              suffix: Icon(Icons.mic),
+              suffix: Container(
+                // color: Colors.red,
+                width: 40,
+                height: 30,
+                padding: EdgeInsets.all(0),
+                child: Row(children: [
+                  Container(
+                    // color: Colors.green,
+                    alignment: Alignment.center,
+                    width: 40,
+                    height: 60,
+                    margin: EdgeInsets.all(0),
+                    child: AvatarGlow(
+                      animate: isListening['field$index'],
+                      glowColor: Theme.of(context).primaryColor,
+                      endRadius: 500.0,
+                      duration: const Duration(milliseconds: 2000),
+                      repeatPauseDuration: const Duration(milliseconds: 100),
+                      repeat: true,
+                      child: FloatingActionButton(
+                        heroTag: "btn$index",
+                        child: Icon(
+                          Icons.mic,
+                          size: 20,
+                        ),
+                        onPressed: () {
+                          _listen(index, true);
+                          setdatalistenThera(index);
+                        },
+                      ),
+                    ),
+                  ),
+                ]),
+              ),
               labelStyle:
                   TextStyle(color: (isColor) ? Colors.green : Colors.red),
               labelText: 'Recomendation'),
@@ -1963,7 +2796,7 @@ class _PathwayUIState extends State<PathwayUI> {
 
   /// This function is specific for the pathwayui. this is used to generate the
   /// steps field based on dynamic and multiple stairs to store data of each stair
-  Widget stepcountswid(index) {
+  Widget stepcountswid(index, BuildContext context) {
     return Container(
       child: Column(
         children: [

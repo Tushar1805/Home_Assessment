@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tryapp/Assesment/Forms/Kitchen/kitchenpro.dart';
 import 'package:tryapp/Assesment/Forms/Patio/patioUI.dart';
+import 'package:tryapp/Assesment/Forms/Patio/patiopro.dart';
 import '../../newassesment/newassesmentpro.dart';
 import './patioUI.dart';
 import 'package:provider/provider.dart';
@@ -13,9 +15,11 @@ class Patio extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Center(
-      child: ChangeNotifierProvider<NewAssesmentProvider>(
-          create: (_) => NewAssesmentProvider(""),
-          child: PatioUI(roomname, wholelist, accessname, docID)),
+      child: MultiProvider(providers: [
+        ChangeNotifierProvider<NewAssesmentProvider>(
+            create: (_) => NewAssesmentProvider("")),
+        ChangeNotifierProvider<PatioProvider>(create: (_) => PatioProvider())
+      ], child: PatioUI(roomname, wholelist, accessname, docID)),
     ));
   }
 }

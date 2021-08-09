@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
@@ -6,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 
 import '../../../constants.dart';
+import 'package:path/path.dart';
 
 class BedroomPro extends ChangeNotifier {
   String roomname;
@@ -30,6 +33,12 @@ class BedroomPro extends ChangeNotifier {
   var test = TextEditingController();
   final FormsRepository formsRepository = FormsRepository();
   final FirebaseAuth auth = FirebaseAuth.instance;
+  String videoName = '';
+  String videoDownloadUrl;
+  String selectedRequestId;
+  String videoUrl;
+  File video;
+  bool isVideoSelected = false;
   BedroomPro(this.roomname, this.wholelist, this.accessname) {
     _speech = stt.SpeechToText();
     for (int i = 0; i < wholelist[6][accessname]['question'].length; i++) {
@@ -66,6 +75,20 @@ class BedroomPro extends ChangeNotifier {
   }
 
   Future<void> setinitials() async {
+    if (wholelist[6][accessname].containsKey('videos')) {
+      if (wholelist[6][accessname]['videos'].containsKey('name')) {
+      } else {
+        wholelist[6][accessname]['videos']['name'] = "";
+      }
+      if (wholelist[6][accessname]['videos'].containsKey('url')) {
+      } else {
+        wholelist[6][accessname]['videos']['url'] = "";
+      }
+    } else {
+      // print('Yes,it is');
+
+      wholelist[6][accessname]["videos"] = {'name': '', 'url': ''};
+    }
     if (wholelist[6][accessname]['question']["7"].containsKey('doorwidth')) {
     } else {
       wholelist[6][accessname]['question']["7"]['doorwidth'] = 0;
@@ -91,6 +114,13 @@ class BedroomPro extends ChangeNotifier {
     // } else {
     //   wholelist[6][accessname]['question']["17"]['sidefentrance'] = '';
     // }
+  }
+
+  Future<void> addVideo(String path) {
+    video = File(path);
+    videoName = basename(video.path);
+    isVideoSelected = true;
+    notifyListeners();
   }
 
   Future<String> getRole() async {
@@ -293,7 +323,7 @@ class BedroomPro extends ChangeNotifier {
                     height: 60,
                     margin: EdgeInsets.all(0),
                     child: FloatingActionButton(
-                      heroTag: "btn${index + 1}",
+                      heroTag: "btn${index + 10}",
                       child: Icon(
                         Icons.mic,
                         size: 20,

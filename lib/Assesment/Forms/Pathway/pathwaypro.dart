@@ -1,9 +1,13 @@
+import 'dart:io';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tryapp/Assesment/Forms/Formsrepo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:path/path.dart';
 
 class PathwayPro extends ChangeNotifier {
   stt.SpeechToText _speech;
@@ -29,6 +33,12 @@ class PathwayPro extends ChangeNotifier {
   String roomname;
   var accessname;
   List<Map<String, dynamic>> wholelist;
+  String videoName = '';
+  String videoDownloadUrl;
+  String selectedRequestId;
+  String videoUrl;
+  File video;
+  bool isVideoSelected = false;
 
   PathwayPro(this.roomname, this.wholelist, this.accessname) {
     _speech = stt.SpeechToText();
@@ -49,6 +59,21 @@ class PathwayPro extends ChangeNotifier {
   }
 
   setinitials() {
+    if (wholelist[0][accessname].containsKey('videos')) {
+      if (wholelist[0][accessname]['videos'].containsKey('name')) {
+      } else {
+        wholelist[0][accessname]['videos']['name'] = "";
+      }
+      if (wholelist[0][accessname]['videos'].containsKey('url')) {
+      } else {
+        wholelist[0][accessname]['videos']['url'] = "";
+      }
+    } else {
+      // print('Yes,it is');
+
+      wholelist[0][accessname]["videos"] = {'name': '', 'url': ''};
+    }
+
     if (wholelist[0][accessname]['question']["8"].containsKey('Railling')) {
     } else {
       wholelist[0][accessname]['question']["8"]['Railling'] = {
@@ -67,6 +92,13 @@ class PathwayPro extends ChangeNotifier {
       wholelist[0][accessname]['question']["7"]['MultipleStair'] = {};
     }
     print(wholelist[0][accessname]['question']["7"]['MultipleStair']);
+  }
+
+  Future<void> addVideo(String path) {
+    video = File(path);
+    videoName = basename(video.path);
+    isVideoSelected = true;
+    notifyListeners();
   }
 
   Future<String> getRole() async {
@@ -139,6 +171,56 @@ class PathwayPro extends ChangeNotifier {
     // setState(() {
     //   _image = image;
     // });
+  }
+  // Future<void> addImage(String path) {
+  //   image = File(path);
+  //   imageName = basename(image.path);
+  //   isImageSelected = true;
+  //   notifyListeners();
+  // }
+
+  // void deleteImage() {
+  //   image = null;
+  //   imageName = '';
+  //   isImageSelected = false;
+  //   notifyListeners();
+  // }
+
+  // void addMedia(String url) {
+  //   if (mediaList.length < 3) {
+  //     mediaList.add(url);
+  //     notifyListeners();
+  //   }
+  // }
+
+  // void deleteMedia(int index) {
+  //   mediaList.removeAt(index);
+  //   notifyListeners();
+  // }
+
+  Future deleteFile(String imagePath, context) async {
+    String imagePath1 = 'asssessmentImages/' + imagePath;
+    try {
+      // FirebaseStorage.instance
+      //     .ref()
+      //     .child(imagePath1)
+      //     .delete()
+      //     .then((_) => print('Successfully deleted $imagePath storage item'));
+      StorageReference ref = await FirebaseStorage.instance
+          .ref()
+          .getStorage()
+          .getReferenceFromUrl(imagePath);
+      ref.delete();
+
+      // FirebaseStorage firebaseStorege = FirebaseStorage.instance;
+      // StorageReference storageReference = firebaseStorege.getReferenceFromUrl(imagePath);
+
+      print('deleteFile(): file deleted');
+      // return url;
+    } catch (e) {
+      print('  deleteFile(): error: ${e.toString()}');
+      throw (e.toString());
+    }
   }
 
   void listen(index) async {
