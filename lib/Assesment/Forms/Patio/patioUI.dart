@@ -27,10 +27,10 @@ class PatioUI extends StatefulWidget {
 }
 
 class _PatioUIState extends State<PatioUI> {
-  final firestoreInstance = Firestore.instance;
+  final firestoreInstance = FirebaseFirestore.instance;
   FirebaseAuth _auth = FirebaseAuth.instance;
   stt.SpeechToText _speech;
-  bool _isListening = false;
+  bool _isListening = false, saveToForm = false;
   double _confidence = 1.0;
   bool available = false, isColor = false;
   Map<String, Color> colorsset = {};
@@ -117,15 +117,15 @@ class _PatioUIState extends State<PatioUI> {
   }
 
   Future<void> getAssessData() async {
-    final FirebaseUser user = await _auth.currentUser();
+    final User user = await _auth.currentUser;
     firestoreInstance
         .collection("assessments")
-        .document(widget.docID)
+        .doc(widget.docID)
         .get()
         .then((value) => setState(() {
               curUid = user.uid;
-              assessor = value.data["assessor"];
-              therapist = value.data["therapist"];
+              assessor = value["assessor"];
+              therapist = value["therapist"];
               videoUrl = widget.wholelist[8][widget.accessname]["videos"]["url"]
                       .toString() ??
                   "";
@@ -137,8 +137,8 @@ class _PatioUIState extends State<PatioUI> {
   }
 
   Future<String> getRole() async {
-    final FirebaseUser useruid = await _auth.currentUser();
-    firestoreInstance.collection("users").document(useruid.uid).get().then(
+    final User useruid = await _auth.currentUser;
+    firestoreInstance.collection("users").doc(useruid.uid).get().then(
       (value) {
         setState(() {
           role = (value["role"].toString()).split(" ")[0];
@@ -248,11 +248,10 @@ class _PatioUIState extends State<PatioUI> {
       try {
         print("*************Uploading Video************");
         String name = 'applicationVideos/' + DateTime.now().toIso8601String();
-        StorageReference ref = FirebaseStorage.instance.ref().child(name);
+        Reference ref = FirebaseStorage.instance.ref().child(name);
 
-        StorageUploadTask upload = ref.putFile(videos);
-        String url =
-            (await (await upload.onComplete).ref.getDownloadURL()).toString();
+        UploadTask upload = ref.putFile(videos);
+        String url = (await (await upload).ref.getDownloadURL()).toString();
         setState(() {
           videoUrl = url;
           print("************Url = $videoUrl**********");
@@ -462,10 +461,7 @@ class _PatioUIState extends State<PatioUI> {
         //     .child(imagePath1)
         //     .delete()
         //     .then((_) => print('Successfully deleted $imagePath storage item'));
-        StorageReference ref = await FirebaseStorage.instance
-            .ref()
-            .getStorage()
-            .getReferenceFromUrl(imagePath);
+        Reference ref = await FirebaseStorage.instance.refFromURL(imagePath);
         ref.delete();
 
         // FirebaseStorage firebaseStorege = FirebaseStorage.instance;
@@ -500,9 +496,20 @@ class _PatioUIState extends State<PatioUI> {
                     setdatalisten(i + 1);
                     setdatalistenthera(i + 1);
                   }
-                  if (test == 0) {
-                    _showSnackBar(
-                        "You Must Have to Fill The Details First", context);
+                  // if (test == 0) {
+                  //   _showSnackBar(
+                  //       "You Must Have to Fill The Details First", context);
+                  // } else {
+                  if (role == "therapist") {
+                    // if (saveToForm) {
+                    NewAssesmentRepository().setLatestChangeDate(widget.docID);
+                    NewAssesmentRepository()
+                        .setForm(widget.wholelist, widget.docID);
+                    Navigator.pop(
+                        context, widget.wholelist[8][widget.accessname]);
+                    // } else {
+                    //   _showSnackBar("Provide all recommendations", context);
+                    // }
                   } else {
                     NewAssesmentRepository().setLatestChangeDate(widget.docID);
                     NewAssesmentRepository()
@@ -510,6 +517,7 @@ class _PatioUIState extends State<PatioUI> {
                     Navigator.pop(
                         context, widget.wholelist[8][widget.accessname]);
                   }
+                  // }
                 } catch (e) {
                   print(e.toString());
                 }
@@ -1837,7 +1845,7 @@ class _PatioUIState extends State<PatioUI> {
                                               items: [
                                                 DropdownMenuItem(
                                                   child: Text('--'),
-                                                  value: '',
+                                                  value: '--',
                                                 ),
                                                 DropdownMenuItem(
                                                   child: Text('Left'),
@@ -2086,9 +2094,22 @@ class _PatioUIState extends State<PatioUI> {
                         setdatalisten(i + 1);
                         setdatalistenthera(i + 1);
                       }
-                      if (test == 0) {
-                        _showSnackBar(
-                            "You Must Have to Fill The Details First", context);
+                      // if (test == 0) {
+                      //   _showSnackBar(
+                      //       "You Must Have to Fill The Details First", context);
+                      // } else {
+                      if (role == "therapist") {
+                        // if (saveToForm) {
+                        NewAssesmentRepository()
+                            .setLatestChangeDate(widget.docID);
+                        NewAssesmentRepository()
+                            .setForm(widget.wholelist, widget.docID);
+                        Navigator.pop(
+                            context, widget.wholelist[8][widget.accessname]);
+                        // } else {
+                        //   _showSnackBar(
+                        //       "Provide all recommendations", context);
+                        // }
                       } else {
                         NewAssesmentRepository()
                             .setLatestChangeDate(widget.docID);
@@ -2097,6 +2118,7 @@ class _PatioUIState extends State<PatioUI> {
                         Navigator.pop(
                             context, widget.wholelist[8][widget.accessname]);
                       }
+                      // }
                     },
                   ))
                 ],
@@ -2201,8 +2223,12 @@ class _PatioUIState extends State<PatioUI> {
             ["Recommendationthera"] !=
         "") {
       isColor = true;
+      saveToForm = true;
+      widget.wholelist[8][widget.accessname]["isSave"] = saveToForm;
     } else {
       isColor = false;
+      saveToForm = false;
+      widget.wholelist[8][widget.accessname]["isSave"] = saveToForm;
     }
     return Column(
       children: [

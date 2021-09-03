@@ -83,8 +83,8 @@ final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
 class CompleteAssessmentUI extends StatefulWidget {
   List<Map<String, dynamic>> wholelist;
-  String docID;
-  CompleteAssessmentUI(this.wholelist, this.docID);
+  String docID, role;
+  CompleteAssessmentUI(this.wholelist, this.docID, this.role);
   @override
   _CompleteAssessmentState createState() => _CompleteAssessmentState();
 }
@@ -140,18 +140,18 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
   }
 
   getRole() async {
-    FirebaseUser user = await _auth.currentUser();
-    await Firestore.instance
+    User user = await _auth.currentUser;
+    await FirebaseFirestore.instance
         .collection("users")
-        .document(user.uid)
+        .doc(user.uid)
         .get()
         .then((value) => setState(() {
-              role = value["role"];
+              role = value.data()["role"];
             }));
   }
 
   Future<String> getcurrentuid() async {
-    final FirebaseUser user = await _auth.currentUser();
+    final User user = await _auth.currentUser;
     // print(useruid);
     return user.uid.toString();
   }
@@ -404,39 +404,131 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                       ),
                     ),
                     onPressed: () async {
-                      final FirebaseUser user = await _auth.currentUser();
+                      bool save = false;
+                      print("********Start*****");
                       await Future.delayed(const Duration(milliseconds: 1500),
                           () {
                         for (int i = 0; i < widget.wholelist.length; i++) {
-                          for (int j = 1;
-                              j <= widget.wholelist[i]['count'];
-                              j++) {
-                            print(widget.wholelist[i]['count']);
+                          print("********1st loop*****");
+                          print("length = ${widget.wholelist.length}");
+                          int count = widget.wholelist[i]['count'] ?? 0;
+                          print("count = $count");
+                          if (count > 0) {
+                            for (int j = 1; j <= count; j++) {
+                              print("********2nd loop*****");
+                              if (widget.wholelist[i]["room$j"]["complete"] ==
+                                  gettotal(widget.wholelist[i]["name"])) {
+                                // setState(() {
+                                //   save = true;
+                                // });
+                                if (role == "therapist") {
+                                  if (widget.wholelist[i]["room$j"]["isSave"] !=
+                                          null &&
+                                      widget.wholelist[i]["room$j"]["isSave"] ==
+                                          true) {
+                                    setState(() {
+                                      save = true;
+                                    });
+                                    print("***********1************");
+                                  } else {
+                                    setState(() {
+                                      save = false;
+                                    });
+                                    print("***********2************");
+                                    break;
+                                  }
+                                }else{
+                                   setState(() {
+                                      save = true;
+                                    });
+                                }
+                              } else {
+                                setState(() {
+                                  save = false;
+                                });
+                                print("***********3************");
+                                break;
+                              }
+                            }
                           }
                         }
                       });
-                      // // print(widget.wholelist);
-                      // NewAssesmentRepository().setassessmentclosingtime(docID);
-                      if (role == 'therapist') {
-                        NewAssesmentRepository().setAssessmentCurrentStatus(
-                            "Report Generated", widget.docID);
-                        NewAssesmentRepository()
-                            .setAssessmentCompletionDate(widget.docID);
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) => Therapist()));
-                      } else if (role == 'nurse/case manager') {
-                        NewAssesmentRepository().setAssessmentCurrentStatus(
-                            "Assessment Finished", widget.docID);
-                        Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(builder: (context) => Nurse()));
-                      } else if (role == 'patient') {
-                        NewAssesmentRepository().setAssessmentCurrentStatus(
-                            "Assessment Finished", widget.docID);
-                        Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(builder: (context) => Patient()));
+                      if (widget.role == 'therapist') {
+                        if (save == true) {
+                          NewAssesmentRepository().setAssessmentCurrentStatus(
+                              "Report Generated", widget.docID);
+                          NewAssesmentRepository()
+                              .setStatus("old", widget.docID);
+                          NewAssesmentRepository()
+                              .setAssessmentCompletionDate(widget.docID);
+                          // Navigator.of(context).pop();
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => Therapist()));
+                        } else {
+                          _showSnackBar(
+                              "You must have to give all the recommendations",
+                              context);
+                        }
+                      } else if (widget.role == 'nurse/case manager') {
+                        print("#############");
+                        if (save == true) {
+                          print("**************");
+                          NewAssesmentRepository().setAssessmentCurrentStatus(
+                              "Assessment Finished", widget.docID);
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (context) => Nurse()));
+                        } else {
+                          _showSnackBar("Complete the forms first", context);
+                        }
+                      } else if (widget.role == "patient") {
+                        if (save == true) {
+                          NewAssesmentRepository().setAssessmentCurrentStatus(
+                              "Assessment Finished", widget.docID);
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => Patient()));
+                        } else {
+                          _showSnackBar("Complete the forms first", context);
+                        }
                       }
-                      NewAssesmentRepository()
-                          .setLatestChangeDate(widget.docID);
+                      // } else {
+                      //   _showSnackBar(
+                      //       "You Must Have to Fill All Details", context);
+                      // }
+                      // if (save == true) {
+                      //   NewAssesmentRepository()
+                      //       .setLatestChangeDate(widget.docID);
+
+                      //   NewAssesmentRepository()
+                      //       .setForm(widget.wholelist, widget.docID);
+                      //   _showSnackBar(
+                      //       "Assessment Submitted Successfully", context);
+                      // } else {
+                      //   _showSnackBar("Complete the forms first", context);
+                      // }
+                      // // // print(widget.wholelist);
+                      // // NewAssesmentRepository().setassessmentclosingtime(docID);
+                      // if (role == 'therapist') {
+                      //   NewAssesmentRepository().setAssessmentCurrentStatus(
+                      //       "Report Generated", widget.docID);
+                      //   NewAssesmentRepository()
+                      //       .setAssessmentCompletionDate(widget.docID);
+                      //   Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      //       builder: (context) => Therapist()));
+                      // } else if (role == 'nurse/case manager') {
+                      //   NewAssesmentRepository().setAssessmentCurrentStatus(
+                      //       "Assessment Finished", widget.docID);
+                      //   Navigator.of(context).pushReplacement(
+                      //       MaterialPageRoute(builder: (context) => Nurse()));
+                      // } else if (role == 'patient') {
+                      //   NewAssesmentRepository().setAssessmentCurrentStatus(
+                      //       "Assessment Finished", widget.docID);
+                      //   Navigator.of(context).pushReplacement(
+                      //       MaterialPageRoute(builder: (context) => Patient()));
+                      // }
+                      // NewAssesmentRepository()
+                      //     .setLatestChangeDate(widget.docID);
                     },
                     loadingSwitchInCurve: Curves.bounceInOut,
                     loadingTransitionBuilder: (child, animation) {
@@ -470,6 +562,34 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
             ],
           )),
     );
+  }
+
+  gettotal(String classname) {
+    if (classname == 'Garage') {
+      return 12;
+    } else if (classname == 'Patio') {
+      return 12;
+    } else if (classname == 'Laundry') {
+      return 14;
+    } else if (classname == 'Bedroom') {
+      return 18;
+    } else if (classname == 'Bathroom') {
+      return 28;
+    } else if (classname == 'Dining Room') {
+      return 13;
+    } else if (classname == 'Kitchen') {
+      return 18;
+    } else if (classname == 'Living Room') {
+      return 12;
+    } else if (classname == 'Living Arrangements') {
+      return 14;
+    } else if (classname == 'Pathway') {
+      return 12;
+    } else if (classname == 'Basement') {
+      return 5;
+    } else if (classname == 'Swimming Pool') {
+      return 7;
+    }
   }
 
   /// This is the card function used to dispaly the card.

@@ -14,10 +14,10 @@ class KitchenPro extends ChangeNotifier {
   String roomname;
   var accessname;
   List<Map<String, dynamic>> wholelist;
-  final firestoreInstance = Firestore.instance;
+  final firestoreInstance = FirebaseFirestore.instance;
   FirebaseAuth _auth = FirebaseAuth.instance;
   bool obstacle = false;
-  bool grabbarneeded = false;
+  bool grabbarneeded = false, saveToForm = false;
   stt.SpeechToText _speech;
   bool _isListening = false;
   double _confidence = 1.0;
@@ -97,8 +97,8 @@ class KitchenPro extends ChangeNotifier {
   }
 
   Future<String> getRole() async {
-    final FirebaseUser useruid = await _auth.currentUser();
-    firestoreInstance.collection("users").document(useruid.uid).get().then(
+    final User useruid = await _auth.currentUser;
+    firestoreInstance.collection("users").doc(useruid.uid).get().then(
       (value) {
         type = (value["role"].toString()).split(" ")[0];
         notifyListeners();
@@ -293,8 +293,12 @@ class KitchenPro extends ChangeNotifier {
     if (wholelist[3][accessname]["question"]["$index"]["Recommendationthera"] !=
         "") {
       isColor = true;
+      saveToForm = true;
+      wholelist[3][accessname]["isSave"] = saveToForm;
     } else {
       isColor = false;
+      saveToForm = false;
+      wholelist[3][accessname]["isSave"] = saveToForm;
     }
     return Column(
       children: [
@@ -323,7 +327,7 @@ class KitchenPro extends ChangeNotifier {
                     height: 60,
                     margin: EdgeInsets.all(0),
                     child: FloatingActionButton(
-                      heroTag: "btn${index + 10}",
+                      heroTag: "btn${index + 100}",
                       child: Icon(
                         Icons.mic,
                         size: 20,

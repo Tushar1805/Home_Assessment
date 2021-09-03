@@ -26,8 +26,8 @@ class PatientUI extends StatefulWidget {
 
 class _PatientUIState extends State<PatientUI> {
   FirebaseAuth auth = FirebaseAuth.instance;
-  final firestoreInstance = Firestore.instance;
-  FirebaseUser curuser;
+  final firestoreInstance = FirebaseFirestore.instance;
+  User curuser;
   var fname, lname, curUid, address, therapistUid, theraFName, theraLName;
   String imgUrl = "";
 
@@ -42,20 +42,16 @@ class _PatientUIState extends State<PatientUI> {
   }
 
   Future<void> setImage() async {
-    final FirebaseUser useruid = await auth.currentUser();
-    firestoreInstance
-        .collection("users")
-        .document(useruid.uid)
-        .get()
-        .then((value) {
+    final User useruid = await auth.currentUser;
+    firestoreInstance.collection("users").doc(useruid.uid).get().then((value) {
       setState(() {
-        if (value["url"] != null) {
-          imgUrl = (value["url"].toString()) ?? "";
+        if (value.data()["url"] != null) {
+          imgUrl = (value.data()["url"].toString()) ?? "";
         } else {
           firestoreInstance
               .collection("users")
-              .document(useruid.uid)
-              .setData({'url': ''}, merge: true);
+              .doc(useruid.uid)
+              .set({'url': ''}, SetOptions(merge: true));
           imgUrl = "";
         }
 
@@ -66,13 +62,13 @@ class _PatientUIState extends State<PatientUI> {
   }
 
   Future<String> getUserName() async {
-    final FirebaseUser useruid = await auth.currentUser();
-    firestoreInstance.collection("users").document(useruid.uid).get().then(
+    final User useruid = await auth.currentUser;
+    firestoreInstance.collection("users").doc(useruid.uid).get().then(
       (value) {
         setState(() {
-          fname = (value["firstName"].toString());
-          lname = (value["lastName"].toString());
-          address = (value["houses"]);
+          fname = (value.data()["firstName"].toString());
+          lname = (value.data()["lastName"].toString());
+          address = (value.data()["houses"]);
           // imgUrl = (value["url"].toString()) ?? "";
           // print("**************imageUrl = $imgUrl");
         });
@@ -81,13 +77,13 @@ class _PatientUIState extends State<PatientUI> {
   }
 
   Future<void> getTherapistDetails() async {
-    final FirebaseUser useruid = await auth.currentUser();
+    final User useruid = await auth.currentUser;
     if (therapistUid != null) {
-      firestoreInstance.collection("users").document(therapistUid).get().then(
+      firestoreInstance.collection("users").doc(therapistUid).get().then(
         (value) {
           setState(() {
-            theraFName = (value["firstName"].toString());
-            theraLName = (value["lastName"].toString());
+            theraFName = (value.data()["firstName"].toString());
+            theraLName = (value.data()["lastName"].toString());
           });
         },
       );
@@ -96,7 +92,7 @@ class _PatientUIState extends State<PatientUI> {
   }
 
   Future<void> getCurrentUid() async {
-    final FirebaseUser useruid = await auth.currentUser();
+    final User useruid = await auth.currentUser;
     setState(() {
       curUid = useruid.uid;
     });
@@ -173,7 +169,7 @@ class _PatientUIState extends State<PatientUI> {
           elevation: 3,
           color: Color.fromRGBO(10, 80, 106, 1),
           onPressed: () {
-            _showSnackBar("Assessor Will Begin the Assessment Soon");
+            _showSnackBar("Assessor will begin the assessment soon");
           },
           child: Text(
             "Assessment Scheduled",
@@ -227,7 +223,7 @@ class _PatientUIState extends State<PatientUI> {
           elevation: 3,
           color: Color.fromRGBO(10, 80, 106, 1),
           onPressed: () {
-            _showSnackBar("Wait for Assessor to Finish the Assessment");
+            _showSnackBar("Wait for the assessor to finish the assessment");
           },
           child: Text(
             "Assessment in Progress",
@@ -280,7 +276,7 @@ class _PatientUIState extends State<PatientUI> {
           elevation: 3,
           color: Color.fromRGBO(10, 80, 106, 1),
           onPressed: () {
-            _showSnackBar("Wait for Therapist to Provide Recommendations");
+            _showSnackBar("Wait for the therapist to Prpvide recommendations");
           },
           child: Text(
             "Assessment Finished",
@@ -305,7 +301,7 @@ class _PatientUIState extends State<PatientUI> {
           elevation: 3,
           color: Color.fromRGBO(10, 80, 106, 1),
           onPressed: () {
-            _showSnackBar("Wait for Therapist to Provide Recommendations");
+            _showSnackBar("Wait for the therapist to Prpvide recommendations");
           },
           child: Text(
             "Assessment Finished",
@@ -368,11 +364,8 @@ class _PatientUIState extends State<PatientUI> {
                       itemBuilder: (context, index) {
                         // print(assesspro.datasetmain.length);
                         // return;
-                        return listdata(
-                            assesspro.datasetmain["$index"],
-                            assesspro.dataset.documents[index],
-                            assesspro,
-                            context);
+                        return listdata(assesspro.datasetmain["$index"],
+                            assesspro.dataset.docs[index], assesspro, context);
                       },
                     ),
                   ),
@@ -382,15 +375,15 @@ class _PatientUIState extends State<PatientUI> {
 
   Widget listdata(snapshot, assessmentdata, PatientProvider assesspro,
       BuildContext buildContext) {
-    therapistUid = assessmentdata.data["therapist"] ?? "";
+    therapistUid = assessmentdata.data()["therapist"] ?? "";
 
     List<Map<String, dynamic>> list = [];
 
-    if (assessmentdata.data["form"] != null) {
+    if (assessmentdata.data()["form"] != null) {
       list = List<Map<String, dynamic>>.generate(
-          assessmentdata.data["form"].length,
+          assessmentdata.data()["form"].length,
           (int index) => Map<String, dynamic>.from(
-              assessmentdata.data["form"].elementAt(index)));
+              assessmentdata.data()["form"].elementAt(index)));
     }
 
     Widget getDate(String label, var date) {
@@ -453,7 +446,11 @@ class _PatientUIState extends State<PatientUI> {
               style: TextStyle(fontSize: 16, color: Colors.black45),
             ),
             Text(
-              '${assesspro.capitalize(address1[0]["address1"])}, ${assesspro.capitalize(address1[0]["address2"])}, ${assesspro.capitalize(address1[0]["city"])} ' ??
+              // ${name[0].toUpperCase()}${name.substring(1)}
+              '${(address1[0]["address1"] != "") ? address1[0]["address1"][0].toString().toUpperCase() : ""}'
+                      '${(address1[0]["address1"] != "") ? address1[0]["address1"].toString().substring(1) : ""},'
+                      '${(address1[0]["address2"] != "") ? address1[0]["address2"][0].toString().toUpperCase() : ""}${(address1[0]["address2"] != "") ? address1[0]["address2"].toString().substring(1) : ""},'
+                      '${(address1[0]["city"] != "") ? address1[0]["city"][0].toString().toUpperCase() : ""}${(address1[0]["city"] != "") ? address1[0]["city"].toString().substring(1) : ""} ' ??
                   "Patient Home Address: Nagpur",
               style: TextStyle(
                 fontSize: 16,
@@ -489,7 +486,8 @@ class _PatientUIState extends State<PatientUI> {
               style: TextStyle(fontSize: 16, color: Colors.black45),
             ),
             Text(
-              '${assesspro.capitalize(snap["firstName"])} ${assesspro.capitalize(snap["lastName"])}',
+              '${(snap["firstName"] != "") ? snap["firstName"][0].toString().toUpperCase() : ""}${(snap["firstName"] != "") ? snap["firstName"].toString().substring(1) : ""} '
+              '${(snap["lastName"] != "") ? snap["lastName"][0].toString().toUpperCase() : ""}${(snap["lastName"] != "") ? snap["lastName"].toString().substring(1) : ""} ',
               style: TextStyle(
                 fontSize: 16,
               ),
@@ -580,18 +578,39 @@ class _PatientUIState extends State<PatientUI> {
                               getAddress(address),
                               SizedBox(height: 2.5),
                               Divider(),
-                              getDate(
-                                  "Completion Date: ",
-                                  assessmentdata
-                                      .data["assessmentCompletionDate"]),
+                              (assessmentdata.data()[
+                                              "assessmentCompletionDate"] !=
+                                          null &&
+                                      assessmentdata.data()[
+                                              "assessmentCompletionDate"] !=
+                                          "")
+                                  ? getDate(
+                                      "Completion Date: ",
+                                      assessmentdata
+                                          .data()["assessmentCompletionDate"])
+                                  : SizedBox(),
                               // SizedBox(height: 2.5),
                               // Divider(
                               //   height: 1,
                               // ),
                               // getDate("Latest Change: ",
                               //     snapshot["latestChangeDate"]),
-                              SizedBox(height: 2.5),
-                              Divider(),
+                              (assessmentdata.data()[
+                                              "assessmentCompletionDate"] !=
+                                          null &&
+                                      assessmentdata.data()[
+                                              "assessmentCompletionDate"] !=
+                                          "")
+                                  ? SizedBox(height: 2.5)
+                                  : SizedBox(),
+                              (assessmentdata.data()[
+                                              "assessmentCompletionDate"] !=
+                                          null &&
+                                      assessmentdata.data()[
+                                              "assessmentCompletionDate"] !=
+                                          "")
+                                  ? Divider()
+                                  : SizedBox(),
                               Container(
                                 child: Wrap(children: [
                                   Text(
@@ -600,7 +619,7 @@ class _PatientUIState extends State<PatientUI> {
                                         fontSize: 16, color: Colors.black45),
                                   ),
                                   Text(
-                                    '${assessmentdata.data["currentStatus"]}',
+                                    '${assessmentdata.data()["currentStatus"]}',
                                     style: TextStyle(
                                       fontSize: 16,
                                     ),
@@ -631,11 +650,11 @@ class _PatientUIState extends State<PatientUI> {
                     ],
                   ),
                   getButton(
-                      assessmentdata.data["currentStatus"],
-                      assessmentdata.data["patient"],
-                      assessmentdata.data["assessor"],
+                      assessmentdata.data()["currentStatus"],
+                      assessmentdata.data()["patient"],
+                      assessmentdata.data()["assessor"],
                       list,
-                      assessmentdata.data["docID"],
+                      assessmentdata.data()["docID"],
                       buildContext),
                   SizedBox(height: 10),
                 ],
@@ -756,17 +775,17 @@ class _PatientUIState extends State<PatientUI> {
                     // child: Text("$name"),
                     //
                   ),
-                  ListTile(
-                    leading: Icon(Icons.favorite, color: Colors.green),
-                    title: Text(
-                      'Provide Medical History',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    onTap: () => {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => ProvideMedicalHistory()))
-                    },
-                  ),
+                  // ListTile(
+                  //   leading: Icon(Icons.favorite, color: Colors.green),
+                  //   title: Text(
+                  //     'Provide Medical History',
+                  //     style: TextStyle(fontSize: 18),
+                  //   ),
+                  //   onTap: () => {
+                  //     Navigator.of(context).push(MaterialPageRoute(
+                  //         builder: (context) => ProvideMedicalHistory()))
+                  //   },
+                  // ),
                   ListTile(
                     leading: Icon(Icons.home, color: Colors.green),
                     title: Text(
@@ -807,17 +826,17 @@ class _PatientUIState extends State<PatientUI> {
                                   AssesmentSplashScreen("patient")))
                     },
                   ),
-                  ListTile(
-                    leading: Icon(Icons.pages, color: Colors.green),
-                    title: Text(
-                      'View Report',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    onTap: () => {
-                      //   Navigator.push(context,
-                      //       MaterialPageRoute(builder: (context) => ReportBase(list)))
-                    },
-                  ),
+                  // ListTile(
+                  //   leading: Icon(Icons.pages, color: Colors.green),
+                  //   title: Text(
+                  //     'View Report',
+                  //     style: TextStyle(fontSize: 18),
+                  //   ),
+                  //   onTap: () => {
+                  //     //   Navigator.push(context,
+                  //     //       MaterialPageRoute(builder: (context) => ReportBase(list)))
+                  //   },
+                  // ),
                 ],
               ),
             ),

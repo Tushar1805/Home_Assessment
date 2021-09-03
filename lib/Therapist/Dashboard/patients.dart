@@ -20,15 +20,15 @@ class _PatientsListState extends State<PatientsList> {
   }
 
   getRole() async {
-    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    User user = await FirebaseAuth.instance.currentUser;
 
-    await Firestore.instance
+    await FirebaseFirestore.instance
         .collection('users')
-        .document(user.uid)
+        .doc(user.uid)
         .get()
         .then((value) {
       setState(() {
-        role = value.data['role'];
+        role = value['role'];
       });
     });
   }

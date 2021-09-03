@@ -14,7 +14,7 @@ class BedroomPro extends ChangeNotifier {
   String roomname;
   var accessname;
   List<Map<String, dynamic>> wholelist;
-  final firestoreInstance = Firestore.instance;
+  final firestoreInstance = FirebaseFirestore.instance;
   FirebaseAuth _auth = FirebaseAuth.instance;
   bool obstacle = false;
   bool grabbarneeded = false;
@@ -22,7 +22,7 @@ class BedroomPro extends ChangeNotifier {
   bool _isListening = false, isColor = false;
   double _confidence = 1.0;
   int doorwidth = 0;
-  bool available = false;
+  bool available = false, saveToForm = false;
   Map<String, Color> colorsset = {};
   Map<String, TextEditingController> controllers = {};
   Map<String, TextEditingController> controllerstreco = {};
@@ -124,8 +124,8 @@ class BedroomPro extends ChangeNotifier {
   }
 
   Future<String> getRole() async {
-    final FirebaseUser useruid = await _auth.currentUser();
-    firestoreInstance.collection("users").document(useruid.uid).get().then(
+    final User useruid = await _auth.currentUser;
+    firestoreInstance.collection("users").doc(useruid.uid).get().then(
       (value) {
         type = (value["role"].toString()).split(" ")[0];
         notifyListeners();
@@ -293,8 +293,12 @@ class BedroomPro extends ChangeNotifier {
     if (wholelist[6][accessname]["question"]["$index"]["Recommendationthera"] !=
         "") {
       isColor = true;
+      saveToForm = true;
+      wholelist[6][accessname]["isSave"] = saveToForm;
     } else {
       isColor = false;
+      saveToForm = false;
+      wholelist[6][accessname]["isSave"] = saveToForm;
     }
     return Column(
       children: [
@@ -323,7 +327,7 @@ class BedroomPro extends ChangeNotifier {
                     height: 60,
                     margin: EdgeInsets.all(0),
                     child: FloatingActionButton(
-                      heroTag: "btn${index + 10}",
+                      heroTag: "btn${index + 100}",
                       child: Icon(
                         Icons.mic,
                         size: 20,

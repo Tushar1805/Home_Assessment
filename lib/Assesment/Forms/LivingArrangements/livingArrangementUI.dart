@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:avatar_glow/avatar_glow.dart';
-import 'package:pdf/widgets/progress.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,7 +11,6 @@ import 'package:tryapp/Assesment/Forms/LivingArrangements/livingArrangementbase.
 import 'package:tryapp/Assesment/Forms/LivingArrangements/livingArrangementpro.dart';
 import 'package:tryapp/Assesment/Forms/viewVideo.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
-import 'package:tryapp/CompleteAssessment/completeAssessmentBase.dart';
 import 'package:tryapp/constants.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
@@ -41,7 +39,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
 
   bool available = false;
   Map<String, Color> colorsset = {};
-  final firestoreInstance = Firestore.instance;
+  final firestoreInstance = FirebaseFirestore.instance;
   FirebaseAuth _auth = FirebaseAuth.instance;
   Map<String, TextEditingController> _controllers = {};
   Map<String, TextEditingController> _controllerstreco = {};
@@ -51,7 +49,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
   int flightcount = 0;
   Color colorb = Color.fromRGBO(10, 80, 106, 1);
   String role, assessor, curUid, therapist;
-  bool isColor = false;
+  bool isColor = false, saveToForm = false;
   String imageDownloadUrl;
   var _mediaList = <String>[];
   List<File> _image = [];
@@ -154,15 +152,15 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
   }
 
   Future<void> getAssessData() async {
-    final FirebaseUser user = await _auth.currentUser();
+    final User user = await _auth.currentUser;
     firestoreInstance
         .collection("assessments")
-        .document(widget.docID)
+        .doc(widget.docID)
         .get()
         .then((value) => setState(() {
               curUid = user.uid;
-              assessor = value.data["assessor"];
-              therapist = value.data["therapist"];
+              assessor = value["assessor"];
+              therapist = value["therapist"];
               videoUrl = widget.wholelist[1][widget.accessname]["videos"]["url"]
                       .toString() ??
                   "";
@@ -284,10 +282,10 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
   }
 
   getRole() async {
-    FirebaseUser user = await _auth.currentUser();
-    await Firestore.instance
+    User user = await _auth.currentUser;
+    await FirebaseFirestore.instance
         .collection("users")
-        .document(user.uid)
+        .doc(user.uid)
         .get()
         .then((value) => setState(() {
               role = value["role"];
@@ -377,11 +375,10 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
       try {
         print("*************Uploading Video************");
         String name = 'applicationVideos/' + DateTime.now().toIso8601String();
-        StorageReference ref = FirebaseStorage.instance.ref().child(name);
+        Reference ref = FirebaseStorage.instance.ref().child(name);
 
-        StorageUploadTask upload = ref.putFile(videos);
-        String url =
-            (await (await upload.onComplete).ref.getDownloadURL()).toString();
+        UploadTask upload = ref.putFile(videos);
+        String url = (await (await upload).ref.getDownloadURL()).toString();
         setState(() {
           videoUrl = url;
           print("************Url = $videoUrl**********");
@@ -591,10 +588,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
         //     .child(imagePath1)
         //     .delete()
         //     .then((_) => print('Successfully deleted $imagePath storage item'));
-        StorageReference ref = await FirebaseStorage.instance
-            .ref()
-            .getStorage()
-            .getReferenceFromUrl(imagePath);
+        Reference ref = await FirebaseStorage.instance.refFromURL(imagePath);
         ref.delete();
 
         // FirebaseStorage firebaseStorege = FirebaseStorage.instance;
@@ -644,19 +638,32 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                     setdatalistenthera(i + 1);
                   }
 
-                  if (test == 0) {
-                    _showSnackBar(
-                        "You Must Have to Fill the Form First", context);
+                  // if (test == 0) {
+                  //   _showSnackBar(
+                  //       "You Must Have to Fill the Form First", context);
+                  // } else {
+                  if (role == "therapist") {
+                    // if (saveToForm) {
+                    NewAssesmentRepository().setLatestChangeDate(widget.docID);
+                    NewAssesmentRepository()
+                        .setForm(widget.wholelist, widget.docID);
+                    // Navigator.pop(context,
+                    //     widget.wholelist[1][widget.accessname]);
+                    Navigator.pop(
+                        context, widget.wholelist[1][widget.accessname]);
+                    // } else {
+                    //   _showSnackBar("Provide all recommendations", context);
+                    // }
                   } else {
                     NewAssesmentRepository().setLatestChangeDate(widget.docID);
                     NewAssesmentRepository()
                         .setForm(widget.wholelist, widget.docID);
+                    // Navigator.pop(context,
+                    //     widget.wholelist[1][widget.accessname]);
                     Navigator.pop(
                         context, widget.wholelist[1][widget.accessname]);
-                    // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    //     builder: (context) => CompleteAssessmentBase(
-                    //         widget.wholelist, widget.docID, role)));
                   }
+                  // }
                 } catch (e) {
                   print(e.toString());
                 }
@@ -2447,8 +2454,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                               )
                             : SizedBox(),
 
-                        SizedBox(height: 15),
-
+                        SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -2635,10 +2641,25 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             // if (!isValid) {
                             // _showSnackBar("Recommendation Required", context);
                             // } else {
-                            if (test == 0) {
-                              _showSnackBar(
-                                  "You Must Have to Fill the Form First",
-                                  context);
+                            // if (test == 0) {
+                            //   _showSnackBar(
+                            //       "You Must Have to Fill the Form First",
+                            //       context);
+                            // } else {
+                            if (role == "therapist") {
+                              // if (saveToForm) {
+                              NewAssesmentRepository()
+                                  .setLatestChangeDate(widget.docID);
+                              NewAssesmentRepository()
+                                  .setForm(widget.wholelist, widget.docID);
+                              // Navigator.pop(context,
+                              //     widget.wholelist[1][widget.accessname]);
+                              Navigator.pop(context,
+                                  widget.wholelist[1][widget.accessname]);
+                              // } else {
+                              //   _showSnackBar(
+                              //       "Provide all recommendations", context);
+                              // }
                             } else {
                               NewAssesmentRepository()
                                   .setLatestChangeDate(widget.docID);
@@ -2646,15 +2667,11 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                   .setForm(widget.wholelist, widget.docID);
                               // Navigator.pop(context,
                               //     widget.wholelist[1][widget.accessname]);
-                              Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          CompleteAssessmentBase(
-                                              widget.wholelist,
-                                              widget.docID,
-                                              role)));
+                              Navigator.pop(context,
+                                  widget.wholelist[1][widget.accessname]);
                             }
                           }
+                          // }
                           // },
                           ))
                 ],
@@ -2762,9 +2779,17 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
     if (widget.wholelist[1][widget.accessname]["question"]["$index"]
             ["Recommendationthera"] !=
         "") {
-      isColor = true;
+      setState(() {
+        isColor = true;
+        saveToForm = true;
+        widget.wholelist[1][widget.accessname]["isSave"] = saveToForm;
+      });
     } else {
-      isColor = false;
+      setState(() {
+        isColor = false;
+        saveToForm = false;
+        widget.wholelist[1][widget.accessname]["isSave"] = saveToForm;
+      });
     }
     return Column(
       children: [
@@ -2807,7 +2832,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                     height: 60,
                     margin: EdgeInsets.all(0),
                     child: FloatingActionButton(
-                      heroTag: "btn${index * 10}",
+                      heroTag: null,
                       child: Icon(
                         Icons.mic,
                         size: 20,

@@ -9,15 +9,15 @@ class DashPage extends StatefulWidget {
 }
 
 class _DashPageState extends State<DashPage> {
-  Firestore firestoreInstance = Firestore.instance;
+  FirebaseFirestore firestoreInstance = FirebaseFirestore.instance;
 
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   void getUserData() async {
-    FirebaseUser firebaseUser = await FirebaseAuth.instance.currentUser();
+    User firebaseUser = await FirebaseAuth.instance.currentUser;
     firestoreInstance
         .collection("users")
-        .document(firebaseUser.uid)
+        .doc(firebaseUser.uid)
         .get()
         .then((value) {
       print('karUn');
@@ -25,7 +25,7 @@ class _DashPageState extends State<DashPage> {
     });
   }
 
-  DocumentReference a = Firestore.instance.collection('users').document();
+  DocumentReference a = FirebaseFirestore.instance.collection('users').doc();
 
   @override
   Widget build(BuildContext context) {

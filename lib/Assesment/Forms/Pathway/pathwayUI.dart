@@ -43,12 +43,12 @@ class PathwayUI extends StatefulWidget {
 class _PathwayUIState extends State<PathwayUI> {
   stt.SpeechToText _speech;
   FirebaseAuth _auth = FirebaseAuth.instance;
-  bool available = false;
+  bool available = false, saveToForm = false;
   int threeshold = 0;
   Map<String, Color> colorsset = {};
   Map<String, TextEditingController> _controllers = {};
   Map<String, TextEditingController> _controllerstreco = {};
-  final firestoreInstance = Firestore.instance;
+  final firestoreInstance = FirebaseFirestore.instance;
   Map<String, bool> isListening = {};
   bool cur = true;
   bool curThera = true;
@@ -123,8 +123,8 @@ class _PathwayUIState extends State<PathwayUI> {
 
   /// This fucntion will help us to get role of the logged in user
   Future<String> getRole() async {
-    final FirebaseUser useruid = await _auth.currentUser();
-    firestoreInstance.collection("users").document(useruid.uid).get().then(
+    final User useruid = await _auth.currentUser;
+    firestoreInstance.collection("users").doc(useruid.uid).get().then(
       (value) {
         setState(() {
           role = (value["role"]);
@@ -134,15 +134,15 @@ class _PathwayUIState extends State<PathwayUI> {
   }
 
   Future<void> getAssessData() async {
-    final FirebaseUser user = await _auth.currentUser();
+    final User user = await _auth.currentUser;
     firestoreInstance
         .collection("assessments")
-        .document(widget.docID)
+        .doc(widget.docID)
         .get()
         .then((value) => setState(() {
               curUid = user.uid;
-              assessor = value.data["assessor"];
-              therapist = value.data["therapist"];
+              assessor = value["assessor"];
+              therapist = value["therapist"];
               videoUrl = widget.wholelist[0][widget.accessname]["videos"]["url"]
                       .toString() ??
                   "";
@@ -509,11 +509,10 @@ class _PathwayUIState extends State<PathwayUI> {
       try {
         print("*************Uploading Video************");
         String name = 'applicationVideos/' + DateTime.now().toIso8601String();
-        StorageReference ref = FirebaseStorage.instance.ref().child(name);
+        Reference ref = FirebaseStorage.instance.ref().child(name);
 
-        StorageUploadTask upload = ref.putFile(videos);
-        String url =
-            (await (await upload.onComplete).ref.getDownloadURL()).toString();
+        UploadTask upload = ref.putFile(videos);
+        String url = (await (await upload).ref.getDownloadURL()).toString();
         setState(() {
           videoUrl = url;
           print("************Url = $videoUrl**********");
@@ -723,10 +722,7 @@ class _PathwayUIState extends State<PathwayUI> {
         //     .child(imagePath1)
         //     .delete()
         //     .then((_) => print('Successfully deleted $imagePath storage item'));
-        StorageReference ref = await FirebaseStorage.instance
-            .ref()
-            .getStorage()
-            .getReferenceFromUrl(imagePath);
+        Reference ref = await FirebaseStorage.instance.refFromURL(imagePath);
         ref.delete();
 
         // FirebaseStorage firebaseStorege = FirebaseStorage.instance;
@@ -2493,8 +2489,17 @@ class _PathwayUIState extends State<PathwayUI> {
       // }
       setdatalisten(i + 1);
     }
-    if (test == 0) {
-      _showSnackBar("You Must Have to Fill The Details First", context);
+    // if (test == 0) {
+    //   _showSnackBar("You must have to fill at least 1 field first", context);
+    // } else {
+    if (role == "therapist") {
+      // if (saveToForm) {
+      NewAssesmentRepository().setLatestChangeDate(widget.docID);
+      NewAssesmentRepository().setForm(widget.wholelist, widget.docID);
+      Navigator.pop(context, widget.wholelist[0][widget.accessname]);
+      // } else {
+      //   _showSnackBar("Provide all recommendations", context);
+      // }
     } else {
       NewAssesmentRepository().setLatestChangeDate(widget.docID);
       NewAssesmentRepository().setForm(widget.wholelist, widget.docID);
@@ -2503,6 +2508,7 @@ class _PathwayUIState extends State<PathwayUI> {
       //     builder: (context) =>
       //         CompleteAssessmentBase(widget.wholelist, widget.docID, role)));
     }
+    // }
   }
 
   /// This fucntion is to take care of speeck to text mic button and place the text in
@@ -2691,8 +2697,12 @@ class _PathwayUIState extends State<PathwayUI> {
             ["Recommendationthera"] !=
         "") {
       isColor = true;
+      saveToForm = true;
+      widget.wholelist[0][widget.accessname]["isSave"] = saveToForm;
     } else {
       isColor = false;
+      saveToForm = false;
+      widget.wholelist[0][widget.accessname]["isSave"] = saveToForm;
     }
     return Column(
       children: [

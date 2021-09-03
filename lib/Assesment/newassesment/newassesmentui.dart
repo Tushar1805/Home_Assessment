@@ -10,6 +10,11 @@ import 'package:tryapp/Therapist/Dashboard/therapistdash.dart';
 import 'newassesmentpro.dart';
 import 'cardsUI.dart';
 import 'package:provider/provider.dart';
+import 'package:animations/animations.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 /// This page is about chosing the areas of home available
 
@@ -45,7 +50,7 @@ class NewAssesmentUI extends StatefulWidget {
 
 class _NewAssesmentUIState extends State<NewAssesmentUI> {
   FirebaseAuth _auth = FirebaseAuth.instance;
-  Firestore firestore = Firestore.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
   String role;
 
   @override
@@ -56,19 +61,20 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
   }
 
   getRole() async {
-    FirebaseUser user = await _auth.currentUser();
+    User user = await _auth.currentUser;
     firestore
         .collection("users")
-        .document(user.uid)
+        .doc(user.uid)
         .get()
         .then((value) => setState(() {
-              role = value.data["role"];
+              role = value.data()["role"];
             }));
   }
 
   @override
   Widget build(BuildContext context) {
     final assesmentprovider = Provider.of<NewAssesmentProvider>(context);
+    double _w = MediaQuery.of(context).size.width;
     return WillPopScope(
       /// This will give a pop up whenever we try to get back from the
       /// areas of room available.
@@ -133,7 +139,7 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                     padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                     width: double.infinity,
                     child: Text(
-                      'Areas of Home Available:',
+                      'Areas of Home Available',
                       textAlign: TextAlign.left,
                       style: TextStyle(
                           fontSize: 30,
@@ -167,6 +173,47 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                       ),
                     ),
                   ),
+
+                  // Animation for list
+
+                  // AnimationLimiter(
+                  //     child: ListView.builder(
+                  //   padding: EdgeInsets.all(_w / 30),
+                  //   physics: BouncingScrollPhysics(
+                  //       parent: AlwaysScrollableScrollPhysics()),
+                  //   itemCount: assesmentprovider.getlistdata().length,
+                  //   itemBuilder: (BuildContext context, int index) {
+                  //     return AnimationConfiguration.staggeredList(
+                  //       position: index,
+                  //       delay: Duration(milliseconds: 100),
+                  //       child: SlideAnimation(
+                  //         duration: Duration(milliseconds: 2500),
+                  //         curve: Curves.fastLinearToSlowEaseIn,
+                  //         verticalOffset: -250,
+                  //         child: ScaleAnimation(
+                  //           duration: Duration(milliseconds: 1500),
+                  //           curve: Curves.fastLinearToSlowEaseIn,
+                  //           child: Container(
+                  //             margin: EdgeInsets.only(bottom: _w / 20),
+                  //             height: _w / 4,
+                  //             decoration: BoxDecoration(
+                  //               color: Colors.white,
+                  //               borderRadius:
+                  //                   BorderRadius.all(Radius.circular(20)),
+                  //               boxShadow: [
+                  //                 BoxShadow(
+                  //                   color: Colors.black.withOpacity(0.1),
+                  //                   blurRadius: 40,
+                  //                   spreadRadius: 10,
+                  //                 ),
+                  //               ],
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     );
+                  //   },
+                  // )),
                   Container(
                       width: double.infinity,
                       alignment: Alignment.center,

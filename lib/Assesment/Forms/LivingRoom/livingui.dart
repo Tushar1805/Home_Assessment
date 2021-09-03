@@ -36,9 +36,9 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
   Map<String, TextEditingController> _controllers = {};
   Map<String, TextEditingController> _controllerstreco = {};
   Map<String, bool> isListening = {};
-  bool cur = true;
+  bool cur = true, saveToForm = false;
   Color colorb = Color.fromRGBO(10, 80, 106, 1);
-  Firestore firestoreInstance = Firestore.instance;
+  FirebaseFirestore firestoreInstance = FirebaseFirestore.instance;
   FirebaseAuth _auth = FirebaseAuth.instance;
   String assessor,
       curUid,
@@ -96,15 +96,15 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
   }
 
   Future<void> getAssessData() async {
-    final FirebaseUser user = await _auth.currentUser();
+    final User user = await _auth.currentUser;
     firestoreInstance
         .collection("assessments")
-        .document(widget.docID)
+        .doc(widget.docID)
         .get()
         .then((value) => setState(() {
               curUid = user.uid;
-              assessor = value.data["assessor"];
-              therapist = value.data["therapist"];
+              assessor = value["assessor"];
+              therapist = value["therapist"];
               videoUrl = widget.wholelist[2][widget.accessname]["videos"]["url"]
                       .toString() ??
                   "";
@@ -116,8 +116,8 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
   }
 
   Future<String> getRole() async {
-    final FirebaseUser useruid = await _auth.currentUser();
-    firestoreInstance.collection("users").document(useruid.uid).get().then(
+    final User useruid = await _auth.currentUser;
+    firestoreInstance.collection("users").doc(useruid.uid).get().then(
       (value) {
         setState(() {
           role = (value["role"].toString()).split(" ")[0];
@@ -227,11 +227,10 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
       try {
         print("*************Uploading Video************");
         String name = 'applicationVideos/' + DateTime.now().toIso8601String();
-        StorageReference ref = FirebaseStorage.instance.ref().child(name);
+        Reference ref = FirebaseStorage.instance.ref().child(name);
 
-        StorageUploadTask upload = ref.putFile(videos);
-        String url =
-            (await (await upload.onComplete).ref.getDownloadURL()).toString();
+        UploadTask upload = ref.putFile(videos);
+        String url = (await (await upload).ref.getDownloadURL()).toString();
         setState(() {
           videoUrl = url;
           print("************Url = $videoUrl**********");
@@ -438,10 +437,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
         //     .child(imagePath1)
         //     .delete()
         //     .then((_) => print('Successfully deleted $imagePath storage item'));
-        StorageReference ref = await FirebaseStorage.instance
-            .ref()
-            .getStorage()
-            .getReferenceFromUrl(imagePath);
+        Reference ref = await FirebaseStorage.instance.refFromURL(imagePath);
         ref.delete();
 
         // FirebaseStorage firebaseStorege = FirebaseStorage.instance;
@@ -484,16 +480,28 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                     //   test = 1;
                     // }
                   }
-                  if (test == 0) {
-                    _showSnackBar(
-                        "You Must Have to Fill The Details First", context);
+                  // if (test == 0) {
+                  //   _showSnackBar(
+                  //       "You Must Have to Fill The Details First", context);
+                  // } else {
+                  if (role == "therapist") {
+                    // if (saveToForm) {
+                    NewAssesmentRepository().setLatestChangeDate(widget.docID);
+                    NewAssesmentRepository()
+                        .setForm(widget.wholelist, widget.docID);
+                    Navigator.pop(
+                        context, widget.wholelist[0][widget.accessname]);
+                    // } else {
+                    //   _showSnackBar("Provide all recommendations", context);
+                    // }
                   } else {
                     NewAssesmentRepository().setLatestChangeDate(widget.docID);
                     NewAssesmentRepository()
                         .setForm(widget.wholelist, widget.docID);
                     Navigator.pop(
-                        context, widget.wholelist[2][widget.accessname]);
+                        context, widget.wholelist[0][widget.accessname]);
                   }
+                  // }
                 } catch (e) {
                   print(e.toString());
                 }
@@ -715,17 +723,19 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                     onChanged: (value) {
                                       if (assessor == therapist &&
                                           role == "therapist") {
+                                        setdata(1, value,
+                                            'Threshold to Living Room');
                                         FocusScope.of(context).requestFocus();
                                         new TextEditingController().clear();
                                         // print(widget.accessname);
-                                        setdata(1, value,
-                                            'Threshold to Living Room');
+
                                       } else if (role != "therapist") {
+                                        setdata(1, value,
+                                            'Threshold to Living Room');
                                         FocusScope.of(context).requestFocus();
                                         new TextEditingController().clear();
                                         // print(widget.accessname);
-                                        setdata(1, value,
-                                            'Threshold to Living Room');
+
                                       } else {
                                         _showSnackBar(
                                             "You can't change the other fields",
@@ -790,15 +800,16 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                   onChanged: (value) {
                                     if (assessor == therapist &&
                                         role == "therapist") {
+                                      setdata(2, value, 'Flooring Type');
                                       FocusScope.of(context).requestFocus();
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
-                                      setdata(2, value, 'Flooring Type');
+
                                     } else if (role != "therapist") {
+                                      setdata(2, value, 'Flooring Type');
                                       FocusScope.of(context).requestFocus();
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
-                                      setdata(2, value, 'Flooring Type');
                                     } else {
                                       _showSnackBar(
                                           "You can't change the other fields",
@@ -848,15 +859,16 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
+                                    setdata(3, value, 'Floor Coverage');
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(3, value, 'Floor Coverage');
+
                                   } else if (role != "therapist") {
+                                    setdata(3, value, 'Floor Coverage');
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(3, value, 'Floor Coverage');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
@@ -902,15 +914,16 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                   onChanged: (value) {
                                     if (assessor == therapist &&
                                         role == "therapist") {
+                                      setdata(4, value, 'Lighting Types');
                                       FocusScope.of(context).requestFocus();
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
-                                      setdata(4, value, 'Lighting Types');
+
                                     } else if (role != "therapist") {
+                                      setdata(4, value, 'Lighting Types');
                                       FocusScope.of(context).requestFocus();
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
-                                      setdata(4, value, 'Lighting Types');
                                     } else {
                                       _showSnackBar(
                                           "You can't change the other fields",
@@ -959,17 +972,18 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                   onChanged: (value) {
                                     if (assessor == therapist &&
                                         role == "therapist") {
+                                      setdata(
+                                          5, value, 'Switches Able to Operate');
                                       FocusScope.of(context).requestFocus();
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
-                                      setdata(
-                                          5, value, 'Switches Able to Operate');
+
                                     } else if (role != "therapist") {
+                                      setdata(
+                                          5, value, 'Switches Able to Operate');
                                       FocusScope.of(context).requestFocus();
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
-                                      setdata(
-                                          5, value, 'Switches Able to Operate');
                                     } else {
                                       _showSnackBar(
                                           "You can't change the other fields",
@@ -1057,15 +1071,16 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                   onChanged: (value) {
                                     if (assessor == therapist &&
                                         role == "therapist") {
+                                      setdata(6, value, 'Switch Types');
                                       FocusScope.of(context).requestFocus();
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
-                                      setdata(6, value, 'Switch Types');
+
                                     } else if (role != "therapist") {
+                                      setdata(6, value, 'Switch Types');
                                       FocusScope.of(context).requestFocus();
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
-                                      setdata(6, value, 'Switch Types');
                                     } else {
                                       _showSnackBar(
                                           "You can't change the other fields",
@@ -1107,10 +1122,11 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                   onChanged: (value) {
                                     if (assessor == therapist &&
                                         role == "therapist") {
+                                      setdata(7, value, 'Door Width');
                                       FocusScope.of(context).requestFocus();
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
-                                      setdata(7, value, 'Door Width');
+
                                       setState(() {
                                         widget.wholelist[2][widget.accessname]
                                             ['question']["7"]['doorwidth'] = 0;
@@ -1120,10 +1136,11 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                             int.parse(value);
                                       });
                                     } else if (role != "therapist") {
+                                      setdata(7, value, 'Door Width');
                                       FocusScope.of(context).requestFocus();
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
-                                      setdata(7, value, 'Door Width');
+
                                       widget.wholelist[2][widget.accessname]
                                           ['question']["7"]['doorwidth'] = 0;
 
@@ -1189,17 +1206,18 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                               onChanged: (value) {
                                 if (assessor == therapist &&
                                     role == "therapist") {
+                                  setdata(
+                                      8, value, 'Obstacle/Clutter Present?');
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(
-                                      8, value, 'Obstacle/Clutter Present?');
+
                                 } else if (role != "therapist") {
+                                  setdata(
+                                      8, value, 'Obstacle/Clutter Present?');
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(
-                                      8, value, 'Obstacle/Clutter Present?');
                                 } else {
                                   _showSnackBar(
                                       "You can't change the other fields",
@@ -1243,17 +1261,18 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
+                                    setdata(
+                                        9, value, 'Able to Access Telephone?');
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(
-                                        9, value, 'Able to Access Telephone?');
+
                                   } else if (role != "therapist") {
+                                    setdata(
+                                        9, value, 'Able to Access Telephone?');
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(
-                                        9, value, 'Able to Access Telephone?');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
@@ -1369,16 +1388,20 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(10, value, 'Smoke Detector?');
                                   } else if (role != "therapist") {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    setdata(10, value, 'Smoke Detector?');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
                                         context);
                                   }
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  setdata(10, value, 'Smoke Detector?');
                                 },
                                 value: getvalue(10))
                           ],
@@ -1424,47 +1447,53 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                           ),
                           onChanged: (value) {
                             if (assessor == therapist && role == "therapist") {
+                              FocusScope.of(context).requestFocus();
+                              new TextEditingController().clear();
+                              setdata(11, value, "Observations");
                             } else if (role != "therapist") {
+                              FocusScope.of(context).requestFocus();
+                              new TextEditingController().clear();
+                              setdata(11, value, "Observations");
                             } else {
                               _showSnackBar(
                                   "You can't change the other fields", context);
                             }
-                            FocusScope.of(context).requestFocus();
-                            new TextEditingController().clear();
-                            // print(widget.accessname);
-                            widget.wholelist[2][widget.accessname]['question']
-                                ["11"]['Question'] = 'Observations';
+                            //   FocusScope.of(context).requestFocus();
+                            //   new TextEditingController().clear();
+                            //   // print(widget.accessname);
+                            //   widget.wholelist[2][widget.accessname]['question']
+                            //       ["11"]['Question'] = 'Observations';
 
-                            if (value.length == 0) {
-                              if (widget
-                                      .wholelist[2][widget.accessname]
-                                          ['question']['11']['Answer']
-                                      .length ==
-                                  0) {
-                              } else {
-                                setState(() {
-                                  widget.wholelist[2][widget.accessname]
-                                      ['complete'] -= 1;
-                                  widget.wholelist[2][widget.accessname]
-                                      ['question']["11"]['Answer'] = value;
-                                });
-                              }
-                            } else {
-                              if (widget
-                                      .wholelist[2][widget.accessname]
-                                          ['question']["11"]['Answer']
-                                      .length ==
-                                  0) {
-                                setState(() {
-                                  widget.wholelist[2][widget.accessname]
-                                      ['complete'] += 1;
-                                });
-                              }
-                              setState(() {
-                                widget.wholelist[2][widget.accessname]
-                                    ['question']["11"]['Answer'] = value;
-                              });
-                            }
+                            //   if (value.length == 0) {
+                            //     if (widget
+                            //             .wholelist[2][widget.accessname]
+                            //                 ['question']['11']['Answer']
+                            //             .length ==
+                            //         0) {
+                            //     } else {
+                            //       setState(() {
+                            //         widget.wholelist[2][widget.accessname]
+                            //             ['complete'] -= 1;
+                            //         widget.wholelist[2][widget.accessname]
+                            //             ['question']["11"]['Answer'] = value;
+                            //       });
+                            //     }
+                            //   } else {
+                            //     if (widget
+                            //             .wholelist[2][widget.accessname]
+                            //                 ['question']["11"]['Answer']
+                            //             .length ==
+                            //         0) {
+                            //       setState(() {
+                            //         widget.wholelist[2][widget.accessname]
+                            //             ['complete'] += 1;
+                            //       });
+                            //     }
+                            //     setState(() {
+                            //       widget.wholelist[2][widget.accessname]
+                            //           ['question']["11"]['Answer'] = value;
+                            //     });
+                            //   }
                           },
                         ))
                       ],
@@ -1499,9 +1528,22 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                         //   test = 1;
                         // }
                       }
-                      if (test == 0) {
-                        _showSnackBar(
-                            "You Must Have to Fill The Details First", context);
+                      // if (test == 0) {
+                      //   _showSnackBar(
+                      //       "You Must Have to Fill The Details First", context);
+                      // } else {
+                      if (role == "therapist") {
+                        // if (saveToForm) {
+                        NewAssesmentRepository()
+                            .setLatestChangeDate(widget.docID);
+                        NewAssesmentRepository()
+                            .setForm(widget.wholelist, widget.docID);
+                        Navigator.pop(
+                            context, widget.wholelist[0][widget.accessname]);
+                        // } else {
+                        //   _showSnackBar(
+                        //       "Provide all recommendations", context);
+                        // }
                       } else {
                         NewAssesmentRepository()
                             .setLatestChangeDate(widget.docID);
@@ -1510,6 +1552,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                         Navigator.pop(
                             context, widget.wholelist[0][widget.accessname]);
                       }
+                      // }
                     },
                   ))
                 ],
@@ -1613,8 +1656,12 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
             ["Recommendationthera"] !=
         "") {
       isColor = true;
+      saveToForm = true;
+      widget.wholelist[2][widget.accessname]["isSave"] = saveToForm;
     } else {
       isColor = false;
+      saveToForm = false;
+      widget.wholelist[2][widget.accessname]["isSave"] = saveToForm;
     }
     return Column(
       children: [

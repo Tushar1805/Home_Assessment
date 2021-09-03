@@ -132,7 +132,7 @@ class NurseProvider extends ChangeNotifier {
 //********************************************************************************** */
   final NurseRepository nurserepo = NurseRepository();
   final Color colorgreen = Color.fromRGBO(10, 80, 106, 1);
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   String getq;
   bool assessdisplay = false;
   QuerySnapshot dataset;
@@ -154,15 +154,15 @@ class NurseProvider extends ChangeNotifier {
     notifyListeners();
     dataset = await nurserepo.getAssessments(role);
     Map<String, DocumentSnapshot> datasetmaintemp = {};
-    for (int i = 0; i < dataset.documents.length; i++) {
+    for (int i = 0; i < dataset.docs.length; i++) {
       await getfielddata(
-        dataset.documents[i].data['patient'],
+        dataset.docs[i]['patient'],
       );
       datasetmaintemp["$i"] = (data2);
     }
     Map<String, dynamic> temptry = {};
     for (int j = 0; j < datasetmaintemp.length; j++) {
-      temptry["$j"] = datasetmaintemp["$j"].data;
+      temptry["$j"] = datasetmaintemp["$j"].data();
     }
     datasetmain = temptry;
     loading = false;
@@ -172,8 +172,8 @@ class NurseProvider extends ChangeNotifier {
   getsorteddata(sortby, type) async {
     if (sortby == '') {
       Map<String, dynamic> datatemp = {};
-      for (int i = 0; i < dataset.documents.length; i++) {
-        datatemp["$i"] = dataset.documents[i].data;
+      for (int i = 0; i < dataset.docs.length; i++) {
+        datatemp["$i"] = dataset.docs[i].data();
       }
       final sorted = SplayTreeMap.from(
           datatemp,

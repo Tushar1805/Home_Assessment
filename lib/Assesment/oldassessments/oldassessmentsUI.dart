@@ -21,7 +21,7 @@ class OldAssessmentsUI extends StatefulWidget {
 }
 
 class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   String role;
 
   @override
@@ -31,15 +31,15 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
   }
 
   getRole() async {
-    FirebaseUser user = await FirebaseAuth.instance.currentUser();
+    User user = await FirebaseAuth.instance.currentUser;
 
-    await Firestore.instance
+    await FirebaseFirestore.instance
         .collection('users')
-        .document(user.uid)
+        .doc(user.uid)
         .get()
         .then((value) {
       setState(() {
-        role = value.data['role'];
+        role = value['role'];
       });
     });
   }
@@ -265,7 +265,7 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
     );
   }
 
-  Widget ongoingassess(assesspro) {
+  Widget ongoingassess(OldAssessmentsProvider assesspro) {
     return (assesspro.loading)
         ? Container(
             width: MediaQuery.of(context).size.width,
@@ -314,11 +314,8 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
                       itemBuilder: (context, index1) {
                         // print(assesspro.datasetmain.length);
                         // return;
-                        return listdata(
-                            assesspro.datasetmain["$index1"],
-                            assesspro.dataset.documents[index1],
-                            assesspro,
-                            context);
+                        return listdata(assesspro.datasetmain["$index1"],
+                            assesspro.dataset.docs[index1], assesspro, context);
                       },
                     ),
                   ),
@@ -326,7 +323,7 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
               );
   }
 
-  Widget newassessments(assesspro) {
+  Widget newassessments(OldAssessmentsProvider assesspro) {
     return (assesspro.loading)
         ? Container(
             width: MediaQuery.of(context).size.width,
@@ -374,11 +371,8 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
                       itemCount: assesspro.datasetmain.length,
                       itemBuilder: (context, index1) {
                         // print(assesspro.getdocref());
-                        return listdata(
-                            assesspro.datasetmain["$index1"],
-                            assesspro.dataset.documents[index1],
-                            assesspro,
-                            context);
+                        return listdata(assesspro.datasetmain["$index1"],
+                            assesspro.dataset.docs[index1], assesspro, context);
                       },
                     ),
                   ),
@@ -527,14 +521,16 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
                           ),
                           SizedBox(height: 2.5),
                           Divider(),
-                          getDate("Completion Date:",
-                              assessmentdata['assessmentCompletionDate']),
+                          getDate(
+                              "Completion Date:",
+                              assessmentdata
+                                  .data()['assessmentCompletionDate']),
                           SizedBox(height: 2.5),
                           Divider(),
                           Container(
                             width: double.infinity,
                             child: Text(
-                              'Assessment Status: ${assessmentdata['currentStatus']}',
+                              'Assessment Status: ${assessmentdata.data()['currentStatus']}',
                               style: TextStyle(
                                 fontSize: 16,
                               ),
@@ -547,44 +543,44 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
               ))),
           onTap: () async {
             print("Hello");
-            await assesspro.getdocref(assessmentdata);
+            await assesspro.getdocref(assessmentdata.data());
             // print(assesspro.curretnassessmentdocref);
             // print(assessmentdata.data);
             List<Map<String, dynamic>> list = [];
 
-            if (assessmentdata.data["form"] != null) {
+            if (assessmentdata.data()["form"] != null) {
               list = List<Map<String, dynamic>>.generate(
-                  assessmentdata.data["form"].length,
+                  assessmentdata.data()["form"].length,
                   (int index) => Map<String, dynamic>.from(
-                      assessmentdata.data["form"].elementAt(index)));
+                      assessmentdata.data()["form"].elementAt(index)));
             }
-            FirebaseUser user = await FirebaseAuth.instance.currentUser();
-            if (assessmentdata.data['currentStatus'] ==
+            User user = await FirebaseAuth.instance.currentUser;
+            if (assessmentdata.data()['currentStatus'] ==
                     "Assessment in Progress" &&
-                assessmentdata.data["assessor"] == user.uid) {
+                assessmentdata.data()["assessor"] == user.uid) {
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => CompleteAssessmentBase(
                           list, assesspro.curretnassessmentdocref, role)));
-            } else if (assessmentdata.data['currentStatus'] ==
+            } else if (assessmentdata.data()['currentStatus'] ==
                     "Assessment Scheduled" &&
-                assessmentdata.data["assessor"] == user.uid) {
+                assessmentdata.data()["assessor"] == user.uid) {
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => NewAssesment(
                           assesspro.curretnassessmentdocref, role)));
-            } else if (assessmentdata.data['currentStatus'] ==
+            } else if (assessmentdata.data()['currentStatus'] ==
                 "Report Generated") {
               Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => ReportBase(
                           assesspro.curretnassessmentdocref,
-                          assessmentdata["patient"],
+                          assessmentdata.data()["patient"],
                           list)));
-            } else if (assessmentdata.data['currentStatus'] ==
+            } else if (assessmentdata.data()['currentStatus'] ==
                     "Assessment Finished" &&
                 assessmentdata["therapist"] == user.uid) {
               Navigator.push(
@@ -594,7 +590,7 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
                           list, assesspro.curretnassessmentdocref, role)));
               // _showSnackBar("Wait For The Therapist To Provide Recommendations",
               //     buildContext);
-            } else if (assessmentdata.data['currentStatus'] ==
+            } else if (assessmentdata.data()['currentStatus'] ==
                     "Assessment Finished" &&
                 assessmentdata["therapist"] != user.uid) {
               _showSnackBar("Wait For The Therapist To Provide Recommendations",

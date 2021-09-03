@@ -28,8 +28,8 @@ class NurseUI extends StatefulWidget {
 class _NurseUIState extends State<NurseUI> {
   FirebaseAuth _auth = FirebaseAuth.instance;
   // FirebaseAuth auth = FirebaseAuth.instance;
-  final firestoreInstance = Firestore.instance;
-  FirebaseUser curuser;
+  final firestoreInstance = FirebaseFirestore.instance;
+  User curuser;
   String name,
       curUid,
       userFirstName,
@@ -51,20 +51,20 @@ class _NurseUIState extends State<NurseUI> {
   }
 
   Future<void> setImage() async {
-    final FirebaseUser useruid = await _auth.currentUser();
-    firestoreInstance
+    final User useruid = _auth.currentUser;
+    await firestoreInstance
         .collection("users")
-        .document(useruid.uid)
+        .doc(useruid.uid)
         .get()
         .then((value) {
       setState(() {
-        if (value["url"] != null) {
-          imgUrl = (value["url"].toString()) ?? "";
+        if (value.data()["url"] != null) {
+          imgUrl = (value.data()["url"].toString()) ?? "";
         } else {
           firestoreInstance
               .collection("users")
-              .document(useruid.uid)
-              .setData({'url': ''}, merge: true);
+              .doc(useruid.uid)
+              .set({'url': ''}, SetOptions(merge: true));
           imgUrl = "";
         }
 
@@ -75,12 +75,12 @@ class _NurseUIState extends State<NurseUI> {
   }
 
   Future<void> getUserDetails() async {
-    final FirebaseUser useruid = await _auth.currentUser();
-    firestoreInstance.collection("users").document(useruid.uid).get().then(
+    final User useruid = _auth.currentUser;
+    await firestoreInstance.collection("users").doc(useruid.uid).get().then(
       (value) {
         setState(() {
-          userFirstName = (value["firstName"].toString());
-          userLastName = (value["lastName"].toString());
+          userFirstName = (value.data()["firstName"].toString());
+          userLastName = (value.data()["lastName"].toString());
           // address = (value["houses"][0]["city"].toString());
         });
       },
@@ -88,14 +88,14 @@ class _NurseUIState extends State<NurseUI> {
   }
 
   Future<void> getPatientDetails() async {
-    final FirebaseUser useruid = await _auth.currentUser();
+    final User useruid = _auth.currentUser;
     if (patientUid != null) {
-      firestoreInstance.collection("users").document(patientUid).get().then(
+      await firestoreInstance.collection("users").doc(patientUid).get().then(
         (value) {
           setState(() {
-            fname = (value["firstName"].toString());
-            lname = (value["lastName"].toString());
-            address = (value["houses"][0]["city"].toString());
+            fname = (value.data()["firstName"].toString());
+            lname = (value.data()["lastName"].toString());
+            address = (value.data()["houses"][0]["city"].toString());
           });
         },
       );
@@ -103,7 +103,7 @@ class _NurseUIState extends State<NurseUI> {
   }
 
   Future<void> getCurrentUid() async {
-    final FirebaseUser useruid = await _auth.currentUser();
+    final User useruid = await _auth.currentUser;
     setState(() {
       curUid = useruid.uid;
     });
@@ -238,7 +238,7 @@ class _NurseUIState extends State<NurseUI> {
           elevation: 3,
           color: Color.fromRGBO(10, 80, 106, 1),
           onPressed: () {
-            _showSnackBar("Wait For Therapist To Provide Recommendations");
+            _showSnackBar("Wait for the therapist to provide recommendations");
           },
           child: Text(
             "Assessment Finished",
@@ -301,11 +301,8 @@ class _NurseUIState extends State<NurseUI> {
                       itemBuilder: (context, index) {
                         // print(assesspro.datasetmain.length);
 
-                        return listdata(
-                            assesspro.datasetmain["$index"],
-                            assesspro.dataset.documents[index],
-                            assesspro,
-                            context);
+                        return listdata(assesspro.datasetmain["$index"],
+                            assesspro.dataset.docs[index], assesspro, context);
                         // return listdata(assesspro.datasetmain[index],
                         //     assesspro.datasetmain[index], assesspro, context);
                       },
@@ -317,16 +314,16 @@ class _NurseUIState extends State<NurseUI> {
 
   Widget listdata(snapshot, assessmentdata, NurseProvider assesspro,
       BuildContext buildContext) {
-    patientUid = assessmentdata.data["patient"];
+    patientUid = assessmentdata.data()["patient"];
     // print(patientUid);
 
     List<Map<String, dynamic>> list = [];
 
-    if (assessmentdata.data["form"] != null) {
+    if (assessmentdata.data()["form"] != null) {
       list = List<Map<String, dynamic>>.generate(
-          assessmentdata.data["form"].length,
+          assessmentdata.data()["form"].length,
           (int index) => Map<String, dynamic>.from(
-              assessmentdata.data["form"].elementAt(index)));
+              assessmentdata.data()["form"].elementAt(index)));
     }
 
     Widget getDate(String label, var date) {
@@ -347,7 +344,7 @@ class _NurseUIState extends State<NurseUI> {
           ]),
         );
       } else {
-        if (label == "Completion Date:") {
+        if (label == "Completion Date: ") {
           return Container(
             child: Wrap(children: [
               Text(
@@ -436,7 +433,8 @@ class _NurseUIState extends State<NurseUI> {
                                         fontSize: 16, color: Colors.black45),
                                   ),
                                   Text(
-                                    '${assesspro.capitalize(snapshot["firstName"])}${assesspro.capitalize(snapshot["lastName"])}',
+                                    '${(snapshot["firstName"].toString() != "") ? snapshot["firstName"][0].toString().toUpperCase() : ""}${(snapshot["firstName"].toString() != "") ? snapshot["firstName"].toString().substring(1) : ""} '
+                                    '${(snapshot["lastName"].toString() != "") ? snapshot["lastName"][0].toString().toUpperCase() : ""}${(snapshot["lastName"].toString() != "") ? snapshot["lastName"].toString().substring(1) : ""}',
                                     style: TextStyle(
                                       fontSize: 16,
                                     ),
@@ -454,7 +452,7 @@ class _NurseUIState extends State<NurseUI> {
                                         fontSize: 16, color: Colors.black45),
                                   ),
                                   Text(
-                                    '${assessmentdata.data["date"]}' ??
+                                    '${assessmentdata.data()["date"]}' ??
                                         "11/7/2021",
                                     style: TextStyle(
                                       fontSize: 16,
@@ -464,15 +462,36 @@ class _NurseUIState extends State<NurseUI> {
                               ),
                               SizedBox(height: 2.5),
                               Divider(),
-                              getDate(
-                                  "Completion Date: ",
-                                  assessmentdata
-                                      .data["assessmentCompletionDate"]),
+                              (assessmentdata.data()[
+                                              "assessmentCompletionDate"] !=
+                                          null &&
+                                      assessmentdata.data()[
+                                              "assessmentCompletionDate"] !=
+                                          "")
+                                  ? getDate(
+                                      "Completion Date: ",
+                                      assessmentdata
+                                          .data()["assessmentCompletionDate"])
+                                  : SizedBox(),
 
                               // getDate("Latest Change: ",
                               //     snapshot["latestChangeDate"]),
-                              SizedBox(height: 2.5),
-                              Divider(),
+                              (assessmentdata.data()[
+                                              "assessmentCompletionDate"] !=
+                                          null &&
+                                      assessmentdata.data()[
+                                              "assessmentCompletionDate"] !=
+                                          "")
+                                  ? SizedBox(height: 2.5)
+                                  : SizedBox(),
+                              (assessmentdata.data()[
+                                              "assessmentCompletionDate"] !=
+                                          null &&
+                                      assessmentdata.data()[
+                                              "assessmentCompletionDate"] !=
+                                          "")
+                                  ? Divider()
+                                  : SizedBox(),
                               Container(
                                 width: double.infinity,
                                 child: Wrap(children: [
@@ -482,7 +501,7 @@ class _NurseUIState extends State<NurseUI> {
                                         fontSize: 16, color: Colors.black45),
                                   ),
                                   Text(
-                                    '${assessmentdata.data["currentStatus"]}',
+                                    '${assessmentdata.data()["currentStatus"]}',
                                     style: TextStyle(
                                       fontSize: 16,
                                     ),
@@ -500,7 +519,9 @@ class _NurseUIState extends State<NurseUI> {
                                         fontSize: 16, color: Colors.black45),
                                   ),
                                   Text(
-                                    '${assesspro.capitalize(snapshot["houses"][0]["address1"])}, ${assesspro.capitalize(snapshot["houses"][0]["address2"])}, ${assesspro.capitalize(snapshot["houses"][0]["city"])} ' ??
+                                    '${(snapshot["houses"][0]["address1"] != "") ? snapshot["houses"][0]["address1"][0].toString().toUpperCase() : ""}${(snapshot["houses"][0]["address1"] != "") ? snapshot["houses"][0]["address1"].toString().substring(1) : ""}, '
+                                            '${(snapshot["houses"][0]["address1"] != "") ? snapshot["houses"][0]["address1"][0].toString().toUpperCase() : ""}${(snapshot["houses"][0]["address2"] != "") ? snapshot["houses"][0]["address2"].toString().substring(1) : ""}, '
+                                            '${(snapshot["houses"][0]["address1"] != "") ? snapshot["houses"][0]["address1"][0].toString().toUpperCase() : ""}${(snapshot["houses"][0]["city"] != "") ? snapshot["houses"][0]["city"].toString().substring(1) : ""} ' ??
                                         "Home Address: Nagpur",
                                     style: TextStyle(
                                       fontSize: 16,
@@ -514,11 +535,11 @@ class _NurseUIState extends State<NurseUI> {
                     ],
                   ),
                   getButton(
-                      assessmentdata.data["currentStatus"],
-                      assessmentdata.data["assessor"],
-                      assessmentdata.data["patient"],
+                      assessmentdata.data()["currentStatus"],
+                      assessmentdata.data()["assessor"],
+                      assessmentdata.data()["patient"],
                       list,
-                      assessmentdata.data["docID"],
+                      assessmentdata.data()["docID"],
                       buildContext),
                   SizedBox(
                     height: 10,
@@ -586,15 +607,16 @@ class _NurseUIState extends State<NurseUI> {
                             ),
                             Container(
                               alignment: Alignment.bottomLeft,
-                              child: (userFirstName != '')
-                                  ? Text(
-                                      "${assesspro.capitalize(userFirstName)}",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 37,
-                                      ),
-                                    )
-                                  : Text("Nurse"),
+                              child:
+                                  (userFirstName != null && userFirstName != '')
+                                      ? Text(
+                                          '${userFirstName[0].toUpperCase()}${userFirstName.substring(1)}',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 37,
+                                          ),
+                                        )
+                                      : Text("Nurse"),
                             ),
                           ],
                         ),
@@ -652,27 +674,27 @@ class _NurseUIState extends State<NurseUI> {
                   // child: Text("$name"),
                   //
                 ),
-                ListTile(
-                  leading: Icon(Icons.favorite, color: Colors.green),
-                  title: Text(
-                    'Patients/Caregivers/Families',
-                    style: TextStyle(fontSize: 18),
-                  ),
-                  onTap: () => {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => PatientsList()))
-                  },
-                ),
-                ListTile(
-                    leading: Icon(Icons.home, color: Colors.green),
-                    title: Text(
-                      'Home Addresses',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    onTap: () => {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => HomeAddresses()))
-                        }),
+                // ListTile(
+                //   leading: Icon(Icons.favorite, color: Colors.green),
+                //   title: Text(
+                //     'Patients/Caregivers/Families',
+                //     style: TextStyle(fontSize: 18),
+                //   ),
+                //   onTap: () => {
+                //     Navigator.of(context).push(
+                //         MaterialPageRoute(builder: (context) => PatientsList()))
+                //   },
+                // ),
+                // ListTile(
+                //     leading: Icon(Icons.home, color: Colors.green),
+                //     title: Text(
+                //       'Home Addresses',
+                //       style: TextStyle(fontSize: 18),
+                //     ),
+                //     onTap: () => {
+                //           Navigator.of(context).push(MaterialPageRoute(
+                //               builder: (context) => HomeAddresses()))
+                //         }),
                 ListTile(
                   leading: Icon(Icons.assessment, color: Colors.green),
                   title: Text(

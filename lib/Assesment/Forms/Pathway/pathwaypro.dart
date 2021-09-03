@@ -17,7 +17,7 @@ class PathwayPro extends ChangeNotifier {
   Map<String, Color> colorsset = {};
   Map<String, TextEditingController> _controllers = {};
   Map<String, TextEditingController> _controllerstreco = {};
-  final firestoreInstance = Firestore.instance;
+  final firestoreInstance = FirebaseFirestore.instance;
   Map<String, bool> isListening = {};
   bool cur = true;
   Color colorb = Color.fromRGBO(10, 80, 106, 1);
@@ -29,7 +29,7 @@ class PathwayPro extends ChangeNotifier {
   var test = TextEditingController();
   final FormsRepository formsRepository = FormsRepository();
   FirebaseAuth auth = FirebaseAuth.instance;
-  FirebaseUser curuser;
+  User curuser;
   String roomname;
   var accessname;
   List<Map<String, dynamic>> wholelist;
@@ -102,8 +102,8 @@ class PathwayPro extends ChangeNotifier {
   }
 
   Future<String> getRole() async {
-    final FirebaseUser useruid = await _auth.currentUser();
-    firestoreInstance.collection("users").document(useruid.uid).get().then(
+    final User useruid = await _auth.currentUser;
+    firestoreInstance.collection("users").doc(useruid.uid).get().then(
       (value) {
         type = (value["role"].toString()).split(" ")[0];
         notifyListeners();
@@ -206,10 +206,7 @@ class PathwayPro extends ChangeNotifier {
       //     .child(imagePath1)
       //     .delete()
       //     .then((_) => print('Successfully deleted $imagePath storage item'));
-      StorageReference ref = await FirebaseStorage.instance
-          .ref()
-          .getStorage()
-          .getReferenceFromUrl(imagePath);
+      Reference ref = await FirebaseStorage.instance.refFromURL(imagePath);
       ref.delete();
 
       // FirebaseStorage firebaseStorege = FirebaseStorage.instance;

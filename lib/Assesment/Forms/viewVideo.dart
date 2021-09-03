@@ -80,7 +80,7 @@ class _ViewVideoState extends State<ViewVideo> {
           ),
         ),
       ),
-      body: _videoController != null && _videoController.value.initialized
+      body: _videoController != null && _videoController.value.isInitialized
           ? Container(
               alignment: Alignment.topCenter,
               child: buildVideo(),

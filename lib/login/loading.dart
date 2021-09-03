@@ -48,16 +48,20 @@ class _SplashScreen1SubState extends State<SplashScreen1Sub>
     _controller.forward();
 
     Timer(Duration(seconds: 2), () {
-      setState(() {
-        _fontSize = 1.3;
-      });
+      if (mounted) {
+        setState(() {
+          _fontSize = 1.3;
+        });
+      }
     });
 
     Timer(Duration(seconds: 2), () {
-      setState(() {
-        _containerSize = 2;
-        _containerOpacity = 1;
-      });
+      if (mounted) {
+        setState(() {
+          _containerSize = 2;
+          _containerOpacity = 1;
+        });
+      }
     });
 
     // Timer(Duration(seconds: 4), () {

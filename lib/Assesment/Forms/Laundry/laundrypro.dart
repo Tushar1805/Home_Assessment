@@ -26,12 +26,12 @@ class LaundryPro extends ChangeNotifier {
   String roomname;
   var accessname;
   List<Map<String, dynamic>> wholelist;
-  final firestoreInstance = Firestore.instance;
+  final firestoreInstance = FirebaseFirestore.instance;
   FirebaseAuth _auth = FirebaseAuth.instance;
   bool obstacle = false;
   bool grabbarneeded = false;
   stt.SpeechToText _speech;
-  bool _isListening = false, isColor = false;
+  bool _isListening = false, isColor = false, saveToForm = false;
   double _confidence = 1.0;
   int doorwidth = 0;
   bool available = false;
@@ -123,8 +123,8 @@ class LaundryPro extends ChangeNotifier {
   /// This fucntion will help us to get role of the logged in user
 
   Future<String> getRole() async {
-    final FirebaseUser useruid = await _auth.currentUser();
-    firestoreInstance.collection("users").document(useruid.uid).get().then(
+    final User useruid = await _auth.currentUser;
+    firestoreInstance.collection("users").doc(useruid.uid).get().then(
       (value) {
         type = (value["role"].toString()).split(" ")[0];
         notifyListeners();
@@ -301,8 +301,12 @@ class LaundryPro extends ChangeNotifier {
     if (wholelist[7][accessname]["question"]["$index"]["Recommendationthera"] !=
         "") {
       isColor = true;
+      saveToForm = true;
+      wholelist[7][accessname]["isSave"] = saveToForm;
     } else {
       isColor = false;
+      saveToForm = false;
+      wholelist[7][accessname]["isSave"] = saveToForm;
     }
     return Column(
       children: [
@@ -331,7 +335,7 @@ class LaundryPro extends ChangeNotifier {
                     height: 60,
                     margin: EdgeInsets.all(0),
                     child: FloatingActionButton(
-                      heroTag: "btn${index + 1}",
+                      heroTag: "btn${index + 100}",
                       child: Icon(
                         Icons.mic,
                         size: 20,

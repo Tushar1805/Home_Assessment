@@ -30,10 +30,10 @@ class _RequestAssessmentState extends State<RequestAssessment> {
   }
 
   Future<void> getUserName() async {
-    FirebaseUser user = await FirebaseAuth.instance.currentUser();
-    await Firestore.instance
+    User user = await FirebaseAuth.instance.currentUser;
+    await FirebaseFirestore.instance
         .collection("users")
-        .document(user.uid)
+        .doc(user.uid)
         .get()
         .then((value) {
       setState(() {
@@ -257,8 +257,7 @@ class _RequestAssessmentState extends State<RequestAssessment> {
                 height: 85,
                 child: RaisedButton(
                   onPressed: () async {
-                    FirebaseUser user =
-                        await FirebaseAuth.instance.currentUser();
+                    User user = await FirebaseAuth.instance.currentUser;
                     try {
                       // docID = await PatientRepository().saveInDatabase(user.uid,
                       //     formatTimeOfDay(time), fromDateTimeToJson(date));

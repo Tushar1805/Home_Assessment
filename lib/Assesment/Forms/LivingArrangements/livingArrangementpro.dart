@@ -21,7 +21,7 @@ class LivingArrangementsProvider extends ChangeNotifier {
   TimeOfDay picked2;
   bool available = false;
   Map<String, Color> colorsset = {};
-  final firestoreInstance = Firestore.instance;
+  final firestoreInstance = FirebaseFirestore.instance;
   FirebaseAuth _auth = FirebaseAuth.instance;
   Map<String, TextEditingController> _controllers = {};
   Map<String, TextEditingController> _controllerstreco = {};
@@ -166,12 +166,8 @@ class LivingArrangementsProvider extends ChangeNotifier {
   }
 
   Future<void> getRole() async {
-    final FirebaseUser useruid = await _auth.currentUser();
-    firestoreInstance
-        .collection("users")
-        .document(useruid.uid)
-        .get()
-        .then((value) {
+    final User useruid = await _auth.currentUser;
+    firestoreInstance.collection("users").doc(useruid.uid).get().then((value) {
       type = (value["role"].toString()).split(" ")[0];
     });
 
@@ -280,10 +276,7 @@ class LivingArrangementsProvider extends ChangeNotifier {
       //     .child(imagePath1)
       //     .delete()
       //     .then((_) => print('Successfully deleted $imagePath storage item'));
-      StorageReference ref = await FirebaseStorage.instance
-          .ref()
-          .getStorage()
-          .getReferenceFromUrl(imagePath);
+      Reference ref = await FirebaseStorage.instance.refFromURL(imagePath);
       ref.delete();
 
       // FirebaseStorage firebaseStorege = FirebaseStorage.instance;

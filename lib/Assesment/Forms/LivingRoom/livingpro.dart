@@ -37,11 +37,11 @@ class LivingProvider extends ChangeNotifier {
     try {
       print("*************Uploading Video************");
       String name = 'applicationVideos/' + DateTime.now().toIso8601String();
-      StorageReference ref = FirebaseStorage.instance.ref().child(name);
+      Reference ref = FirebaseStorage.instance.ref().child(name);
 
-      StorageUploadTask upload = ref.putFile(video);
-      String url =
-          (await (await upload.onComplete).ref.getDownloadURL()).toString();
+      UploadTask upload = ref.putFile(video);
+      String url = "";
+      await upload.whenComplete(() => {url = ref.getDownloadURL().toString()});
       videoDownloadUrl = url;
       print("************Url = $videoDownloadUrl**********");
     } catch (e) {

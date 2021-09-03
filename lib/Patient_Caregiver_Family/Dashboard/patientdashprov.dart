@@ -145,13 +145,15 @@ class PatientProvider extends ChangeNotifier {
 /************************/
   final PatientRepository patientrepo = PatientRepository();
   final Color colorgreen = Color.fromRGBO(10, 80, 106, 1);
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   String getq;
   bool assessdisplay = false;
   QuerySnapshot dataset;
+  QuerySnapshot home;
   Map<String, dynamic> datasetorder;
   //  datamain;
   Map<String, dynamic> datasetmain = {};
+  Map<String, dynamic> homemain = {};
   var docs;
   var data2;
   String curretnassessmentdocref, role;
@@ -162,20 +164,40 @@ class PatientProvider extends ChangeNotifier {
     // print(role);
   }
 
+  // getHomeAddresses() async {
+  //   loading = true;
+  //   notifyListeners();
+  //   home = await patientrepo.getHomeAddresses();
+  //   Map<String, DocumentSnapshot> homemaintemp = {};
+  //   for (int i = 0; i < home.docs.length; i++) {
+  //     await getfielddata(
+  //       home.docs[i]['houses'],
+  //     );
+  //     homemaintemp["$i"] = (data2);
+  //   }
+  //   Map<String, dynamic> temptry = {};
+  //   for (int j = 0; j < homemaintemp.length; j++) {
+  //     temptry["$j"] = homemaintemp["$j"].data();
+  //   }
+  //   homemain = temptry;
+  //   loading = false;
+  //   notifyListeners();
+  // }
+
   getdocset(role) async {
     loading = true;
     notifyListeners();
     dataset = await patientrepo.getAssessments(role);
     Map<String, DocumentSnapshot> datasetmaintemp = {};
-    for (int i = 0; i < dataset.documents.length; i++) {
+    for (int i = 0; i < dataset.docs.length; i++) {
       await getfielddata(
-        dataset.documents[i].data['therapist'],
+        dataset.docs[i]['therapist'],
       );
       datasetmaintemp["$i"] = (data2);
     }
     Map<String, dynamic> temptry = {};
     for (int j = 0; j < datasetmaintemp.length; j++) {
-      temptry["$j"] = datasetmaintemp["$j"].data;
+      temptry["$j"] = datasetmaintemp["$j"].data();
     }
     datasetmain = temptry;
     loading = false;
@@ -185,8 +207,8 @@ class PatientProvider extends ChangeNotifier {
   getsorteddata(sortby, type) async {
     if (sortby == '') {
       Map<String, dynamic> datatemp = {};
-      for (int i = 0; i < dataset.documents.length; i++) {
-        datatemp["$i"] = dataset.documents[i].data;
+      for (int i = 0; i < dataset.docs.length; i++) {
+        datatemp["$i"] = dataset.docs[i].data();
       }
       final sorted = SplayTreeMap.from(
           datatemp,
@@ -209,11 +231,11 @@ class PatientProvider extends ChangeNotifier {
         );
         datasetmaintemp["$i"] = (data2);
       }
-      print(datasetmaintemp["0"].data);
+      print(datasetmaintemp["0"].data());
       // datasetmain =
       Map<String, dynamic> temptry = {};
       for (int j = 0; j < datasetmaintemp.length; j++) {
-        temptry["$j"] = datasetmaintemp["$j"].data;
+        temptry["$j"] = datasetmaintemp["$j"].data();
       }
       datasetmain = temptry;
       loading = false;

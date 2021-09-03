@@ -2,25 +2,21 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class NurseRepository {
-  Firestore firestore = Firestore.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseAuth _auth = FirebaseAuth.instance;
   QuerySnapshot dataset;
   QuerySnapshot datasetorder;
 
   void getUserData() async {
-    FirebaseUser firebaseUser = await FirebaseAuth.instance.currentUser();
-    firestore
-        .collection("users")
-        .document(firebaseUser.uid)
-        .get()
-        .then((value) {
+    User firebaseUser = await FirebaseAuth.instance.currentUser;
+    firestore.collection("users").doc(firebaseUser.uid).get().then((value) {
       // print('karUn');
       // print(value.data);
     });
   }
 
   Future<String> getcurrentuid() async {
-    final FirebaseUser user = await _auth.currentUser();
+    final User user = await _auth.currentUser;
     String useruid = user.uid;
     // print(useruid);
     return useruid;
@@ -47,19 +43,19 @@ class NurseRepository {
   // }
 
   Future<QuerySnapshot> getAssessments(role) async {
-    FirebaseUser user = await _auth.currentUser();
+    User user = await _auth.currentUser;
 
     dataset = await firestore
         .collection('assessments')
         .where('assessor', isEqualTo: user.uid)
-        .getDocuments();
+        .get();
     return dataset;
 
     // return dataset;
   }
 
   Future<DocumentSnapshot> getfielddata(String uid) async {
-    var data = await firestore.collection('users').document(uid).get();
+    var data = await firestore.collection('users').doc(uid).get();
     return data;
   }
 

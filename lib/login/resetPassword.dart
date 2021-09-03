@@ -1,62 +1,97 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../constants.dart';
 import '../main.dart';
 import './loading.dart';
 
 class ResetPass extends StatefulWidget {
-  var page;
+  Widget page;
   var result;
   var name;
-  ResetPass(this.page, this.result, this.name);
+  var imgUrl;
+  ResetPass(this.page, this.result, this.name, this.imgUrl);
   @override
   _ResetPassState createState() => _ResetPassState();
 }
 
 class _ResetPassState extends State<ResetPass> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final firestoreInstance = Firestore.instance;
+  final firestoreInstance = FirebaseFirestore.instance;
   // var name = "";
   FocusNode myFocusNode = new FocusNode();
   final password1 = TextEditingController();
   final password2 = TextEditingController();
   bool loading = false;
+  String name = "";
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    // getUserName();
+    getUserName();
   }
 
-  // Future<String> getUserName() async {
-  //   final FirebaseUser useruid = await _auth.currentUser();
-  //   firestoreInstance.collection("users").document(useruid.uid).get().then(
-  //     (value) {
-  //       setState(() {
-  //         name = (value["name"].toString()).split(" ")[0];
-  //       });
-  //     },
-  //   );
-  // }
+  Future<String> getUserName() async {
+    final User useruid = _auth.currentUser;
+    firestoreInstance.collection("users").doc(useruid.uid).get().then(
+      (value) {
+        setState(() {
+          name = (value.data()["firstName"].toString());
+        });
+      },
+    );
+  }
+
+  void _showSnackBar(snackbar, BuildContext buildContext) {
+    final snackBar = SnackBar(
+      duration: const Duration(seconds: 3),
+      content: Container(
+        height: 30.0,
+        child: Center(
+          child: Text(
+            '$snackbar',
+            style: TextStyle(fontSize: 14.0, color: Colors.white),
+          ),
+        ),
+      ),
+      backgroundColor: lightBlack(),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+    );
+    ScaffoldMessenger.of(buildContext)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(snackBar);
+  }
+
+  updateStatus() async {
+    final User user = _auth.currentUser;
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid)
+        .update({'newUser': "false"});
+  }
 
   Future<void> changePassword() async {
-    final FirebaseUser user = await _auth.currentUser();
+    final User user = _auth.currentUser;
     if (password1.text == "" || password1.text != password2.text) {
       print('Wande hai bhai');
-    } else {
-      user.updatePassword(password1.text).then((value) async {
-        print('Succesfullt Changed Password!');
-        await Firestore.instance
-            .collection('users')
-            .document(widget.result)
-            .updateData({'NewUser': false});
-        setState(() {
-          loading = false;
-        });
-        Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => widget.page));
+      _showSnackBar("Incorrect Password", context);
+      setState(() {
+        loading = false;
       });
+    } else {
+      user.updatePassword(password1.text);
+      print('Succesfully Changed Password!');
+      _showSnackBar('Succesfully changed the password!', context);
+      updateStatus();
+      setState(() {
+        loading = false;
+      });
+      if (mounted) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => MyHomePage()));
+      }
     }
   }
 
@@ -82,31 +117,53 @@ class _ResetPassState extends State<ResetPass> {
                 children: [
                   SingleChildScrollView(
                     child: Container(
-                      height: MediaQuery.of(context).size.height * 1,
+                      height: MediaQuery.of(context).size.height,
                       width: double.infinity,
                       color: Color.fromRGBO(10, 80, 106, 1),
                       child: Column(
                         children: [
                           SizedBox(
-                            height: MediaQuery.of(context).size.height * 0.07,
+                            height: MediaQuery.of(context).size.height * 0.06,
                           ),
                           Container(
-                            // height: 30,
-                            alignment: Alignment.centerRight,
-                            // width: double.infinity,
-                            padding: EdgeInsets.fromLTRB(0, 0, 25, 0),
-                            // color: Colors.red,
-                            child: CircleAvatar(
-                              backgroundColor: Colors.white,
-                              radius: 47,
-                              child: ClipOval(
-                                child:
-                                    Image.asset('assets/therapistavatar.png'),
-                              ),
-                            ),
-                          ),
+                              // height: 30,
+                              alignment: Alignment.topCenter,
+                              // width: double.infinity,
+                              padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                              // color: Colors.red,
+                              child:
+                                  (widget.imgUrl != "" && widget.imgUrl != null)
+                                      ? CircleAvatar(
+                                          backgroundColor: Colors.white,
+                                          radius: 47,
+                                          // backgroundImage: (imgUrl != "" && imgUrl != null)
+                                          //     ? NetworkImage(imgUrl)
+                                          //     : Image.asset('assets/therapistavatar.png'),
+                                          child: ClipOval(
+                                              clipBehavior: Clip.hardEdge,
+                                              child: CachedNetworkImage(
+                                                imageUrl: widget.imgUrl,
+                                                fit: BoxFit.cover,
+                                                width: 400,
+                                                height: 400,
+                                                placeholder: (context, url) =>
+                                                    new CircularProgressIndicator(),
+                                                errorWidget:
+                                                    (context, url, error) =>
+                                                        new Icon(Icons.error),
+                                              )),
+                                        )
+                                      : CircleAvatar(
+                                          radius: 47,
+                                          backgroundColor: Colors.white,
+                                          child: ClipOval(
+                                            child: Image.asset(
+                                              'assets/therapistavatar.png',
+                                            ),
+                                          ),
+                                        )),
                           SizedBox(
-                            height: MediaQuery.of(context).size.width * 0.65,
+                            height: 30,
                           ),
                           Container(
                             padding: EdgeInsets.fromLTRB(15, 15, 0, 0),
@@ -125,7 +182,7 @@ class _ResetPassState extends State<ResetPass> {
                             padding: EdgeInsets.fromLTRB(15, 0, 0, 10),
                             alignment: Alignment.topLeft,
                             child: Text(
-                              '${widget.name}.',
+                              '$name',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 65,
@@ -158,6 +215,9 @@ class _ResetPassState extends State<ResetPass> {
                                         if (input.length < 6) {
                                           print(
                                               'Password should be more than 6 words');
+                                          _showSnackBar(
+                                              'Password should be more than 6 words',
+                                              context);
                                         }
                                         return '';
                                       },
@@ -220,6 +280,9 @@ class _ResetPassState extends State<ResetPass> {
                                       if (input.length < 6) {
                                         print(
                                             'Password should be more than 6 words');
+                                        _showSnackBar(
+                                            'Password should be more than 6 words',
+                                            context);
                                       }
                                       return '';
                                     },

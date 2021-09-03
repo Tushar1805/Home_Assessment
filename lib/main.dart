@@ -1,14 +1,53 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:tryapp/login/login.dart';
 import 'package:tryapp/splash.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   await Firebase.initializeApp();
+//   print('Handling a background message ${message.messageId}');
+//   print(message.data);
+//   flutterLocalNotificationsPlugin.show(
+//       message.data.hashCode,
+//       message.data['title'],
+//       message.data['body'],
+//       NotificationDetails(
+//         android: AndroidNotificationDetails(
+//           channel.id,
+//           channel.name,
+//           channel.description,
+//         ),
+//       ));
+// }
+
+// const AndroidNotificationChannel channel = AndroidNotificationChannel(
+//   'high_importance_channel', // id
+//   'High Importance Notifications', // title
+//   'This channel is used for important notifications.', // description
+//   importance: Importance.high,
+// );
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  // await flutterLocalNotificationsPlugin
+  //     .resolvePlatformSpecificImplementation<
+  //         AndroidFlutterLocalNotificationsPlugin>()
+  //     ?.createNotificationChannel(channel);
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -37,6 +76,37 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  String token;
+
+  // void initState() {
+  //   // await _pushNotificationService.initialize();
+  //   var initialzationSettingsAndroid =
+  //       AndroidInitializationSettings('@mipmap/ic_launcher');
+  //   var initializationSettings =
+  //       InitializationSettings(android: initialzationSettingsAndroid);
+
+  //   flutterLocalNotificationsPlugin.initialize(initializationSettings);
+  //   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  //     RemoteNotification notification = message.notification;
+  //     AndroidNotification android = message.notification?.android;
+  //     if (notification != null && android != null) {
+  //       flutterLocalNotificationsPlugin.show(
+  //           notification.hashCode,
+  //           notification.title,
+  //           notification.body,
+  //           NotificationDetails(
+  //             android: AndroidNotificationDetails(
+  //               channel.id,
+  //               channel.name,
+  //               channel.description,
+  //               icon: android?.smallIcon,
+  //             ),
+  //           ));
+  //     }
+  //   });
+  //   getToken();
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -132,16 +202,28 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  getToken() async {
+    token = await FirebaseMessaging.instance.getToken();
+    setState(() {
+      token = token;
+    });
+    print(token);
+  }
+
   Future login(String email, String password) async {
     try {
       final FirebaseAuth _auth = FirebaseAuth.instance;
-      AuthResult result = await _auth.signInWithEmailAndPassword(
+      UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      FirebaseUser useer = result.user;
+      User user = result.user;
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(user.uid)
+          .set({"token": token}, SetOptions(merge: true));
       print(
           '////////////////////////////////////////////////////////////////////////////////////////');
-      if (useer != null) {
-        return useer.uid;
+      if (user != null) {
+        return user.uid;
       } else {
         return null;
       }

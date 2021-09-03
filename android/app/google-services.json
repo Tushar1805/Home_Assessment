@@ -1,33 +1,33 @@
 {
   "project_info": {
-    "project_number": "1006547057800",
-    "project_id": "prism-a797e",
-    "storage_bucket": "prism-a797e.appspot.com"
+    "project_number": "553260196167",
+    "project_id": "prismproduction-4aae6",
+    "storage_bucket": "prismproduction-4aae6.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1006547057800:android:361ea8e2e10a2c1941733d",
+        "mobilesdk_app_id": "1:553260196167:android:b15601fb85644bc38dac62",
         "android_client_info": {
           "package_name": "com.health.prism"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1006547057800-vi9kovmcvfujuud2llntsit0gksei8bm.apps.googleusercontent.com",
+          "client_id": "553260196167-457sn8ffg1lona4st0nr2a1n1nqnh3f4.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCZr-ZRUKz4VV5L67lA-GtuId3a5EmYDZI"
+          "current_key": "AIzaSyAZjhfi1MYd3Z3xOR78_NgT_tlfDHqRAss"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1006547057800-vi9kovmcvfujuud2llntsit0gksei8bm.apps.googleusercontent.com",
+              "client_id": "553260196167-457sn8ffg1lona4st0nr2a1n1nqnh3f4.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

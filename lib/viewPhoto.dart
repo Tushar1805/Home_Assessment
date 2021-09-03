@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:tryapp/Assesment/Forms/LivingArrangements/livingArrangementpro.dart';
@@ -34,11 +35,11 @@ class _ViewPhotoState extends State<ViewPhoto> {
   }
 
   Future<void> setPhoto(String url) async {
-    final FirebaseUser useruid = await FirebaseAuth.instance.currentUser();
-    await Firestore.instance
+    final User useruid = await FirebaseAuth.instance.currentUser;
+    await FirebaseFirestore.instance
         .collection("users")
-        .document(useruid.uid)
-        .setData({'url': url}, merge: true);
+        .doc(useruid.uid)
+        .set({'url': url}, SetOptions(merge: true));
   }
 
   Future<void> upload(File image, BuildContext context) async {
@@ -48,11 +49,10 @@ class _ViewPhotoState extends State<ViewPhoto> {
     try {
       print("*************Uploading Image************");
       String name = 'applicationImages/' + DateTime.now().toIso8601String();
-      StorageReference ref = FirebaseStorage.instance.ref().child(name);
+      Reference ref = FirebaseStorage.instance.ref().child(name);
 
-      StorageUploadTask upload = ref.putFile(image);
-      String url =
-          (await (await upload.onComplete).ref.getDownloadURL()).toString();
+      UploadTask upload = ref.putFile(image);
+      String url = (await (await upload).ref.getDownloadURL()).toString();
       setState(() {
         imageUrl = url;
         print("************Url = $imageUrl**********");
@@ -84,10 +84,7 @@ class _ViewPhotoState extends State<ViewPhoto> {
       //     .child(imagePath1)
       //     .delete()
       //     .then((_) => print('Successfully deleted $imagePath storage item'));
-      StorageReference ref = await FirebaseStorage.instance
-          .ref()
-          .getStorage()
-          .getReferenceFromUrl(imagePath);
+      Reference ref = FirebaseStorage.instance.refFromURL(imagePath);
       ref.delete();
 
       // FirebaseStorage firebaseStorege = FirebaseStorage.instance;
@@ -127,11 +124,9 @@ class _ViewPhotoState extends State<ViewPhoto> {
                     ? await deleteFile(widget.imgUrl)
                     : null;
                 final pickedImage =
-                    await ImagePicker().getImage(source: ImageSource.gallery);
+                    await ImagePicker().pickImage(source: ImageSource.gallery);
                 if (pickedImage != null) {
-                  setState(() async {
-                    await upload(File(pickedImage?.path), context);
-                  });
+                  await upload(File(pickedImage?.path), context);
                 } else {
                   // Navigator.pop(context);
                   setState(() {});
@@ -183,7 +178,7 @@ class _ViewPhotoState extends State<ViewPhoto> {
                   SizedBox(
                     width: 10.0,
                   ),
-                  Text("Edit Profile photo", style: titleBarWhiteTextStyle()),
+                  Text("Edit Profile", style: titleBarWhiteTextStyle()),
                 ],
               ),
             ),
@@ -204,7 +199,21 @@ class _ViewPhotoState extends State<ViewPhoto> {
                         child: PhotoView(
                           backgroundDecoration:
                               BoxDecoration(color: Colors.white),
-                          loadingChild: loading(),
+                          loadingBuilder: (context, event) => Center(
+                            child: Container(
+                              width: 30.0,
+                              height: 30.0,
+                              child: CircularProgressIndicator(
+                                backgroundColor: Colors.transparent,
+                                color: Color.fromRGBO(10, 80, 106, 1),
+                                value: event == null
+                                    ? 0
+                                    : event.cumulativeBytesLoaded /
+                                        event.expectedTotalBytes,
+                              ),
+                            ),
+                          ),
+                          enableRotation: true,
                           imageProvider: (widget.imgUrl.isNotEmpty)
                               ? new NetworkImage(widget.imgUrl)
                               : null,
@@ -225,7 +234,86 @@ class _ViewPhotoState extends State<ViewPhoto> {
                                     : Image.asset('assets/patientavatar.png'),
                           ),
                         )),
-                  ))
+                  )),
+
+        // floatingActionButton: new FloatingActionButton(
+        //   child: Icon(Icons.edit),
+        //   foregroundColor: Colors.white,
+        //   backgroundColor: Color.fromRGBO(10, 80, 106, 1),
+        //   onPressed: () async {
+        //     (widget.imgUrl != "" && widget.imgUrl != null)
+        //         ? await deleteFile(widget.imgUrl)
+        //         : null;
+        //     final pickedImage =
+        //         await ImagePicker().getImage(source: ImageSource.gallery);
+        //     if (pickedImage != null) {
+        //       await upload(File(pickedImage?.path), context);
+        //     } else {
+        //       // Navigator.pop(context);
+        //       setState(() {});
+        //       final snackBar = SnackBar(content: Text('Image Not Selected!'));
+        //       ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        //     }
+        //   },
+        // ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              (widget.imgUrl != "" && widget.imgUrl != null)
+                  ? FloatingActionButton(
+                      tooltip: "Delete Profile Photo",
+                      backgroundColor: Color.fromRGBO(10, 80, 106, 1),
+                      heroTag: "btn",
+                      onPressed: () async {
+                        await deleteFile(widget.imgUrl);
+                        if (widget.role == "therapist") {
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => Therapist()));
+                        } else if (widget.role == "nurse/case manager") {
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(builder: (context) => Nurse()));
+                        } else {
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => Patient()));
+                        }
+                      },
+                      child: Icon(Icons.delete),
+                    )
+                  : SizedBox(),
+              SizedBox(
+                height: 20,
+              ),
+              FloatingActionButton(
+                backgroundColor: Color.fromRGBO(10, 80, 106, 1),
+                tooltip: "Edit Profile Photo",
+                heroTag: "btn2",
+                onPressed: () async {
+                  if (widget.imgUrl != "" && widget.imgUrl != null) {
+                    await deleteFile(widget.imgUrl);
+                  }
+
+                  final pickedImage = await ImagePicker()
+                      .pickImage(source: ImageSource.gallery);
+                  if (pickedImage != null) {
+                    await upload(File(pickedImage?.path), context);
+                  } else {
+                    // Navigator.pop(context);
+                    setState(() {});
+                    final snackBar =
+                        SnackBar(content: Text('Image Not Selected!'));
+                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                  }
+                },
+                child: Icon(Icons.edit),
+              )
+            ],
+          ),
+        )
         // : Container(
         //     child: Center(
         //     child: SizedBox(

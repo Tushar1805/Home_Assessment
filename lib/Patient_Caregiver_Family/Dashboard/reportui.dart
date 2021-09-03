@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
 
@@ -28,8 +29,8 @@ class ReportUI extends StatefulWidget {
 
 class _ReportUIState extends State<ReportUI> {
   FirebaseAuth auth = FirebaseAuth.instance;
-  final firestoreInstance = Firestore.instance;
-  FirebaseUser curuser;
+  final firestoreInstance = FirebaseFirestore.instance;
+  User curuser;
   var fname,
       lname,
       address,
@@ -68,10 +69,10 @@ class _ReportUIState extends State<ReportUI> {
     // getPermission();
   }
 
-  void getPermission() async {
-    Map<PermissionGroup, PermissionStatus> permissions =
-        await PermissionHandler().requestPermissions([PermissionGroup.storage]);
-  }
+  // void getPermission() async {
+  //   Map<Permission, PermissionStatus> permissions =
+  //       await RunHandler().requestPermissions([Permission.storage]);
+  // }
 
   Future<String> getDirectoryPath() async {
     Directory appDocDirectory = await getApplicationDocumentsDirectory();
@@ -105,26 +106,29 @@ class _ReportUIState extends State<ReportUI> {
   // }
 
   Future<void> getUserName() async {
-    final FirebaseUser useruid = await auth.currentUser();
+    final User useruid = await auth.currentUser;
     await firestoreInstance
         .collection("users")
-        .document(widget.patientUid)
+        .doc(widget.patientUid)
         .get()
         .then(
       (value) {
         setState(() {
-          if (value.data != null) {
-            fname = (capitalize(value.data["firstName"].toString()) ?? "First");
-            lname = (capitalize(value.data["lastName"].toString()) ?? "Last");
-            gender = (capitalize(value.data["gender"].toString()) ?? "Male");
-            address = (capitalize(value.data["houses"][0]["city"].toString()) ??
-                "Nagpur");
-            age = (value.data["age"].toString() ?? "21");
-            phone = (value.data["mobileNo"].toString() ?? "1234567890");
-            email = (value.data["email"].toString() ?? "user@gmail.com");
-            height = (value.data["height"].toString() ?? "5.5");
-            weight = (value.data["weight"].toString() ?? "50");
-            handDominance = (value["handDominance"].toString() ?? "Right");
+          if (value.data() != null) {
+            fname =
+                (capitalize(value.data()["firstName"].toString()) ?? "First");
+            lname = (capitalize(value.data()["lastName"].toString()) ?? "Last");
+            gender = (capitalize(value.data()["gender"].toString()) ?? "Male");
+            address =
+                (capitalize(value.data()["houses"][0]["city"].toString()) ??
+                    "Nagpur");
+            age = (value.data()["age"].toString() ?? "21");
+            phone = (value.data()["mobileNo"].toString() ?? "1234567890");
+            email = (value.data()["email"].toString() ?? "user@gmail.com");
+            height = (value.data()["height"].toString() ?? "5.5");
+            weight = (value.data()["weight"].toString() ?? "50");
+            handDominance =
+                (value.data()["handDominance"].toString() ?? "Right");
           }
           // docID = (value["docID"].toString());
         });
@@ -140,27 +144,27 @@ class _ReportUIState extends State<ReportUI> {
   Future<void> getassessments() async {
     await firestoreInstance
         .collection("assessments")
-        .document(widget.docID)
+        .doc(widget.docID)
         .get()
         .then(
       (value) {
         setState(() {
-          if (value.data != null) {
-            patient = (value["patient"].toString());
-            therapist = (value["therapist"].toString());
-            if (value.data["form"] != null) {
+          if (value.data() != null) {
+            patient = (value.data()["patient"].toString());
+            therapist = (value.data()["therapist"].toString());
+            if (value.data()["form"] != null) {
               assess = List<Map<String, dynamic>>.generate(
-                  value["form"].length,
+                  value.data()["form"].length,
                   (int index) => Map<String, dynamic>.from(
-                      value.data["form"].elementAt(index)));
+                      value.data()["form"].elementAt(index)));
             }
             // assess = List.castFrom(value["form"].toList());
-            if (value.data["date"] != null) {
-              startingTime = value.data["date"].toString();
+            if (value.data()["date"] != null) {
+              startingTime = value.data()["date"].toString();
             }
-            if (value.data["assessmentCompletionDate"] != null) {
+            if (value.data()["assessmentCompletionDate"] != null) {
               closingTime = DateFormat.yMd()
-                  .format(value.data["assessmentCompletionDate"].toDate());
+                  .format(value.data()["assessmentCompletionDate"].toDate());
             }
           }
         });
@@ -456,7 +460,7 @@ class _ReportUIState extends State<ReportUI> {
 
     File file = File("$documentPath/report.pdf");
 
-    file.writeAsBytesSync(pdf.save());
+    file.writeAsBytesSync(List.from(await pdf.save()));
     // print(documentDirectory);
     // print(documentPath);
     // downloadFile(file.uri, '$documentPath/report.pdf');

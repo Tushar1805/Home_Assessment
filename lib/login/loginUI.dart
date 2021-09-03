@@ -1,8 +1,10 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tryapp/login/resetPassword.dart';
 // import 'package:tryapp/home/homeUi.dart';
 // import 'package:tryapp/welcome.dart';
+import '../constants.dart';
 import './loginpro.dart';
 import './loading.dart';
 // import '../main.dart' as main;
@@ -26,15 +28,54 @@ class _LoginFormState extends State<LoginForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool loading = false;
+  String token;
+
+  void initState() {
+    // getToken();
+  }
+
+  void _showSnackBar(snackbar, BuildContext buildContext) {
+    final snackBar = SnackBar(
+      duration: const Duration(seconds: 3),
+      content: Container(
+        height: 30.0,
+        child: Center(
+          child: Text(
+            '$snackbar',
+            style: TextStyle(fontSize: 14.0, color: Colors.white),
+          ),
+        ),
+      ),
+      backgroundColor: lightBlack(),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
+    );
+    ScaffoldMessenger.of(buildContext)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(snackBar);
+  }
+
+  getToken() async {
+    token = await FirebaseMessaging.instance.getToken();
+    setState(() {
+      token = token;
+    });
+    print(token);
+  }
 
   Future login(String email, String password) async {
     try {
       // print(passwordsave);
-      AuthResult result = await _auth.signInWithEmailAndPassword(
+      UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      FirebaseUser useer = result.user;
+      User useer = result.user;
+
+      // await FirebaseFirestore.instance
+      //     .collection("users")
+      //     .doc(useer.uid)
+      //     .set({"token": token}, SetOptions(merge: true));
 
       if (useer != null) {
+        print("user uid = ${useer.uid} ");
         return useer.uid;
       } else {
         return null;
@@ -45,6 +86,7 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     final loginProvider = Provider.of<LoginProvider>(context);
+
     return loading
         ? SplashScreen1Sub()
         : Scaffold(
@@ -86,6 +128,7 @@ class _LoginFormState extends State<LoginForm> {
                             focusNode: myFocusNode,
                             validator: (input) {
                               if (input.isEmpty) {
+                                _showSnackBar('Please type a email', context);
                                 return 'Please type a email';
                               }
                               return '';
@@ -124,6 +167,9 @@ class _LoginFormState extends State<LoginForm> {
                             style: TextStyle(color: Colors.white),
                             validator: (input) {
                               if (input.length < 6) {
+                                _showSnackBar(
+                                    'Password should be more than 6 words',
+                                    context);
                                 print('Password should be more than 6 words');
                               }
                               return '';
@@ -176,31 +222,38 @@ class _LoginFormState extends State<LoginForm> {
                                 var result = await login(email, password);
                                 // await loggeedIn.setString('email', email);
                                 if (result != null) {
-                                  var type = await Firestore.instance
+                                  var type = await FirebaseFirestore.instance
                                       .collection('users')
-                                      .document(result)
+                                      .doc(result)
                                       .get()
                                       .then((value) {
-                                    return value.data['role'] ?? "therapist";
+                                    return value.data()['role'] ?? "therapist";
                                   });
-                                  var name = await Firestore.instance
+                                  var name = await FirebaseFirestore.instance
                                       .collection('users')
-                                      .document(result)
+                                      .doc(result)
                                       .get()
                                       .then((value) {
-                                    return value.data['name'];
+                                    return value.data()['firstName'];
                                   });
-                                  var newuser = await Firestore.instance
+                                  var newUser = await FirebaseFirestore.instance
                                       .collection('users')
-                                      .document(result)
+                                      .doc(result)
                                       .get()
                                       .then((value) {
-                                    return value.data['NewUser'];
+                                    return value.data()['newUser'];
                                   });
-                                  print(newuser);
+                                  var imgUrl = await FirebaseFirestore.instance
+                                      .collection('users')
+                                      .doc(result)
+                                      .get()
+                                      .then((value) {
+                                    return value.data()['url'];
+                                  });
+                                  print(newUser);
                                   var page =
                                       await loginProvider.getUserType(type);
-                                  if (newuser ?? false) {
+                                  if (newUser == "true" ?? false) {
                                     setState(() {
                                       loading = false;
                                     });
@@ -209,8 +262,8 @@ class _LoginFormState extends State<LoginForm> {
                                     Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                ResetPass(page, result, name)));
+                                            builder: (context) => ResetPass(
+                                                page, result, name, imgUrl)));
                                   } else {
                                     Navigator.pushReplacement(
                                         context,

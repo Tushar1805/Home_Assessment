@@ -150,7 +150,7 @@ getMaps(String classname) {
     rr["$i"] = {
       'Question': "",
       'Answer': '',
-      'Priority': '0',
+      'Priority': '1',
       //The data from comments field will get saves here.
       //
       //NOTE/WARNING: dont change this name.. It have been used

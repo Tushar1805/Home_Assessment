@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tryapp/Assesment/newassesment/cardsUI.dart';
@@ -30,10 +32,21 @@ class TherapistUI extends StatefulWidget {
 class _TherapistUIState extends State<TherapistUI> {
   FirebaseAuth _auth = FirebaseAuth.instance;
   // FirebaseAuth auth = FirebaseAuth.instance;
-  final firestoreInstance = Firestore.instance;
-  FirebaseUser curuser;
+  final firestoreInstance = FirebaseFirestore.instance;
+  User curuser;
   var fname, lname, address, userFirstName, userLastName, curUid, patientUid;
   String imgUrl = "";
+
+  // final AndroidNotificationChannel channel = AndroidNotificationChannel(
+  //     "high_importance_notification",
+  //     "High Importance Notification",
+  //     "High importance Notification Boy",
+  //     playSound: true,
+  //     importance: Importance.high);
+
+  // final FlutterLocalNotificationPlugin flutterLocalNotificationPlugin = FlutterLocalNotificationPlugin();
+
+  // Future<void> _firebase
 
   @override
   void initState() {
@@ -42,23 +55,28 @@ class _TherapistUIState extends State<TherapistUI> {
     setImage();
     getUserDetails();
     getCurrentUid();
+    // getToken();
   }
 
+  // getToken() async {
+  //   String token = await FirebaseMessaging.instance.getToken();
+  //   setState(() {
+  //     token = token;
+  //   });
+  //   print(token);
+  // }
+
   Future<void> setImage() async {
-    final FirebaseUser useruid = await _auth.currentUser();
-    firestoreInstance
-        .collection("users")
-        .document(useruid.uid)
-        .get()
-        .then((value) {
+    final User useruid = await _auth.currentUser;
+    firestoreInstance.collection("users").doc(useruid.uid).get().then((value) {
       setState(() {
-        if (value["url"] != null) {
-          imgUrl = (value["url"].toString()) ?? "";
+        if (value.data()["url"] != null) {
+          imgUrl = (value.data()["url"].toString()) ?? "";
         } else {
           firestoreInstance
               .collection("users")
-              .document(useruid.uid)
-              .setData({'url': ''}, merge: true);
+              .doc(useruid.uid)
+              .set({'url': ''}, SetOptions(merge: true));
           imgUrl = "";
         }
 
@@ -69,12 +87,12 @@ class _TherapistUIState extends State<TherapistUI> {
   }
 
   Future<void> getUserDetails() async {
-    final FirebaseUser useruid = await _auth.currentUser();
-    firestoreInstance.collection("users").document(useruid.uid).get().then(
+    final User useruid = await _auth.currentUser;
+    firestoreInstance.collection("users").doc(useruid.uid).get().then(
       (value) {
         setState(() {
-          userFirstName = (value["firstName"].toString());
-          userLastName = (value["lastName"].toString());
+          userFirstName = (value.data()["firstName"].toString());
+          userLastName = (value.data()["lastName"].toString());
           // imgUrl = (value['url'].toString()) ?? "";
           // print("**********imgUrl = $imgUrl");
           // address = (value["houses"][0]["city"].toString());
@@ -84,14 +102,14 @@ class _TherapistUIState extends State<TherapistUI> {
   }
 
   Future<void> getPatientDetails() async {
-    final FirebaseUser useruid = await _auth.currentUser();
+    final User useruid = await _auth.currentUser;
     if (patientUid != null) {
-      firestoreInstance.collection("users").document(patientUid).get().then(
+      firestoreInstance.collection("users").doc(patientUid).get().then(
         (value) {
           setState(() {
-            fname = (value["firstName"].toString());
-            lname = (value["lastName"].toString());
-            address = (value["houses"][0]["city"].toString());
+            fname = (value.data()["firstName"].toString());
+            lname = (value.data()["lastName"].toString());
+            address = (value.data()["houses"][0]["city"].toString());
           });
         },
       );
@@ -99,7 +117,7 @@ class _TherapistUIState extends State<TherapistUI> {
   }
 
   Future<void> getCurrentUid() async {
-    final FirebaseUser useruid = await _auth.currentUser();
+    final User useruid = await _auth.currentUser;
     setState(() {
       curUid = useruid.uid;
     });
@@ -346,17 +364,14 @@ class _TherapistUIState extends State<TherapistUI> {
                     child: ListView.builder(
                       physics: BouncingScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: assesspro.datasetmain.length,
+                      itemCount: assesspro.datasetmain?.length ?? 0,
                       itemBuilder: (context, index) {
                         // print(assesspro.datasetmain.length);
                         // return;
                         // return listdata(assesspro.datasetmain[index],
                         //     assesspro.datasetmain[index], assesspro);
-                        return listdata(
-                            assesspro.datasetmain["$index"],
-                            assesspro.dataset.documents[index],
-                            assesspro,
-                            context);
+                        return listdata(assesspro.datasetmain["$index"],
+                            assesspro.dataset.docs[index], assesspro, context);
                       },
                     ),
                   ),
@@ -366,15 +381,16 @@ class _TherapistUIState extends State<TherapistUI> {
 
   Widget listdata(snapshot, assessmentdata, TherapistProvider assesspro,
       BuildContext buildContext) {
-    patientUid = assessmentdata.data["patient"] ?? "";
+    patientUid = assessmentdata["patient"] ?? "";
     List<Map<String, dynamic>> list = [];
 
-    if (assessmentdata.data["form"] != null) {
+    if (assessmentdata.data()["form"] != null) {
       list = List<Map<String, dynamic>>.generate(
-          assessmentdata.data["form"].length,
+          assessmentdata.data()["form"].length,
           (int index) => Map<String, dynamic>.from(
-              assessmentdata.data["form"].elementAt(index)));
+              assessmentdata.data()["form"].elementAt(index)));
     }
+
     // print(snapshot["patient"]);
     // print(snapshot);
     Widget getDate(String label, var date) {
@@ -441,7 +457,9 @@ class _TherapistUIState extends State<TherapistUI> {
               style: TextStyle(fontSize: 16, color: Colors.black45),
             ),
             Text(
-              '${assesspro.capitalize(snapshot["houses"][0]["address1"])}, ${assesspro.capitalize(snapshot["houses"][0]["address2"])}, ${assesspro.capitalize(snapshot["houses"][0]["city"])} ' ??
+              '${(snapshot["houses"][0]["address1"] != "") ? snapshot["houses"][0]["address1"][0].toString().toUpperCase() : ""}${(snapshot["houses"][0]["address1"] != "") ? snapshot["houses"][0]["address1"].toString().substring(1) : ""},'
+                      '${(snapshot["houses"][0]["address2"] != "") ? snapshot["houses"][0]["address2"][0].toString().toUpperCase() : ""}${(snapshot["houses"][0]["address2"] != "") ? snapshot["houses"][0]["address2"].toString().substring(1) : ""},'
+                      '${(snapshot["houses"][0]["city"] != "") ? snapshot["houses"][0]["city"][0].toString().toUpperCase() : ""}${(snapshot["houses"][0]["city"] != "") ? snapshot["houses"][0]["city"].toString().substring(1) : ""} ' ??
                   "Home Address: Nagpur",
               style: TextStyle(
                 fontSize: 16,
@@ -518,30 +536,30 @@ class _TherapistUIState extends State<TherapistUI> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Container(
-                                child: Wrap(
-                                  // mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      child: Text(
-                                        'Patient Name: ',
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.black45),
+                              Wrap(
+                                // mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    child: Text(
+                                      'Patient Name: ',
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.black45),
+                                    ),
+                                  ),
+                                  Container(
+                                    width: 87,
+                                    child: Text(
+                                      '${(snapshot["firstName"] != "") ? snapshot["firstName"][0].toString().toUpperCase() : ""}${(snapshot["firstName"] != "") ? snapshot["firstName"].toString().substring(1) : ""} '
+                                              '${(snapshot["lastName"] != "") ? snapshot["lastName"][0].toString().toUpperCase() : ""}${(snapshot["lastName"] != "") ? snapshot["lastName"].toString().substring(1) : ""} ' ??
+                                          "Prachi Rathi",
+                                      style: TextStyle(
+                                        fontSize: 16,
                                       ),
                                     ),
-                                    Container(
-                                      child: Text(
-                                        '${assesspro.capitalize(snapshot["firstName"])}${assesspro.capitalize(snapshot["lastName"])}' ??
-                                            "First Last",
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
+
                               SizedBox(height: 2.5),
                               Divider(),
                               Container(
@@ -553,7 +571,7 @@ class _TherapistUIState extends State<TherapistUI> {
                                         fontSize: 16, color: Colors.black45),
                                   ),
                                   Text(
-                                    '${assessmentdata.data["date"]}' ??
+                                    '${assessmentdata.data()["date"]}' ??
                                         "1/1/2021",
                                     style: TextStyle(
                                       fontSize: 16,
@@ -563,12 +581,33 @@ class _TherapistUIState extends State<TherapistUI> {
                               ),
                               SizedBox(height: 2.5),
                               Divider(),
-                              getDate(
-                                  "Completion Date:",
-                                  assessmentdata
-                                      .data["assessmentCompletionDate"]),
-                              SizedBox(height: 2.5),
-                              Divider(),
+                              (assessmentdata.data()[
+                                              "assessmentCompletionDate"] !=
+                                          "" &&
+                                      assessmentdata.data()[
+                                              "assessmentCompletionDate"] !=
+                                          null)
+                                  ? getDate(
+                                      "Completion Date:",
+                                      assessmentdata
+                                          .data()["assessmentCompletionDate"])
+                                  : SizedBox(),
+                              (assessmentdata.data()[
+                                              "assessmentCompletionDate"] !=
+                                          "" &&
+                                      assessmentdata.data()[
+                                              "assessmentCompletionDate"] !=
+                                          null)
+                                  ? SizedBox(height: 2.5)
+                                  : SizedBox(),
+                              (assessmentdata.data()[
+                                              "assessmentCompletionDate"] !=
+                                          "" &&
+                                      assessmentdata.data()[
+                                              "assessmentCompletionDate"] !=
+                                          null)
+                                  ? Divider()
+                                  : SizedBox(),
                               // getDate("Latest Change: ",
                               //     snapshot["latestChangeDate"]),
                               // SizedBox(height: 2.5),
@@ -582,7 +621,7 @@ class _TherapistUIState extends State<TherapistUI> {
                                         fontSize: 16, color: Colors.black45),
                                   ),
                                   Text(
-                                    '${assessmentdata.data["currentStatus"]}',
+                                    '${assessmentdata.data()["currentStatus"]}',
                                     style: TextStyle(
                                       fontSize: 16,
                                     ),
@@ -601,12 +640,12 @@ class _TherapistUIState extends State<TherapistUI> {
                       ],
                     ),
                     getButton(
-                        assessmentdata.data["currentStatus"],
-                        assessmentdata.data["therapist"],
-                        assessmentdata.data["assessor"],
-                        assessmentdata.data["patient"],
+                        assessmentdata.data()["currentStatus"],
+                        assessmentdata.data()["therapist"],
+                        assessmentdata.data()["assessor"],
+                        assessmentdata.data()["patient"],
                         list,
-                        assessmentdata.data["docID"],
+                        assessmentdata.data()["docID"],
                         context),
                     SizedBox(
                       height: 10,
@@ -645,7 +684,7 @@ class _TherapistUIState extends State<TherapistUI> {
         return Container(
           alignment: Alignment.bottomLeft,
           child: Text(
-            "${assesspro.capitalize(name)}",
+            "${name[0].toUpperCase()}${name.substring(1)}",
             style: TextStyle(
               color: Colors.white,
               fontSize: 37,
@@ -750,39 +789,39 @@ class _TherapistUIState extends State<TherapistUI> {
                     // child: Text("$name"),
                     //
                   ),
-                  ListTile(
-                    leading: Icon(Icons.favorite, color: Colors.green),
-                    title: Text(
-                      'Patients/Caregivers/Families',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    onTap: () => {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => PatientsList()))
-                    },
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.home, color: Colors.green),
-                    title: Text(
-                      'Home Addresses',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    onTap: () => {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => HomeAddresses()))
-                    },
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.people, color: Colors.green),
-                    title: Text(
-                      'Nurses/Case Managers',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    onTap: () => {
-                      Navigator.of(context).push(
-                          MaterialPageRoute(builder: (context) => NursesList()))
-                    },
-                  ),
+                  // ListTile(
+                  //   leading: Icon(Icons.favorite, color: Colors.green),
+                  //   title: Text(
+                  //     'Patients/Caregivers/Families',
+                  //     style: TextStyle(fontSize: 18),
+                  //   ),
+                  //   onTap: () => {
+                  //     Navigator.of(context).push(MaterialPageRoute(
+                  //         builder: (context) => PatientsList()))
+                  //   },
+                  // ),
+                  // ListTile(
+                  //   leading: Icon(Icons.home, color: Colors.green),
+                  //   title: Text(
+                  //     'Home Addresses',
+                  //     style: TextStyle(fontSize: 18),
+                  //   ),
+                  //   onTap: () => {
+                  //     Navigator.of(context).push(MaterialPageRoute(
+                  //         builder: (context) => HomeAddresses()))
+                  //   },
+                  // ),
+                  // ListTile(
+                  //   leading: Icon(Icons.people, color: Colors.green),
+                  //   title: Text(
+                  //     'Nurses/Case Managers',
+                  //     style: TextStyle(fontSize: 18),
+                  //   ),
+                  //   onTap: () => {
+                  //     Navigator.of(context).push(
+                  //         MaterialPageRoute(builder: (context) => NursesList()))
+                  //   },
+                  // ),
                   ListTile(
                     leading: Icon(Icons.assessment, color: Colors.green),
                     title: Text(
@@ -797,14 +836,14 @@ class _TherapistUIState extends State<TherapistUI> {
                                   AssesmentSplashScreen("therapist")))
                     },
                   ),
-                  ListTile(
-                    leading: Icon(Icons.pages, color: Colors.green),
-                    title: Text(
-                      'Report',
-                      style: TextStyle(fontSize: 18),
-                    ),
-                    onTap: () => {Navigator.of(context).pop()},
-                  ),
+                  // ListTile(
+                  //   leading: Icon(Icons.pages, color: Colors.green),
+                  //   title: Text(
+                  //     'Report',
+                  //     style: TextStyle(fontSize: 18),
+                  //   ),
+                  //   onTap: () => {Navigator.of(context).pop()},
+                  // ),
                 ],
               ),
             ),

@@ -27,7 +27,7 @@ class BedroomUI extends StatefulWidget {
 }
 
 class _BedroomUIState extends State<BedroomUI> {
-  final firestoreInstance = Firestore.instance;
+  final firestoreInstance = FirebaseFirestore.instance;
   FirebaseAuth _auth = FirebaseAuth.instance;
   stt.SpeechToText _speech;
   bool _isListening = false;
@@ -68,15 +68,15 @@ class _BedroomUIState extends State<BedroomUI> {
   }
 
   Future<void> getAssessData() async {
-    final FirebaseUser user = await _auth.currentUser();
+    final User user = await _auth.currentUser;
     firestoreInstance
         .collection("assessments")
-        .document(widget.docID)
+        .doc(widget.docID)
         .get()
         .then((value) => setState(() {
               curUid = user.uid;
-              assessor = value.data["assessor"];
-              therapist = value.data["therapist"];
+              assessor = value["assessor"];
+              therapist = value["therapist"];
               videoUrl = widget.wholelist[6][widget.accessname]["videos"]["url"]
                       .toString() ??
                   "";
@@ -88,8 +88,8 @@ class _BedroomUIState extends State<BedroomUI> {
   }
 
   Future<String> getRole() async {
-    final FirebaseUser useruid = await _auth.currentUser();
-    firestoreInstance.collection("users").document(useruid.uid).get().then(
+    final User useruid = await _auth.currentUser;
+    firestoreInstance.collection("users").doc(useruid.uid).get().then(
       (value) {
         setState(() {
           role = (value["role"]);
@@ -214,11 +214,10 @@ class _BedroomUIState extends State<BedroomUI> {
       try {
         print("*************Uploading Video************");
         String name = 'applicationVideos/' + DateTime.now().toIso8601String();
-        StorageReference ref = FirebaseStorage.instance.ref().child(name);
+        Reference ref = FirebaseStorage.instance.ref().child(name);
 
-        StorageUploadTask upload = ref.putFile(videos);
-        String url =
-            (await (await upload.onComplete).ref.getDownloadURL()).toString();
+        UploadTask upload = ref.putFile(videos);
+        String url = (await (await upload).ref.getDownloadURL()).toString();
         setState(() {
           videoUrl = url;
           print("************Url = $videoUrl**********");
@@ -428,10 +427,7 @@ class _BedroomUIState extends State<BedroomUI> {
         //     .child(imagePath1)
         //     .delete()
         //     .then((_) => print('Successfully deleted $imagePath storage item'));
-        StorageReference ref = await FirebaseStorage.instance
-            .ref()
-            .getStorage()
-            .getReferenceFromUrl(imagePath);
+        Reference ref = await FirebaseStorage.instance.refFromURL(imagePath);
         ref.delete();
 
         // FirebaseStorage firebaseStorege = FirebaseStorage.instance;
@@ -468,16 +464,28 @@ class _BedroomUIState extends State<BedroomUI> {
                     assesmentprovider.setdatalisten(i + 1);
                     assesmentprovider.setdatalistenthera(i + 1);
                   }
-                  if (test != 0) {
+                  // if (test != 0) {
+                  if (role == "therapist") {
+                    // if (assesmentprovider.saveToForm) {
                     NewAssesmentRepository().setLatestChangeDate(widget.docID);
                     NewAssesmentRepository()
                         .setForm(widget.wholelist, widget.docID);
                     Navigator.pop(
                         context, widget.wholelist[6][widget.accessname]);
+                    // } else {
+                    //   _showSnackBar("Provide all recommendations", context);
+                    // }
                   } else {
-                    _showSnackBar(
-                        "You Must Have To Fill The Details First", context);
+                    NewAssesmentRepository().setLatestChangeDate(widget.docID);
+                    NewAssesmentRepository()
+                        .setForm(widget.wholelist, widget.docID);
+                    Navigator.pop(
+                        context, widget.wholelist[6][widget.accessname]);
                   }
+                  // } else {
+                  //   _showSnackBar(
+                  //       "You Must Have To Fill The Details First", context);
+                  // }
                 } catch (e) {
                   print(e.toString());
                 }
@@ -2017,17 +2025,31 @@ class _BedroomUIState extends State<BedroomUI> {
                         assesmentprovider.setdatalisten(i + 1);
                         assesmentprovider.setdatalistenthera(i + 1);
                       }
-                      if (test != 0) {
+                      // if (test != 0) {
+                      if (role == "therapist") {
+                        // if (assesmentprovider.saveToForm) {
                         NewAssesmentRepository()
                             .setLatestChangeDate(widget.docID);
                         NewAssesmentRepository()
                             .setForm(widget.wholelist, widget.docID);
                         Navigator.pop(
                             context, widget.wholelist[6][widget.accessname]);
+                        // } else {
+                        //   _showSnackBar(
+                        //       "Provide all recommendations", context);
+                        // }
                       } else {
-                        _showSnackBar(
-                            "You Must Have To Fill The Details First", context);
+                        NewAssesmentRepository()
+                            .setLatestChangeDate(widget.docID);
+                        NewAssesmentRepository()
+                            .setForm(widget.wholelist, widget.docID);
+                        Navigator.pop(
+                            context, widget.wholelist[6][widget.accessname]);
                       }
+                      // } else {
+                      //   _showSnackBar(
+                      //       "You Must Have To Fill The Details First", context);
+                      // }
                     },
                   ))
                 ],

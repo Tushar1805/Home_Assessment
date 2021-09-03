@@ -134,7 +134,7 @@ class TherapistProvider extends ChangeNotifier {
   //********************************************************************************** */
   final TherapistRepository therarepo = TherapistRepository();
   final Color colorgreen = Color.fromRGBO(10, 80, 106, 1);
-  final Firestore firestore = Firestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
   String getq;
   bool assessdisplay = false;
   QuerySnapshot dataset;
@@ -156,15 +156,15 @@ class TherapistProvider extends ChangeNotifier {
     notifyListeners();
     dataset = await therarepo.getAssessments(role);
     Map<String, DocumentSnapshot> datasetmaintemp = {};
-    for (int i = 0; i < dataset.documents.length; i++) {
+    for (int i = 0; i < dataset.docs.length; i++) {
       await getfielddata(
-        dataset.documents[i].data['patient'],
+        dataset.docs[i]['patient'],
       );
       datasetmaintemp["$i"] = (data2);
     }
     Map<String, dynamic> temptry = {};
     for (int j = 0; j < datasetmaintemp.length; j++) {
-      temptry["$j"] = datasetmaintemp["$j"].data;
+      temptry["$j"] = datasetmaintemp["$j"].data();
     }
     datasetmain = temptry;
     loading = false;
@@ -174,8 +174,8 @@ class TherapistProvider extends ChangeNotifier {
   getsorteddata(sortby, type) async {
     if (sortby == '') {
       Map<String, dynamic> datatemp = {};
-      for (int i = 0; i < dataset.documents.length; i++) {
-        datatemp["$i"] = dataset.documents[i].data;
+      for (int i = 0; i < dataset.docs.length; i++) {
+        datatemp["$i"] = dataset.docs[i].data();
       }
       final sorted = SplayTreeMap.from(
           datatemp,
@@ -198,11 +198,11 @@ class TherapistProvider extends ChangeNotifier {
         );
         datasetmaintemp["$i"] = (data2);
       }
-      print(datasetmaintemp["0"].data);
+      print(datasetmaintemp["0"].data());
       // datasetmain =
       Map<String, dynamic> temptry = {};
       for (int j = 0; j < datasetmaintemp.length; j++) {
-        temptry["$j"] = datasetmaintemp["$j"].data;
+        temptry["$j"] = datasetmaintemp["$j"].data();
       }
       datasetmain = temptry;
       loading = false;
@@ -261,9 +261,11 @@ class TherapistProvider extends ChangeNotifier {
       var parts = s.split(' ');
       // print(parts);
       String sum = '';
-      parts.forEach(
-          (cur) => {sum += cur[0].toUpperCase() + cur.substring(1) + " "});
-      return sum;
+      if (parts.length > 1) {
+        parts.forEach(
+            (cur) => {sum += cur[0].toUpperCase() + cur.substring(1) + " "});
+        return sum;
+      }
     }
   }
 }

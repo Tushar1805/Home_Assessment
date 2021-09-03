@@ -17,7 +17,7 @@ class _AssesmentSplashScreenState extends State<AssesmentSplashScreen> {
     super.initState();
     Timer(
         Duration(seconds: 2),
-        () => FirebaseAuth.instance.onAuthStateChanged.listen((firebaseuser) {
+        () => FirebaseAuth.instance.authStateChanges().listen((firebaseuser) {
               if (firebaseuser == null) {
                 Navigator.pushReplacement(
                   context,
@@ -25,7 +25,10 @@ class _AssesmentSplashScreenState extends State<AssesmentSplashScreen> {
                       builder: (context) => OldAssessments(widget.role)),
                 );
               } else {
-                getdata();
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => OldAssessments(widget.role)));
               }
             }));
   }

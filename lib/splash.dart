@@ -12,63 +12,79 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  var result = FirebaseAuth.instance.currentUser();
+  var result = FirebaseAuth.instance.currentUser;
+  StreamSubscription<User> _listener;
+
   @override
   void initState() {
     super.initState();
     Timer(
         Duration(seconds: 3),
-        () => FirebaseAuth.instance.onAuthStateChanged.listen((firebaseuser) {
+        () => _listener =
+                FirebaseAuth.instance.authStateChanges().listen((firebaseuser) {
               if (firebaseuser == null) {
-                Navigator.pushAndRemoveUntil(
-                    context,
-                    MaterialPageRoute(builder: (context) => MyHomePage()),
-                    (Route<dynamic> rr) => false);
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => MyHomePage()),
+                );
               } else {
                 getdata();
               }
             }));
   }
 
+  @override
+  void dispose() {
+    _listener.cancel();
+    super.dispose();
+  }
+
   getdata() async {
     final FirebaseAuth auth = FirebaseAuth.instance;
-    final FirebaseUser user = await auth.currentUser();
+    final User user = await auth.currentUser;
     final uid = user.uid;
-    var type = await Firestore.instance
+    var type, newUser, name, imgUrl;
+    await FirebaseFirestore.instance
         .collection('users')
-        .document(uid)
+        .doc(uid)
         .get()
         .then((value) {
-      return value.data['role'];
-
-      // var page = await LoginProvider.getUserType(type);
+      type = value.data()['role'];
+      newUser = value.data()['newUser'].toString() ?? "false";
+      name = value.data()['name'] ?? " ";
+      imgUrl = value.data()["url"] ?? "";
     });
-    var newuser = await Firestore.instance
-        .collection('users')
-        .document(uid)
-        .get()
-        .then((value) {
-      return value.data['NewUser'];
+    // var newuser = await FirebaseFirestore.instance
+    //     .collection('users')
+    //     .doc(uid)
+    //     .get()
+    //     .then((value) {
+    //   return value.data()['NewUser'];
 
-      // var page = await LoginProvider.getUserType(type);
-    });
-    var name = await Firestore.instance
-        .collection('users')
-        .document(uid)
-        .get()
-        .then((value) {
-      return value.data['name'];
+    //   // var page = await LoginProvider.getUserType(type);
+    // });
+    // var name = await FirebaseFirestore.instance
+    //     .collection('users')
+    //     .doc(uid)
+    //     .get()
+    //     .then((value) {
+    //   return value['name'];
 
-      // var page = await LoginProvider.getUserType(type);
-    });
+    //   // var page = await LoginProvider.getUserType(type);
+    // });
     var page = await LoginProvider().getUserType(type);
-    if (newuser ?? false) {
+    if (newUser == "true") {
       // rolesave.setString('role', type);
-      Navigator.of(context).pushReplacement(MaterialPageRoute(
-          builder: (context) => ResetPass(page, result, name)));
+      // dispose();
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ResetPass(page, result, name, imgUrl)));
     } else {
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) => page));
+      // dispose();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => page),
+      );
     }
   }
 

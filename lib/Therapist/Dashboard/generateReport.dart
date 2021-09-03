@@ -27,8 +27,8 @@ class ReportTheraUI extends StatefulWidget {
 
 class _ReportTheraUIState extends State<ReportTheraUI> {
   FirebaseAuth auth = FirebaseAuth.instance;
-  final firestoreInstance = Firestore.instance;
-  FirebaseUser curuser;
+  final firestoreInstance = FirebaseFirestore.instance;
+  User curuser;
   var name, address, email, age, phone, height, weight, roomName, role;
   bool _isContainerVisible = true;
   String uid, patient, therapist;
@@ -45,10 +45,10 @@ class _ReportTheraUIState extends State<ReportTheraUI> {
   }
 
   getRole() async {
-    FirebaseUser user = await auth.currentUser();
-    await Firestore.instance
+    User user = await auth.currentUser;
+    await FirebaseFirestore.instance
         .collection("users")
-        .document(user.uid)
+        .doc(user.uid)
         .get()
         .then((value) => setState(() {
               role = value["role"];
@@ -56,11 +56,7 @@ class _ReportTheraUIState extends State<ReportTheraUI> {
   }
 
   Future<void> getUserName() async {
-    firestoreInstance
-        .collection("users")
-        .document(widget.patientUID)
-        .get()
-        .then(
+    firestoreInstance.collection("users").doc(widget.patientUID).get().then(
       (value) {
         setState(() {
           name = (value["name"].toString());

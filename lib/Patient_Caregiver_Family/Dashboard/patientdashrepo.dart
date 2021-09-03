@@ -2,19 +2,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PatientRepository {
-  Firestore firestore = Firestore.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseAuth _auth = FirebaseAuth.instance;
   QuerySnapshot dataset;
   QuerySnapshot datasetorder;
 
   getUserData() async {
-    FirebaseUser firebaseUser = await FirebaseAuth.instance.currentUser();
+    User firebaseUser = await FirebaseAuth.instance.currentUser;
     var dataname = await firestore
         .collection("users")
-        .document(firebaseUser.uid)
+        .doc(firebaseUser.uid)
         .get()
         .then((value) {
-      return value.data['name'];
+      return value['name'];
     });
     return await dataname;
   }
@@ -39,15 +39,20 @@ class PatientRepository {
   //   return list;
   // }
   Future<QuerySnapshot> getAssessments(role) async {
-    FirebaseUser user = await _auth.currentUser();
+    User user = await _auth.currentUser;
 
     dataset = await firestore
         .collection('assessments')
         .where('patient', isEqualTo: user.uid)
-        .getDocuments();
+        .get();
     return dataset;
 
     // return dataset;
+  }
+
+  Future<DocumentSnapshot> getHomeAddresses(String uid) async {
+    var data = await firestore.collection('users').doc(uid).get();
+    return data;
   }
 
   Future<String> getassessmentdocid(asessmentdoc) async {
@@ -56,16 +61,14 @@ class PatientRepository {
   }
 
   Future<DocumentSnapshot> getfielddata(String uid) async {
-    var data = await firestore.collection('users').document(uid).get();
+    var data = await firestore.collection('users').doc(uid).get();
     return data;
   }
 
   Future<String> saveInDatabase(
       String patientUid, String time, DateTime date) async {
-    String docId =
-        await firestore.collection("assessments").document().documentID;
-    var res =
-        await firestore.collection('assessments').document(docId).setData({
+    String docId = await firestore.collection("assessments").doc().id;
+    var res = await firestore.collection('assessments').doc(docId).set({
       "form": "",
       "assessmentCompletionDate": "",
       "assessor": "",
