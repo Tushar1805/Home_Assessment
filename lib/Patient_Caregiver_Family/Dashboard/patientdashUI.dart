@@ -276,7 +276,7 @@ class _PatientUIState extends State<PatientUI> {
           elevation: 3,
           color: Color.fromRGBO(10, 80, 106, 1),
           onPressed: () {
-            _showSnackBar("Wait for the therapist to Prpvide recommendations");
+            _showSnackBar("Wait for the therapist to provide recommendations");
           },
           child: Text(
             "Assessment Finished",
@@ -301,7 +301,7 @@ class _PatientUIState extends State<PatientUI> {
           elevation: 3,
           color: Color.fromRGBO(10, 80, 106, 1),
           onPressed: () {
-            _showSnackBar("Wait for the therapist to Prpvide recommendations");
+            _showSnackBar("Wait for the therapist to provide recommendations");
           },
           child: Text(
             "Assessment Finished",

@@ -542,11 +542,15 @@ class _ReportUIState extends State<ReportUI> {
                                 style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w200,
-                                    color: Colors.black45)),
+                                    color: Colors.red)),
                             Text(
                                 "${widget.assess[index]['room$i']['question']['$j']['Recommendationthera']}",
                                 style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.w200)),
+                                  decoration: TextDecoration.underline,
+                                  decorationColor: Colors.yellow,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w200,
+                                )),
                           ]),
                           SizedBox(
                             height: 10,

@@ -109,205 +109,217 @@ class _HomeAddressState extends State<HomeAddress> {
                               //   ),
                               // ]
                               // ),
-                              padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
+                              padding: EdgeInsets.all(20),
                               // height: MediaQuery.of(context).size.height * 0.3,
                               child: GestureDetector(
                                 child: Card(
+                                    elevation: 15,
+                                    borderOnForeground: true,
                                     shape: RoundedRectangleBorder(
                                         borderRadius:
                                             BorderRadius.circular(10)),
-                                    color: Colors.white,
+                                    color: Colors.blue[50],
                                     child: Container(
                                         padding: EdgeInsets.only(bottom: 0),
                                         child: Column(
                                           children: [
-                                            Row(
-                                              children: [
-                                                Container(
-                                                  padding: EdgeInsets.fromLTRB(
-                                                      0, 10, 0, 10),
-                                                  child: VerticalDivider(
-                                                    width: 2,
+                                            Container(
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              // color: Colors.red,
+                                              padding: EdgeInsets.all(15),
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    child: Text(
+                                                      // '${(list[index]["houseName"] != "") ? list[index]["houseName"] : "Home Name"}' ??
+                                                      "House ${index + 1}",
+                                                      style: TextStyle(
+                                                          fontSize: 30,
+                                                          fontWeight:
+                                                              FontWeight.w900,
+                                                          color: Colors.black),
+                                                    ),
                                                   ),
-                                                ),
-                                                Container(
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.55,
-                                                  // color: Colors.red,
-                                                  padding: EdgeInsets.all(10),
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
+                                                  SizedBox(height: 10),
+                                                  Wrap(
+                                                    // mainAxisAlignment: MainAxisAlignment.start,
                                                     children: [
-                                                      Wrap(
-                                                        // mainAxisAlignment: MainAxisAlignment.start,
-                                                        children: [
-                                                          Container(
-                                                            child: Text(
-                                                              'House Name: ',
-                                                              style: TextStyle(
-                                                                  fontSize: 16,
-                                                                  color: Colors
-                                                                      .black45),
-                                                            ),
-                                                          ),
-                                                          Container(
-                                                            width: 87,
-                                                            child: Text(
-                                                              // '${(list[index]["houseName"] != "") ? list[index]["houseName"] : "Home Name"}' ??
+                                                      Container(
+                                                        child: Text(
+                                                          // '${(list[index]["houseName"] != "") ? list[index]["houseName"] : "Home Name"}' ??
+                                                          "House Name: ",
+                                                          style: TextStyle(
+                                                              fontSize: 18,
+                                                              color: Colors
+                                                                  .black45),
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        child: Text(
+                                                          '${list[index][" houseName"].toString()}' ??
                                                               "Home Name",
-                                                              style: TextStyle(
-                                                                fontSize: 16,
-                                                              ),
-                                                            ),
+                                                          style: TextStyle(
+                                                            fontSize: 18,
                                                           ),
-                                                        ],
+                                                        ),
                                                       ),
-
-                                                      SizedBox(height: 2.5),
-                                                      Divider(),
-                                                      Container(
-                                                        width: double.infinity,
-                                                        child: Wrap(children: [
-                                                          Text(
-                                                            'Address1: ',
-                                                            style: TextStyle(
-                                                                fontSize: 16,
-                                                                color: Colors
-                                                                    .black45),
-                                                          ),
-                                                          Text(
-                                                            '${list[index]["address1"]}' ??
-                                                                "Address Line 1",
-                                                            style: TextStyle(
-                                                              fontSize: 16,
-                                                            ),
-                                                          ),
-                                                        ]),
-                                                      ),
-                                                      SizedBox(height: 2.5),
-                                                      Divider(),
-                                                      // getDate("Latest Change: ",
-                                                      //     snapshot["latestChangeDate"]),
-                                                      // SizedBox(height: 2.5),
-                                                      // Divider(),
-                                                      Container(
-                                                        width: double.infinity,
-                                                        child: Wrap(children: [
-                                                          Text(
-                                                            'Address 2: ',
-                                                            style: TextStyle(
-                                                                fontSize: 16,
-                                                                color: Colors
-                                                                    .black45),
-                                                          ),
-                                                          Text(
-                                                            '${list[index]["address2"]}' ??
-                                                                "Address Line 2",
-                                                            style: TextStyle(
-                                                              fontSize: 16,
-                                                            ),
-                                                          ),
-                                                        ]),
-                                                      ),
-                                                      SizedBox(height: 2.5),
-                                                      Divider(),
-                                                      Container(
-                                                        width: double.infinity,
-                                                        child: Wrap(children: [
-                                                          Text(
-                                                            'City: ',
-                                                            style: TextStyle(
-                                                                fontSize: 16,
-                                                                color: Colors
-                                                                    .black45),
-                                                          ),
-                                                          Text(
-                                                            '${list[index]["city"]}' ??
-                                                                "Nagpur",
-                                                            style: TextStyle(
-                                                              fontSize: 16,
-                                                            ),
-                                                          ),
-                                                        ]),
-                                                      ),
-                                                      SizedBox(height: 2.5),
-                                                      Divider(),
-                                                      Container(
-                                                        width: double.infinity,
-                                                        child: Wrap(children: [
-                                                          Text(
-                                                            'Country: ',
-                                                            style: TextStyle(
-                                                                fontSize: 16,
-                                                                color: Colors
-                                                                    .black45),
-                                                          ),
-                                                          Text(
-                                                            '${list[index]["country"]}' ??
-                                                                "Country",
-                                                            style: TextStyle(
-                                                              fontSize: 16,
-                                                            ),
-                                                          ),
-                                                        ]),
-                                                      ),
-                                                      SizedBox(height: 2.5),
-                                                      Divider(),
-                                                      Container(
-                                                        width: double.infinity,
-                                                        child: Wrap(children: [
-                                                          Text(
-                                                            'Phone No: ',
-                                                            style: TextStyle(
-                                                                fontSize: 16,
-                                                                color: Colors
-                                                                    .black45),
-                                                          ),
-                                                          Text(
-                                                            '${list[index]["phoneNo"]}' ??
-                                                                "1234567890",
-                                                            style: TextStyle(
-                                                              fontSize: 16,
-                                                            ),
-                                                          ),
-                                                        ]),
-                                                      ),
-                                                      SizedBox(height: 2.5),
-                                                      Divider(),
-                                                      Container(
-                                                        width: double.infinity,
-                                                        child: Wrap(children: [
-                                                          Text(
-                                                            'Postal Code: ',
-                                                            style: TextStyle(
-                                                                fontSize: 16,
-                                                                color: Colors
-                                                                    .black45),
-                                                          ),
-                                                          Text(
-                                                            '${list[index]["postalCode"]}' ??
-                                                                "442301",
-                                                            style: TextStyle(
-                                                              fontSize: 16,
-                                                            ),
-                                                          ),
-                                                        ]),
-                                                      ),
-                                                      SizedBox(height: 2.5),
-                                                      Divider(),
-
-                                                      // Container(child: Text('${dataset.data}')),
                                                     ],
                                                   ),
-                                                ),
-                                              ],
+                                                  SizedBox(height: 10),
+
+                                                  Container(
+                                                    width: double.infinity,
+                                                    child: Wrap(children: [
+                                                      Text(
+                                                        'Address Line 1: ',
+                                                        style: TextStyle(
+                                                            fontSize: 18,
+                                                            color:
+                                                                Colors.black45),
+                                                      ),
+                                                      Text(
+                                                        '${list[index]["address1"]}' ??
+                                                            "Address Line 1",
+                                                        style: TextStyle(
+                                                          fontSize: 18,
+                                                        ),
+                                                      ),
+                                                    ]),
+                                                  ),
+                                                  SizedBox(height: 10),
+                                                  // getDate("Latest Change: ",
+                                                  //     snapshot["latestChangeDate"]),
+                                                  // SizedBox(height: 2.5),
+                                                  // Divider(),
+                                                  Container(
+                                                    child: Wrap(children: [
+                                                      Text(
+                                                        'Address Line 2: ',
+                                                        style: TextStyle(
+                                                            fontSize: 18,
+                                                            color:
+                                                                Colors.black45),
+                                                      ),
+                                                      Text(
+                                                        '${list[index]["address2"]}' ??
+                                                            "Address Line 2",
+                                                        style: TextStyle(
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                    ]),
+                                                  ),
+                                                  SizedBox(height: 10),
+                                                  Container(
+                                                    width: double.infinity,
+                                                    child: Wrap(children: [
+                                                      Text(
+                                                        'City: ',
+                                                        style: TextStyle(
+                                                            fontSize: 18,
+                                                            color:
+                                                                Colors.black45),
+                                                      ),
+                                                      Text(
+                                                        '${list[index]["city"]}' ??
+                                                            "Nagpur",
+                                                        style: TextStyle(
+                                                          fontSize: 18,
+                                                        ),
+                                                      ),
+                                                    ]),
+                                                  ),
+                                                  SizedBox(height: 10),
+                                                  Container(
+                                                    width: double.infinity,
+                                                    child: Wrap(children: [
+                                                      Text(
+                                                        'Country: ',
+                                                        style: TextStyle(
+                                                            fontSize: 18,
+                                                            color:
+                                                                Colors.black45),
+                                                      ),
+                                                      Text(
+                                                        '${list[index]["country"]}' ??
+                                                            "Country",
+                                                        style: TextStyle(
+                                                          fontSize: 18,
+                                                        ),
+                                                      ),
+                                                    ]),
+                                                  ),
+                                                  SizedBox(height: 10),
+                                                  Container(
+                                                    width: double.infinity,
+                                                    child: Wrap(children: [
+                                                      Text(
+                                                        'State: ',
+                                                        style: TextStyle(
+                                                            fontSize: 18,
+                                                            color:
+                                                                Colors.black45),
+                                                      ),
+                                                      Text(
+                                                        '${list[index]["state"]}' ??
+                                                            "Country",
+                                                        style: TextStyle(
+                                                          fontSize: 18,
+                                                        ),
+                                                      ),
+                                                    ]),
+                                                  ),
+                                                  SizedBox(height: 10),
+                                                  Container(
+                                                    width: double.infinity,
+                                                    child: Wrap(children: [
+                                                      Text(
+                                                        'Phone No: ',
+                                                        style: TextStyle(
+                                                            fontSize: 18,
+                                                            color:
+                                                                Colors.black45),
+                                                      ),
+                                                      Text(
+                                                        '${list[index]["phoneNo"]}' ??
+                                                            "1234567890",
+                                                        style: TextStyle(
+                                                          fontSize: 18,
+                                                        ),
+                                                      ),
+                                                    ]),
+                                                  ),
+                                                  SizedBox(height: 10),
+                                                  Container(
+                                                    width: double.infinity,
+                                                    child: Wrap(children: [
+                                                      Text(
+                                                        'Postal Code: ',
+                                                        style: TextStyle(
+                                                            fontSize: 18,
+                                                            color:
+                                                                Colors.black45),
+                                                      ),
+                                                      Text(
+                                                        '${list[index]["postalCode"]}' ??
+                                                            "442301",
+                                                        style: TextStyle(
+                                                          fontSize: 18,
+                                                        ),
+                                                      ),
+                                                    ]),
+                                                  ),
+                                                  SizedBox(height: 10),
+
+                                                  // Container(child: Text('${dataset.data}')),
+                                                ],
+                                              ),
                                             ),
                                             SizedBox(
                                               height: 10,

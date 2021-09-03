@@ -381,6 +381,7 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
                       print("********Start*****");
                       await Future.delayed(const Duration(milliseconds: 1500),
                           () {
+                        outerloop:
                         for (int i = 0; i < widget.wholelist.length; i++) {
                           print("********1st loop*****");
                           print("length = ${widget.wholelist.length}");
@@ -402,25 +403,30 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
                                     setState(() {
                                       save = true;
                                     });
-                                    print("***********1************");
+                                    print(
+                                        "***********true for $i and $j************");
                                   } else {
                                     setState(() {
                                       save = false;
                                     });
-                                    print("***********2************");
-                                    break;
+                                    print(
+                                        "*************false for $i and $j**********");
+                                    break outerloop;
                                   }
-                                }else{
-                                   setState(() {
-                                      save = true;
-                                    });
+                                } else {
+                                  setState(() {
+                                    save = true;
+                                  });
+                                  print(
+                                      "***********true for $i and $j************");
                                 }
                               } else {
                                 setState(() {
                                   save = false;
                                 });
-                                print("***********3************");
-                                break;
+                                print(
+                                    "***********false for $i and $j************");
+                                break outerloop;
                               }
                             }
                           }
@@ -466,17 +472,17 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
                               .setStatus("old", widget.docID);
                           NewAssesmentRepository()
                               .setAssessmentCompletionDate(widget.docID);
-                        //         NewAssesmentRepository()
-                        //     .setLatestChangeDate(widget.docID);
+                          //         NewAssesmentRepository()
+                          //     .setLatestChangeDate(widget.docID);
 
-                        // NewAssesmentRepository()
-                        //     .setForm(widget.wholelist, widget.docID);
+                          // NewAssesmentRepository()
+                          //     .setForm(widget.wholelist, widget.docID);
                           // Navigator.of(context).pop();
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                   builder: (context) => Therapist()));
-                                  _showSnackBar(
-                            "Assessment submitted successfully", context);
+                          _showSnackBar(
+                              "Assessment submitted successfully", context);
                         } else {
                           _showSnackBar(
                               "You must have to give all the recommendations",
@@ -486,15 +492,15 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
                         if (save == true) {
                           NewAssesmentRepository().setAssessmentCurrentStatus(
                               "Assessment Finished", widget.docID);
-                        //          NewAssesmentRepository()
-                        //     .setLatestChangeDate(widget.docID);
+                          //          NewAssesmentRepository()
+                          //     .setLatestChangeDate(widget.docID);
 
-                        // NewAssesmentRepository()
-                        //     .setForm(widget.wholelist, widget.docID);
+                          // NewAssesmentRepository()
+                          //     .setForm(widget.wholelist, widget.docID);
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(builder: (context) => Nurse()));
-                              _showSnackBar(
-                            "Assessment submitted successfully", context);
+                          _showSnackBar(
+                              "Assessment submitted successfully", context);
                         } else {
                           _showSnackBar("Complete the forms first", context);
                         }
@@ -502,16 +508,16 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
                         if (save == true) {
                           NewAssesmentRepository().setAssessmentCurrentStatus(
                               "Assessment Finished", widget.docID);
-                        //          NewAssesmentRepository()
-                        //     .setLatestChangeDate(widget.docID);
+                          //          NewAssesmentRepository()
+                          //     .setLatestChangeDate(widget.docID);
 
-                        // NewAssesmentRepository()
-                        //     .setForm(widget.wholelist, widget.docID);
+                          // NewAssesmentRepository()
+                          //     .setForm(widget.wholelist, widget.docID);
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
                                   builder: (context) => Patient()));
-                                  _showSnackBar(
-                            "Assessment submitted successfully", context);
+                          _showSnackBar(
+                              "Assessment submitted successfully", context);
                         } else {
                           _showSnackBar("Complete the forms first", context);
                         }
@@ -582,7 +588,7 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
     } else if (classname == 'Kitchen') {
       return 18;
     } else if (classname == 'Living Room') {
-      return 12;
+      return 11;
     } else if (classname == 'Living Arrangements') {
       return 14;
     } else if (classname == 'Pathway') {

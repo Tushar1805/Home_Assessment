@@ -308,20 +308,20 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                 height: 15,
               ),
               Container(
-                  padding: EdgeInsets.all(20),
+                  padding: EdgeInsets.fromLTRB(10, 20, 10, 20),
                   child: Column(
                     children: [
                       Row(
                         children: [
                           Expanded(
                             child: Text(
-                              "Number of ${prov.getlistdata()[index]['name']} (s):",
+                              "Number of ${prov.getlistdata()[index]['name']}(s):",
                               style:
                                   TextStyle(fontSize: 15, color: _colorgreen),
                             ),
                           ),
                           SizedBox(
-                            width: 20,
+                            width: 10,
                           ),
 
                           /// Here we are calling the NumericStepButton class present at the bottom of this

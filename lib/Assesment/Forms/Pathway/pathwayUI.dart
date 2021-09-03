@@ -532,7 +532,7 @@ class _PathwayUIState extends State<PathwayUI> {
       if (video == null) {
         if (source == 'camera') {
           final pickedVideo =
-              await ImagePicker().getVideo(source: ImageSource.camera);
+              await ImagePicker().pickVideo(source: ImageSource.camera);
 
           if (pickedVideo != null) {
             Navigator.pop(context);
@@ -550,7 +550,7 @@ class _PathwayUIState extends State<PathwayUI> {
           }
         } else {
           final pickedVideo =
-              await ImagePicker().getVideo(source: ImageSource.gallery);
+              await ImagePicker().pickVideo(source: ImageSource.gallery);
           if (pickedVideo != null) {
             Navigator.pop(context);
             pathwaypro.addVideo(pickedVideo.path);
@@ -1332,6 +1332,10 @@ class _PathwayUIState extends State<PathwayUI> {
                                       ),
                                       labelText: '(Inches)'),
                                   keyboardType: TextInputType.phone,
+                                  inputFormatters: <TextInputFormatter>[
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp(r'^\d+\.?\d*')),
+                                  ], //
                                   onChanged: (value) {
                                     if (assessor == therapist &&
                                         role == "therapist") {
@@ -1357,8 +1361,8 @@ class _PathwayUIState extends State<PathwayUI> {
                           height: 5,
                         ),
                         (getvalue(5) != "")
-                            ? (int.parse(getvalue(5)) < 30 &&
-                                    int.parse(getvalue(5)) > 0)
+                            ? (double.parse(getvalue(5)) < 30 &&
+                                    double.parse(getvalue(5)) > 0)
                                 ? getrecomain(5, true, context)
                                 : SizedBox()
                             : SizedBox(),
@@ -1507,14 +1511,16 @@ class _PathwayUIState extends State<PathwayUI> {
                                                           .width *
                                                       .3,
                                                   child: TextFormField(
-                                                      initialValue: widget.wholelist[
-                                                                      0]
-                                                                  [
-                                                                  widget
-                                                                      .accessname]
+                                                      initialValue: widget
+                                                          .wholelist[0][widget
+                                                                  .accessname][
+                                                              'question']
                                                               [
-                                                              'question']["7"]
-                                                          ['Recommendation'],
+                                                              "7"]
+                                                              [
+                                                              'stepCount'][
+                                                              "count"]
+                                                          .toString(),
                                                       decoration:
                                                           InputDecoration(
                                                               focusedBorder:
@@ -1536,7 +1542,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                                             1),
                                                               ),
                                                               labelText:
-                                                                  '(Count)'),
+                                                                  'Count'),
                                                       keyboardType:
                                                           TextInputType.phone,
                                                       onChanged: (value) {
@@ -1546,23 +1552,25 @@ class _PathwayUIState extends State<PathwayUI> {
                                                                 "therapist") {
                                                           setState(() {
                                                             widget.wholelist[0][
-                                                                        widget
-                                                                            .accessname]
+                                                                            widget.accessname]
+                                                                        [
+                                                                        'question']["7"]
                                                                     [
-                                                                    'question']["7"]
+                                                                    'stepCount']
                                                                 [
-                                                                'Recommendation'] = value;
+                                                                "count"] = value;
                                                           });
                                                         } else if (role !=
                                                             "therapist") {
                                                           setState(() {
                                                             widget.wholelist[0][
-                                                                        widget
-                                                                            .accessname]
+                                                                            widget.accessname]
+                                                                        [
+                                                                        'question']["7"]
                                                                     [
-                                                                    'question']["7"]
+                                                                    'stepCount']
                                                                 [
-                                                                'Recommendation'] = value;
+                                                                "count"] = value;
                                                           });
                                                         } else {
                                                           _showSnackBar(
@@ -1788,7 +1796,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                                   [
                                                                   'question']["7"]
                                                               [
-                                                              'Recommendationthera'] = value;
+                                                              'Recommendation'] = value;
 
                                                           stepcount = widget
                                                                           .wholelist[0]
@@ -1798,7 +1806,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                                   [
                                                                   'question']["7"]
                                                               [
-                                                              'Recommendationthera'];
+                                                              'Recommendation'];
                                                           if (value > 0) {
                                                             widget.wholelist[0][
                                                                             widget.accessname]
@@ -1871,7 +1879,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                                   [
                                                                   'question']["7"]
                                                               [
-                                                              'Recommendationthera'] = value;
+                                                              'Recommendation'] = value;
 
                                                           stepcount = widget
                                                                           .wholelist[0]
@@ -1881,7 +1889,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                                   [
                                                                   'question']["7"]
                                                               [
-                                                              'Recommendationthera'];
+                                                              'Recommendation'];
                                                           if (value > 0) {
                                                             widget.wholelist[0][
                                                                             widget.accessname]
@@ -2235,7 +2243,7 @@ class _PathwayUIState extends State<PathwayUI> {
                               ),
                             ]),
                         (getvalue(9) != "")
-                            ? (int.parse(getvalue(9)) > 5)
+                            ? (double.parse(getvalue(9)) > 5)
                                 ? (role == 'therapist')
                                     ? getrecowid(9, true, context)
                                     : SizedBox()

@@ -26,6 +26,7 @@ class PathwayPro extends ChangeNotifier {
   int sizes = 30;
   int stepsizes = 0;
   int stepcount = 0;
+  int singleCount = 0;
   var test = TextEditingController();
   final FormsRepository formsRepository = FormsRepository();
   FirebaseAuth auth = FirebaseAuth.instance;
@@ -91,7 +92,14 @@ class PathwayPro extends ChangeNotifier {
     } else {
       wholelist[0][accessname]['question']["7"]['MultipleStair'] = {};
     }
-    print(wholelist[0][accessname]['question']["7"]['MultipleStair']);
+
+    if (wholelist[0][accessname]['question']["7"].containsKey('stepCount')) {
+      if (wholelist[0][accessname]['question']["7"]['stepCount']
+          .containsKey('count')) {}
+    } else {
+      wholelist[0][accessname]['question']["7"]['stepCount'] = {};
+    }
+    print(wholelist[0][accessname]['question']["7"]['stepCount']);
   }
 
   Future<void> addVideo(String path) {

@@ -244,7 +244,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
       if (video == null) {
         if (source == 'camera') {
           final pickedVideo =
-              await ImagePicker().getVideo(source: ImageSource.camera);
+              await ImagePicker().pickVideo(source: ImageSource.camera);
 
           if (pickedVideo != null) {
             Navigator.pop(context);
@@ -262,7 +262,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
           }
         } else {
           final pickedVideo =
-              await ImagePicker().getVideo(source: ImageSource.gallery);
+              await ImagePicker().pickVideo(source: ImageSource.gallery);
           if (pickedVideo != null) {
             Navigator.pop(context);
             assesmentprovider.addVideo(pickedVideo.path);
@@ -734,7 +734,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                               ),
                             ]),
                         (assesmentprovider.getvalue(1) != '')
-                            ? (int.parse(assesmentprovider.getvalue(1)) > 5)
+                            ? (double.parse(assesmentprovider.getvalue(1)) > 5)
                                 ? assesmentprovider.getrecomain(
                                     assesmentprovider,
                                     1,
@@ -1157,7 +1157,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
 
                                         widget.wholelist[4][widget.accessname]
                                                 ['question']["7"]['doorwidth'] =
-                                            int.parse(value);
+                                            double.parse(value);
                                       });
                                     } else if (role != therapist) {
                                       FocusScope.of(context).requestFocus();
@@ -1171,7 +1171,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
 
                                         widget.wholelist[4][widget.accessname]
                                                 ['question']["7"]['doorwidth'] =
-                                            int.parse(value);
+                                            double.parse(value);
                                       });
                                     } else {
                                       _showSnackBar(

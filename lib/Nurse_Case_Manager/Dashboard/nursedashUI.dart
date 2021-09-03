@@ -492,24 +492,24 @@ class _NurseUIState extends State<NurseUI> {
                                           "")
                                   ? Divider()
                                   : SizedBox(),
-                              Container(
-                                width: double.infinity,
-                                child: Wrap(children: [
-                                  Text(
-                                    'Status: ',
-                                    style: TextStyle(
-                                        fontSize: 16, color: Colors.black45),
-                                  ),
-                                  Text(
-                                    '${assessmentdata.data()["currentStatus"]}',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ]),
-                              ),
-                              SizedBox(height: 2.5),
-                              Divider(),
+                              // Container(
+                              //   width: double.infinity,
+                              //   child: Wrap(children: [
+                              //     Text(
+                              //       'Status: ',
+                              //       style: TextStyle(
+                              //           fontSize: 16, color: Colors.black45),
+                              //     ),
+                              //     Text(
+                              //       '${assessmentdata.data()["currentStatus"]}',
+                              //       style: TextStyle(
+                              //         fontSize: 16,
+                              //       ),
+                              //     ),
+                              //   ]),
+                              // ),
+                              // SizedBox(height: 2.5),
+                              // Divider(),
                               Container(
                                 width: double.infinity,
                                 child: Wrap(children: [

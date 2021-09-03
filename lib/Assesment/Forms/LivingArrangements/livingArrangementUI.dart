@@ -398,7 +398,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
       if (video == null) {
         if (source == 'camera') {
           final pickedVideo =
-              await ImagePicker().getVideo(source: ImageSource.camera);
+              await ImagePicker().pickVideo(source: ImageSource.camera);
 
           if (pickedVideo != null) {
             Navigator.pop(context);
@@ -416,7 +416,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
           }
         } else {
           final pickedVideo =
-              await ImagePicker().getVideo(source: ImageSource.gallery);
+              await ImagePicker().pickVideo(source: ImageSource.gallery);
           if (pickedVideo != null) {
             Navigator.pop(context);
             assesspro.addVideo(pickedVideo.path);
@@ -2539,7 +2539,6 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 borderSide: BorderSide(width: 1),
                               ),
                               // isDense: true,
-                              suffix: Icon(Icons.mic),
                               labelText: 'Specify Name'),
                           onChanged: (value) {
                             FocusScope.of(context).requestFocus();
@@ -2591,7 +2590,6 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                               borderSide: BorderSide(width: 1),
                             ),
                             // isDense: true,
-                            suffix: Icon(Icons.mic),
                           ),
                           onChanged: (value) {
                             FocusScope.of(context).requestFocus();

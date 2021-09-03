@@ -250,7 +250,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
       if (video == null) {
         if (source == 'camera') {
           final pickedVideo =
-              await ImagePicker().getVideo(source: ImageSource.camera);
+              await ImagePicker().pickVideo(source: ImageSource.camera);
           if (pickedVideo != null) {
             Navigator.pop(context);
             provider.addVideo(pickedVideo.path);
@@ -266,7 +266,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
           }
         } else {
           final pickedVideo =
-              await ImagePicker().getVideo(source: ImageSource.gallery);
+              await ImagePicker().pickVideo(source: ImageSource.gallery);
           if (pickedVideo != null) {
             Navigator.pop(context);
             provider.addVideo(pickedVideo.path);
@@ -746,7 +746,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                             ]),
                         SizedBox(height: 10),
                         (getvalue(1) != "")
-                            ? (int.parse(getvalue(1)) > 5)
+                            ? (double.parse(getvalue(1)) > 5)
                                 ? getrecomain(
                                     1, true, "Comments (if any)", context)
                                 : SizedBox()
@@ -1133,7 +1133,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
 
                                         widget.wholelist[2][widget.accessname]
                                                 ['question']["7"]['doorwidth'] =
-                                            int.parse(value);
+                                            double.parse(value);
                                       });
                                     } else if (role != "therapist") {
                                       setdata(7, value, 'Door Width');
@@ -1146,7 +1146,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
 
                                       widget.wholelist[2][widget.accessname]
                                               ['question']["7"]['doorwidth'] =
-                                          int.parse(value);
+                                          double.parse(value);
                                     } else {
                                       _showSnackBar(
                                           "You can't change the other fields",
@@ -1443,7 +1443,6 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                               borderSide: BorderSide(width: 1),
                             ),
                             // isDense: true,
-                            suffix: Icon(Icons.mic),
                           ),
                           onChanged: (value) {
                             if (assessor == therapist && role == "therapist") {
@@ -1770,7 +1769,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
       if (available) {
         setState(() {
           _isListening = true;
-          colorsset["field$index"] = Colors.red;
+          colorsset["field$index"] = Color.fromRGBO(10, 80, 106, 1);
           isListening['field$index'] = true;
         });
         _speech.listen(

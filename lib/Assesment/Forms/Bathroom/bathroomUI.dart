@@ -179,7 +179,7 @@ class _BathroomUIState extends State<BathroomUI> {
       if (video == null) {
         if (source == 'camera') {
           final pickedVideo =
-              await ImagePicker().getVideo(source: ImageSource.camera);
+              await ImagePicker().pickVideo(source: ImageSource.camera);
 
           if (pickedVideo != null) {
             Navigator.pop(context);
@@ -197,7 +197,7 @@ class _BathroomUIState extends State<BathroomUI> {
           }
         } else {
           final pickedVideo =
-              await ImagePicker().getVideo(source: ImageSource.gallery);
+              await ImagePicker().pickVideo(source: ImageSource.gallery);
           if (pickedVideo != null) {
             Navigator.pop(context);
             assesmentprovider.addVideo(pickedVideo.path);
@@ -640,7 +640,7 @@ class _BathroomUIState extends State<BathroomUI> {
                           ],
                         ),
                         (assesmentprovider.getvalue(1) != '')
-                            ? (int.parse(assesmentprovider.getvalue(1)) > 5)
+                            ? (double.parse(assesmentprovider.getvalue(1)) > 5)
                                 ? assesmentprovider.getrecomain(
                                     assesmentprovider,
                                     1,
@@ -1065,7 +1065,7 @@ class _BathroomUIState extends State<BathroomUI> {
 
                                         widget.wholelist[5][widget.accessname]
                                                 ['question']["7"]['doorwidth'] =
-                                            int.parse(value);
+                                            double.parse(value);
                                       });
                                     } else if (role != "therapist") {
                                       FocusScope.of(context).requestFocus();
@@ -1079,7 +1079,7 @@ class _BathroomUIState extends State<BathroomUI> {
 
                                         widget.wholelist[5][widget.accessname]
                                                 ['question']["7"]['doorwidth'] =
-                                            int.parse(value);
+                                            double.parse(value);
                                       });
                                     } else {
                                       _showSnackBar(
@@ -2562,7 +2562,8 @@ class _BathroomUIState extends State<BathroomUI> {
                           height: 10,
                         ),
                         (assesmentprovider.getvalue(18) != "")
-                            ? (int.parse(assesmentprovider.getvalue(18)) > 120)
+                            ? (double.parse(assesmentprovider.getvalue(18)) >
+                                    120)
                                 ? assesmentprovider.getrecomain(
                                     assesmentprovider,
                                     18,
@@ -2991,7 +2992,8 @@ class _BathroomUIState extends State<BathroomUI> {
                             ]),
 
                         (assesmentprovider.getvalue(25) != "")
-                            ? (int.parse(assesmentprovider.getvalue(25)) > 20)
+                            ? (double.parse(assesmentprovider.getvalue(25)) >
+                                    20)
                                 ? assesmentprovider.getrecomain(
                                     assesmentprovider,
                                     25,

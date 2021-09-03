@@ -408,6 +408,7 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                       print("********Start*****");
                       await Future.delayed(const Duration(milliseconds: 1500),
                           () {
+                        outerloop:
                         for (int i = 0; i < widget.wholelist.length; i++) {
                           print("********1st loop*****");
                           print("length = ${widget.wholelist.length}");
@@ -429,32 +430,37 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                                     setState(() {
                                       save = true;
                                     });
-                                    print("***********1************");
+                                    print(
+                                        "***********true for $i with $j************");
                                   } else {
                                     setState(() {
                                       save = false;
                                     });
-                                    print("***********2************");
-                                    break;
+                                    print(
+                                        "***********false for $i with $j************");
+                                    break outerloop;
                                   }
-                                }else{
-                                   setState(() {
-                                      save = true;
-                                    });
+                                } else {
+                                  setState(() {
+                                    save = true;
+                                  });
+                                  print(
+                                      "***********true for $i with $j************");
                                 }
                               } else {
                                 setState(() {
                                   save = false;
                                 });
-                                print("***********3************");
-                                break;
+                                print(
+                                    "***********false for $i with $j************");
+                                break outerloop;
                               }
                             }
                           }
                         }
                       });
                       if (widget.role == 'therapist') {
-                        if (save == true) {
+                        if (save) {
                           NewAssesmentRepository().setAssessmentCurrentStatus(
                               "Report Generated", widget.docID);
                           NewAssesmentRepository()
@@ -580,7 +586,7 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
     } else if (classname == 'Kitchen') {
       return 18;
     } else if (classname == 'Living Room') {
-      return 12;
+      return 11;
     } else if (classname == 'Living Arrangements') {
       return 14;
     } else if (classname == 'Pathway') {

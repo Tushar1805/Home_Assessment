@@ -195,7 +195,7 @@ class _TherapistUIState extends State<TherapistUI> {
           onPressed: () {
             // Navigator.push(context,
             //     MaterialPageRoute(builder: (context) => NewAssesment(docID)));
-            _showSnackBar("Wait For The Assessor To Finish The Assessment");
+            _showSnackBar("Wait for the assessor to finish the assessment");
           },
           child: Text(
             "Assessment Scheduled",
@@ -249,7 +249,7 @@ class _TherapistUIState extends State<TherapistUI> {
           elevation: 3,
           color: Color.fromRGBO(10, 80, 106, 1),
           onPressed: () {
-            _showSnackBar("Wait For The Assessor To Finish The Assessment");
+            _showSnackBar("Wait for the assessor to finish the assessment");
           },
           child: Text(
             "Assessment in Progress",
@@ -612,24 +612,24 @@ class _TherapistUIState extends State<TherapistUI> {
                               //     snapshot["latestChangeDate"]),
                               // SizedBox(height: 2.5),
                               // Divider(),
-                              Container(
-                                width: double.infinity,
-                                child: Wrap(children: [
-                                  Text(
-                                    'Status: ',
-                                    style: TextStyle(
-                                        fontSize: 16, color: Colors.black45),
-                                  ),
-                                  Text(
-                                    '${assessmentdata.data()["currentStatus"]}',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ]),
-                              ),
-                              SizedBox(height: 2.5),
-                              Divider(),
+                              // Container(
+                              //   width: double.infinity,
+                              //   child: Wrap(children: [
+                              //     Text(
+                              //       'Status: ',
+                              //       style: TextStyle(
+                              //           fontSize: 16, color: Colors.black45),
+                              //     ),
+                              //     Text(
+                              //       '${assessmentdata.data()["currentStatus"]}',
+                              //       style: TextStyle(
+                              //         fontSize: 16,
+                              //       ),
+                              //     ),
+                              //   ]),
+                              // ),
+                              // SizedBox(height: 2.5),
+                              // Divider(),
 
                               getAddress(snapshot["houses"]),
 

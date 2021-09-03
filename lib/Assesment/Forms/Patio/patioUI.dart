@@ -271,7 +271,7 @@ class _PatioUIState extends State<PatioUI> {
       if (video == null) {
         if (source == 'camera') {
           final pickedVideo =
-              await ImagePicker().getVideo(source: ImageSource.camera);
+              await ImagePicker().pickVideo(source: ImageSource.camera);
 
           if (pickedVideo != null) {
             Navigator.pop(context);
@@ -289,7 +289,7 @@ class _PatioUIState extends State<PatioUI> {
           }
         } else {
           final pickedVideo =
-              await ImagePicker().getVideo(source: ImageSource.gallery);
+              await ImagePicker().pickVideo(source: ImageSource.gallery);
           if (pickedVideo != null) {
             Navigator.pop(context);
             // assesmentprovider.addVideo(pickedVideo.path);
@@ -762,7 +762,7 @@ class _PatioUIState extends State<PatioUI> {
                               ),
                             ]),
                         (getvalue(1) != '')
-                            ? (int.parse(getvalue(1)) > 5)
+                            ? (double.parse(getvalue(1)) > 5)
                                 ? getrecomain(
                                     1, true, 'Comments (if any)', context)
                                 : SizedBox()
@@ -1133,7 +1133,7 @@ class _PatioUIState extends State<PatioUI> {
 
                                       widget.wholelist[8][widget.accessname]
                                               ['question']["7"]['doorwidth'] =
-                                          int.parse(value);
+                                          double.parse(value);
                                     });
                                   } else if (role != "therapist") {
                                     FocusScope.of(context).requestFocus();
@@ -1146,7 +1146,7 @@ class _PatioUIState extends State<PatioUI> {
 
                                       widget.wholelist[8][widget.accessname]
                                               ['question']["7"]['doorwidth'] =
-                                          int.parse(value);
+                                          double.parse(value);
                                     });
                                   } else {
                                     _showSnackBar(
@@ -2488,7 +2488,7 @@ class _PatioUIState extends State<PatioUI> {
       if (available) {
         setState(() {
           _isListening = true;
-          colorsset["field$index"] = Colors.red;
+          colorsset["field$index"] = Color.fromRGBO(10, 80, 106, 1);
 
           isListening['field$index'] = true;
           print(isListening['field$index']);
