@@ -138,16 +138,21 @@ class TherapistProvider extends ChangeNotifier {
   String getq;
   bool assessdisplay = false;
   QuerySnapshot dataset;
+  DocumentSnapshot document;
   Map<String, dynamic> datasetorder;
   //  datamain;
   Map<String, dynamic> datasetmain = {};
+  Map<String, dynamic> datasetFeedback = {};
   var docs;
   var data2;
+  var data3;
   String curretnassessmentdocref, role;
   bool loading = false;
+  bool loading1 = false;
   String sortdata = '';
   TherapistProvider(String role) {
     getdocset(role);
+    getFeedback();
     // print(role);
   }
 
@@ -168,6 +173,30 @@ class TherapistProvider extends ChangeNotifier {
     }
     datasetmain = temptry;
     loading = false;
+    notifyListeners();
+  }
+
+  getFeedback() async {
+    loading1 = true;
+    notifyListeners();
+    document = await therarepo.getFeedback();
+    Map<String, DocumentSnapshot> datasetmaintemp = {};
+    // print(document["feedback"].length);
+    if (document["feedback"] != null) {
+      for (int i = document["feedback"].length, k = 0;
+          i > 0 && k < document["feedback"].length;
+          i--, k++) {
+        await getfielddata2(document['feedback'][i - 1]["patient"]);
+        datasetmaintemp["$k"] = (data3);
+      }
+      Map<String, dynamic> temptry = {};
+      for (int j = 0; j < datasetmaintemp.length; j++) {
+        temptry["$j"] = datasetmaintemp["$j"].data();
+      }
+      datasetFeedback = temptry;
+    }
+
+    loading1 = false;
     notifyListeners();
   }
 
@@ -249,6 +278,12 @@ class TherapistProvider extends ChangeNotifier {
     data2 = await therarepo.getfielddata(uid);
     notifyListeners();
     return data2;
+  }
+
+  getfielddata2(String uid) async {
+    data3 = await therarepo.getfielddata(uid);
+    notifyListeners();
+    return data3;
   }
 
   getuid() async {

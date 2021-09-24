@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tryapp/CompleteAssessment/completeAssessmentBase.dart';
+import 'package:tryapp/Patient_Caregiver_Family/Dashboard/feedback.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/homeAddress.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdashprov.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdashrepo.dart';
@@ -102,9 +103,11 @@ class _PatientUIState extends State<PatientUI> {
       String status,
       String patientUid,
       String assessorUid,
+      String therapistUid,
       List<Map<String, dynamic>> list,
       String docID,
-      BuildContext buildContext) {
+      BuildContext buildContext,
+      PatientProvider assesspro) {
     void _showSnackBar(snackbar) {
       final snackBar = SnackBar(
         duration: const Duration(seconds: 3),
@@ -236,30 +239,60 @@ class _PatientUIState extends State<PatientUI> {
       );
     } else if (status == "Report Generated") {
       return Container(
-        width: MediaQuery.of(context).size.width * 0.5,
-        child: RaisedButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: new BorderRadius.circular(20),
-          ),
-          padding: EdgeInsets.symmetric(
-            vertical: 10,
-            horizontal: 10,
-          ),
-          elevation: 3,
-          color: Color.fromRGBO(10, 80, 106, 1),
-          onPressed: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => ReportUI(docID, patientUid, list)));
-          },
-          child: Text(
-            "View Report",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 15,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            RaisedButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(20),
+              ),
+              padding: EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 10,
+              ),
+              elevation: 3,
+              color: Color.fromRGBO(10, 80, 106, 1),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ReportUI(docID, patientUid, list)));
+              },
+              child: Text(
+                "View Report",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                ),
+              ),
             ),
-          ),
+            RaisedButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(20),
+              ),
+              // padding: EdgeInsets.symmetric(
+              //   vertical: 10,
+              //   horizontal: 10,
+              // ),
+              elevation: 3,
+              color: Color.fromRGBO(10, 80, 106, 1),
+              onPressed: () {
+                showDialog(
+                    context: context,
+                    builder: (context) => FeedbackDialogWidget(
+                        therapistUid, patientUid, assesspro),
+                    barrierDismissible: true);
+              },
+              child: Text(
+                "Feedback",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                ),
+              ),
+            ),
+          ],
         ),
       );
     } else if (status == "Assessment Finished" && curUid == assessorUid) {
@@ -349,28 +382,33 @@ class _PatientUIState extends State<PatientUI> {
                   ],
                 ),
               )
-            : Container(
-                child: Container(
-                child: Padding(
-                  padding: EdgeInsets.all(8),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                        maxHeight: 1000,
-                        minHeight: MediaQuery.of(context).size.height / 10),
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      physics: BouncingScrollPhysics(),
-                      itemCount: assesspro.datasetmain.length,
-                      itemBuilder: (context, index) {
-                        // print(assesspro.datasetmain.length);
-                        // return;
-                        return listdata(assesspro.datasetmain["$index"],
-                            assesspro.dataset.docs[index], assesspro, context);
-                      },
+            : Stack(children: [
+                Container(
+                    child: Container(
+                  child: Padding(
+                    padding: EdgeInsets.all(8),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                          maxHeight: 1000,
+                          minHeight: MediaQuery.of(context).size.height / 10),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: BouncingScrollPhysics(),
+                        itemCount: assesspro.datasetmain.length,
+                        itemBuilder: (context, index) {
+                          // print(assesspro.datasetmain.length);
+                          // return;
+                          return listdata(
+                              assesspro.datasetmain["$index"],
+                              assesspro.dataset.docs[index],
+                              assesspro,
+                              context);
+                        },
+                      ),
                     ),
                   ),
-                ),
-              ));
+                )),
+              ]);
   }
 
   Widget listdata(snapshot, assessmentdata, PatientProvider assesspro,
@@ -589,12 +627,6 @@ class _PatientUIState extends State<PatientUI> {
                                       assessmentdata
                                           .data()["assessmentCompletionDate"])
                                   : SizedBox(),
-                              // SizedBox(height: 2.5),
-                              // Divider(
-                              //   height: 1,
-                              // ),
-                              // getDate("Latest Change: ",
-                              //     snapshot["latestChangeDate"]),
                               (assessmentdata.data()[
                                               "assessmentCompletionDate"] !=
                                           null &&
@@ -653,9 +685,11 @@ class _PatientUIState extends State<PatientUI> {
                       assessmentdata.data()["currentStatus"],
                       assessmentdata.data()["patient"],
                       assessmentdata.data()["assessor"],
+                      assessmentdata.data()["therapist"],
                       list,
                       assessmentdata.data()["docID"],
-                      buildContext),
+                      buildContext,
+                      assesspro),
                   SizedBox(height: 10),
                 ],
               ))),

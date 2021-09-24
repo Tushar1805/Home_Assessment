@@ -70,12 +70,12 @@ const fcm = admin.messaging();
 
     exports.sendMessageToTherapist = functions.firestore
     .document('assessments/{id}')
-    .onCreate(async (snapshot, context) => {
+    .onUpdate(async (snapshot, context) => {
         if (snapshot.empty) {
             console.log("No Assessments");
         }
-        const message = snapshot.data();
-        console.log(message);
+        // const message = snapshot.data();
+        // console.log(message);
         
 
         const querySnapshot = await db
@@ -91,11 +91,23 @@ const fcm = admin.messaging();
         const token = querySnapshot.data()["token"];
         console.log(token); 
 
-        // if (message.data()["currentStatus"] == "Assessment Scheduled") {  
+        var currentStatus = snapshot.after.data()["currentStatus"];
+        var body;
+
+        if (currentStatus == "Assessment Scheduled" && snapshot.data()["assessor"] == snapshot.data()["therapist"]){ 
+            body = 'Hello, You have been allocated as a therapist for the assessment. Please complete the assessment and provide the necessary recommedations!\n\n Thank You!!';
+        }else if (currentStatus == "Assessment Scheduled"){ 
+            body = 'Hello, You have been allocated as a therapist for the assessment. Assessor will soon began the assessment wait untill then.\n\n Thank You!!';
+        }else if(currentStatus == "Assessment Scheduled"){
+            body = 'Hello, Assessment completely filled by the assessor. Now, please provide the recommendations to the assessment!\n\n Thank You!!';
+        }else{
+            body = 'Thank You!!\n\n You have completed the assessment.'
+        }
+
         var payload = { 
             notification: {
-                title: `BHBS | ${querySnapshot.data()["firstName"]} ${querySnapshot.data()["lastName"]}`,
-                body: 'Hello, You have been allocated as a therapist for the assessment',
+                title: `BHBS | ${querySnapshot.data()["firstName"]} ${querySnapshot.data()["lastName"]} `,
+                body: body, 
                 click_action : 'FLUTTER_NOTIFICATION_CLICK', 
             } 
         };
@@ -113,18 +125,18 @@ const fcm = admin.messaging();
 
     exports.sendMessageToPatient = functions.firestore
     .document('assessments/{id}')
-    .onCreate(async (snapshot, context) => {
+    .onUpdate(async (snapshot, context) => {
         if (snapshot.empty) {
             console.log("No Assessments");
         }
-        const message = snapshot.data();
-        console.log(message);
+        // const message = snapshot.data();
+        // console.log(message);
         
 
         const querySnapshot = await db
             .collection('users')
             .doc(snapshot.data()["therapist"]) 
-            .get();
+            .get();flutter build apk --split-per-abi
 
             const querySnapshotPatient = await db
             .collection('users')
@@ -133,36 +145,42 @@ const fcm = admin.messaging();
 
         const token = querySnapshot.data()["token"];
         console.log(token); 
+        var currentStatus = snapshot.after.data()["currentStatus"];
+        var body;
 
-        // if (message.data()["currentStatus"] == "Assessment Scheduled") {  
-        var payload = { 
-            notification: {
-                title: `BHBS | Assessment of ${querySnapshotPatient.data()["firstName"]} ${querySnapshotPatient.data()["lastName"]} with therapist ${querySnapshot.data()["firstName"]} ${querySnapshot.data()["lastName"]}`,
-                body: 'Hello, Your assessment has been scheduled with our hospital',
-                click_action : 'FLUTTER_NOTIFICATION_CLICK', 
-            } 
-        };
-        try {
+        if (currentStatus == "Assessment Finished") {  
+           body = 'Hello, Your assessment has been finished by the assessor. Therapist will soon began to give recommendations to your assessment. \n\n Thank you for choosing us!';
+        }else if(currentStatus == "Report Generated"){
+           body = 'Hello, Your assessment has been finished by the therapist. View your report so that you can make the changes according the therapist recommendations. \n\n Thank you for choosing us!';
+        }else{
+           body = "Hello, Assessor will soon informed with your assessment.\n\n Thank you for choosing us!";
+        }  
+
+         var payload = { 
+                notification: {
+                    title: `Welcome to BHBS | Assessment of ${querySnapshotPatient.data()["firstName"]} ${querySnapshotPatient.data()["lastName"]} with therapist ${querySnapshot.data()["firstName"]} ${querySnapshot.data()["lastName"]} has been scheduled`,
+                    body: body,
+                    click_action : 'FLUTTER_NOTIFICATION_CLICK', 
+                } 
+            };
+            try {
             const response = await admin.messaging().sendToDevice(token, payload);
             console.log("Notification sent successfully");
             return response;
-        } catch (error) {
-            console.log();
-        }
-        // return fcm.sendToDevice(token, payload);
-    //    }
+            } catch (error) {
+                console.log();
+            }
 
     });
 
     exports.sendMessageToAssessor = functions.firestore
     .document('assessments/{id}')
-    .onCreate(async (snapshot, context) => {
+    .onUpdate(async (snapshot, context) => {
         if (snapshot.empty) {
             console.log("No Assessments");
         }
-        const message = snapshot.data();
-        console.log(message);
-        
+        // const message = snapshot.data();
+        // console.log(message); 
 
         const querySnapshot = await db
             .collection('users')
@@ -176,12 +194,19 @@ const fcm = admin.messaging();
 
         const token = querySnapshot.data()["token"];
         console.log(token); 
+        var currentStatus = snapshot.after.data()["currentStatus"];
+        var body;
 
-        // if (message.data()["currentStatus"] == "Assessment Scheduled") {  
+        if (currentStatus == "Assessment Scheduled" && snapshot.data()["therapist"] != snapshot.data()["assessor"] ) {  
+            body = 'Hello, You have been allocated as an assessor for the assessment. So, complete the assessment as soon as posible\n\n Thank You!!';
+        }else{
+            body = 'Thank You! to complete the assessment in time.';
+        } 
+
         var payload = { 
             notification: {
                 title: `BHBS | ${querySnapshot.data()["firstName"]} ${querySnapshot.data()["lastName"]}`,
-                body: 'Hello, You have been allocated as a therapist for the assessment',
+                body: body,
                 click_action : 'FLUTTER_NOTIFICATION_CLICK', 
             } 
         };
@@ -192,9 +217,6 @@ const fcm = admin.messaging();
         } catch (error) {
             console.log();
         }
-        // return fcm.sendToDevice(token, payload);
-    //    }
-
     });
 
     // exports.onStatusUpdate = functions.document("assessments/{id}").onUpdate(async (snapshot, context) => {
@@ -222,8 +244,8 @@ const fcm = admin.messaging();
     //     }
     // });
 
-    exports.onUserCreate = functions.firestore.document("users/{userid}").onCreate(async (snap, context) => {
-        const values = snap.data();
+    // exports.onUserCreate = functions.firestore.document("users/{userid}").onCreate(async (snap, context) => {
+    //     const values = snap.data();
 
-        await db.collection("logging").add({description: "Email was sent to user with username: ${values.username}"});
-    });
+    //     await db.collection("logging").add({description: "Email was sent to user with username: ${values.username}"});
+    // });

@@ -31,7 +31,7 @@ class _LoginFormState extends State<LoginForm> {
   String token;
 
   void initState() {
-    // getToken();
+    getToken();
   }
 
   void _showSnackBar(snackbar, BuildContext buildContext) {
@@ -68,11 +68,12 @@ class _LoginFormState extends State<LoginForm> {
       UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
       User useer = result.user;
+      print("*************result : $result****************");
 
-      // await FirebaseFirestore.instance
-      //     .collection("users")
-      //     .doc(useer.uid)
-      //     .set({"token": token}, SetOptions(merge: true));
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(useer.uid)
+          .set({"token": token}, SetOptions(merge: true));
 
       if (useer != null) {
         print("user uid = ${useer.uid} ");

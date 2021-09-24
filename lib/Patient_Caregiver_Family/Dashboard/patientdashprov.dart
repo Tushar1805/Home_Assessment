@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:tryapp/Patient_Caregiver_Family/Dashboard/feedback.dart';
 import './patientdashrepo.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -283,6 +284,10 @@ class PatientProvider extends ChangeNotifier {
     data2 = await patientrepo.getfielddata(uid);
     notifyListeners();
     return data2;
+  }
+
+  setFeedback(String uid, List<Map<String, dynamic>> _feedback) async {
+    await patientrepo.setFeedback(uid, _feedback);
   }
 
   // getuid() async {

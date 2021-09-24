@@ -97,7 +97,9 @@ class PathwayPro extends ChangeNotifier {
       if (wholelist[0][accessname]['question']["7"]['stepCount']
           .containsKey('count')) {}
     } else {
-      wholelist[0][accessname]['question']["7"]['stepCount'] = {};
+      wholelist[0][accessname]['question']["7"]['stepCount'] = {
+        "count": 0,
+      };
     }
     print(wholelist[0][accessname]['question']["7"]['stepCount']);
   }

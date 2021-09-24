@@ -26,7 +26,7 @@ class _HomeAddressState extends State<HomeAddress> {
   }
 
   getAddresses() async {
-    User user = await auth.currentUser;
+    User user = auth.currentUser;
 
     await firestore.collection("users").doc(user.uid).get().then((value) {
       if (value.data()["houses"] != null) {
@@ -75,7 +75,7 @@ class _HomeAddressState extends State<HomeAddress> {
                         Container(
                           child: Container(
                             child: Text(
-                              'NO ASSIGNMENTS ASSIGNED',
+                              'NO HOME ADDRESSES',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,

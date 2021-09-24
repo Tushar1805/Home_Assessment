@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tryapp/Patient_Caregiver_Family/Dashboard/feedback.dart';
 
 class PatientRepository {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -17,6 +18,13 @@ class PatientRepository {
       return value['name'];
     });
     return await dataname;
+  }
+
+  Future<void> setFeedback(
+      String uid, List<Map<String, dynamic>> feedback) async {
+    await firestore.collection("users").doc(uid).set({
+      "feedback": feedback,
+    }, SetOptions(merge: true));
   }
 
   // Future<List> getassessments() async {

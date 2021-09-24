@@ -12,11 +12,13 @@ import 'package:tryapp/Assesment/newassesment/newassesmentui.dart';
 import 'package:tryapp/CompleteAssessment/completeAssessmentBase.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/reportbase.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/reportui.dart';
+import 'package:tryapp/Therapist/Dashboard/ViewFeedbackBase.dart';
 import 'package:tryapp/Therapist/Dashboard/homeAddresses.dart';
 import 'package:tryapp/Therapist/Dashboard/nurses.dart';
 import 'package:tryapp/Therapist/Dashboard/patients.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistdashrepo.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistpro.dart';
+import 'package:tryapp/Therapist/Dashboard/viewFeedback.dart';
 import 'package:tryapp/constants.dart';
 import 'package:tryapp/splash/assesment.dart';
 import 'package:tryapp/splash/midassessment.dart';
@@ -50,11 +52,11 @@ class _TherapistUIState extends State<TherapistUI> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     setImage();
     getUserDetails();
     getCurrentUid();
+    getFeedback();
     // getToken();
   }
 
@@ -66,9 +68,30 @@ class _TherapistUIState extends State<TherapistUI> {
   //   print(token);
   // }
 
+  getFeedback() async {
+    final User useruid = _auth.currentUser;
+    await firestoreInstance
+        .collection("users")
+        .doc(useruid.uid)
+        .get()
+        .then((value) {
+      if (value.data()["feedback"] != null) {
+      } else {
+        firestoreInstance
+            .collection("users")
+            .doc(useruid.uid)
+            .set({'feedback': ''}, SetOptions(merge: true));
+      }
+    });
+  }
+
   Future<void> setImage() async {
-    final User useruid = await _auth.currentUser;
-    firestoreInstance.collection("users").doc(useruid.uid).get().then((value) {
+    final User useruid = _auth.currentUser;
+    await firestoreInstance
+        .collection("users")
+        .doc(useruid.uid)
+        .get()
+        .then((value) {
       setState(() {
         if (value.data()["url"] != null) {
           imgUrl = (value.data()["url"].toString()) ?? "";
@@ -79,7 +102,6 @@ class _TherapistUIState extends State<TherapistUI> {
               .set({'url': ''}, SetOptions(merge: true));
           imgUrl = "";
         }
-
         print(imgUrl);
         // address = (value["houses"][0]["city"].toString());
       });
@@ -87,8 +109,8 @@ class _TherapistUIState extends State<TherapistUI> {
   }
 
   Future<void> getUserDetails() async {
-    final User useruid = await _auth.currentUser;
-    firestoreInstance.collection("users").doc(useruid.uid).get().then(
+    final User useruid = _auth.currentUser;
+    await firestoreInstance.collection("users").doc(useruid.uid).get().then(
       (value) {
         setState(() {
           userFirstName = (value.data()["firstName"].toString());
@@ -102,9 +124,9 @@ class _TherapistUIState extends State<TherapistUI> {
   }
 
   Future<void> getPatientDetails() async {
-    final User useruid = await _auth.currentUser;
+    final User useruid = _auth.currentUser;
     if (patientUid != null) {
-      firestoreInstance.collection("users").doc(patientUid).get().then(
+      await firestoreInstance.collection("users").doc(patientUid).get().then(
         (value) {
           setState(() {
             fname = (value.data()["firstName"].toString());
@@ -117,7 +139,7 @@ class _TherapistUIState extends State<TherapistUI> {
   }
 
   Future<void> getCurrentUid() async {
-    final User useruid = await _auth.currentUser;
+    final User useruid = _auth.currentUser;
     setState(() {
       curUid = useruid.uid;
     });
@@ -269,7 +291,7 @@ class _TherapistUIState extends State<TherapistUI> {
           ),
           padding: EdgeInsets.symmetric(
             vertical: 10,
-            horizontal: 10,
+            horizontal: 20,
           ),
           elevation: 3,
           color: Color.fromRGBO(10, 80, 106, 1),
@@ -836,6 +858,19 @@ class _TherapistUIState extends State<TherapistUI> {
                                   AssesmentSplashScreen("therapist")))
                     },
                   ),
+                  ListTile(
+                    leading: Icon(Icons.assessment, color: Colors.green),
+                    title: Text(
+                      'Feedback',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    onTap: () => {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ViewFeedbackBase()))
+                    },
+                  ),
                   // ListTile(
                   //   leading: Icon(Icons.pages, color: Colors.green),
                   //   title: Text(
@@ -853,15 +888,14 @@ class _TherapistUIState extends State<TherapistUI> {
               elevation: 0.0,
               actions: [
                 IconButton(
-                  tooltip: "Logout",
-
-                  icon: Icon(Icons.logout, color: Colors.white),
-
+                  tooltip: "Logout", 
+                  icon: Icon(Icons.logout, color: Colors.white), 
                   onPressed: () async {
                     try {
-                      await _auth.signOut();
-                      Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(builder: (context) => Login()));
+                      await _auth.signOut().then((value) =>
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => Login())));
                     } catch (e) {
                       print(e.toString());
                     }
