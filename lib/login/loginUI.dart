@@ -222,13 +222,16 @@ class _LoginFormState extends State<LoginForm> {
                                 // var result = await login(email, password);
                                 var result = await login(email, password);
                                 // await loggeedIn.setString('email', email);
+                                var runtimeType;
                                 if (result != null) {
                                   var type = await FirebaseFirestore.instance
                                       .collection('users')
                                       .doc(result)
                                       .get()
                                       .then((value) {
-                                    return value.data()['role'] ?? "therapist";
+                                    runtimeType =
+                                        value.data()['role'].runtimeType;
+                                    print("runtime Type: $runtimeType");
                                   });
                                   var name = await FirebaseFirestore.instance
                                       .collection('users')
