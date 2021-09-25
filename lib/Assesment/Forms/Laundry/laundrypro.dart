@@ -51,6 +51,7 @@ class LaundryPro extends ChangeNotifier {
   String videoUrl;
   File video;
   bool isVideoSelected = false;
+  var falseIndex = -1, trueIndex = -1;
 
   LaundryPro(this.roomname, this.wholelist, this.accessname) {
     _speech = stt.SpeechToText();
@@ -92,6 +93,10 @@ class LaundryPro extends ChangeNotifier {
   /// This fucntion helps us to create such fields which will be needed to fill extra
   /// data sunch as fields generated dynamically.
   Future<void> setinitials() async {
+    if (wholelist[7][accessname].containsKey('isSave')) {
+    } else {
+      wholelist[7][accessname]["isSave"] = true;
+    }
     if (wholelist[7][accessname].containsKey('videos')) {
       if (wholelist[7][accessname]['videos'].containsKey('name')) {
       } else {
@@ -123,10 +128,21 @@ class LaundryPro extends ChangeNotifier {
   /// This fucntion will help us to get role of the logged in user
 
   Future<String> getRole() async {
+    var runtimeType;
     final User useruid = await _auth.currentUser;
     firestoreInstance.collection("users").doc(useruid.uid).get().then(
       (value) {
-        type = (value["role"].toString()).split(" ")[0];
+        runtimeType = value.data()['role'].runtimeType.toString();
+        print("runtime Type: $runtimeType");
+        if (runtimeType == "List<dynamic>") {
+          for (int i = 0; i < value.data()["role"].length; i++) {
+            if (value.data()["role"][i].toString() == "Therapist") {
+              type = "therapist";
+            }
+          }
+        } else {
+          type = value.data()["role"];
+        }
         notifyListeners();
       },
     );
@@ -301,12 +317,36 @@ class LaundryPro extends ChangeNotifier {
     if (wholelist[7][accessname]["question"]["$index"]["Recommendationthera"] !=
         "") {
       isColor = true;
-      saveToForm = true;
-      wholelist[7][accessname]["isSave"] = saveToForm;
+      // saveToForm = true;
+      // wholelist[7][accessname]["isSave"] = saveToForm;
     } else {
       isColor = false;
-      saveToForm = false;
-      wholelist[7][accessname]["isSave"] = saveToForm;
+      // saveToForm = false;
+      // wholelist[7][accessname]["isSave"] = saveToForm;
+    }
+    if (falseIndex == -1) {
+      if (wholelist[7][accessname]["question"]["$index"]
+              ["Recommendationthera"] !=
+          "") {
+        saveToForm = true;
+        trueIndex = index;
+        wholelist[7][accessname]["isSave"] = saveToForm;
+      } else {
+        saveToForm = false;
+        falseIndex = index;
+        wholelist[7][accessname]["isSave"] = saveToForm;
+      }
+    } else {
+      if (index == falseIndex) {
+        if (wholelist[7][accessname]["question"]["$index"]
+                ["Recommendationthera"] !=
+            "") {
+          wholelist[7][accessname]["isSave"] = true;
+          falseIndex = -1;
+        } else {
+          wholelist[7][accessname]["isSave"] = false;
+        }
+      }
     }
     return Column(
       children: [

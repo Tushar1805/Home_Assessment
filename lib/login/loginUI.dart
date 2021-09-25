@@ -229,10 +229,27 @@ class _LoginFormState extends State<LoginForm> {
                                       .doc(result)
                                       .get()
                                       .then((value) {
-                                    runtimeType =
-                                        value.data()['role'].runtimeType;
+                                    runtimeType = value
+                                        .data()['role']
+                                        .runtimeType
+                                        .toString();
                                     print("runtime Type: $runtimeType");
+                                    if (runtimeType == "List<dynamic>") {
+                                      for (int i = 0;
+                                          i < value.data()["role"].length;
+                                          i++) {
+                                        if (value
+                                                .data()["role"][i]
+                                                .toString() ==
+                                            "Therapist") {
+                                          return "therapist";
+                                        }
+                                      }
+                                    } else {
+                                      return value.data()["role"];
+                                    }
                                   });
+                                  print("*************$type");
                                   var name = await FirebaseFirestore.instance
                                       .collection('users')
                                       .doc(result)

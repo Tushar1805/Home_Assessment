@@ -142,13 +142,28 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
   /// This fucntio will help us to get the width of the container.
   /// with help of this we will be able to set the liner progress bar width
   getRole() async {
+    var runtimeType;
     User user = await _auth.currentUser;
     await FirebaseFirestore.instance
         .collection("users")
         .doc(user.uid)
         .get()
         .then((value) => setState(() {
-              role = value.data()["role"];
+              runtimeType = value.data()['role'].runtimeType.toString();
+              print("runtime Type: $runtimeType");
+              if (runtimeType == "List<dynamic>") {
+                for (int i = 0; i < value.data()["role"].length; i++) {
+                  if (value.data()["role"][i].toString() == "Therapist") {
+                    setState(() {
+                      role = "therapist";
+                    });
+                  }
+                }
+              } else {
+                setState(() {
+                  role = value.data()["role"];
+                });
+              }
             }));
   }
 

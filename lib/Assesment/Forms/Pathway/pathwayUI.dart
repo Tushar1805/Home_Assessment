@@ -70,6 +70,7 @@ class _PathwayUIState extends State<PathwayUI> {
   List<String> path = [];
   String videoDownloadUrl, videoUrl, videoName;
   File video;
+  var falseIndex = -1, trueIndex = -1;
 
   @override
   void initState() {
@@ -123,12 +124,25 @@ class _PathwayUIState extends State<PathwayUI> {
 
   /// This fucntion will help us to get role of the logged in user
   Future<String> getRole() async {
+    var runtimeType;
     final User useruid = await _auth.currentUser;
     firestoreInstance.collection("users").doc(useruid.uid).get().then(
       (value) {
-        setState(() {
-          role = (value["role"]);
-        });
+        runtimeType = value.data()['role'].runtimeType.toString();
+        print("runtime Type: $runtimeType");
+        if (runtimeType == "List<dynamic>") {
+          for (int i = 0; i < value.data()["role"].length; i++) {
+            if (value.data()["role"][i].toString() == "Therapist") {
+              setState(() {
+                role = "therapist";
+              });
+            }
+          }
+        } else {
+          setState(() {
+            role = value.data()["role"];
+          });
+        }
       },
     );
   }
@@ -1130,7 +1144,7 @@ class _PathwayUIState extends State<PathwayUI> {
                           ],
                         ),
                         (getvalue(1) == 'Yes')
-                            ? getrecomain(1, false, context)
+                            ? getrecomain(1, true, context)
                             : SizedBox(),
                         SizedBox(height: 15),
                         Row(
@@ -2182,7 +2196,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                         ),
                                       ),
                                       (role == 'therapist')
-                                          ? getrecowid(8, true, context)
+                                          ? getrecomain(8, true, context)
                                           : SizedBox()
                                     ],
                                   ))
@@ -2245,7 +2259,7 @@ class _PathwayUIState extends State<PathwayUI> {
                         (getvalue(9) != "")
                             ? (double.parse(getvalue(9)) > 5)
                                 ? (role == 'therapist')
-                                    ? getrecowid(9, true, context)
+                                    ? getrecomain(9, true, context)
                                     : SizedBox()
                                 : SizedBox()
                             : SizedBox(),
@@ -2691,8 +2705,8 @@ class _PathwayUIState extends State<PathwayUI> {
                 },
               ),
             ),
-            (role == 'therapist')
-                ? getrecowid(index, isthera, context)
+            (role == 'therapist' && isthera)
+                ? getrecowid(index, context)
                 : SizedBox(),
           ],
         ),
@@ -2700,22 +2714,64 @@ class _PathwayUIState extends State<PathwayUI> {
     );
   }
 
-  Widget getrecowid(index, bool isthera, BuildContext context) {
+  Widget getrecowid(index, BuildContext context) {
     if (widget.wholelist[0][widget.accessname]["question"]["$index"]
             ["Recommendationthera"] !=
         "") {
-      isColor = true;
-      saveToForm = true;
-      widget.wholelist[0][widget.accessname]["isSave"] = saveToForm;
+      setState(() {
+        isColor = true;
+        // saveToForm = true;
+        // widget.wholelist[0][widget.accessname]["isSave"] = saveToForm;
+      });
     } else {
-      isColor = false;
-      saveToForm = false;
-      widget.wholelist[0][widget.accessname]["isSave"] = saveToForm;
+      setState(() {
+        isColor = false;
+        // saveToForm = false;
+        // widget.wholelist[0][widget.accessname]["isSave"] = saveToForm;
+      });
+    }
+    if (falseIndex == -1) {
+      if (widget.wholelist[0][widget.accessname]["question"]["$index"]
+              ["Recommendationthera"] !=
+          "") {
+        setState(() {
+          saveToForm = true;
+          trueIndex = index;
+          widget.wholelist[0][widget.accessname]["isSave"] = saveToForm;
+        });
+      } else {
+        setState(() {
+          saveToForm = false;
+          falseIndex = index;
+          widget.wholelist[0][widget.accessname]["isSave"] = saveToForm;
+        });
+      }
+    } else {
+      if (index == falseIndex) {
+        if (widget.wholelist[0][widget.accessname]["question"]["$index"]
+                ["Recommendationthera"] !=
+            "") {
+          setState(() {
+            widget.wholelist[0][widget.accessname]["isSave"] = true;
+            falseIndex = -1;
+          });
+        } else {
+          setState(() {
+            widget.wholelist[0][widget.accessname]["isSave"] = false;
+          });
+        }
+      }
     }
     return Column(
       children: [
         SizedBox(height: 8),
         TextFormField(
+          onChanged: (value) {
+            FocusScope.of(context).requestFocus();
+            new TextEditingController().clear();
+            // print(widget.accessname);
+            setrecothera(index, value);
+          },
           controller: _controllerstreco["field$index"],
           decoration: InputDecoration(
               focusedBorder: OutlineInputBorder(
@@ -2763,12 +2819,6 @@ class _PathwayUIState extends State<PathwayUI> {
               labelStyle:
                   TextStyle(color: (isColor) ? Colors.green : Colors.red),
               labelText: 'Recomendation'),
-          onChanged: (value) {
-            FocusScope.of(context).requestFocus();
-            new TextEditingController().clear();
-            // print(widget.accessname);
-            setrecothera(index, value);
-          },
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

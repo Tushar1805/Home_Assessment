@@ -60,6 +60,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
   List<String> path = [];
   String videoDownloadUrl, videoUrl, videoName;
   File video;
+  var falseIndex = -1, trueIndex = -1;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
@@ -172,6 +173,10 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
   }
 
   Future<void> setinitialsdata() async {
+    if (widget.wholelist[1][widget.accessname].containsKey('isSave')) {
+    } else {
+      widget.wholelist[1][widget.accessname]["isSave"] = true;
+    }
     if (widget.wholelist[1][widget.accessname].containsKey('videos')) {
       if (widget.wholelist[1][widget.accessname]['videos']
           .containsKey('name')) {
@@ -283,12 +288,27 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
 
   getRole() async {
     User user = await _auth.currentUser;
+    var runtimeType;
     await FirebaseFirestore.instance
         .collection("users")
         .doc(user.uid)
         .get()
         .then((value) => setState(() {
-              role = value["role"];
+              runtimeType = value.data()['role'].runtimeType.toString();
+              print("runtime Type: $runtimeType");
+              if (runtimeType == "List<dynamic>") {
+                for (int i = 0; i < value.data()["role"].length; i++) {
+                  if (value.data()["role"][i].toString() == "Therapist") {
+                    setState(() {
+                      role = "therapist";
+                    });
+                  }
+                }
+              } else {
+                setState(() {
+                  role = value.data()["role"];
+                });
+              }
             }));
   }
 
@@ -2779,15 +2799,47 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
         "") {
       setState(() {
         isColor = true;
-        saveToForm = true;
-        widget.wholelist[1][widget.accessname]["isSave"] = saveToForm;
+        // saveToForm = true;
+        // widget.wholelist[1][widget.accessname]["isSave"] = saveToForm;
       });
     } else {
       setState(() {
         isColor = false;
-        saveToForm = false;
-        widget.wholelist[1][widget.accessname]["isSave"] = saveToForm;
+        // saveToForm = false;
+        // widget.wholelist[1][widget.accessname]["isSave"] = saveToForm;
       });
+    }
+    if (falseIndex == -1) {
+      if (widget.wholelist[1][widget.accessname]["question"]["$index"]
+              ["Recommendationthera"] !=
+          "") {
+        setState(() {
+          saveToForm = true;
+          trueIndex = index;
+          widget.wholelist[1][widget.accessname]["isSave"] = true;
+        });
+      } else {
+        setState(() {
+          saveToForm = false;
+          falseIndex = index;
+          widget.wholelist[1][widget.accessname]["isSave"] = false;
+        });
+      }
+    } else {
+      if (index == falseIndex) {
+        if (widget.wholelist[1][widget.accessname]["question"]["$index"]
+                ["Recommendationthera"] !=
+            "") {
+          setState(() {
+            widget.wholelist[1][widget.accessname]["isSave"] = true;
+            falseIndex = -1;
+          });
+        } else {
+          setState(() {
+            widget.wholelist[1][widget.accessname]["isSave"] = false;
+          });
+        }
+      }
     }
     return Column(
       children: [

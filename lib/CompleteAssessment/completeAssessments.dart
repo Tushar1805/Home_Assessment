@@ -105,7 +105,6 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
   bool show;
   bool sent = false;
   Color _color = Colors.lightBlue;
-  String role;
 
   FirebaseAuth _auth = FirebaseAuth.instance;
 
@@ -136,19 +135,33 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
       });
     });
     print("index = ${widget.wholelist.length}");
-    getRole();
   }
 
-  getRole() async {
-    User user = await _auth.currentUser;
-    await FirebaseFirestore.instance
-        .collection("users")
-        .doc(user.uid)
-        .get()
-        .then((value) => setState(() {
-              role = value.data()["role"];
-            }));
-  }
+  // getRole() async {
+  //   var runtimeType;
+  //   User user = await _auth.currentUser;
+  //   await FirebaseFirestore.instance
+  //       .collection("users")
+  //       .doc(user.uid)
+  //       .get()
+  //       .then((value) => setState(() {
+  //             runtimeType = value.data()['role'].runtimeType.toString();
+  //             print("runtime Type: $runtimeType");
+  //             if (runtimeType == "List<dynamic>") {
+  //               for (int i = 0; i < value.data()["role"].length; i++) {
+  //                 if (value.data()["role"][i].toString() == "Therapist") {
+  //                   setState(() {
+  //                     role = "therapist";
+  //                   });
+  //                 }
+  //               }
+  //             } else {
+  //               setState(() {
+  //                 role = value.data()["role"];
+  //               });
+  //             }
+  //           }));
+  // }
 
   Future<String> getcurrentuid() async {
     final User user = await _auth.currentUser;
@@ -260,13 +273,13 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
     return WillPopScope(
       // ignore: missing_return
       onWillPop: () {
-        if (role == 'therapist') {
+        if (widget.role == 'therapist') {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => Therapist()));
-        } else if (role == 'patient') {
+        } else if (widget.role == 'patient') {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => Patient()));
-        } else if (role == 'nurse/case manager') {
+        } else if (widget.role == 'nurse/case manager') {
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => Nurse()));
         }
@@ -278,14 +291,13 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
             leading: IconButton(
               icon: Icon(Icons.arrow_back),
               onPressed: () {
-                print(role);
-                if (role == 'therapist') {
+                if (widget.role == 'therapist') {
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => Therapist()));
-                } else if (role == 'patient') {
+                } else if (widget.role == 'patient') {
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => Patient()));
-                } else if (role == 'nurse/case manager') {
+                } else if (widget.role == 'nurse/case manager') {
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => Nurse()));
                 }
@@ -422,7 +434,7 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                                 // setState(() {
                                 //   save = true;
                                 // });
-                                if (role == "therapist") {
+                                if (widget.role == "therapist") {
                                   if (widget.wholelist[i]["room$j"]["isSave"] !=
                                           null &&
                                       widget.wholelist[i]["room$j"]["isSave"] ==

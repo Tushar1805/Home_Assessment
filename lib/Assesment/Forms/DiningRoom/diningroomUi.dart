@@ -160,12 +160,25 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
   //       ['Recommendationthera'];
   // }
   Future<String> getRole() async {
+    var runtimeType;
     final User useruid = await _auth.currentUser;
     firestoreInstance.collection("users").doc(useruid.uid).get().then(
       (value) {
-        setState(() {
-          role = (value.data()["role"]);
-        });
+        runtimeType = value.data()['role'].runtimeType.toString();
+        print("runtime Type: $runtimeType");
+        if (runtimeType == "List<dynamic>") {
+          for (int i = 0; i < value.data()["role"].length; i++) {
+            if (value.data()["role"][i].toString() == "Therapist") {
+              setState(() {
+                role = "therapist";
+              });
+            }
+          }
+        } else {
+          setState(() {
+            role = value.data()["role"];
+          });
+        }
       },
     );
   }

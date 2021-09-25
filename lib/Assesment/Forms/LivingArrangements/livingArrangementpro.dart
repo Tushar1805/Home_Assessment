@@ -87,6 +87,10 @@ class LivingArrangementsProvider extends ChangeNotifier {
   }
 
   Future<void> setinitialsdata() async {
+    if (wholelist[1][accessname].containsKey('isSave')) {
+    } else {
+      wholelist[1][accessname]["isSave"] = true;
+    }
     if (wholelist[1][accessname].containsKey('videos')) {
       if (wholelist[1][accessname]['videos'].containsKey('name')) {
       } else {
@@ -166,9 +170,20 @@ class LivingArrangementsProvider extends ChangeNotifier {
   }
 
   Future<void> getRole() async {
+    var runtimeType;
     final User useruid = await _auth.currentUser;
     firestoreInstance.collection("users").doc(useruid.uid).get().then((value) {
-      type = (value["role"].toString()).split(" ")[0];
+      runtimeType = value.data()['role'].runtimeType.toString();
+      print("runtime Type: $runtimeType");
+      if (runtimeType == "List<dynamic>") {
+        for (int i = 0; i < value.data()["role"].length; i++) {
+          if (value.data()["role"][i].toString() == "Therapist") {
+            type = "therapist";
+          }
+        }
+      } else {
+        type = value.data()["role"];
+      }
     });
 
     notifyListeners();

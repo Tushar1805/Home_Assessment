@@ -36,6 +36,7 @@ class DiningPro extends ChangeNotifier {
   String videoUrl;
   File video;
   bool isVideoSelected = false;
+  var falseIndex = -1, trueIndex = -1;
   var test = TextEditingController();
   final FormsRepository formsRepository = FormsRepository();
   final FirebaseAuth auth = FirebaseAuth.instance;
@@ -56,6 +57,10 @@ class DiningPro extends ChangeNotifier {
   }
 
   Future<void> setinitials() async {
+    if (wholelist[4][accessname].containsKey('isSave')) {
+    } else {
+      wholelist[4][accessname]["isSave"] = true;
+    }
     if (wholelist[4][accessname].containsKey('videos')) {
       if (wholelist[4][accessname]['videos'].containsKey('name')) {
       } else {
@@ -102,10 +107,21 @@ class DiningPro extends ChangeNotifier {
   }
 
   Future<String> getRole() async {
+    var runtimeType;
     final User useruid = await _auth.currentUser;
     firestoreInstance.collection("users").doc(useruid.uid).get().then(
       (value) {
-        type = (value["role"].toString()).split(" ")[0];
+        runtimeType = value.data()['role'].runtimeType.toString();
+        print("runtime Type: $runtimeType");
+        if (runtimeType == "List<dynamic>") {
+          for (int i = 0; i < value.data()["role"].length; i++) {
+            if (value.data()["role"][i].toString() == "Therapist") {
+              type = "therapist";
+            }
+          }
+        } else {
+          type = value.data()["role"];
+        }
         notifyListeners();
       },
     );
@@ -291,12 +307,36 @@ class DiningPro extends ChangeNotifier {
     if (wholelist[4][accessname]["question"]["$index"]["Recommendationthera"] !=
         "") {
       isColor = true;
-      saveToForm = true;
-      wholelist[4][accessname]["isSave"] = saveToForm;
+      // saveToForm = true;
+      // wholelist[4][accessname]["isSave"] = saveToForm;
     } else {
       isColor = false;
-      saveToForm = false;
-      wholelist[4][accessname]["isSave"] = saveToForm;
+      // saveToForm = false;
+      // wholelist[4][accessname]["isSave"] = saveToForm;
+    }
+    if (falseIndex == -1) {
+      if (wholelist[4][accessname]["question"]["$index"]
+              ["Recommendationthera"] !=
+          "") {
+        saveToForm = true;
+        trueIndex = index;
+        wholelist[4][accessname]["isSave"] = saveToForm;
+      } else {
+        saveToForm = false;
+        falseIndex = index;
+        wholelist[4][accessname]["isSave"] = saveToForm;
+      }
+    } else {
+      if (index == falseIndex) {
+        if (wholelist[4][accessname]["question"]["$index"]
+                ["Recommendationthera"] !=
+            "") {
+          wholelist[4][accessname]["isSave"] = true;
+          falseIndex = -1;
+        } else {
+          wholelist[4][accessname]["isSave"] = false;
+        }
+      }
     }
     return Column(
       children: [

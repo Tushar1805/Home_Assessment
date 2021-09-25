@@ -49,6 +49,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
       videoName;
   File video;
   bool uploading = false;
+  var falseIndex = -1, trueIndex = -1;
   @override
   void initState() {
     super.initState();
@@ -71,6 +72,10 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
   }
 
   Future<void> setinitials() async {
+    if (widget.wholelist[2][widget.accessname].containsKey('isSave')) {
+    } else {
+      widget.wholelist[2][widget.accessname]["isSave"] = true;
+    }
     if (widget.wholelist[2][widget.accessname].containsKey('videos')) {
       if (widget.wholelist[2][widget.accessname]['videos']
           .containsKey('name')) {
@@ -116,12 +121,25 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
   }
 
   Future<String> getRole() async {
+    var runtimeType;
     final User useruid = await _auth.currentUser;
     firestoreInstance.collection("users").doc(useruid.uid).get().then(
       (value) {
-        setState(() {
-          role = (value["role"].toString()).split(" ")[0];
-        });
+        runtimeType = value.data()['role'].runtimeType.toString();
+        print("runtime Type: $runtimeType");
+        if (runtimeType == "List<dynamic>") {
+          for (int i = 0; i < value.data()["role"].length; i++) {
+            if (value.data()["role"][i].toString() == "Therapist") {
+              setState(() {
+                role = "therapist";
+              });
+            }
+          }
+        } else {
+          setState(() {
+            role = value.data()["role"];
+          });
+        }
       },
     );
   }
@@ -1293,7 +1311,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                       Container(
                                         width:
                                             MediaQuery.of(context).size.width *
-                                                .6,
+                                                .5,
                                         child: Text('Telephone Type?',
                                             style: TextStyle(
                                               color: Color.fromRGBO(
@@ -1655,12 +1673,44 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
             ["Recommendationthera"] !=
         "") {
       isColor = true;
-      saveToForm = true;
-      widget.wholelist[2][widget.accessname]["isSave"] = saveToForm;
+      // saveToForm = true;
+      // widget.wholelist[2][widget.accessname]["isSave"] = saveToForm;
     } else {
       isColor = false;
-      saveToForm = false;
-      widget.wholelist[2][widget.accessname]["isSave"] = saveToForm;
+      // saveToForm = false;
+      // widget.wholelist[2][widget.accessname]["isSave"] = saveToForm;
+    }
+    if (falseIndex == -1) {
+      if (widget.wholelist[2][widget.accessname]["question"]["$index"]
+              ["Recommendationthera"] !=
+          "") {
+        setState(() {
+          saveToForm = true;
+          trueIndex = index;
+          widget.wholelist[2][widget.accessname]["isSave"] = saveToForm;
+        });
+      } else {
+        setState(() {
+          saveToForm = false;
+          falseIndex = index;
+          widget.wholelist[2][widget.accessname]["isSave"] = saveToForm;
+        });
+      }
+    } else {
+      if (index == falseIndex) {
+        if (widget.wholelist[2][widget.accessname]["question"]["$index"]
+                ["Recommendationthera"] !=
+            "") {
+          setState(() {
+            widget.wholelist[2][widget.accessname]["isSave"] = true;
+            falseIndex = -1;
+          });
+        } else {
+          setState(() {
+            widget.wholelist[2][widget.accessname]["isSave"] = false;
+          });
+        }
+      }
     }
     return Column(
       children: [

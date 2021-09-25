@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import './therapistdashrepo.dart';
 
@@ -151,8 +152,15 @@ class TherapistProvider extends ChangeNotifier {
   bool loading1 = false;
   String sortdata = '';
   TherapistProvider(String role) {
+    User user = FirebaseAuth.instance.currentUser;
     getdocset(role);
     getFeedback();
+    firestore.collection("assessments").doc(user.uid).get().then((value) {
+      if (value.data()["feedback"].exists) {
+      } else {
+        value.data()["feedback"] = "";
+      }
+    });
     // print(role);
   }
 

@@ -244,7 +244,7 @@ class _PatientUIState extends State<PatientUI> {
           children: [
             RaisedButton(
               shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(20),
+                borderRadius: new BorderRadius.circular(10),
               ),
               padding: EdgeInsets.symmetric(
                 vertical: 10,
@@ -269,7 +269,7 @@ class _PatientUIState extends State<PatientUI> {
             ),
             RaisedButton(
               shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(20),
+                borderRadius: new BorderRadius.circular(10),
               ),
               // padding: EdgeInsets.symmetric(
               //   vertical: 10,

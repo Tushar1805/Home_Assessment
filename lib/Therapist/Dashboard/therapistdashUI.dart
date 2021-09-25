@@ -888,8 +888,8 @@ class _TherapistUIState extends State<TherapistUI> {
               elevation: 0.0,
               actions: [
                 IconButton(
-                  tooltip: "Logout", 
-                  icon: Icon(Icons.logout, color: Colors.white), 
+                  tooltip: "Logout",
+                  icon: Icon(Icons.logout, color: Colors.white),
                   onPressed: () async {
                     try {
                       await _auth.signOut().then((value) =>

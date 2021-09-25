@@ -60,6 +60,10 @@ class PathwayPro extends ChangeNotifier {
   }
 
   setinitials() {
+    if (wholelist[0][accessname].containsKey('isSave')) {
+    } else {
+      wholelist[0][accessname]["isSave"] = true;
+    }
     if (wholelist[0][accessname].containsKey('videos')) {
       if (wholelist[0][accessname]['videos'].containsKey('name')) {
       } else {
@@ -112,11 +116,21 @@ class PathwayPro extends ChangeNotifier {
   }
 
   Future<String> getRole() async {
+    var runtimeType;
     final User useruid = await _auth.currentUser;
     firestoreInstance.collection("users").doc(useruid.uid).get().then(
       (value) {
-        type = (value["role"].toString()).split(" ")[0];
-        notifyListeners();
+        runtimeType = value.data()['role'].runtimeType.toString();
+        print("runtime Type: $runtimeType");
+        if (runtimeType == "List<dynamic>") {
+          for (int i = 0; i < value.data()["role"].length; i++) {
+            if (value.data()["role"][i].toString() == "Therapist") {
+              type = "therapist";
+            }
+          }
+        } else {
+          type = value.data()["role"];
+        }
       },
     );
   }

@@ -65,17 +65,34 @@ class _BathroomUIState extends State<BathroomUI> {
   }
 
   Future<String> getRole() async {
+    var runtimeType;
     final User useruid = await _auth.currentUser;
     firestoreInstance.collection("users").doc(useruid.uid).get().then(
       (value) {
-        setState(() {
-          role = (value["role"]);
-        });
+        runtimeType = value.data()['role'].runtimeType.toString();
+        print("runtime Type: $runtimeType");
+        if (runtimeType == "List<dynamic>") {
+          for (int i = 0; i < value.data()["role"].length; i++) {
+            if (value.data()["role"][i].toString() == "Therapist") {
+              setState(() {
+                role = "therapist";
+              });
+            }
+          }
+        } else {
+          setState(() {
+            role = value.data()["role"];
+          });
+        }
       },
     );
   }
 
   Future<void> setinitials() async {
+    if (widget.wholelist[5][widget.accessname].containsKey('isSave')) {
+    } else {
+      widget.wholelist[5][widget.accessname]["isSave"] = true;
+    }
     if (widget.wholelist[5][widget.accessname].containsKey('videos')) {
       if (widget.wholelist[5][widget.accessname]['videos']
           .containsKey('name')) {

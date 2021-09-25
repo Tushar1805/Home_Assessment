@@ -39,6 +39,7 @@ class BathroomPro extends ChangeNotifier {
   String videoUrl;
   File video;
   bool isVideoSelected = false;
+  var falseIndex = -1, trueIndex = -1;
 
   BathroomPro(this.roomname, this.wholelist, this.accessname, this.docID) {
     _speech = stt.SpeechToText();
@@ -126,16 +127,31 @@ class BathroomPro extends ChangeNotifier {
   }
 
   Future<String> getRole() async {
+    var runtimeType;
     final User useruid = await _auth.currentUser;
     firestoreInstance.collection("users").doc(useruid.uid).get().then(
       (value) {
-        type = (value["role"].toString()).split(" ")[0];
+        runtimeType = value.data()['role'].runtimeType.toString();
+        print("runtime Type: $runtimeType");
+        if (runtimeType == "List<dynamic>") {
+          for (int i = 0; i < value.data()["role"].length; i++) {
+            if (value.data()["role"][i].toString() == "Therapist") {
+              type = "therapist";
+            }
+          }
+        } else {
+          type = value.data()["role"];
+        }
         notifyListeners();
       },
     );
   }
 
   setdata(index, value, que) {
+    if (wholelist[5][accessname].containsKey('isSave')) {
+    } else {
+      wholelist[5][accessname]["isSave"] = true;
+    }
     wholelist[5][accessname]['question']["$index"]['Question'] = que;
     if (value.length == 0) {
       if (wholelist[5][accessname]['question']["$index"]['Answer'].length ==
@@ -295,12 +311,36 @@ class BathroomPro extends ChangeNotifier {
     if (wholelist[5][accessname]["question"]["$index"]["Recommendationthera"] !=
         "") {
       isColor = true;
-      saveToForm = true;
-      wholelist[5][accessname]["isSave"] = saveToForm;
+      // saveToForm = true;
+      // wholelist[5][accessname]["isSave"] = saveToForm;
     } else {
       isColor = false;
-      saveToForm = false;
-      wholelist[5][accessname]["isSave"] = saveToForm;
+      // saveToForm = false;
+      // wholelist[5][accessname]["isSave"] = saveToForm;
+    }
+    if (falseIndex == -1) {
+      if (wholelist[5][accessname]["question"]["$index"]
+              ["Recommendationthera"] !=
+          "") {
+        saveToForm = true;
+        trueIndex = index;
+        wholelist[5][accessname]["isSave"] = saveToForm;
+      } else {
+        saveToForm = false;
+        falseIndex = index;
+        wholelist[5][accessname]["isSave"] = saveToForm;
+      }
+    } else {
+      if (index == falseIndex) {
+        if (wholelist[5][accessname]["question"]["$index"]
+                ["Recommendationthera"] !=
+            "") {
+          wholelist[5][accessname]["isSave"] = true;
+          falseIndex = -1;
+        } else {
+          wholelist[5][accessname]["isSave"] = false;
+        }
+      }
     }
     return Column(
       children: [

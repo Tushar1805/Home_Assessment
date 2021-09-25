@@ -40,6 +40,7 @@ class GaragePro extends ChangeNotifier {
   String videoUrl;
   File video;
   bool isVideoSelected = false;
+  var falseIndex = -1, trueIndex = -1;
 
   GaragePro(this.roomname, this.wholelist, this.accessname) {
     _speech = stt.SpeechToText();
@@ -77,6 +78,10 @@ class GaragePro extends ChangeNotifier {
   }
 
   Future<void> setinitials() async {
+    if (wholelist[9][accessname].containsKey('isSave')) {
+    } else {
+      wholelist[9][accessname]["isSave"] = true;
+    }
     if (wholelist[9][accessname].containsKey('videos')) {
       if (wholelist[9][accessname]['videos'].containsKey('name')) {
       } else {
@@ -135,10 +140,21 @@ class GaragePro extends ChangeNotifier {
   }
 
   Future<String> getRole() async {
+    var runtimeType;
     final User useruid = await _auth.currentUser;
     firestoreInstance.collection("users").doc(useruid.uid).get().then(
       (value) {
-        type = (value["role"].toString()).split(" ")[0];
+        runtimeType = value.data()['role'].runtimeType.toString();
+        print("runtime Type: $runtimeType");
+        if (runtimeType == "List<dynamic>") {
+          for (int i = 0; i < value.data()["role"].length; i++) {
+            if (value.data()["role"][i].toString() == "Therapist") {
+              type = "therapist";
+            }
+          }
+        } else {
+          type = value.data()["role"];
+        }
         notifyListeners();
       },
     );
@@ -302,15 +318,38 @@ class GaragePro extends ChangeNotifier {
 
   Widget getrecowid(assesmentprovider, index) {
     if (wholelist[9][accessname]["question"]["$index"]["Recommendationthera"] !=
-            "" &&
-        wholelist[9][accessname]["question"]["$index"]["Priority"] != "0") {
+        "") {
       isColor = true;
-      saveToForm = true;
-      wholelist[9][accessname]["isSave"] = saveToForm;
+      // saveToForm = true;
+      // wholelist[9][accessname]["isSave"] = saveToForm;
     } else {
       isColor = false;
-      saveToForm = false;
-      wholelist[9][accessname]["isSave"] = saveToForm;
+      // saveToForm = false;
+      // wholelist[9][accessname]["isSave"] = saveToForm;
+    }
+    if (falseIndex == -1) {
+      if (wholelist[9][accessname]["question"]["$index"]
+              ["Recommendationthera"] !=
+          "") {
+        saveToForm = true;
+        trueIndex = index;
+        wholelist[9][accessname]["isSave"] = saveToForm;
+      } else {
+        saveToForm = false;
+        falseIndex = index;
+        wholelist[9][accessname]["isSave"] = saveToForm;
+      }
+    } else {
+      if (index == falseIndex) {
+        if (wholelist[9][accessname]["question"]["$index"]
+                ["Recommendationthera"] !=
+            "") {
+          wholelist[9][accessname]["isSave"] = true;
+          falseIndex = -1;
+        } else {
+          wholelist[9][accessname]["isSave"] = false;
+        }
+      }
     }
     return Column(
       children: [

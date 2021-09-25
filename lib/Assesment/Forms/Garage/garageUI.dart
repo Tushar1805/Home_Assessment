@@ -51,10 +51,14 @@ class _GarageUIState extends State<GarageUI> {
     super.initState();
     getAssessData();
     getRole();
-    setinitialsdata();
+    // setinitialsdata();
   }
 
   Future<void> setinitialsdata() async {
+    if (widget.wholelist[9][widget.accessname].containsKey('isSave')) {
+    } else {
+      widget.wholelist[9][widget.accessname]["isSave"] = true;
+    }
     if (widget.wholelist[9][widget.accessname].containsKey('videos')) {
       if (widget.wholelist[9][widget.accessname]['videos']
           .containsKey('name')) {
@@ -118,12 +122,25 @@ class _GarageUIState extends State<GarageUI> {
   }
 
   Future<String> getRole() async {
+    var runtimeType;
     final User useruid = await _auth.currentUser;
     firestoreInstance.collection("users").doc(useruid.uid).get().then(
       (value) {
-        setState(() {
-          role = (value["role"]);
-        });
+        runtimeType = value.data()['role'].runtimeType.toString();
+        // print("runtime Type: $runtimeType");
+        if (runtimeType == "List<dynamic>") {
+          for (int i = 0; i < value.data()["role"].length; i++) {
+            if (value.data()["role"][i].toString() == "Therapist") {
+              setState(() {
+                role = "therapist";
+              });
+            }
+          }
+        } else {
+          setState(() {
+            role = value.data()["role"];
+          });
+        }
       },
     );
   }
