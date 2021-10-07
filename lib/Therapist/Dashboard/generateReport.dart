@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentpro.dart';
@@ -149,6 +150,13 @@ class _ReportTheraUIState extends State<ReportTheraUI> {
     } else {
       return "";
     }
+  }
+
+  Future<void> saveAndLaunchFile(List<int> bytes, String fileName) async {
+    final path = (await getExternalStorageDirectory()).path;
+    final file = File('$path/$fileName');
+    await file.writeAsBytes(bytes, flush: true);
+    OpenFile.open('$path/$fileName');
   }
 
   writeOnPdf() {
@@ -863,15 +871,15 @@ class _ReportTheraUIState extends State<ReportTheraUI> {
                     await getApplicationDocumentsDirectory();
                 String documentPath = documentDirectory.path;
                 String fullPath = "$documentPath/report.pdf";
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => PdfPreviewScreen(
-                              path: fullPath,
-                            )));
-                SnackBar snackBar = SnackBar(content: Text("Report Generated"));
-                Navigator.pop(context, true);
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //         builder: (context) => PdfPreviewScreen(
+                //               path: fullPath,
+                //             )));
+                // SnackBar snackBar = SnackBar(content: Text("Report Generated"));
+                // Navigator.pop(context, true);
+                // ScaffoldMessenger.of(context).showSnackBar(snackBar);
               },
             )
           ],

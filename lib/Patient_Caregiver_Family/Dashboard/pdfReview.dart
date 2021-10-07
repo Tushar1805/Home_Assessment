@@ -1,14 +1,14 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_full_pdf_viewer/flutter_full_pdf_viewer.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_full_pdf_viewer/flutter_full_pdf_viewer.dart';
 
-class PdfPreviewScreen extends StatelessWidget {
-  String path;
+// class PdfPreviewScreen extends StatelessWidget {
+//   String path;
 
-  PdfPreviewScreen({this.path});
-  @override
-  Widget build(BuildContext context) {
-    return PDFViewerScaffold(
-      path: this.path,
-    );
-  }
-}
+//   PdfPreviewScreen({this.path});
+//   @override
+//   Widget build(BuildContext context) {
+//     return PDFViewerScaffold(
+//       path: this.path,
+//     );
+//   }
+// }

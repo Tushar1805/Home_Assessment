@@ -1,18 +1,24 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_full_pdf_viewer/full_pdf_viewer_scaffold.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:ndialog/ndialog.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:pdf/pdf.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:pdf/pdf.dart';
@@ -21,8 +27,8 @@ import 'package:tryapp/Patient_Caregiver_Family/Dashboard/pdfReview.dart';
 
 class ReportUI extends StatefulWidget {
   List<Map<String, dynamic>> assess;
-  String docID, patientUid;
-  ReportUI(this.docID, this.patientUid, this.assess);
+  String docID, patientUid, therapistUid;
+  ReportUI(this.docID, this.patientUid, this.therapistUid, this.assess);
   @override
   _ReportUIState createState() => _ReportUIState();
 }
@@ -33,6 +39,8 @@ class _ReportUIState extends State<ReportUI> {
   User curuser;
   var fname,
       lname,
+      therafname,
+      theralname,
       address,
       email,
       age,
@@ -67,6 +75,7 @@ class _ReportUIState extends State<ReportUI> {
     // print("hello");
     // print(patient);
     // getPermission();
+    getTherapistName(therapist);
   }
 
   // void getPermission() async {
@@ -137,8 +146,39 @@ class _ReportUIState extends State<ReportUI> {
     // print(useruid.uid.toString());
     // print(docID);
     // print("*******************");
-    // print(patient);
+    // print(therapist);
     // print("**************");
+  }
+
+  Future<void> getTherapistName(String uid) async {
+    await firestoreInstance
+        .collection("users")
+        .doc(widget.therapistUid)
+        .get()
+        .then(
+      (value) {
+        if (value.data() != null) {
+          setState(() {
+            therafname =
+                (capitalize(value.data()["firstName"].toString()) ?? "First");
+            theralname =
+                (capitalize(value.data()["lastName"].toString()) ?? "Last");
+            // gender = (capitalize(value.data()["gender"].toString()) ?? "Male");
+            // address =
+            //     (capitalize(value.data()["houses"][0]["city"].toString()) ??
+            //         "Nagpur");
+            // age = (value.data()["age"].toString() ?? "21");
+            // phone = (value.data()["mobileNo"].toString() ?? "1234567890");
+            // email = (value.data()["email"].toString() ?? "user@gmail.com");
+            // height = (value.data()["height"].toString() ?? "5.5");
+            // weight = (value.data()["weight"].toString() ?? "50");
+            // handDominance =
+            //     (value.data()["handDominance"].toString() ?? "Right");
+          });
+        }
+        // docID = (value["docID"].toString());
+      },
+    );
   }
 
   Future<void> getassessments() async {
@@ -146,30 +186,35 @@ class _ReportUIState extends State<ReportUI> {
         .collection("assessments")
         .doc(widget.docID)
         .get()
-        .then(
-      (value) {
+        .then((value) {
+      if (value.data() != null) {
         setState(() {
-          if (value.data() != null) {
-            patient = (value.data()["patient"].toString());
-            therapist = (value.data()["therapist"].toString());
-            if (value.data()["form"] != null) {
-              assess = List<Map<String, dynamic>>.generate(
-                  value.data()["form"].length,
-                  (int index) => Map<String, dynamic>.from(
-                      value.data()["form"].elementAt(index)));
-            }
-            // assess = List.castFrom(value["form"].toList());
-            if (value.data()["date"] != null) {
-              startingTime = value.data()["date"].toString();
-            }
-            if (value.data()["assessmentCompletionDate"] != null) {
-              closingTime = DateFormat.yMd()
-                  .format(value.data()["assessmentCompletionDate"].toDate());
-            }
-          }
+          patient = (value.data()["patient"].toString());
+          therapist = (value.data()["therapist"].toString());
         });
-      },
-    );
+        if (value.data()["form"] != null) {
+          setState(() {
+            assess = List<Map<String, dynamic>>.generate(
+                value.data()["form"].length,
+                (int index) => Map<String, dynamic>.from(
+                    value.data()["form"].elementAt(index)));
+          });
+        }
+        // assess = List.castFrom(value["form"].toList());
+        if (value.data()["date"] != null) {
+          setState(() {
+            startingTime = value.data()["date"].toString();
+          });
+        }
+        if (value.data()["assessmentCompletionDate"] != null) {
+          setState(() {
+            closingTime = DateFormat.yMd()
+                .format(value.data()["assessmentCompletionDate"].toDate());
+          });
+        }
+      }
+    });
+
     // print("docID: ${widget.docID}");
     // print("//////////");
     // print("Map: $assess");
@@ -253,10 +298,15 @@ class _ReportUIState extends State<ReportUI> {
     return DateFormat("MM-dd-yyyy hh:mm").format(tod).toString();
   }
 
-  writeOnPdf() {
+  writeOnPdf() async {
     List<pw.TableRow> list1 = buildAssesment("1");
     List<pw.TableRow> list2 = buildAssesment("2");
     List<pw.TableRow> list3 = buildAssesment("3");
+
+    final ByteData bytes = await rootBundle.load('assets/logo.png');
+    final Uint8List byteList = bytes.buffer.asUint8List();
+    final ByteData bytes2 = await rootBundle.load('assets/bhbs.png');
+    final Uint8List bhbs = bytes2.buffer.asUint8List();
 
     pw.TableRow buildRow(label, value) {
       return pw.TableRow(children: [
@@ -350,20 +400,151 @@ class _ReportUIState extends State<ReportUI> {
       ]);
     }
 
+    // ***************************** Page 1 ****************************
+
+    pdf.addPage(
+      pw.Page(
+        pageFormat: PdfPageFormat.a4.copyWith(
+            marginBottom: 0, marginLeft: 0, marginRight: 0, marginTop: 0),
+        build: (pw.Context context) {
+          return pw.Column(children: [
+            pw.Container(
+                width: 1000,
+                height: 50,
+                color: PdfColor.fromHex("0a506a"),
+                child: pw.Center(
+                    child: pw.Text('Home Safety Assessment',
+                        style: pw.TextStyle(
+                            color: PdfColors.white,
+                            fontSize: 30,
+                            fontWeight: pw.FontWeight.bold)))),
+            pw.SizedBox(height: 20),
+            pw.Row(mainAxisAlignment: pw.MainAxisAlignment.center, children: [
+              pw.Image(
+                  pw.MemoryImage(
+                    byteList,
+                  ),
+                  fit: pw.BoxFit.fitHeight),
+            ]),
+            pw.SizedBox(height: 50),
+            pw.Row(mainAxisAlignment: pw.MainAxisAlignment.center, children: [
+              pw.Container(
+                  height: 25,
+                  child: pw.Text('Patient Name: ',
+                      style: pw.TextStyle(
+                          color: PdfColors.grey600,
+                          fontSize: 18,
+                          fontWeight: pw.FontWeight.bold))),
+              pw.Container(
+                  height: 25,
+                  child: pw.Text('$fname$lname',
+                      style: pw.TextStyle(
+                          color: PdfColor.fromHex("ba2020"),
+                          fontSize: 18,
+                          fontWeight: pw.FontWeight.bold))),
+            ]),
+            pw.SizedBox(height: 20),
+            pw.Row(mainAxisAlignment: pw.MainAxisAlignment.center, children: [
+              pw.Container(
+                  height: 25,
+                  child: pw.Text('Done By: ',
+                      style: pw.TextStyle(
+                          color: PdfColors.grey600,
+                          fontSize: 18,
+                          fontWeight: pw.FontWeight.bold))),
+              pw.Container(
+                  height: 25,
+                  child: pw.Text('$therafname$theralname',
+                      style: pw.TextStyle(
+                          color: PdfColor.fromHex("ba2020"),
+                          fontSize: 18,
+                          fontWeight: pw.FontWeight.bold))),
+            ]),
+
+            pw.SizedBox(height: 30),
+            pw.Padding(
+              padding: pw.EdgeInsets.all(10),
+              child: pw.Container(
+                width: 1000,
+                height: 10,
+                color: PdfColor.fromHex("0a506a"),
+              ),
+            ),
+            pw.SizedBox(height: 10),
+            pw.Padding(
+                padding: pw.EdgeInsets.all(10),
+                child: pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                    children: [
+                      pw.Image(
+                          pw.MemoryImage(
+                            bhbs,
+                          ),
+                          height: 40,
+                          width: 160,
+                          fit: pw.BoxFit.fitHeight),
+                      pw.Container(
+                          height: 25,
+                          color: PdfColor.fromHex("0a506a"),
+                          child: pw.Text('$closingTime',
+                              style: pw.TextStyle(
+                                  color: PdfColors.white,
+                                  fontSize: 20,
+                                  fontWeight: pw.FontWeight.bold))),
+                    ])),
+
+            // pw.Text('Home Safety Assessment',
+            //     style: pw.TextStyle(
+            //         color: PdfColor.fromHex('3c1758'),
+            //         fontSize: 20,
+            //         fontWeight: pw.FontWeight.bold)),
+            // pw.SizedBox(height: 50),
+            // pw.Container(
+            //     width: 1000,
+            //     height: 60,
+            //     color: PdfColor.fromHex('3c1758'),
+            //     child: pw.Padding(
+            //         padding: pw.EdgeInsets.fromLTRB(180, 20, 10, 10),
+            //         child: pw.Text('hello',
+            //             style: pw.TextStyle(
+            //                 color: PdfColors.white,
+            //                 fontSize: 15,
+            //                 fontWeight: pw.FontWeight.bold)))),
+            // pw.SizedBox(height: 147.5),
+          ]);
+        },
+      ),
+    );
+
     pdf.addPage(pw.MultiPage(
-        pageFormat: PdfPageFormat.a4,
-        margin: pw.EdgeInsets.all(31),
+        pageFormat: PdfPageFormat.a4.copyWith(
+            marginBottom: 20, marginLeft: 20, marginRight: 20, marginTop: 20),
         build: (pw.Context context) {
           return <pw.Widget>[
+            // pw.Image(
+            //     pw.MemoryImage(
+            //       byteList,
+            //     ),
+            //     fit: pw.BoxFit.fitHeight),
             pw.Padding(
                 padding: pw.EdgeInsets.only(top: 10),
                 child: pw.Header(
                     outlineColor: PdfColors.white,
-                    child: pw.Center(
-                        child: pw.Text("Home Safety Report",
-                            style: pw.TextStyle(
-                                fontSize: 30,
-                                fontWeight: pw.FontWeight.bold))))),
+                    child: pw.Row(
+                        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                        children: [
+                          pw.Text("Home Safety Report",
+                              style: pw.TextStyle(
+                                  fontSize: 30,
+                                  fontWeight: pw.FontWeight.bold)),
+                          pw.Image(
+                              pw.MemoryImage(
+                                bhbs,
+                              ),
+                              height: 30,
+                              width: 140,
+                              fit: pw.BoxFit.fitHeight),
+                        ]))),
             pw.SizedBox(height: 20),
             pw.Table(border: pw.TableBorder.all(width: 1), columnWidths: {
               0: pw.FixedColumnWidth(200),
@@ -453,6 +634,11 @@ class _ReportUIState extends State<ReportUI> {
         }));
   }
 
+  Future<void> imageLoader() async {
+    pw.MemoryImage(
+        (await rootBundle.load('assets/logo.png')).buffer.asUint8List());
+  }
+
   Future savePdf() async {
     Directory documentDirectory = await getApplicationDocumentsDirectory();
 
@@ -464,6 +650,14 @@ class _ReportUIState extends State<ReportUI> {
     // print(documentDirectory);
     // print(documentPath);
     // downloadFile(file.uri, '$documentPath/report.pdf');
+  }
+
+  Future<File> pdfAsset() async {
+    Directory tempDir = await getTemporaryDirectory();
+    File tempFile = File('${tempDir.path}/report.pdf');
+    // ByteData bd = await rootBundle.load('assets/logo.png');
+    tempFile.writeAsBytesSync(List.from(await pdf.save()));
+    return tempFile;
   }
 
   List<Card> buildAssesmentUI(priority) {
@@ -987,7 +1181,57 @@ class _ReportUIState extends State<ReportUI> {
           ),
         );
       } else {
-        return SizedBox();
+        return Container(
+          child: Column(
+            children: <Widget>[
+              SizedBox(height: 10),
+              RaisedButton(
+                onPressed: () {},
+                textColor: Colors.black,
+                padding: const EdgeInsets.all(0.0),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(80.0)),
+                child: Container(
+                  decoration: const BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.all(Radius.circular(80.0))),
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                  child:
+                      const Text('Priority 1', style: TextStyle(fontSize: 18)),
+                ),
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Container(
+                padding: EdgeInsets.fromLTRB(20, 10, 10, 10),
+                child: Text(
+                    "Congratulations!, According to the data you / your family or caregiver provided and your evaluating therapist who analyzed the data presented to him/her,  it does not seem like there is any immediate need. However, ",
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromRGBO(10, 80, 106, 1))),
+              ),
+              Container(
+                padding: EdgeInsets.fromLTRB(20, 10, 10, 10),
+                child: Text("ALWAYS BETTER TO BE PROACTIVE & PREPARED! ",
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red[600])),
+              ),
+              Container(
+                padding: EdgeInsets.fromLTRB(20, 10, 10, 10),
+                child: Text(
+                    "Please review the recommendations made and implement them at your earliest to ensure your safety.",
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromRGBO(10, 80, 106, 1))),
+              ),
+            ],
+          ),
+        );
       }
     }
 
@@ -1145,17 +1389,21 @@ class _ReportUIState extends State<ReportUI> {
             ),
             highlightColor: Colors.transparent,
             onPressed: () async {
+              await imageLoader();
               writeOnPdf();
-              await savePdf();
+              // await savePdf();
+              pdfAsset().then((file) {
+                OpenFile.open(file.path);
+              });
 
               Directory documentDirectory =
                   await getApplicationDocumentsDirectory();
               String documentPath = documentDirectory.path;
               fullPath = "$documentPath/report.pdf";
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => PdfPreviewScreen(
-                        path: fullPath,
-                      )));
+              // Navigator.of(context).push(MaterialPageRoute(
+              //     builder: (context) => PdfPreviewScreen(
+              //           path: fullPath,
+              //         )));
               // String path = await ExtStorage.getExternalStoragePublicDirectory(
               //     ExtStorage.DIRECTORY_DOWNLOADS);
               // print(path);
