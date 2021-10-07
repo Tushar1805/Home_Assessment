@@ -579,6 +579,7 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
                       builder: (context) => ReportBase(
                           assesspro.curretnassessmentdocref,
                           assessmentdata.data()["patient"],
+                          assessmentdata.data()["therapist"],
                           list)));
             } else if (assessmentdata.data()['currentStatus'] ==
                     "Assessment Finished" &&

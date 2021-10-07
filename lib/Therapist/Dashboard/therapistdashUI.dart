@@ -299,7 +299,8 @@ class _TherapistUIState extends State<TherapistUI> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ReportUI(docID, patientUid, list)));
+                    builder: (context) =>
+                        ReportUI(docID, patientUid, therapistUid, list)));
           },
           child: Text(
             "View Report",
@@ -475,7 +476,7 @@ class _TherapistUIState extends State<TherapistUI> {
           width: double.infinity,
           child: Wrap(children: [
             Text(
-              'Home Address : ',
+              'Home Address: ',
               style: TextStyle(fontSize: 16, color: Colors.black45),
             ),
             Text(
@@ -859,7 +860,7 @@ class _TherapistUIState extends State<TherapistUI> {
                     },
                   ),
                   ListTile(
-                    leading: Icon(Icons.assessment, color: Colors.green),
+                    leading: Icon(Icons.feedback_rounded, color: Colors.green),
                     title: Text(
                       'Feedback',
                       style: TextStyle(fontSize: 18),

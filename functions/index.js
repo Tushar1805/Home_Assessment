@@ -68,6 +68,44 @@ const fcm = admin.messaging();
 
 //     });
 
+    exports.notifyToTherapist = functions.firestore
+    .document('assessments/{id}')
+    .onCreate(async (snapshot, context) => {
+        if (snapshot.empty) {
+            console.log("No Assessments");
+        } 
+
+        const querySnapshot = await db
+            .collection('users')
+            .doc(snapshot["therapist"]) 
+            .get(); 
+
+        const token = querySnapshot["token"];
+        console.log(token); 
+ 
+        var body;
+
+        if ( snapshot["assessor"].toString() == snapshot["therapist"].toString()){ 
+            body = 'Hello, You have been allocated as a therapist for the assessment. Please complete the assessment and provide the necessary recommedations!\n\n Thank You!!';
+        } 
+
+        var payload = { 
+            notification: {
+                title: `BHBS | ${querySnapshot.data()["firstName"]} ${querySnapshot.data()["lastName"]} `,
+                body: body, 
+                click_action : 'FLUTTER_NOTIFICATION_CLICK', 
+            } 
+        };
+        try {
+            const response = await admin.messaging().sendToDevice(token, payload);
+            console.log("Notification sent successfully");
+            return response;
+        } catch (error) {
+            console.log();
+        } 
+
+    });
+
     exports.sendMessageToTherapist = functions.firestore
     .document('assessments/{id}')
     .onUpdate(async (snapshot, context) => {
@@ -136,7 +174,7 @@ const fcm = admin.messaging();
         const querySnapshot = await db
             .collection('users')
             .doc(snapshot.data()["therapist"]) 
-            .get();flutter build apk --split-per-abi
+            .get();
 
             const querySnapshotPatient = await db
             .collection('users')

@@ -113,6 +113,7 @@ class _NurseUIState extends State<NurseUI> {
       String status,
       String assessor,
       String patientUid,
+      String therapistUid,
       List<Map<String, dynamic>> list,
       String docID,
       BuildContext buildContext) {
@@ -213,7 +214,8 @@ class _NurseUIState extends State<NurseUI> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => ReportUI(docID, patientUid, list)));
+                    builder: (context) =>
+                        ReportUI(docID, patientUid, therapistUid, list)));
           },
           child: Text(
             "View Report",
@@ -538,6 +540,7 @@ class _NurseUIState extends State<NurseUI> {
                       assessmentdata.data()["currentStatus"],
                       assessmentdata.data()["assessor"],
                       assessmentdata.data()["patient"],
+                      assessmentdata.data()["therapist"],
                       list,
                       assessmentdata.data()["docID"],
                       buildContext),

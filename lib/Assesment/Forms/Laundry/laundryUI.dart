@@ -816,7 +816,7 @@ class _LaundryUIState extends State<LaundryUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Lighting Types',
+                              child: Text('Lighting Type',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -845,13 +845,13 @@ class _LaundryUIState extends State<LaundryUI> {
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
-                                        4, value, 'Lighting Types');
+                                        4, value, 'Lighting Type');
                                   } else if (role != "therapist") {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
-                                        4, value, 'Lighting Types');
+                                        4, value, 'Lighting Type');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
@@ -884,7 +884,7 @@ class _LaundryUIState extends State<LaundryUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .6,
-                              child: Text('Switches Able to Operate',
+                              child: Text('Able to Operate Switches?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -913,13 +913,13 @@ class _LaundryUIState extends State<LaundryUI> {
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
-                                        5, value, 'Switches Able to Operate');
+                                        5, value, 'Able to Operate Switches?');
                                   } else if (role != "therapist") {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
-                                        5, value, 'Switches Able to Operate');
+                                        5, value, 'Able to Operate Switches?');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
@@ -950,7 +950,7 @@ class _LaundryUIState extends State<LaundryUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Switch Types',
+                              child: Text('Switch Type',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -976,8 +976,8 @@ class _LaundryUIState extends State<LaundryUI> {
                                     value: '4 Way',
                                   ),
                                   DropdownMenuItem(
-                                    child: Text('Mutlti Location'),
-                                    value: 'Mutlti Location',
+                                    child: Text('Multi Location'),
+                                    value: 'Multi Location',
                                   ),
                                   DropdownMenuItem(
                                     child: Text('Double Switch'),
@@ -999,13 +999,13 @@ class _LaundryUIState extends State<LaundryUI> {
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
-                                        6, value, 'Switch Types');
+                                        6, value, 'Switch Type');
                                   } else if (role != "therapist") {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
-                                        6, value, 'Switch Types');
+                                        6, value, 'Switch Type');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
@@ -1183,7 +1183,7 @@ class _LaundryUIState extends State<LaundryUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .7,
-                              child: Text('Able to Access Washer & Dryer?',
+                              child: Text('Able to access washer & dryer?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1211,13 +1211,13 @@ class _LaundryUIState extends State<LaundryUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(9, value,
-                                      'Able to Access Washer and Dryer?');
+                                      'Able to access washer & dryer?');
                                 } else if (role != "therapist") {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(9, value,
-                                      'Able to Access Washer and Dryer?');
+                                      'Able to access washer & dryer?');
                                 } else {
                                   _showSnackBar(
                                       "You can't change the other fields",
@@ -1246,7 +1246,7 @@ class _LaundryUIState extends State<LaundryUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Type of Washer & Dryer',
+                              child: Text('Type of washer & dryer',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1266,16 +1266,16 @@ class _LaundryUIState extends State<LaundryUI> {
                                     value: 'Elevated',
                                   ),
                                   DropdownMenuItem(
-                                    child: Text('Stackable Washer & Dryer'),
-                                    value: 'Stackable Washer & Dryer',
+                                    child: Text('Stackable washer & dryer'),
+                                    value: 'Stackable washer & dryer',
                                   ),
                                   DropdownMenuItem(
-                                    child: Text('Top open Washer & Dryer'),
-                                    value: 'Top open Washer & Dryer',
+                                    child: Text('Top open washer & dryer'),
+                                    value: 'Top open washer & dryer',
                                   ),
                                   DropdownMenuItem(
-                                    child: Text('Front open Washer & Dryer'),
-                                    value: 'Front open Washer & Dryer',
+                                    child: Text('Front open washer & dryer'),
+                                    value: 'Front open washer & dryer',
                                   ),
                                 ],
                                 onChanged: (value) {
@@ -1285,13 +1285,13 @@ class _LaundryUIState extends State<LaundryUI> {
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
-                                        10, value, 'Type of Washer & Dryer');
+                                        10, value, 'Type of washer & dryer');
                                   } else if (role != "therapist") {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
-                                        10, value, 'Type of Washer & Dryer');
+                                        10, value, 'Type of washer & dryer');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
@@ -1304,9 +1304,9 @@ class _LaundryUIState extends State<LaundryUI> {
                           ],
                         ),
                         (assesmentprovider.getvalue(10) ==
-                                    'Top open Washer & Dryer' ||
+                                    'Top open washer & dryer' ||
                                 assesmentprovider.getvalue(10) ==
-                                    'Front open Washer & Dryer')
+                                    'Front open washer & dryer')
                             ? assesmentprovider.getrecomain(
                                 assesmentprovider,
                                 10,
@@ -1323,7 +1323,8 @@ class _LaundryUIState extends State<LaundryUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Detergent and Supplies Stored in?',
+                              child: Text(
+                                  'Where are detergent & supplies stored in?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1358,13 +1359,13 @@ class _LaundryUIState extends State<LaundryUI> {
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(11, value,
-                                        'Detergent and Supplies Stored in?');
+                                        'Where are detergent & supplies  stored in?');
                                   } else if (role != "therapist") {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(11, value,
-                                        'Detergent and Supplies Stored in?');
+                                        'Where are detergent & supplies stored in?');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
@@ -1382,7 +1383,7 @@ class _LaundryUIState extends State<LaundryUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .7,
-                              child: Text('Able to Access Laundry Cabinets?',
+                              child: Text('Able to access laundry cabinets?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1410,13 +1411,13 @@ class _LaundryUIState extends State<LaundryUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(12, value,
-                                      'Able to Access Laundry Cabinets?');
+                                      'Able to access laundry cabinets?');
                                 } else if (role != "therapist") {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(12, value,
-                                      'Able to Access Laundry Cabinets?');
+                                      'Able to access laundry cabinets?');
                                 } else {
                                   _showSnackBar(
                                       "You can't change the other fields",
@@ -1446,8 +1447,8 @@ class _LaundryUIState extends State<LaundryUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Smoke Detector?',
+                              width: MediaQuery.of(context).size.width * .6,
+                              child: Text('Smoke Detector Present?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1475,13 +1476,13 @@ class _LaundryUIState extends State<LaundryUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(
-                                      13, value, 'Smoke Detector?');
+                                      13, value, 'Smoke Detector Present?');
                                 } else if (role != "therapist") {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(
-                                      13, value, 'Smoke Detector?');
+                                      13, value, 'Smoke Detector Present?');
                                 } else {
                                   _showSnackBar(
                                       "You can't change the other fields",

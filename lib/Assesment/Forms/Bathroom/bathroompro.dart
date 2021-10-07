@@ -384,7 +384,7 @@ class BathroomPro extends ChangeNotifier {
               ),
               labelStyle:
                   TextStyle(color: (isColor) ? Colors.green : Colors.red),
-              labelText: 'Recomendation'),
+              labelText: 'Recommendation'),
           onChanged: (value) {
             // print(accessname);
             assesmentprovider.setrecothera(index, value);

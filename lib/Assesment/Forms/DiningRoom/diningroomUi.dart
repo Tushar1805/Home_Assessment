@@ -923,7 +923,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Lighting Types',
+                              child: Text('Lighting Type',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -953,14 +953,14 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                     // print(widget.accessname);
 
                                     assesmentprovider.setdata(
-                                        4, value, 'Lighting Types');
+                                        4, value, 'Lighting Type');
                                   } else if (role != therapist) {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
 
                                     assesmentprovider.setdata(
-                                        4, value, 'Lighting Types');
+                                        4, value, 'Lighting Type');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
@@ -994,7 +994,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .6,
-                              child: Text('Switches Able to Operate',
+                              child: Text('Able to Operate Switches?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1024,14 +1024,14 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                     // print(widget.accessname);
 
                                     assesmentprovider.setdata(
-                                        5, value, 'Switches Able to Operate');
+                                        5, value, 'Able to Operate Switches?');
                                   } else if (role != therapist) {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
 
                                     assesmentprovider.setdata(
-                                        5, value, 'Switches Able to Operate');
+                                        5, value, 'Able to Operate Switches?');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
@@ -1061,7 +1061,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Switch Types',
+                              child: Text('Switch Type',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1087,8 +1087,8 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                     value: '4 Way',
                                   ),
                                   DropdownMenuItem(
-                                    child: Text('Mutlti Location'),
-                                    value: 'Mutlti Location',
+                                    child: Text('Multi Location'),
+                                    value: 'Multi Location',
                                   ),
                                   DropdownMenuItem(
                                     child: Text('Double Switch'),
@@ -1110,13 +1110,13 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
-                                        6, value, 'Switch Types');
+                                        6, value, 'Switch Type');
                                   } else if (role != therapist) {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
-                                        6, value, 'Switch Types');
+                                        6, value, 'Switch Type');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
@@ -1291,8 +1291,8 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Smoke Detector?',
+                              width: MediaQuery.of(context).size.width * .6,
+                              child: Text('Smoke Detector Present?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1320,13 +1320,13 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(
-                                      9, value, 'Smoke Detector?');
+                                      9, value, 'Smoke Detector Present?');
                                 } else if (role != therapist) {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(
-                                      9, value, 'Smoke Detector?');
+                                      9, value, 'Smoke Detector Present?');
                                 } else {
                                   _showSnackBar(
                                       "You can't change the other fields",

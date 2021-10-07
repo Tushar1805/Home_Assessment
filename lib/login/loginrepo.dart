@@ -20,14 +20,14 @@ class UserRepository {
     return type;
   }
 
-  Future<String> getPage(uid) async {
-    String typeuser;
-    // FirebaseUser firebaseUser = await FirebaseAuth.instance.currentUser();
-    firestoreInstance.collection("users").doc(uid).get().then((value) {
-      typeuser = (value['role'].toString());
-    });
-    return typeuser;
-  }
+  // Future<String> getPage(uid) async {
+  //   String typeuser;
+  //   // FirebaseUser firebaseUser = await FirebaseAuth.instance.currentUser();
+  //   firestoreInstance.collection("users").doc(uid).get().then((value) {
+  //     typeuser = (value['role'].toString());
+  //   });
+  //   return typeuser;
+  // }
 
   //signup with email and password
   Future register(String email, String password) async {

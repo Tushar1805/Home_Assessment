@@ -257,7 +257,7 @@ class _PatientUIState extends State<PatientUI> {
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            ReportUI(docID, patientUid, list)));
+                            ReportUI(docID, patientUid, therapistUid, list)));
               },
               child: Text(
                 "View Report",
@@ -281,7 +281,7 @@ class _PatientUIState extends State<PatientUI> {
                 showDialog(
                     context: context,
                     builder: (context) => FeedbackDialogWidget(
-                        therapistUid, patientUid, assesspro),
+                        therapistUid, patientUid, docID, assesspro),
                     barrierDismissible: true);
               },
               child: Text(

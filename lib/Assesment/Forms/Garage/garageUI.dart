@@ -871,7 +871,7 @@ class _GarageUIState extends State<GarageUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Lighting',
+                              child: Text('Lighting Type',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -900,13 +900,13 @@ class _GarageUIState extends State<GarageUI> {
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
-                                        4, value, 'Lighting');
+                                        4, value, 'Lighting Type');
                                   } else if (role != "therapist") {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
-                                        4, value, 'Lighting');
+                                        4, value, 'Lighting Type');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
@@ -935,7 +935,7 @@ class _GarageUIState extends State<GarageUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .6,
-                              child: Text('Switches Able to Operate',
+                              child: Text('Able to Operate Switches?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -964,13 +964,13 @@ class _GarageUIState extends State<GarageUI> {
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
-                                        5, value, 'Switches Able to Operate');
+                                        5, value, 'Able to Operate Switches?');
                                   } else if (role != "therapist") {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
-                                        5, value, 'Switches Able to Operate');
+                                        5, value, 'Able to Operate Switches?');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
@@ -1001,7 +1001,7 @@ class _GarageUIState extends State<GarageUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Switch Types',
+                              child: Text('Switch Type',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1027,8 +1027,8 @@ class _GarageUIState extends State<GarageUI> {
                                     value: '4 Way',
                                   ),
                                   DropdownMenuItem(
-                                    child: Text('Mutlti Location'),
-                                    value: 'Mutlti Location',
+                                    child: Text('Multi Location'),
+                                    value: 'Multi Location',
                                   ),
                                   DropdownMenuItem(
                                     child: Text('Double Switch'),
@@ -1050,13 +1050,13 @@ class _GarageUIState extends State<GarageUI> {
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
-                                        6, value, 'Switch Types');
+                                        6, value, 'Switch Type');
                                   } else if (role != "therapist") {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
-                                        6, value, 'Switch Types');
+                                        6, value, 'Switch Type');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
@@ -1234,7 +1234,7 @@ class _GarageUIState extends State<GarageUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Type of Steps',
+                              child: Text('Type of steps',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1268,13 +1268,13 @@ class _GarageUIState extends State<GarageUI> {
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
-                                        9, value, 'Type of Steps');
+                                        9, value, 'Type of steps');
                                   } else if (role != "therapist") {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
-                                        9, value, 'Type of Steps');
+                                        9, value, 'Type of steps');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
@@ -1307,7 +1307,7 @@ class _GarageUIState extends State<GarageUI> {
                                                           .size
                                                           .width *
                                                       .5,
-                                                  child: Text('Number Of Steps',
+                                                  child: Text('Number of steps',
                                                       style: TextStyle(
                                                         color: Color.fromRGBO(
                                                             10, 80, 106, 1),
@@ -1422,7 +1422,7 @@ class _GarageUIState extends State<GarageUI> {
                                                                 ),
                                                               ),
                                                               labelText:
-                                                                  'Step Width'),
+                                                                  'Step Width in inches:'),
                                                       onChanged: (value) {
                                                         if (assessor ==
                                                                 therapist &&
@@ -1491,7 +1491,7 @@ class _GarageUIState extends State<GarageUI> {
                                                                 ),
                                                               ),
                                                               labelText:
-                                                                  'Step Height'),
+                                                                  'Step Height in inches:'),
                                                       onChanged: (value) {
                                                         if (assessor ==
                                                                 therapist &&
@@ -1547,7 +1547,7 @@ class _GarageUIState extends State<GarageUI> {
                                                           .size
                                                           .width *
                                                       .5,
-                                                  child: Text('Number Of Steps',
+                                                  child: Text('Number of steps',
                                                       style: TextStyle(
                                                         color: Color.fromRGBO(
                                                             10, 80, 106, 1),
@@ -1728,6 +1728,7 @@ class _GarageUIState extends State<GarageUI> {
                                               ],
                                             ),
                                           ),
+                                          SizedBox(height: 10),
                                           (stepcount > 0)
                                               ? Container(
                                                   child: Padding(
@@ -1767,7 +1768,7 @@ class _GarageUIState extends State<GarageUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Railling',
+                              child: Text('Railing is present on which side?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1798,14 +1799,14 @@ class _GarageUIState extends State<GarageUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(
-                                      10, value, 'Railling');
+                                  assesmentprovider.setdata(10, value,
+                                      'Railing is present on which side?');
                                 } else if (role != "therapist") {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  assesmentprovider.setdata(
-                                      10, value, 'Railling');
+                                  assesmentprovider.setdata(10, value,
+                                      'Railing is present on which side?');
                                 } else {
                                   _showSnackBar(
                                       "You can't change the other fields",
@@ -1815,6 +1816,9 @@ class _GarageUIState extends State<GarageUI> {
                               value: assesmentprovider.getvalue(10),
                             )
                           ],
+                        ),
+                        SizedBox(
+                          height: 10,
                         ),
                         (assesmentprovider.getvalue(10) == 'On Neither Side')
                             ? assesmentprovider.getrecomain(
@@ -1840,7 +1844,8 @@ class _GarageUIState extends State<GarageUI> {
                                                       .size
                                                       .width *
                                                   .5,
-                                              child: Text('Going Up',
+                                              child: Text(
+                                                  'Railing is present on which side while going up?',
                                                   style: TextStyle(
                                                     color: Color.fromRGBO(
                                                         10, 80, 106, 1),
@@ -1894,6 +1899,7 @@ class _GarageUIState extends State<GarageUI> {
                                           ],
                                         ),
                                       ),
+                                      SizedBox(height: 10),
                                       Container(
                                         child: Row(
                                           mainAxisAlignment:
@@ -1904,7 +1910,8 @@ class _GarageUIState extends State<GarageUI> {
                                                       .size
                                                       .width *
                                                   .5,
-                                              child: Text('Going Down',
+                                              child: Text(
+                                                  'Railing is present on which side while going down?',
                                                   style: TextStyle(
                                                     color: Color.fromRGBO(
                                                         10, 80, 106, 1),
@@ -1973,8 +1980,8 @@ class _GarageUIState extends State<GarageUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Smoke Detector?',
+                              width: MediaQuery.of(context).size.width * .6,
+                              child: Text('Smoke Detector Present?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -2002,13 +2009,13 @@ class _GarageUIState extends State<GarageUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(
-                                      11, value, 'Smoke Detector?');
+                                      11, value, 'Smoke Detector Present?');
                                 } else if (role != "therapist") {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(
-                                      11, value, 'Smoke Detector?');
+                                      11, value, 'Smoke Detector Present?');
                                 } else {
                                   _showSnackBar(
                                       "You can't change the other fields",

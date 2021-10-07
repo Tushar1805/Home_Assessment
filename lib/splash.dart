@@ -42,16 +42,32 @@ class _SplashScreenState extends State<SplashScreen> {
     final FirebaseAuth auth = FirebaseAuth.instance;
     final User user = await auth.currentUser;
     final uid = user.uid;
-    var type, newUser, name, imgUrl;
+    var type, newUser, name, imgUrl, runtimeType;
     await FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
         .get()
         .then((value) {
-      type = value.data()['role'];
-      newUser = value.data()['newUser'].toString() ?? "false";
-      name = value.data()['name'] ?? " ";
-      imgUrl = value.data()["url"] ?? "";
+      runtimeType = value.data()['role'].runtimeType.toString();
+      print("runtime Type: $runtimeType");
+      if (runtimeType == "List<dynamic>") {
+        for (int i = 0; i < value.data()["role"].length; i++) {
+          if (value.data()["role"][i].toString() == "Therapist") {
+            setState(() {
+              type = "therapist";
+            });
+          }
+        }
+      } else {
+        setState(() {
+          type = value.data()['role'];
+        });
+      }
+      setState(() {
+        newUser = value.data()['newUser'].toString() ?? "false";
+        name = value.data()['name'] ?? " ";
+        imgUrl = value.data()["url"] ?? "";
+      });
     });
     // var newuser = await FirebaseFirestore.instance
     //     .collection('users')

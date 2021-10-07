@@ -754,7 +754,7 @@ class _PathwayUIState extends State<PathwayUI> {
       onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Assesment'),
+          title: Text('Assessment'),
           automaticallyImplyLeading: false,
           backgroundColor: _colorgreen,
           actions: [
@@ -1211,7 +1211,7 @@ class _PathwayUIState extends State<PathwayUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .5,
-                              child: Text('Ocasionally Uses',
+                              child: Text('Occasionally Uses',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1247,12 +1247,12 @@ class _PathwayUIState extends State<PathwayUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(3, value, 'Ocasionally Uses');
+                                    setdata(3, value, 'Occasionally Uses');
                                   } else if (role != "therapist") {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(3, value, 'Ocasionally Uses');
+                                    setdata(3, value, 'Occasionally Uses');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
@@ -1387,13 +1387,30 @@ class _PathwayUIState extends State<PathwayUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .5,
-                              child: Text('Smoke Detector?',
+                              width: MediaQuery.of(context).size.width * .6,
+                              child: Text('Smoke Detector Present?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
                                   )),
                             ),
+                            //Decoration for the dropdown button
+
+                            // DecoratedBox(
+                            //   decoration: ShapeDecoration(
+                            //     shape: RoundedRectangleBorder(
+                            //       side: BorderSide(
+                            //           width: 1.0,
+                            //           style: BorderStyle.solid,
+                            //           color: Colors.black),
+                            //       borderRadius:
+                            //           BorderRadius.all(Radius.circular(5.0)),
+                            //     ),
+                            //   ),
+                            //   child: Padding(
+                            //     padding:
+                            //         const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
+                            // child:
                             DropdownButton(
                               items: [
                                 DropdownMenuItem(
@@ -1415,12 +1432,12 @@ class _PathwayUIState extends State<PathwayUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(6, value, 'Smoke Detector?');
+                                  setdata(6, value, 'Smoke Detector Present?');
                                 } else if (role != "therapist") {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(6, value, 'Smoke Detector?');
+                                  setdata(6, value, 'Smoke Detector Present?');
                                 } else {
                                   _showSnackBar(
                                       "You can't change the other fields",
@@ -1428,7 +1445,9 @@ class _PathwayUIState extends State<PathwayUI> {
                                 }
                               },
                               value: getvalue(6),
-                            )
+                            ),
+                            //   ),
+                            // )
                           ],
                         ),
                         (getvalue(6) == 'No')
@@ -1492,6 +1511,9 @@ class _PathwayUIState extends State<PathwayUI> {
                               ),
                             ),
                           ],
+                        ),
+                        SizedBox(
+                          height: 5,
                         ),
                         (getvalue(7) != '' && getvalue(7) != 'N/A')
                             ? (getvalue(7) == 'Single Dimension')
@@ -2018,7 +2040,7 @@ class _PathwayUIState extends State<PathwayUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .5,
-                              child: Text('Railling',
+                              child: Text('Railing',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -2283,8 +2305,8 @@ class _PathwayUIState extends State<PathwayUI> {
                                   value: '',
                                 ),
                                 DropdownMenuItem(
-                                  child: Text('Fairy Well'),
-                                  value: 'Fairy Well',
+                                  child: Text('Fairly Well'),
+                                  value: 'Fairly Well',
                                 ),
                                 DropdownMenuItem(
                                   child: Text('With Difficulty'),
@@ -2331,7 +2353,7 @@ class _PathwayUIState extends State<PathwayUI> {
                             )
                           ],
                         ),
-                        (getvalue(10) != 'Fairy Well' && getvalue(10) != '')
+                        (getvalue(10) != 'Fairly Well' && getvalue(10) != '')
                             ? getrecomain(10, true, context)
                             : SizedBox(),
                         SizedBox(
@@ -2355,8 +2377,8 @@ class _PathwayUIState extends State<PathwayUI> {
                                   value: '',
                                 ),
                                 DropdownMenuItem(
-                                  child: Text('Fairy Well'),
-                                  value: 'Fairy Well',
+                                  child: Text('Fairly Well'),
+                                  value: 'Fairly Well',
                                 ),
                                 DropdownMenuItem(
                                   child: Text('With Difficulty'),
@@ -2403,7 +2425,7 @@ class _PathwayUIState extends State<PathwayUI> {
                             )
                           ],
                         ),
-                        (getvalue(11) != 'Fairy Well' && getvalue(11) != '')
+                        (getvalue(11) != 'Fairly Well' && getvalue(11) != '')
                             ? getrecomain(11, true, context)
                             : SizedBox(),
                         SizedBox(
@@ -2818,7 +2840,7 @@ class _PathwayUIState extends State<PathwayUI> {
               ),
               labelStyle:
                   TextStyle(color: (isColor) ? Colors.green : Colors.red),
-              labelText: 'Recomendation'),
+              labelText: 'Recommendation'),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

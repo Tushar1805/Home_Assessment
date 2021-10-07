@@ -835,7 +835,7 @@ class _BathroomUIState extends State<BathroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Lighting Types',
+                              child: Text('Lighting Type',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -865,14 +865,14 @@ class _BathroomUIState extends State<BathroomUI> {
                                     // print(widget.accessname);
 
                                     assesmentprovider.setdata(
-                                        4, value, 'Lighting Types');
+                                        4, value, 'Lighting Type');
                                   } else if (role != "therapist") {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
 
                                     assesmentprovider.setdata(
-                                        4, value, 'Lighting Types');
+                                        4, value, 'Lighting Type');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
@@ -905,7 +905,7 @@ class _BathroomUIState extends State<BathroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .6,
-                              child: Text('Switches Able to Operate',
+                              child: Text('Able to Operate Switches?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -935,14 +935,14 @@ class _BathroomUIState extends State<BathroomUI> {
                                     // print(widget.accessname);
 
                                     assesmentprovider.setdata(
-                                        5, value, 'Switches Able to Operate');
+                                        5, value, 'Able to Operate Switches?');
                                   } else if (role != "therapist") {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
 
                                     assesmentprovider.setdata(
-                                        5, value, 'Switches Able to Operate');
+                                        5, value, 'Able to Operate Switches?');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
@@ -973,7 +973,7 @@ class _BathroomUIState extends State<BathroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Switch Types',
+                              child: Text('Switch Type',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -999,8 +999,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                     value: '4 Way',
                                   ),
                                   DropdownMenuItem(
-                                    child: Text('Mutlti Location'),
-                                    value: 'Mutlti Location',
+                                    child: Text('Multi Location'),
+                                    value: 'Multi Location',
                                   ),
                                   DropdownMenuItem(
                                     child: Text('Double Switch'),
@@ -1022,13 +1022,13 @@ class _BathroomUIState extends State<BathroomUI> {
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
-                                        6, value, 'Switch Types');
+                                        6, value, 'Switch Type');
                                   } else if (role != "therapist") {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
-                                        6, value, 'Switch Types');
+                                        6, value, 'Switch Type');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
@@ -1338,8 +1338,8 @@ class _BathroomUIState extends State<BathroomUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Smoke Detector?',
+                              width: MediaQuery.of(context).size.width * .6,
+                              child: Text('Smoke Detector Present?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1367,13 +1367,13 @@ class _BathroomUIState extends State<BathroomUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(
-                                      10, value, 'Smoke Detector?');
+                                      10, value, 'Smoke Detector Present?');
                                 } else if (role != "therapist") {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(
-                                      10, value, 'Smoke Detector?');
+                                      10, value, 'Smoke Detector Present?');
                                 } else {
                                   _showSnackBar(
                                       "You can't change the other fields",
@@ -1416,8 +1416,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                   value: '',
                                 ),
                                 DropdownMenuItem(
-                                  child: Text('Fairy Well'),
-                                  value: 'Fairy Well',
+                                  child: Text('Fairly Well'),
+                                  value: 'Fairly Well',
                                 ),
                                 DropdownMenuItem(
                                   child: Text('With Difficulty'),
@@ -1467,7 +1467,7 @@ class _BathroomUIState extends State<BathroomUI> {
                           ],
                         ),
                         (assesmentprovider.getvalue(11) != 'Fairy Well' &&
-                                assesmentprovider.getvalue(6) != '')
+                                assesmentprovider.getvalue(11) != '')
                             ? assesmentprovider.getrecomain(
                                 assesmentprovider,
                                 11,
@@ -1486,7 +1486,7 @@ class _BathroomUIState extends State<BathroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .71,
-                              child: Text('Had Access to Medicine Cabinet?',
+                              child: Text('Has access to medicine cabinet?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1515,14 +1515,14 @@ class _BathroomUIState extends State<BathroomUI> {
                                   // print(widget.accessname);
 
                                   assesmentprovider.setdata(12, value,
-                                      'Had Access to Medicine Cabinet?');
+                                      'Has access to medicine cabinet?');
                                 } else if (role != "therapist") {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
 
                                   assesmentprovider.setdata(12, value,
-                                      'Had Access to Medicine Cabinet?');
+                                      'Has access to medicine cabinet?');
                                 } else {
                                   _showSnackBar(
                                       "You can't change the other fields",
@@ -1552,7 +1552,7 @@ class _BathroomUIState extends State<BathroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .71,
-                              child: Text('Had Access to Cabinet Under Sink?',
+                              child: Text('Has access to cabinet under sink?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1581,14 +1581,14 @@ class _BathroomUIState extends State<BathroomUI> {
                                   // print(widget.accessname);
 
                                   assesmentprovider.setdata(13, value,
-                                      'Had Access to Cabinet Under Sink?');
+                                      'Has access to cabinet under sink?');
                                 } else if (role != "therapist") {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
 
                                   assesmentprovider.setdata(13, value,
-                                      'Had Access to Cabinet Under Sink?');
+                                      'Has access to cabinet under sink?');
                                 } else {
                                   _showSnackBar(
                                       "You can't change the other fields",
@@ -1734,7 +1734,7 @@ class _BathroomUIState extends State<BathroomUI> {
                                       ]),
                                     ),
                                     labelText:
-                                        'Specify Seat, Usage And Type of Shower'),
+                                        'Specify seat, usage & type of shower'),
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
@@ -1835,7 +1835,7 @@ class _BathroomUIState extends State<BathroomUI> {
                                                     .width *
                                                 .4,
                                             child: Text(
-                                                'Able to manage in and out of the shower independently or with assistance?',
+                                                'Able to manage in & out of the shower independently or with assistance?',
                                                 style: TextStyle(
                                                   color: Color.fromRGBO(
                                                       10, 80, 106, 1),
@@ -2116,7 +2116,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                   ),
                                 ],
                               )
-                            : (assesmentprovider.getvalue(16) == 'No')
+                            : (assesmentprovider.getvalue(16) != 'Yes' &&
+                                    assesmentprovider.getvalue(16) != '')
                                 ? Column(
                                     children: [
                                       Container(
@@ -2185,9 +2186,15 @@ class _BathroomUIState extends State<BathroomUI> {
                                         ),
                                       ),
                                       (widget.wholelist[5][widget.accessname]
-                                                      ['question']["16"]
-                                                  ['Grabbar']['Grabneeded'] ==
-                                              'Yes')
+                                                              ['question']["16"]
+                                                          ['Grabbar']
+                                                      ['Grabneeded'] !=
+                                                  'No' &&
+                                              widget.wholelist[5]
+                                                              [widget.accessname]
+                                                          ['question']["16"][
+                                                      'Grabbar']['Grabneeded'] !=
+                                                  '')
                                           ? Column(
                                               children: [
                                                 Container(
@@ -2463,7 +2470,7 @@ class _BathroomUIState extends State<BathroomUI> {
                                       width: MediaQuery.of(context).size.width *
                                           .4,
                                       child: Text(
-                                          'Which side of the shower entrance',
+                                          'Grab bar is present in which side of the shower entrance?',
                                           style: TextStyle(
                                             color:
                                                 Color.fromRGBO(10, 80, 106, 1),
@@ -2709,8 +2716,8 @@ class _BathroomUIState extends State<BathroomUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Hand-Held Shower',
+                              width: MediaQuery.of(context).size.width * .6,
+                              child: Text('Hand-Held Shower Present?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -2738,13 +2745,13 @@ class _BathroomUIState extends State<BathroomUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(
-                                      21, value, 'Hand-Held Shower ');
+                                      21, value, 'Hand-Held Shower Present?');
                                 } else if (role != "therapist") {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(
-                                      21, value, 'Hand-Held Shower ');
+                                      21, value, 'Hand-Held Shower Present?');
                                 } else {
                                   _showSnackBar(
                                       "You can't change the other fields",
@@ -2898,7 +2905,7 @@ class _BathroomUIState extends State<BathroomUI> {
                             Container(
                               width: MediaQuery.of(context).size.width * .6,
                               child:
-                                  Text('Able to Access Faucets Independently?',
+                                  Text('Able to access faucets Independently?',
                                       style: TextStyle(
                                         color: Color.fromRGBO(10, 80, 106, 1),
                                         fontSize: 20,
@@ -2926,13 +2933,13 @@ class _BathroomUIState extends State<BathroomUI> {
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(24, value,
-                                      'Able to Access Faucets Independently?');
+                                      'Able to access faucets Independently?');
                                 } else if (role != "therapist") {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(24, value,
-                                      'Able to Access Faucets Independently?');
+                                      'Able to access faucets Independently?');
                                 } else {
                                   _showSnackBar(
                                       "You can't change the other fields",

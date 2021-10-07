@@ -147,6 +147,7 @@ class PatientProvider extends ChangeNotifier {
   final PatientRepository patientrepo = PatientRepository();
   final Color colorgreen = Color.fromRGBO(10, 80, 106, 1);
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  int stars;
   String getq;
   bool assessdisplay = false;
   QuerySnapshot dataset;

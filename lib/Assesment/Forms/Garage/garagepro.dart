@@ -101,24 +101,29 @@ class GaragePro extends ChangeNotifier {
       print('getting created');
       wholelist[9][accessname]['question']["7"]['doorwidth'] = 0;
     }
+    if (wholelist[9][accessname]['question']["10"].containsKey('Railling')) {
+    } else {
+      wholelist[9][accessname]['question']["10"]['Railling'] = {
+        'OneSided': {},
+      };
+    }
 
-    // if (wholelist[9][accessname]['question']["9"]
-    //     .containsKey('MultipleStair')) {
-    //   if (wholelist[9][accessname]['question']["9"]['MultipleStair']
-    //       .containsKey('count')) {
-    //     wholelist[9][accessname]['question']["9"]['MultipleStair']["count"] =
-    //         0;
-    //   }
-    // } else {
-    //   wholelist[9][accessname]['question']["9"]['MultipleStair'] = {};
-    // }
-    // if (wholelist[9][accessname]['question']["9"].containsKey('Flights')) {
-    //   if (wholelist[9][accessname]['question']["9"]['Flights']
-    //       .containsKey('count')) {}
-    // } else {
-    //   // print('hello');
-    //   wholelist[9][accessname]['question']["9"]['Flights'] = {};
-    // }
+    if (wholelist[9][accessname]['question']["9"]
+        .containsKey('MultipleStair')) {
+      if (wholelist[9][accessname]['question']["9"]['MultipleStair']
+          .containsKey('count')) {
+        wholelist[9][accessname]['question']["9"]['MultipleStair']["count"] = 0;
+      }
+    } else {
+      wholelist[9][accessname]['question']["9"]['MultipleStair'] = {};
+    }
+    if (wholelist[9][accessname]['question']["9"].containsKey('Flights')) {
+      if (wholelist[9][accessname]['question']["9"]['Flights']
+          .containsKey('count')) {}
+    } else {
+      // print('hello');
+      wholelist[9][accessname]['question']["9"]['Flights'] = {};
+    }
 
     // if (wholelist[9][accessname]['question']["16"].containsKey('Grabbar')) {
     // } else {
@@ -393,7 +398,7 @@ class GaragePro extends ChangeNotifier {
               ),
               labelStyle:
                   TextStyle(color: (isColor) ? Colors.green : Colors.red),
-              labelText: 'Recomendation'),
+              labelText: 'Recommendation'),
           onChanged: (value) {
             // print(accessname);
             assesmentprovider.setrecothera(index, value);

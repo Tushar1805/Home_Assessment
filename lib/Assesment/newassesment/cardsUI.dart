@@ -500,8 +500,7 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
                               "Assessment submitted successfully", context);
                         } else {
                           _showSnackBar(
-                              "You must have to give all the recommendations",
-                              context);
+                              "You must give all the recommendations", context);
                         }
                       } else if (role == 'nurse/case manager') {
                         if (save == true) {

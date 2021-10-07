@@ -485,8 +485,7 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                                   builder: (context) => Therapist()));
                         } else {
                           _showSnackBar(
-                              "You must have to give all the recommendations",
-                              context);
+                              "You must give all the recommendations", context);
                         }
                       } else if (widget.role == 'nurse/case manager') {
                         print("#############");

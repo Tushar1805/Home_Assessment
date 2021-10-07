@@ -626,7 +626,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
       onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Assesment'),
+          title: Text('Assessment'),
           automaticallyImplyLeading: false,
           backgroundColor: _colorgreen,
           actions: [
@@ -1200,8 +1200,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                                               widget.accessname]
                                                           ['question']["2"]
                                                       ['Modetrnas'] = value;
-                                                }
-                                                if (role != "therapist") {
+                                                } else if (role !=
+                                                    "therapist") {
                                                   widget.wholelist[1][
                                                               widget.accessname]
                                                           ['question']["2"]
@@ -1225,7 +1225,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                         ],
                                       ),
                                     ),
-                                    SizedBox(height: 10),
+                                    SizedBox(height: 5),
                                     (widget.wholelist[1][widget.accessname]
                                                         ['question']["2"]
                                                     ['Modetrnas'] ==
@@ -1309,6 +1309,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             )
                           ],
                         ),
+                        // SizedBox(height: 5),
                         (getvalue(3) == 'Other')
                             ? getrecomain(3, false, context)
                             : SizedBox(),
@@ -1366,6 +1367,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             )
                           ],
                         ),
+                        SizedBox(height: 5),
                         (getvalue(4) != 'Never Alone' && getvalue(4) != '')
                             ? (getvalue(4) == 'Alone')
                                 ? getrecomain(4, true, context)
@@ -1511,7 +1513,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .5,
-                              child: Text('Has Roomate?',
+                              child: Text('Has Room-mate?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -1538,9 +1540,9 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 // print(widget.accessname);
                                 if (assessor == therapist &&
                                     role == "therapist") {
-                                  assesspro.setdata(5, value, 'Has Roomate?');
+                                  assesspro.setdata(5, value, 'Has Room-mate?');
                                 } else if (role != "therapist") {
-                                  assesspro.setdata(5, value, 'Has Roomate?');
+                                  assesspro.setdata(5, value, 'Has Room-mate?');
                                 } else {
                                   _showSnackBar(
                                       "You can't change the other fields",
@@ -1551,6 +1553,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             )
                           ],
                         ),
+                        SizedBox(height: 15),
                         (getvalue(5) == 'Yes')
                             ? SingleChildScrollView(
                                 // reverse: true,
@@ -1568,12 +1571,13 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                                       .size
                                                       .width *
                                                   .5,
-                                              child: Text('Number of Roomate',
-                                                  style: TextStyle(
-                                                    color: Color.fromRGBO(
-                                                        10, 80, 106, 1),
-                                                    fontSize: 20,
-                                                  )),
+                                              child:
+                                                  Text('Number of Room-mates',
+                                                      style: TextStyle(
+                                                        color: Color.fromRGBO(
+                                                            10, 80, 106, 1),
+                                                        fontSize: 20,
+                                                      )),
                                             ),
                                             SizedBox(
                                                 width: MediaQuery.of(context)
@@ -1738,6 +1742,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                           ],
                                         ),
                                       ),
+                                      SizedBox(height: 10),
                                       (roomatecount > 0)
                                           ? Container(
                                               child: Padding(
@@ -1793,8 +1798,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                   value: '',
                                 ),
                                 DropdownMenuItem(
-                                  child: Text('Fairy Well'),
-                                  value: 'Fairy Well',
+                                  child: Text('Fairly Well'),
+                                  value: 'Fairly Well',
                                 ),
                                 DropdownMenuItem(
                                   child: Text('With Difficulty'),
@@ -1838,7 +1843,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             )
                           ],
                         ),
-                        (getvalue(6) != 'Fairy Well' && getvalue(6) != '')
+                        (getvalue(6) != 'Fairly Well' && getvalue(6) != '')
                             ? getrecomain(6, true, context)
                             : SizedBox(),
                         SizedBox(
@@ -2046,7 +2051,10 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             ),
                           ],
                         ),
-                        (getvalue(8) != 'Normal')
+                        (getvalue(8) == 'Slight Shuffling' ||
+                                getvalue(8) == 'Limping' ||
+                                getvalue(8) == 'Significant Shuffling' ||
+                                getvalue(8) == 'Other')
                             ? getrecomain(8, true, context)
                             : SizedBox(),
                         SizedBox(height: 15),
@@ -2123,7 +2131,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .6,
-                              child: Text('Access to Curbside Specify',
+                              child: Text('Access to curbside specify',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -2195,10 +2203,10 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             // print(widget.accessname);
                             if (assessor == therapist && role == "therapist") {
                               assesspro.setdata(
-                                  10, value, 'Access to Curbside Specify');
+                                  10, value, 'Access to curbside specify');
                             } else if (role != "therapist") {
                               assesspro.setdata(
-                                  10, value, 'Access to Curbside Specify');
+                                  10, value, 'Access to curbside specify');
                             } else {
                               _showSnackBar(
                                   "You can't change the other fields", context);
@@ -2230,7 +2238,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                       if (assessor == therapist &&
                                           role == "therapist") {
                                         assesspro.setFlightData(11, value,
-                                            'Number of Flight of Stairs');
+                                            'Number of flight of stairs');
                                         setState(() {
                                           // widget.wholelist[1][widget.accessname]
                                           //             ['question']["11"]
@@ -2323,7 +2331,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                         });
                                       } else if (role != "therapist") {
                                         assesspro.setFlightData(11, value,
-                                            'Number of Flight of Stairs');
+                                            'Number of flight of stairs');
                                         setState(() {
                                           // widget.wholelist[1][widget.accessname]
                                           //             ['question']["11"]
@@ -2449,6 +2457,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 ),
                               ]),
                         ),
+                        // SizedBox(height: 10),
                         (flightcount > 0)
                             ? Container(
                                 child: Padding(
@@ -2472,16 +2481,18 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                   ),
                                 ),
                               )
-                            : SizedBox(),
+                            : SizedBox(
+                                height: 15,
+                              ),
 
-                        SizedBox(height: 10),
+                        // SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .6,
                               child: Text(
-                                  'Smoke Detector Batteries Checked Anually/Replaced?',
+                                  'Smoke detector batteries checked annually/replaced?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -2509,10 +2520,10 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 if (assessor == therapist &&
                                     role == "therapist") {
                                   assesspro.setdata(12, value,
-                                      'Smoke Detector Batteries Checked Anually/Replaced?');
+                                      'Smoke setector batteries checked annually/replaced?');
                                 } else if (role != "therapist") {
                                   assesspro.setdata(12, value,
-                                      'Smoke Detector Batteries Checked Anually/Replaced?');
+                                      'Smoke setector batteries checked annually/replaced?');
                                 } else {
                                   _showSnackBar(
                                       "You can't change the other fields",
@@ -2525,7 +2536,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                         ),
                         (getvalue(12) == 'No')
                             ? getrecomain(12, true, context)
-                            : SizedBox(),
+                            : SizedBox(height: 5),
                         SizedBox(height: 15),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -2533,7 +2544,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             Container(
                               width: MediaQuery.of(context).size.width * 0.8,
                               child: Text(
-                                  'Person Responsible to Change Smoke Detector batteries',
+                                  'Person responsible to change smoke detector batteries',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -2566,10 +2577,10 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             // print(widget.accessname);
                             if (assessor == therapist && role == "therapist") {
                               assesspro.setdata(13, value,
-                                  'Person Responsible to Change Smoke Detector batteries');
+                                  'Person responsible to change smoke detector batteries');
                             } else if (role != "therapist") {
                               assesspro.setdata(13, value,
-                                  'Person Responsible to Change Smoke Detector batteries');
+                                  'Person responsible to change smoke detector batteries');
                             } else {
                               _showSnackBar(
                                   "You can't change the other fields", context);
@@ -2577,7 +2588,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           },
                         )),
                         SizedBox(
-                          height: 15,
+                          height: 20,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -2593,7 +2604,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           ],
                         ),
                         SizedBox(
-                          height: 5,
+                          height: 10,
                         ),
                         Container(
                             // height: 10000,
@@ -2897,7 +2908,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
               ),
               labelStyle:
                   TextStyle(color: (isColor) ? Colors.green : Colors.red),
-              labelText: 'Recomendation'),
+              labelText: 'Recommendation'),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
