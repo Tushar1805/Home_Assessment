@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistdash.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistpro.dart';
+import 'package:tryapp/rating.dart';
 
 // ignore: must_be_immutable
 class ViewFeedback extends StatefulWidget {
@@ -250,6 +251,34 @@ class _ViewFeedbackState extends State<ViewFeedback> {
                                                             style: TextStyle(
                                                                 fontSize: 20),
                                                           ),
+                                                          SizedBox(height: 5),
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .start,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .center,
+                                                            children: [
+                                                              Text(
+                                                                "${orderedList[index]['rating']}/5",
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 18,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
+                                                              ),
+                                                              Icon(
+                                                                Icons.star,
+                                                                color: Color(
+                                                                    0xffffbb20),
+                                                                size: 20,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          SizedBox(height: 5),
                                                           Container(
                                                             child:
                                                                 getDate(index),

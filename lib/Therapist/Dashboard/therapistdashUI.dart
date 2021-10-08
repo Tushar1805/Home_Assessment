@@ -38,17 +38,9 @@ class _TherapistUIState extends State<TherapistUI> {
   User curuser;
   var fname, lname, address, userFirstName, userLastName, curUid, patientUid;
   String imgUrl = "";
-
-  // final AndroidNotificationChannel channel = AndroidNotificationChannel(
-  //     "high_importance_notification",
-  //     "High Importance Notification",
-  //     "High importance Notification Boy",
-  //     playSound: true,
-  //     importance: Importance.high);
-
-  // final FlutterLocalNotificationPlugin flutterLocalNotificationPlugin = FlutterLocalNotificationPlugin();
-
-  // Future<void> _firebase
+  List<Map<String, dynamic>> list = [];
+  int sum = 0;
+  double rating = 0.0;
 
   @override
   void initState() {
@@ -57,16 +49,7 @@ class _TherapistUIState extends State<TherapistUI> {
     getUserDetails();
     getCurrentUid();
     getFeedback();
-    // getToken();
   }
-
-  // getToken() async {
-  //   String token = await FirebaseMessaging.instance.getToken();
-  //   setState(() {
-  //     token = token;
-  //   });
-  //   print(token);
-  // }
 
   getFeedback() async {
     final User useruid = _auth.currentUser;
@@ -75,7 +58,21 @@ class _TherapistUIState extends State<TherapistUI> {
         .doc(useruid.uid)
         .get()
         .then((value) {
-      if (value.data()["feedback"] != null) {
+      if (value.data().containsKey("feedback")) {
+        if (value.data()["feedback"] != null) {
+          setState(() {
+            list = List<Map<String, dynamic>>.generate(
+                value.data()["feedback"].length,
+                (int index) => Map<String, dynamic>.from(
+                    value.data()["feedback"].elementAt(index)));
+          });
+          for (var i = 0; i < list.length; i++) {
+            sum += list[i]["rating"];
+          }
+          setState(() {
+            rating = sum / list.length;
+          });
+        }
       } else {
         firestoreInstance
             .collection("users")
@@ -728,6 +725,34 @@ class _TherapistUIState extends State<TherapistUI> {
       }
     }
 
+    Widget buildStar(BuildContext context, int index) {
+      Icon icon;
+      if (index >= rating) {
+        icon = new Icon(
+          Icons.star_border,
+          // ignore: deprecated_member_use
+          color: Theme.of(context).buttonColor,
+          size: 20,
+        );
+      } else if (index > rating - 1 && index < rating) {
+        icon = new Icon(
+          Icons.star_half,
+          color: Color(0xffffbb20),
+          size: 20,
+        );
+      } else {
+        icon = new Icon(
+          Icons.star,
+          color: Color(0xffffbb20),
+          size: 20,
+        );
+      }
+      return new InkResponse(
+        onTap: () {},
+        child: icon,
+      );
+    }
+
     return WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(
@@ -749,8 +774,8 @@ class _TherapistUIState extends State<TherapistUI> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Container(
-                                padding: EdgeInsets.only(top: 55),
-                                alignment: Alignment.bottomLeft,
+                                padding: EdgeInsets.only(top: 20),
+                                alignment: Alignment.centerLeft,
                                 // color: Colors.red,
                                 child: Text(
                                   "Hello,",
@@ -761,6 +786,27 @@ class _TherapistUIState extends State<TherapistUI> {
                                 ),
                               ),
                               getName(userFirstName),
+                              Container(
+                                padding: EdgeInsets.only(left: 4),
+                                child: Text(
+                                  "$rating / 5",
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: new List.generate(
+                                          5,
+                                          (index) =>
+                                              buildStar(context, index))),
+                                ],
+                              ),
                             ],
                           ),
                         ),
