@@ -8,12 +8,8 @@ import 'package:tryapp/CompleteAssessment/completeAssessmentBase.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/feedback.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/homeAddress.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdashprov.dart';
-import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdashrepo.dart';
-import 'package:tryapp/Patient_Caregiver_Family/Dashboard/provideMedicalHistory.dart';
-import 'package:tryapp/Patient_Caregiver_Family/Dashboard/reportbase.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/reportui.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/requestAssessment.dart';
-import 'package:tryapp/Therapist/Dashboard/therapistdashrepo.dart';
 import 'package:tryapp/constants.dart';
 import '../../splash/assesment.dart';
 import '../../Assesment/newassesment/newassesmentbase.dart';
@@ -613,7 +609,22 @@ class _PatientUIState extends State<PatientUI> {
                               getName(snapshot),
                               SizedBox(height: 2.5),
                               Divider(),
-                              getAddress(address),
+                              // getAddress(address),
+                              Container(
+                                child: Wrap(children: [
+                                  Text(
+                                    'Home Address: ',
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.black45),
+                                  ),
+                                  Text(
+                                    '${assessmentdata.data()["home"]}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ]),
+                              ),
                               SizedBox(height: 2.5),
                               Divider(),
                               (assessmentdata.data()[

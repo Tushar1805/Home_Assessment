@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:tryapp/Therapist/Dashboard/TherapistDetails.dart';
 import 'package:tryapp/login/login.dart';
 import 'package:tryapp/splash.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -179,18 +180,35 @@ class _MyHomePageState extends State<MyHomePage> {
                           width: 230,
                           height: 50,
                           child: RaisedButton(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                                // side: BorderSide(color: Colors.red)
-                              ),
-                              padding: EdgeInsets.all(10),
-                              color: Colors.white,
-                              onPressed: () {},
-                              child: Text('Sign Up',
-                                  style: TextStyle(
-                                    color: Colors.cyan[900],
-                                    fontSize: 15,
-                                  ))),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                              // side: BorderSide(color: Colors.red)
+                            ),
+                            padding: EdgeInsets.all(10),
+                            color: Colors.white,
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      TherapistDetails(null, null)));
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('Start Trial',
+                                    style: TextStyle(
+                                      color: Colors.cyan[900],
+                                      fontSize: 15,
+                                    )),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Icon(
+                                  Icons.navigate_next,
+                                  color: Colors.cyan[900],
+                                )
+                              ],
+                            ),
+                          ),
                         ))
                       ],
                     ))

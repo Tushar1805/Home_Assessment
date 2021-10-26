@@ -59,7 +59,8 @@ class _TherapistUIState extends State<TherapistUI> {
         .get()
         .then((value) {
       if (value.data().containsKey("feedback")) {
-        if (value.data()["feedback"] != null) {
+        if (value.data()["feedback"] != null &&
+            value.data()["feedback"] != "") {
           setState(() {
             list = List<Map<String, dynamic>>.generate(
                 value.data()["feedback"].length,
@@ -78,6 +79,9 @@ class _TherapistUIState extends State<TherapistUI> {
             .collection("users")
             .doc(useruid.uid)
             .set({'feedback': ''}, SetOptions(merge: true));
+        setState(() {
+          rating = 0.0;
+        });
       }
     });
   }
@@ -591,7 +595,7 @@ class _TherapistUIState extends State<TherapistUI> {
                                         fontSize: 16, color: Colors.black45),
                                   ),
                                   Text(
-                                    '${assessmentdata.data()["date"]}' ??
+                                    '${DateFormat.yMd().format(assessmentdata['date'].toDate())}' ??
                                         "1/1/2021",
                                     style: TextStyle(
                                       fontSize: 16,
@@ -651,7 +655,22 @@ class _TherapistUIState extends State<TherapistUI> {
                               // SizedBox(height: 2.5),
                               // Divider(),
 
-                              getAddress(snapshot["houses"]),
+                              // getAddress(snapshot["houses"]),
+                              Container(
+                                child: Wrap(children: [
+                                  Text(
+                                    'Home Address: ',
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.black45),
+                                  ),
+                                  Text(
+                                    '${assessmentdata.data()["home"]}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ]),
+                              ),
 
                               // Container(child: Text('${dataset.data}')),
                             ],

@@ -72,6 +72,23 @@ InputDecoration formInputDecoration(hint) {
   );
 }
 
+TextStyle lightBlackTextStyle() {
+  return TextStyle(
+      fontFamily: 'Source Sans Pro',
+      fontSize: 14,
+      color: lightBlack(),
+      decoration: TextDecoration.none,
+      fontWeight: FontWeight.w600);
+}
+
+TextStyle whiteTextStyle() {
+  return TextStyle(
+      color: Colors.white,
+      fontSize: 18,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 1.0);
+}
+
 void _showSnackBar(snackbar, BuildContext buildContext) {
   final snackBar = SnackBar(
     duration: const Duration(seconds: 3),

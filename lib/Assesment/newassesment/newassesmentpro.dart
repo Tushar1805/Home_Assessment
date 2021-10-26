@@ -184,8 +184,11 @@ String capitalize(String s) {
     var parts = s.split(' ');
     // print(parts);
     String sum = '';
-    parts.forEach(
-        (cur) => {sum += cur[0].toUpperCase() + cur.substring(1) + " "});
+    parts.forEach((cur) => {
+          (cur != '')
+              ? sum += cur[0].toUpperCase() + cur.substring(1) + " "
+              : null
+        });
     return sum;
   }
 }

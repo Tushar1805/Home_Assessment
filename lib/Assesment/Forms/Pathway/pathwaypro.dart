@@ -102,7 +102,7 @@ class PathwayPro extends ChangeNotifier {
           .containsKey('count')) {}
     } else {
       wholelist[0][accessname]['question']["7"]['stepCount'] = {
-        "count": 0,
+        "count": '0',
       };
     }
     print(wholelist[0][accessname]['question']["7"]['stepCount']);

@@ -16,6 +16,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 
 import 'package:path/path.dart';
+import 'package:tryapp/productDetails.dart';
 
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
@@ -61,6 +62,28 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
   String videoDownloadUrl, videoUrl, videoName;
   File video;
   var falseIndex = -1, trueIndex = -1;
+  List<Map<String, dynamic>> assistiveDevice = [
+    {"name": "SC/Quad", "description": "", "url": ""},
+    {"name": "Cane/Std", "description": "", "url": ""},
+    {
+      "name": "Walker",
+      "description":
+          "A walker is a type of mobility aid used to help people who are still able to walk (e.g., don't require a wheelchair) yet need assistance.\n\nIt is a four-legged frame that allows a person to lean on it for balance, support, and rest. \n\nWalkers are usually made out of aluminum so they are light enough to be picked up and moved easily. \n\nThey often have comfort grips made of foam, gel, or rubber to enhance the user's comfort. The tips of the legs are typically covered with rubber caps that are designed to prevent slipping and improve stability.",
+      "url": "https://www.aafp.org/afp/2011/0815/hi-res/afp20110815p405-f6.jpg"
+    },
+    {
+      "name": "Front Wheel Walker",
+      "description":
+          "The greatest benefit to using a front wheel walker is increased mobility.\n\nWith wheels on the front end, you don’t have to lift the walker every time you take a step. If you don’t have the upper body strength or endurance to use a basic walker comfortably, a wheeled option can still provide balance but makes movement easier.\n\nYou can move faster with a front wheel walker, but it’s still grounded by the two back legs. Many products offer slip-resistant caps or glide caps for the rear legs.\n\nSlip-resistant caps are made of a material like rubber, which prevents the walker from slipping on smooth surfaces. Glide caps, or glides, help a walker move more smoothly and quickly across a surface.",
+      "url":
+          "https://5.imimg.com/data5/WJ/YH/BR/SELLER-66068728/front-wheel-walker-500x500.jpg"
+    },
+    {"name": "4 Whl. Walker", "description": "", "url": ""},
+    {"name": "Manual Whl Chair", "description": "", "url": ""},
+    {"name": "Power W/c", "description": "", "url": ""},
+    {"name": "Crutches", "description": "", "url": ""},
+    {"name": "Scooter", "description": "", "url": ""}
+  ];
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
@@ -1904,6 +1927,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          .3,
                                       child: Text('Assistive Device?',
                                           style: TextStyle(
                                             color:
@@ -1911,6 +1936,37 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                             fontSize: 20,
                                           )),
                                     ),
+                                    // Container(
+                                    //     child: IconButton(
+                                    //         onPressed: () {
+                                    //           for (int i = 0;
+                                    //               i < assistiveDevice.length;
+                                    //               i++) {
+                                    //             if (assistiveDevice[i]
+                                    //                     ['name'] ==
+                                    //                 widget.wholelist[1][widget
+                                    //                                 .accessname]
+                                    //                             ['question']
+                                    //                         ["7"]['additional']
+                                    //                     ["assistiveDevice"]) {
+                                    //               Navigator.of(context).push(
+                                    //                   MaterialPageRoute(
+                                    //                       builder: (context) =>
+                                    //                           ProductDetails(
+                                    //                               assistiveDevice[
+                                    //                                       i]
+                                    //                                   ['name'],
+                                    //                               assistiveDevice[
+                                    //                                       i][
+                                    //                                   'description'],
+                                    //                               assistiveDevice[
+                                    //                                       i][
+                                    //                                   'url'])));
+                                    //             }
+                                    //           }
+                                    //         },
+                                    //         // icon: Icon(Icons.info)
+                                    //         )),
                                     DropdownButton(
                                       items: [
                                         DropdownMenuItem(

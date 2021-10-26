@@ -127,12 +127,11 @@ class _ReportUIState extends State<ReportUI> {
             fname =
                 (capitalize(value.data()["firstName"].toString()) ?? "First");
             lname = (capitalize(value.data()["lastName"].toString()) ?? "Last");
-            gender = (capitalize(value.data()["gender"].toString()) ?? "Male");
+            // gender = (capitalize(value.data()["gender"].toString()) ?? "Male");
             address =
-                (capitalize(value.data()["houses"][0]["city"].toString()) ??
-                    "Nagpur");
+                (capitalize(value.data()["address"].toString()) ?? "Nagpur");
             age = (value.data()["age"].toString() ?? "21");
-            phone = (value.data()["mobileNo"].toString() ?? "1234567890");
+            phone = (value.data()["mobile"].toString() ?? "1234567890");
             email = (value.data()["email"].toString() ?? "user@gmail.com");
             height = (value.data()["height"].toString() ?? "5.5");
             weight = (value.data()["weight"].toString() ?? "50");
@@ -203,7 +202,8 @@ class _ReportUIState extends State<ReportUI> {
         // assess = List.castFrom(value["form"].toList());
         if (value.data()["date"] != null) {
           setState(() {
-            startingTime = value.data()["date"].toString();
+            startingTime =
+                DateFormat.yMd().format(value.data()["date"].toDate());
           });
         }
         if (value.data()["assessmentCompletionDate"] != null) {
@@ -552,14 +552,14 @@ class _ReportUIState extends State<ReportUI> {
             }, children: [
               buildRow("Patient", "Details"),
               buildRow("Name", "$fname $lname"),
-              buildRow("Gender", gender),
+              buildRow("Gender", "male"),
               buildRow("Address", address),
               buildRow("Age", age),
               buildRow("Email", email),
               buildRow("Phone Number", phone),
-              buildRow("Height", "$height ft"),
-              buildRow("Weight(lbs)", "$weight kg"),
-              buildRow("Hand Dominance", handDominance),
+              // buildRow("Height", "$height ft"),
+              // buildRow("Weight(lbs)", "$weight kg"),
+              // buildRow("Hand Dominance", handDominance),
               // buildRow("Date of Assessment", "10/5/20"),
               buildRow("Assessment Start Time", startingTime),
               buildRow("Assessment End Time", closingTime),
@@ -1418,10 +1418,10 @@ class _ReportUIState extends State<ReportUI> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: buildUserCard(),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.all(20),
+            //   child: buildUserCard(),
+            // ),
             Padding(padding: const EdgeInsets.all(10), child: buildPrioOne()),
             Padding(padding: const EdgeInsets.all(10), child: buildPrioTwo()),
             Padding(padding: const EdgeInsets.all(10), child: buildPrioThree()),

@@ -1828,11 +1828,13 @@ class _PathwayUIState extends State<PathwayUI> {
                                                                   'MultipleStair']
                                                               ['count'] = value;
                                                           widget.wholelist[0][widget
-                                                                      .accessname]
+                                                                          .accessname]
+                                                                      [
+                                                                      'question']["7"]
                                                                   [
-                                                                  'question']["7"]
-                                                              [
-                                                              'Recommendation'] = value;
+                                                                  'Recommendation'] =
+                                                              int.parse(value
+                                                                  .toString());
 
                                                           stepcount = widget
                                                                           .wholelist[0]
@@ -1911,11 +1913,13 @@ class _PathwayUIState extends State<PathwayUI> {
                                                                   'MultipleStair']
                                                               ['count'] = value;
                                                           widget.wholelist[0][widget
-                                                                      .accessname]
+                                                                          .accessname]
+                                                                      [
+                                                                      'question']["7"]
                                                                   [
-                                                                  'question']["7"]
-                                                              [
-                                                              'Recommendation'] = value;
+                                                                  'Recommendation'] =
+                                                              int.parse(value
+                                                                  .toString());
 
                                                           stepcount = widget
                                                                           .wholelist[0]

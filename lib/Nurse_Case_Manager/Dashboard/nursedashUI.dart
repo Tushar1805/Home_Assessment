@@ -14,6 +14,7 @@ import 'package:tryapp/Patient_Caregiver_Family/Dashboard/reportbase.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/reportui.dart';
 import 'package:tryapp/Therapist/Dashboard/homeAddresses.dart';
 import 'package:tryapp/Therapist/Dashboard/patients.dart';
+import 'package:tryapp/products.dart';
 import 'package:tryapp/splash/assesment.dart';
 import 'package:tryapp/constants.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
@@ -454,8 +455,8 @@ class _NurseUIState extends State<NurseUI> {
                                         fontSize: 16, color: Colors.black45),
                                   ),
                                   Text(
-                                    '${assessmentdata.data()["date"]}' ??
-                                        "11/7/2021",
+                                    '${DateFormat.yMd().format(assessmentdata['date'].toDate())}' ??
+                                        "1/1/2021",
                                     style: TextStyle(
                                       fontSize: 16,
                                     ),
@@ -513,7 +514,6 @@ class _NurseUIState extends State<NurseUI> {
                               // SizedBox(height: 2.5),
                               // Divider(),
                               Container(
-                                width: double.infinity,
                                 child: Wrap(children: [
                                   Text(
                                     'Home Address: ',
@@ -521,16 +521,32 @@ class _NurseUIState extends State<NurseUI> {
                                         fontSize: 16, color: Colors.black45),
                                   ),
                                   Text(
-                                    '${(snapshot["houses"][0]["address1"] != "") ? snapshot["houses"][0]["address1"][0].toString().toUpperCase() : ""}${(snapshot["houses"][0]["address1"] != "") ? snapshot["houses"][0]["address1"].toString().substring(1) : ""}, '
-                                            '${(snapshot["houses"][0]["address1"] != "") ? snapshot["houses"][0]["address1"][0].toString().toUpperCase() : ""}${(snapshot["houses"][0]["address2"] != "") ? snapshot["houses"][0]["address2"].toString().substring(1) : ""}, '
-                                            '${(snapshot["houses"][0]["address1"] != "") ? snapshot["houses"][0]["address1"][0].toString().toUpperCase() : ""}${(snapshot["houses"][0]["city"] != "") ? snapshot["houses"][0]["city"].toString().substring(1) : ""} ' ??
-                                        "Home Address: Nagpur",
+                                    '${assessmentdata.data()["home"]}',
                                     style: TextStyle(
                                       fontSize: 16,
                                     ),
                                   ),
                                 ]),
                               ),
+                              // Container(
+                              //   width: double.infinity,
+                              //   child: Wrap(children: [
+                              //     Text(
+                              //       'Home Address: ',
+                              //       style: TextStyle(
+                              //           fontSize: 16, color: Colors.black45),
+                              //     ),
+                              //     Text(
+                              //       '${(snapshot["houses"][0]["address1"] != "") ? snapshot["houses"][0]["address1"][0].toString().toUpperCase() : ""}${(snapshot["houses"][0]["address1"] != "") ? snapshot["houses"][0]["address1"].toString().substring(1) : ""}, '
+                              //               '${(snapshot["houses"][0]["address1"] != "") ? snapshot["houses"][0]["address1"][0].toString().toUpperCase() : ""}${(snapshot["houses"][0]["address2"] != "") ? snapshot["houses"][0]["address2"].toString().substring(1) : ""}, '
+                              //               '${(snapshot["houses"][0]["address1"] != "") ? snapshot["houses"][0]["address1"][0].toString().toUpperCase() : ""}${(snapshot["houses"][0]["city"] != "") ? snapshot["houses"][0]["city"].toString().substring(1) : ""} ' ??
+                              //           "Home Address: Nagpur",
+                              //       style: TextStyle(
+                              //         fontSize: 16,
+                              //       ),
+                              //     ),
+                              //   ]),
+                              // ),
                               // Container(child: Text('${dataset.data}')),
                             ],
                           )),
@@ -710,6 +726,17 @@ class _NurseUIState extends State<NurseUI> {
                         MaterialPageRoute(
                             builder: (context) =>
                                 AssesmentSplashScreen("nurse/case manager")))
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.assessment, color: Colors.green),
+                  title: Text(
+                    'Products',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  onTap: () => {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Products()))
                   },
                 ),
               ],

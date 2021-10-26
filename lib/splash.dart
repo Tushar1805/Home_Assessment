@@ -91,10 +91,14 @@ class _SplashScreenState extends State<SplashScreen> {
     if (newUser == "true") {
       // rolesave.setString('role', type);
       // dispose();
+      // Navigator.pushReplacement(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) => ResetPass(page, result, name, imgUrl)));
       Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ResetPass(page, result, name, imgUrl)));
+        context,
+        MaterialPageRoute(builder: (context) => page),
+      );
     } else {
       // dispose();
       Navigator.pushReplacement(
