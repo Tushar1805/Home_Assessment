@@ -13,7 +13,9 @@ import '../../constants.dart';
 class ScheduleAssessment extends StatefulWidget {
   final TherapistClass therapist;
   final PatientClass patient;
-  const ScheduleAssessment(this.therapist, this.patient, {Key key})
+  bool needTherapist;
+  ScheduleAssessment(this.therapist, this.patient, this.needTherapist,
+      {Key key})
       : super(key: key);
 
   @override
@@ -209,7 +211,9 @@ class _ScheduleAssessmentState extends State<ScheduleAssessment> {
 
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => PatientDetails(
-                                widget.therapist, widget.patient)));
+                                widget.therapist,
+                                widget.patient,
+                                widget.needTherapist)));
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.38,

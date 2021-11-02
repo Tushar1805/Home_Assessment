@@ -595,151 +595,154 @@ class _NurseUIState extends State<NurseUI> {
     return WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(
-          drawer: Drawer(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: <Widget>[
-                DrawerHeader(
-                  decoration: BoxDecoration(
-                    color: Color.fromRGBO(10, 80, 106, 1),
-                  ),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width * 0.45,
-                        // color: Colors.pink,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              padding: EdgeInsets.only(top: 30),
-                              alignment: Alignment.bottomLeft,
-                              // color: Colors.red,
-                              child: Text(
-                                "Hello,",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 22,
+          drawer: Container(
+            width: MediaQuery.of(context).size.width * 0.35,
+            child: Drawer(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: <Widget>[
+                  DrawerHeader(
+                    decoration: BoxDecoration(
+                      color: Color.fromRGBO(10, 80, 106, 1),
+                    ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.2,
+                          // color: Colors.pink,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                padding: EdgeInsets.only(top: 30),
+                                alignment: Alignment.bottomLeft,
+                                // color: Colors.red,
+                                child: Text(
+                                  "Hello,",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 22,
+                                  ),
                                 ),
                               ),
-                            ),
-                            Container(
-                              alignment: Alignment.bottomLeft,
-                              child:
-                                  (userFirstName != null && userFirstName != '')
-                                      ? Text(
-                                          '${userFirstName[0].toUpperCase()}${userFirstName.substring(1)}',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 37,
-                                          ),
-                                        )
-                                      : Text("Nurse"),
-                            ),
-                          ],
+                              Container(
+                                alignment: Alignment.bottomLeft,
+                                child: (userFirstName != null &&
+                                        userFirstName != '')
+                                    ? Text(
+                                        '${userFirstName[0].toUpperCase()}${userFirstName.substring(1)}',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 37,
+                                        ),
+                                      )
+                                    : Text("Nurse"),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 7),
-                      InkWell(
-                        onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => ViewPhoto(
-                                  imgUrl ?? "", "nurse/case manager")));
-                        },
-                        child: Container(
-                          // height: 30,
-                          alignment: Alignment.centerRight,
-                          // width: double.infinity,
-                          // color: Colors.red,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            radius: 47,
-                            // backgroundImage: (imgUrl != "" && imgUrl != null)
-                            //     ? NetworkImage(imgUrl)
-                            //     : Image.asset('assets/therapistavatar.png'),
-                            child: ClipOval(
-                              clipBehavior: Clip.hardEdge,
-                              child: (imgUrl != "" && imgUrl != null)
-                                  ? CachedNetworkImage(
-                                      imageUrl: imgUrl,
-                                      fit: BoxFit.cover,
-                                      width: 400,
-                                      height: 400,
-                                      placeholder: (context, url) =>
-                                          new CircularProgressIndicator(),
-                                      errorWidget: (context, url, error) =>
-                                          new Icon(Icons.error),
-                                    )
-                                  : Image.asset('assets/nurseavatar.png'),
+                        SizedBox(height: 7),
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ViewPhoto(
+                                    imgUrl ?? "", "nurse/case manager")));
+                          },
+                          child: Container(
+                            // height: 30,
+                            alignment: Alignment.centerRight,
+                            // width: double.infinity,
+                            // color: Colors.red,
+                            child: CircleAvatar(
+                              backgroundColor: Colors.white,
+                              radius: 47,
+                              // backgroundImage: (imgUrl != "" && imgUrl != null)
+                              //     ? NetworkImage(imgUrl)
+                              //     : Image.asset('assets/therapistavatar.png'),
+                              child: ClipOval(
+                                clipBehavior: Clip.hardEdge,
+                                child: (imgUrl != "" && imgUrl != null)
+                                    ? CachedNetworkImage(
+                                        imageUrl: imgUrl,
+                                        fit: BoxFit.cover,
+                                        width: 400,
+                                        height: 400,
+                                        placeholder: (context, url) =>
+                                            new CircularProgressIndicator(),
+                                        errorWidget: (context, url, error) =>
+                                            new Icon(Icons.error),
+                                      )
+                                    : Image.asset('assets/nurseavatar.png'),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      // Container(
-                      //   // height: 30,
-                      //   alignment: Alignment.centerRight,
-                      //   // width: double.infinity,
-                      //   // color: Colors.red,
-                      //   child: CircleAvatar(
-                      //     radius: 47,
-                      //     child: ClipOval(
-                      //       child: Image.asset('assets/nurseavatar.png'),
-                      //     ),
-                      //   ),
-                      // ),
-                    ],
+                        // Container(
+                        //   // height: 30,
+                        //   alignment: Alignment.centerRight,
+                        //   // width: double.infinity,
+                        //   // color: Colors.red,
+                        //   child: CircleAvatar(
+                        //     radius: 47,
+                        //     child: ClipOval(
+                        //       child: Image.asset('assets/nurseavatar.png'),
+                        //     ),
+                        //   ),
+                        // ),
+                      ],
+                    ),
+                    // child: Text("$name"),
+                    //
                   ),
-                  // child: Text("$name"),
-                  //
-                ),
-                // ListTile(
-                //   leading: Icon(Icons.favorite, color: Colors.green),
-                //   title: Text(
-                //     'Patients/Caregivers/Families',
-                //     style: TextStyle(fontSize: 18),
-                //   ),
-                //   onTap: () => {
-                //     Navigator.of(context).push(
-                //         MaterialPageRoute(builder: (context) => PatientsList()))
-                //   },
-                // ),
-                // ListTile(
-                //     leading: Icon(Icons.home, color: Colors.green),
-                //     title: Text(
-                //       'Home Addresses',
-                //       style: TextStyle(fontSize: 18),
-                //     ),
-                //     onTap: () => {
-                //           Navigator.of(context).push(MaterialPageRoute(
-                //               builder: (context) => HomeAddresses()))
-                //         }),
-                ListTile(
-                  leading: Icon(Icons.assessment, color: Colors.green),
-                  title: Text(
-                    'Assessments',
-                    style: TextStyle(fontSize: 18),
+                  // ListTile(
+                  //   leading: Icon(Icons.favorite, color: Colors.green),
+                  //   title: Text(
+                  //     'Patients/Caregivers/Families',
+                  //     style: TextStyle(fontSize: 18),
+                  //   ),
+                  //   onTap: () => {
+                  //     Navigator.of(context).push(
+                  //         MaterialPageRoute(builder: (context) => PatientsList()))
+                  //   },
+                  // ),
+                  // ListTile(
+                  //     leading: Icon(Icons.home, color: Colors.green),
+                  //     title: Text(
+                  //       'Home Addresses',
+                  //       style: TextStyle(fontSize: 18),
+                  //     ),
+                  //     onTap: () => {
+                  //           Navigator.of(context).push(MaterialPageRoute(
+                  //               builder: (context) => HomeAddresses()))
+                  //         }),
+                  ListTile(
+                    leading: Icon(Icons.assessment, color: Colors.green),
+                    title: Text(
+                      'Assessments',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    onTap: () => {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  AssesmentSplashScreen("nurse/case manager")))
+                    },
                   ),
-                  onTap: () => {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                AssesmentSplashScreen("nurse/case manager")))
-                  },
-                ),
-                ListTile(
-                  leading: Icon(Icons.assessment, color: Colors.green),
-                  title: Text(
-                    'Products',
-                    style: TextStyle(fontSize: 18),
+                  ListTile(
+                    leading: Icon(Icons.assessment, color: Colors.green),
+                    title: Text(
+                      'Products',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    onTap: () => {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => Products()))
+                    },
                   ),
-                  onTap: () => {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => Products()))
-                  },
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           appBar: AppBar(

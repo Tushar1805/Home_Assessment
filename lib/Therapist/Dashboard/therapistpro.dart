@@ -155,12 +155,12 @@ class TherapistProvider extends ChangeNotifier {
     User user = FirebaseAuth.instance.currentUser;
     getdocset(role);
     getFeedback();
-    firestore.collection("users").doc(user.uid).get().then((value) {
-      if (value.data()["feedback"].exists) {
-      } else {
-        value.data()["feedback"] = "";
-      }
-    });
+    // firestore.collection("users").doc(user.uid).get().then((value) {
+    //   if (value.data()["feedback"].exists) {
+    //   } else {
+    //     value.data()["feedback"] = "";
+    //   }
+    // });
     // print(role);
   }
 

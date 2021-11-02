@@ -254,7 +254,7 @@ class _NurseDetailsState extends State<NurseDetails> {
         flexibleSpace: Container(
           width: MediaQuery.of(context).size.width,
           child: new Padding(
-            padding: const EdgeInsets.only(left: 10.0, top: 40, bottom: 10.0),
+            padding: const EdgeInsets.only(left: 10.0, top: 10, bottom: 10.0),
             child: Row(
               children: [
                 IconButton(

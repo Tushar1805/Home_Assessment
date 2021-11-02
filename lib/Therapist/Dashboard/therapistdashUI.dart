@@ -16,6 +16,7 @@ import 'package:tryapp/Therapist/Dashboard/ViewFeedbackBase.dart';
 import 'package:tryapp/Therapist/Dashboard/homeAddresses.dart';
 import 'package:tryapp/Therapist/Dashboard/nurses.dart';
 import 'package:tryapp/Therapist/Dashboard/patients.dart';
+import 'package:tryapp/Therapist/Dashboard/shareApp.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistdashrepo.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistpro.dart';
 import 'package:tryapp/Therapist/Dashboard/viewFeedback.dart';
@@ -41,6 +42,7 @@ class _TherapistUIState extends State<TherapistUI> {
   List<Map<String, dynamic>> list = [];
   int sum = 0;
   double rating = 0.0;
+  bool admin = false;
 
   @override
   void initState() {
@@ -120,6 +122,11 @@ class _TherapistUIState extends State<TherapistUI> {
           // print("**********imgUrl = $imgUrl");
           // address = (value["houses"][0]["city"].toString());
         });
+        if (value.data().containsKey("admin")) {
+          setState(() {
+            admin = value.data()["admin"];
+          });
+        }
       },
     );
   }
@@ -176,7 +183,7 @@ class _TherapistUIState extends State<TherapistUI> {
 
     if (status == "Assessment Scheduled" && assessorUid == curUid) {
       return Container(
-        width: MediaQuery.of(context).size.width * 0.5,
+        width: MediaQuery.of(context).size.width * 0.4,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(20),
@@ -204,7 +211,7 @@ class _TherapistUIState extends State<TherapistUI> {
       );
     } else if (status == "Assessment Scheduled" && assessorUid != curUid) {
       return Container(
-        width: MediaQuery.of(context).size.width * 0.5,
+        width: MediaQuery.of(context).size.width * 0.4,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(20),
@@ -231,7 +238,7 @@ class _TherapistUIState extends State<TherapistUI> {
       );
     } else if (status == "Assessment in Progress" && assessorUid == curUid) {
       return Container(
-        width: MediaQuery.of(context).size.width * 0.5,
+        width: MediaQuery.of(context).size.width * 0.4,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(20),
@@ -260,7 +267,7 @@ class _TherapistUIState extends State<TherapistUI> {
       );
     } else if (status == "Assessment in Progress" && assessorUid != curUid) {
       return Container(
-        width: MediaQuery.of(context).size.width * 0.5,
+        width: MediaQuery.of(context).size.width * 0.4,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(20),
@@ -285,7 +292,7 @@ class _TherapistUIState extends State<TherapistUI> {
       );
     } else if (status == "Report Generated") {
       return Container(
-        width: MediaQuery.of(context).size.width * 0.5,
+        width: MediaQuery.of(context).size.width * 0.4,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(20),
@@ -314,7 +321,7 @@ class _TherapistUIState extends State<TherapistUI> {
       );
     } else if (status == "Assessment Finished" && curUid != assessorUid) {
       return Container(
-        width: MediaQuery.of(context).size.width * 0.5,
+        width: MediaQuery.of(context).size.width * 0.4,
         child: RaisedButton(
           shape: RoundedRectangleBorder(
             borderRadius: new BorderRadius.circular(20),
@@ -351,30 +358,32 @@ class _TherapistUIState extends State<TherapistUI> {
         ? Center(child: CircularProgressIndicator())
         : (assesspro.datasetmain.length == 0)
             ? Container(
-                width: double.infinity,
+                width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height * 0.7,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: MediaQuery.of(context).size.height * .2,
-                      child: Image.asset('assets/nodata.png'),
-                    ),
-                    Container(
-                      child: Container(
-                        child: Text(
-                          'NO ASSIGNMENTS ASSIGNED',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.grey[600],
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        height: MediaQuery.of(context).size.height * .2,
+                        child: Image.asset('assets/nodata.png'),
                       ),
-                    )
-                  ],
+                      Container(
+                        child: Container(
+                          child: Text(
+                            'NO ASSIGNMENTS ASSIGNED',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[600],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               )
             : Container(
@@ -383,6 +392,7 @@ class _TherapistUIState extends State<TherapistUI> {
                   padding: EdgeInsets.all(8),
                   child: ConstrainedBox(
                     constraints: BoxConstraints(
+                        // maxWidth: MediaQuery.of(context).size.width * 0.4,
                         maxHeight: 1000,
                         minHeight: MediaQuery.of(context).size.height / 10),
                     child: ListView.builder(
@@ -521,196 +531,202 @@ class _TherapistUIState extends State<TherapistUI> {
       // ),
       padding: EdgeInsets.fromLTRB(8, 8, 8, 8),
       // height: MediaQuery.of(context).size.height * 0.3,
-      child: GestureDetector(
-        child: Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-            color: Colors.white,
-            child: Container(
-                padding: EdgeInsets.only(bottom: 0),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.30,
-                          // color: Colors.red,
-                          child: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            radius: 47,
-                            // backgroundImage: (imgUrl != "" && imgUrl != null)
-                            //       ? new NetworkImage(imgUrl)
-                            //       : Image.asset('assets/therapistavatar.png'),
-                            child: ClipOval(
-                              child: Image.asset('assets/therapistavatar.png'),
+      child: Center(
+        child: GestureDetector(
+          child: Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+              color: Colors.white,
+              child: Container(
+                  padding: EdgeInsets.only(bottom: 0),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            // width: MediaQuery.of(context).size.width * 0.15,
+                            // color: Colors.red,
+                            child: CircleAvatar(
+                              backgroundColor: Colors.white,
+                              radius: 47,
+                              // backgroundImage: (imgUrl != "" && imgUrl != null)
+                              //       ? new NetworkImage(imgUrl)
+                              //       : Image.asset('assets/therapistavatar.png'),
+                              child: ClipOval(
+                                child:
+                                    Image.asset('assets/therapistavatar.png'),
+                              ),
                             ),
                           ),
-                        ),
-                        Container(
-                          padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                          child: VerticalDivider(
-                            width: 2,
+                          Container(
+                            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                            child: VerticalDivider(
+                              width: 2,
+                            ),
                           ),
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.55,
-                          // color: Colors.red,
-                          padding: EdgeInsets.all(10),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Wrap(
-                                // mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    child: Text(
-                                      'Patient Name: ',
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.7,
+                            // color: Colors.red,
+                            padding: EdgeInsets.all(10),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: double.infinity,
+                                  child: Wrap(
+                                    // mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        child: Text(
+                                          'Patient Name: ',
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.black45),
+                                        ),
+                                      ),
+                                      Container(
+                                        child: Text(
+                                          '${(snapshot["firstName"] != "") ? snapshot["firstName"][0].toString().toUpperCase() : ""}${(snapshot["firstName"] != "") ? snapshot["firstName"].toString().substring(1) : ""} '
+                                                  '${(snapshot["lastName"] != "") ? snapshot["lastName"][0].toString().toUpperCase() : ""}${(snapshot["lastName"] != "") ? snapshot["lastName"].toString().substring(1) : ""} ' ??
+                                              "Prachi Rathi",
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                SizedBox(height: 2.5),
+                                Divider(),
+                                Container(
+                                  width: double.infinity,
+                                  child: Wrap(children: [
+                                    Text(
+                                      'Start Date: ',
                                       style: TextStyle(
                                           fontSize: 16, color: Colors.black45),
                                     ),
-                                  ),
-                                  Container(
-                                    width: 87,
-                                    child: Text(
-                                      '${(snapshot["firstName"] != "") ? snapshot["firstName"][0].toString().toUpperCase() : ""}${(snapshot["firstName"] != "") ? snapshot["firstName"].toString().substring(1) : ""} '
-                                              '${(snapshot["lastName"] != "") ? snapshot["lastName"][0].toString().toUpperCase() : ""}${(snapshot["lastName"] != "") ? snapshot["lastName"].toString().substring(1) : ""} ' ??
-                                          "Prachi Rathi",
+                                    Text(
+                                      '${DateFormat.yMd().format(assessmentdata['date'].toDate())}' ??
+                                          "1/1/2021",
                                       style: TextStyle(
                                         fontSize: 16,
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
+                                  ]),
+                                ),
+                                SizedBox(height: 2.5),
+                                Divider(),
+                                (assessmentdata.data()[
+                                                "assessmentCompletionDate"] !=
+                                            "" &&
+                                        assessmentdata.data()[
+                                                "assessmentCompletionDate"] !=
+                                            null)
+                                    ? getDate(
+                                        "Completion Date:",
+                                        assessmentdata
+                                            .data()["assessmentCompletionDate"])
+                                    : SizedBox(),
+                                (assessmentdata.data()[
+                                                "assessmentCompletionDate"] !=
+                                            "" &&
+                                        assessmentdata.data()[
+                                                "assessmentCompletionDate"] !=
+                                            null)
+                                    ? SizedBox(height: 2.5)
+                                    : SizedBox(),
+                                (assessmentdata.data()[
+                                                "assessmentCompletionDate"] !=
+                                            "" &&
+                                        assessmentdata.data()[
+                                                "assessmentCompletionDate"] !=
+                                            null)
+                                    ? Divider()
+                                    : SizedBox(),
+                                // getDate("Latest Change: ",
+                                //     snapshot["latestChangeDate"]),
+                                // SizedBox(height: 2.5),
+                                // Divider(),
+                                // Container(
+                                //   width: double.infinity,
+                                //   child: Wrap(children: [
+                                //     Text(
+                                //       'Status: ',
+                                //       style: TextStyle(
+                                //           fontSize: 16, color: Colors.black45),
+                                //     ),
+                                //     Text(
+                                //       '${assessmentdata.data()["currentStatus"]}',
+                                //       style: TextStyle(
+                                //         fontSize: 16,
+                                //       ),
+                                //     ),
+                                //   ]),
+                                // ),
+                                // SizedBox(height: 2.5),
+                                // Divider(),
 
-                              SizedBox(height: 2.5),
-                              Divider(),
-                              Container(
-                                width: double.infinity,
-                                child: Wrap(children: [
-                                  Text(
-                                    'Start Date: ',
-                                    style: TextStyle(
-                                        fontSize: 16, color: Colors.black45),
-                                  ),
-                                  Text(
-                                    '${DateFormat.yMd().format(assessmentdata['date'].toDate())}' ??
-                                        "1/1/2021",
-                                    style: TextStyle(
-                                      fontSize: 16,
+                                // getAddress(snapshot["houses"]),
+                                Container(
+                                  child: Wrap(children: [
+                                    Text(
+                                      'Home Address: ',
+                                      style: TextStyle(
+                                          fontSize: 16, color: Colors.black45),
                                     ),
-                                  ),
-                                ]),
-                              ),
-                              SizedBox(height: 2.5),
-                              Divider(),
-                              (assessmentdata.data()[
-                                              "assessmentCompletionDate"] !=
-                                          "" &&
-                                      assessmentdata.data()[
-                                              "assessmentCompletionDate"] !=
-                                          null)
-                                  ? getDate(
-                                      "Completion Date:",
-                                      assessmentdata
-                                          .data()["assessmentCompletionDate"])
-                                  : SizedBox(),
-                              (assessmentdata.data()[
-                                              "assessmentCompletionDate"] !=
-                                          "" &&
-                                      assessmentdata.data()[
-                                              "assessmentCompletionDate"] !=
-                                          null)
-                                  ? SizedBox(height: 2.5)
-                                  : SizedBox(),
-                              (assessmentdata.data()[
-                                              "assessmentCompletionDate"] !=
-                                          "" &&
-                                      assessmentdata.data()[
-                                              "assessmentCompletionDate"] !=
-                                          null)
-                                  ? Divider()
-                                  : SizedBox(),
-                              // getDate("Latest Change: ",
-                              //     snapshot["latestChangeDate"]),
-                              // SizedBox(height: 2.5),
-                              // Divider(),
-                              // Container(
-                              //   width: double.infinity,
-                              //   child: Wrap(children: [
-                              //     Text(
-                              //       'Status: ',
-                              //       style: TextStyle(
-                              //           fontSize: 16, color: Colors.black45),
-                              //     ),
-                              //     Text(
-                              //       '${assessmentdata.data()["currentStatus"]}',
-                              //       style: TextStyle(
-                              //         fontSize: 16,
-                              //       ),
-                              //     ),
-                              //   ]),
-                              // ),
-                              // SizedBox(height: 2.5),
-                              // Divider(),
-
-                              // getAddress(snapshot["houses"]),
-                              Container(
-                                child: Wrap(children: [
-                                  Text(
-                                    'Home Address: ',
-                                    style: TextStyle(
-                                        fontSize: 16, color: Colors.black45),
-                                  ),
-                                  Text(
-                                    '${assessmentdata.data()["home"]}',
-                                    style: TextStyle(
-                                      fontSize: 16,
+                                    Text(
+                                      '${assessmentdata.data()["home"]}',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                      ),
                                     ),
-                                  ),
-                                ]),
-                              ),
+                                  ]),
+                                ),
 
-                              // Container(child: Text('${dataset.data}')),
-                            ],
+                                // Container(child: Text('${dataset.data}')),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    getButton(
-                        assessmentdata.data()["currentStatus"],
-                        assessmentdata.data()["therapist"],
-                        assessmentdata.data()["assessor"],
-                        assessmentdata.data()["patient"],
-                        list,
-                        assessmentdata.data()["docID"],
-                        context),
-                    SizedBox(
-                      height: 10,
-                    )
-                  ],
-                ))),
-        onTap: () async {
-          //   print("Hello");
-          //   await assesspro.getdocref(assessmentdata);
-          //   // print(assesspro.curretnassessmentdocref);
-          //   // print(assessmentdata.data);
+                        ],
+                      ),
+                      getButton(
+                          assessmentdata.data()["currentStatus"],
+                          assessmentdata.data()["therapist"],
+                          assessmentdata.data()["assessor"],
+                          assessmentdata.data()["patient"],
+                          list,
+                          assessmentdata.data()["docID"],
+                          context),
+                      SizedBox(
+                        height: 10,
+                      )
+                    ],
+                  ))),
+          onTap: () async {
+            //   print("Hello");
+            //   await assesspro.getdocref(assessmentdata);
+            //   // print(assesspro.curretnassessmentdocref);
+            //   // print(assessmentdata.data);
 
-          //   if (assessmentdata.data['Status'] == "new") {
-          //     Navigator.push(
-          //         context,
-          //         MaterialPageRoute(
-          //             builder: (context) =>
-          //                 NewAssesment(assesspro.curretnassessmentdocref)));
-          //   } else {
-          //     Navigator.push(
-          //         context,
-          //         MaterialPageRoute(
-          //             builder: (context) =>
-          //                 NewAssesment(assesspro.curretnassessmentdocref)));
-          //   }
-        },
+            //   if (assessmentdata.data['Status'] == "new") {
+            //     Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //             builder: (context) =>
+            //                 NewAssesment(assesspro.curretnassessmentdocref)));
+            //   } else {
+            //     Navigator.push(
+            //         context,
+            //         MaterialPageRoute(
+            //             builder: (context) =>
+            //                 NewAssesment(assesspro.curretnassessmentdocref)));
+            //   }
+          },
+        ),
       ),
     );
   }
@@ -775,177 +791,196 @@ class _TherapistUIState extends State<TherapistUI> {
     return WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(
-            drawer: Drawer(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: <Widget>[
-                  DrawerHeader(
-                    decoration: BoxDecoration(
-                      color: Color.fromRGBO(10, 80, 106, 1),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.45,
-                          // color: Colors.pink,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                padding: EdgeInsets.only(top: 20),
-                                alignment: Alignment.centerLeft,
-                                // color: Colors.red,
-                                child: Text(
-                                  "Hello,",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 22,
+            drawer: Container(
+              // width: MediaQuery.of(context).size.width * 0.35,
+              child: Drawer(
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  children: <Widget>[
+                    DrawerHeader(
+                      decoration: BoxDecoration(
+                        color: Color.fromRGBO(10, 80, 106, 1),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.35,
+                            // color: Colors.pink,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.only(top: 20),
+                                  alignment: Alignment.centerLeft,
+                                  // color: Colors.red,
+                                  child: Text(
+                                    "Hello,",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 22,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              getName(userFirstName),
-                              Container(
-                                padding: EdgeInsets.only(left: 4),
-                                child: Text(
-                                  "$rating / 5",
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
+                                getName(userFirstName),
+                                Container(
+                                  padding: EdgeInsets.only(left: 4),
+                                  child: Text(
+                                    "$rating / 5",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
-                              ),
-                              Row(
-                                children: [
-                                  Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: new List.generate(
-                                          5,
-                                          (index) =>
-                                              buildStar(context, index))),
-                                ],
-                              ),
-                            ],
+                                Row(
+                                  children: [
+                                    Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: new List.generate(
+                                            5,
+                                            (index) =>
+                                                buildStar(context, index))),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 7),
-                        InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) =>
-                                    ViewPhoto(imgUrl ?? "", "therapist")));
-                          },
-                          child: Container(
-                              // height: 30,
-                              alignment: Alignment.centerRight,
-                              // width: double.infinity,
-                              // color: Colors.red,
-                              child: (imgUrl != "" && imgUrl != null)
-                                  ? CircleAvatar(
-                                      backgroundColor: Colors.white,
-                                      radius: 47,
-                                      // backgroundImage: (imgUrl != "" && imgUrl != null)
-                                      //     ? NetworkImage(imgUrl)
-                                      //     : Image.asset('assets/therapistavatar.png'),
-                                      child: ClipOval(
-                                          clipBehavior: Clip.hardEdge,
-                                          child: CachedNetworkImage(
-                                            imageUrl: imgUrl,
-                                            fit: BoxFit.cover,
-                                            width: 400,
-                                            height: 400,
-                                            placeholder: (context, url) =>
-                                                new CircularProgressIndicator(),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    new Icon(Icons.error),
-                                          )),
-                                    )
-                                  : CircleAvatar(
-                                      radius: 47,
-                                      backgroundColor: Colors.white,
-                                      child: ClipOval(
-                                        child: Image.asset(
-                                          'assets/therapistavatar.png',
+                          SizedBox(height: 7),
+                          InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      ViewPhoto(imgUrl ?? "", "therapist")));
+                            },
+                            child: Container(
+                                // height: 30,
+                                // alignment: Alignment.centerLeft,
+                                // width: double.infinity,
+                                // color: Colors.red,
+                                child: (imgUrl != "" && imgUrl != null)
+                                    ? CircleAvatar(
+                                        backgroundColor: Colors.white,
+                                        radius: 47,
+                                        // backgroundImage: (imgUrl != "" && imgUrl != null)
+                                        //     ? NetworkImage(imgUrl)
+                                        //     : Image.asset('assets/therapistavatar.png'),
+                                        child: ClipOval(
+                                            clipBehavior: Clip.hardEdge,
+                                            child: CachedNetworkImage(
+                                              imageUrl: imgUrl,
+                                              fit: BoxFit.cover,
+                                              width: 400,
+                                              height: 400,
+                                              placeholder: (context, url) =>
+                                                  new CircularProgressIndicator(),
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      new Icon(Icons.error),
+                                            )),
+                                      )
+                                    : CircleAvatar(
+                                        radius: 47,
+                                        backgroundColor: Colors.white,
+                                        child: ClipOval(
+                                          child: Image.asset(
+                                            'assets/therapistavatar.png',
+                                          ),
                                         ),
-                                      ),
-                                    )),
-                        ),
-                      ],
+                                      )),
+                          ),
+                        ],
+                      ),
+                      // child: Text("$name"),
+                      //
                     ),
-                    // child: Text("$name"),
-                    //
-                  ),
-                  // ListTile(
-                  //   leading: Icon(Icons.favorite, color: Colors.green),
-                  //   title: Text(
-                  //     'Patients/Caregivers/Families',
-                  //     style: TextStyle(fontSize: 18),
-                  //   ),
-                  //   onTap: () => {
-                  //     Navigator.of(context).push(MaterialPageRoute(
-                  //         builder: (context) => PatientsList()))
-                  //   },
-                  // ),
-                  // ListTile(
-                  //   leading: Icon(Icons.home, color: Colors.green),
-                  //   title: Text(
-                  //     'Home Addresses',
-                  //     style: TextStyle(fontSize: 18),
-                  //   ),
-                  //   onTap: () => {
-                  //     Navigator.of(context).push(MaterialPageRoute(
-                  //         builder: (context) => HomeAddresses()))
-                  //   },
-                  // ),
-                  // ListTile(
-                  //   leading: Icon(Icons.people, color: Colors.green),
-                  //   title: Text(
-                  //     'Nurses/Case Managers',
-                  //     style: TextStyle(fontSize: 18),
-                  //   ),
-                  //   onTap: () => {
-                  //     Navigator.of(context).push(
-                  //         MaterialPageRoute(builder: (context) => NursesList()))
-                  //   },
-                  // ),
-                  ListTile(
-                    leading: Icon(Icons.assessment, color: Colors.green),
-                    title: Text(
-                      'Assessments',
-                      style: TextStyle(fontSize: 18),
+                    // ListTile(
+                    //   leading: Icon(Icons.favorite, color: Colors.green),
+                    //   title: Text(
+                    //     'Patients/Caregivers/Families',
+                    //     style: TextStyle(fontSize: 18),
+                    //   ),
+                    //   onTap: () => {
+                    //     Navigator.of(context).push(MaterialPageRoute(
+                    //         builder: (context) => PatientsList()))
+                    //   },
+                    // ),
+                    // ListTile(
+                    //   leading: Icon(Icons.home, color: Colors.green),
+                    //   title: Text(
+                    //     'Home Addresses',
+                    //     style: TextStyle(fontSize: 18),
+                    //   ),
+                    //   onTap: () => {
+                    //     Navigator.of(context).push(MaterialPageRoute(
+                    //         builder: (context) => HomeAddresses()))
+                    //   },
+                    // ),
+                    // ListTile(
+                    //   leading: Icon(Icons.people, color: Colors.green),
+                    //   title: Text(
+                    //     'Nurses/Case Managers',
+                    //     style: TextStyle(fontSize: 18),
+                    //   ),
+                    //   onTap: () => {
+                    //     Navigator.of(context).push(
+                    //         MaterialPageRoute(builder: (context) => NursesList()))
+                    //   },
+                    // ),
+                    ListTile(
+                      leading: Icon(Icons.assessment, color: Colors.green),
+                      title: Text(
+                        'Assessments',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      onTap: () => {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    AssesmentSplashScreen("therapist")))
+                      },
                     ),
-                    onTap: () => {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  AssesmentSplashScreen("therapist")))
-                    },
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.feedback_rounded, color: Colors.green),
-                    title: Text(
-                      'Feedback',
-                      style: TextStyle(fontSize: 18),
+                    ListTile(
+                      leading:
+                          Icon(Icons.feedback_rounded, color: Colors.green),
+                      title: Text(
+                        'Feedback',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      onTap: () => {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ViewFeedbackBase()))
+                      },
                     ),
-                    onTap: () => {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => ViewFeedbackBase()))
-                    },
-                  ),
-                  // ListTile(
-                  //   leading: Icon(Icons.pages, color: Colors.green),
-                  //   title: Text(
-                  //     'Report',
-                  //     style: TextStyle(fontSize: 18),
-                  //   ),
-                  //   onTap: () => {Navigator.of(context).pop()},
-                  // ),
-                ],
+                    admin
+                        ? ListTile(
+                            leading: Icon(Icons.admin_panel_settings_sharp,
+                                color: Colors.green),
+                            title: Text(
+                              'Admin',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            onTap: () => {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => ShareApp()))
+                            },
+                          )
+                        : SizedBox(),
+                    // ListTile(
+                    //   leading: Icon(Icons.pages, color: Colors.green),
+                    //   title: Text(
+                    //     'Report',
+                    //     style: TextStyle(fontSize: 18),
+                    //   ),
+                    //   onTap: () => {Navigator.of(context).pop()},
+                    // ),
+                  ],
+                ),
               ),
             ),
             appBar: AppBar(
@@ -974,6 +1009,6 @@ class _TherapistUIState extends State<TherapistUI> {
               ],
             ),
             backgroundColor: Colors.grey[300],
-            body: ongoingassess(assesspro)));
+            body: Center(child: ongoingassess(assesspro))));
   }
 }

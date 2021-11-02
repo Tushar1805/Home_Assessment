@@ -11,7 +11,9 @@ import '../constants.dart';
 class PatientDetails extends StatefulWidget {
   final TherapistClass therapist;
   final PatientClass patient;
-  PatientDetails(this.therapist, this.patient, {Key key}) : super(key: key);
+  final bool needTherapist;
+  PatientDetails(this.therapist, this.patient, this.needTherapist, {Key key})
+      : super(key: key);
 
   @override
   _PatientDetailsState createState() => _PatientDetailsState();
@@ -332,7 +334,7 @@ class _PatientDetailsState extends State<PatientDetails> {
         flexibleSpace: Container(
           width: MediaQuery.of(context).size.width,
           child: new Padding(
-            padding: const EdgeInsets.only(left: 10.0, top: 40, bottom: 10.0),
+            padding: const EdgeInsets.only(left: 10.0, top: 10, bottom: 10.0),
             child: Row(
               children: [
                 IconButton(
@@ -418,7 +420,9 @@ class _PatientDetailsState extends State<PatientDetails> {
                                 "Email already exists use a different email address")
                             : Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => TherapistDetails(
-                                    widget.therapist, patient)));
+                                    widget.therapist,
+                                    patient,
+                                    widget.needTherapist)));
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.38,
@@ -454,7 +458,9 @@ class _PatientDetailsState extends State<PatientDetails> {
                             : Navigator.of(context).pushReplacement(
                                 MaterialPageRoute(
                                     builder: (context) => ScheduleAssessment(
-                                        widget.therapist, patient)));
+                                        widget.therapist,
+                                        patient,
+                                        widget.needTherapist)));
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.38,
@@ -484,8 +490,7 @@ class _PatientDetailsState extends State<PatientDetails> {
 }
 
 class PatientClass {
-  String fname, lname, role, address, mobile, email, age, gender;
-  bool isNewUser;
+  String fname, lname, role, address, mobile, email, age, gender, isNewUser;
 
   PatientClass(
       {this.fname,
@@ -496,7 +501,7 @@ class PatientClass {
       this.mobile,
       this.age,
       // this.gender,
-      this.isNewUser = true});
+      this.isNewUser = "true"});
 
   Map<String, dynamic> toJson() => {
         'firstName': fname,

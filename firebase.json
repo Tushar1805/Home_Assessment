@@ -1,5 +1,14 @@
 {
   "functions": {
     "source": "functions"
+  },
+  "hosting": {
+    "site": "prachitest-96f1d",
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ]
   }
 }
