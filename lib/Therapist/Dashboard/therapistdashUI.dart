@@ -16,6 +16,7 @@ import 'package:tryapp/Therapist/Dashboard/ViewFeedbackBase.dart';
 import 'package:tryapp/Therapist/Dashboard/homeAddresses.dart';
 import 'package:tryapp/Therapist/Dashboard/nurses.dart';
 import 'package:tryapp/Therapist/Dashboard/patients.dart';
+import 'package:tryapp/Therapist/Dashboard/shareApp.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistdashrepo.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistpro.dart';
 import 'package:tryapp/Therapist/Dashboard/viewFeedback.dart';
@@ -41,6 +42,7 @@ class _TherapistUIState extends State<TherapistUI> {
   List<Map<String, dynamic>> list = [];
   int sum = 0;
   double rating = 0.0;
+  bool admin = false;
 
   @override
   void initState() {
@@ -120,6 +122,11 @@ class _TherapistUIState extends State<TherapistUI> {
           // print("**********imgUrl = $imgUrl");
           // address = (value["houses"][0]["city"].toString());
         });
+        if (value.data().containsKey("admin")) {
+          setState(() {
+            admin = value.data()["admin"];
+          });
+        }
       },
     );
   }
@@ -779,103 +786,107 @@ class _TherapistUIState extends State<TherapistUI> {
               child: ListView(
                 padding: EdgeInsets.zero,
                 children: <Widget>[
-                  DrawerHeader(
-                    decoration: BoxDecoration(
-                      color: Color.fromRGBO(10, 80, 106, 1),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.45,
-                          // color: Colors.pink,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                padding: EdgeInsets.only(top: 20),
-                                alignment: Alignment.centerLeft,
-                                // color: Colors.red,
-                                child: Text(
-                                  "Hello,",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 22,
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.35,
+                    child: DrawerHeader(
+                      decoration: BoxDecoration(
+                        color: Color.fromRGBO(10, 80, 106, 1),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.49,
+
+                            // color: Colors.pink,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.only(top: 20),
+                                  alignment: Alignment.centerLeft,
+                                  // color: Colors.red,
+                                  child: Text(
+                                    "Hello,",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 22,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              getName(userFirstName),
-                              Container(
-                                padding: EdgeInsets.only(left: 4),
-                                child: Text(
-                                  "$rating / 5",
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold),
+                                getName(userFirstName),
+                                Container(
+                                  padding: EdgeInsets.only(left: 4),
+                                  child: Text(
+                                    "$rating / 5",
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
                                 ),
-                              ),
-                              Row(
-                                children: [
-                                  Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: new List.generate(
-                                          5,
-                                          (index) =>
-                                              buildStar(context, index))),
-                                ],
-                              ),
-                            ],
+                                Row(
+                                  children: [
+                                    Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: new List.generate(
+                                            5,
+                                            (index) =>
+                                                buildStar(context, index))),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 7),
-                        InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) =>
-                                    ViewPhoto(imgUrl ?? "", "therapist")));
-                          },
-                          child: Container(
-                              // height: 30,
-                              alignment: Alignment.centerRight,
-                              // width: double.infinity,
-                              // color: Colors.red,
-                              child: (imgUrl != "" && imgUrl != null)
-                                  ? CircleAvatar(
-                                      backgroundColor: Colors.white,
-                                      radius: 47,
-                                      // backgroundImage: (imgUrl != "" && imgUrl != null)
-                                      //     ? NetworkImage(imgUrl)
-                                      //     : Image.asset('assets/therapistavatar.png'),
-                                      child: ClipOval(
-                                          clipBehavior: Clip.hardEdge,
-                                          child: CachedNetworkImage(
-                                            imageUrl: imgUrl,
-                                            fit: BoxFit.cover,
-                                            width: 400,
-                                            height: 400,
-                                            placeholder: (context, url) =>
-                                                new CircularProgressIndicator(),
-                                            errorWidget:
-                                                (context, url, error) =>
-                                                    new Icon(Icons.error),
-                                          )),
-                                    )
-                                  : CircleAvatar(
-                                      radius: 47,
-                                      backgroundColor: Colors.white,
-                                      child: ClipOval(
-                                        child: Image.asset(
-                                          'assets/therapistavatar.png',
+                          SizedBox(height: 7),
+                          InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      ViewPhoto(imgUrl ?? "", "therapist")));
+                            },
+                            child: Container(
+                                // height: 30,
+                                alignment: Alignment.centerRight,
+                                // width: double.infinity,
+                                // color: Colors.red,
+                                child: (imgUrl != "" && imgUrl != null)
+                                    ? CircleAvatar(
+                                        backgroundColor: Colors.white,
+                                        radius: 47,
+                                        // backgroundImage: (imgUrl != "" && imgUrl != null)
+                                        //     ? NetworkImage(imgUrl)
+                                        //     : Image.asset('assets/therapistavatar.png'),
+                                        child: ClipOval(
+                                            clipBehavior: Clip.hardEdge,
+                                            child: CachedNetworkImage(
+                                              imageUrl: imgUrl,
+                                              fit: BoxFit.cover,
+                                              width: 400,
+                                              height: 400,
+                                              placeholder: (context, url) =>
+                                                  new CircularProgressIndicator(),
+                                              errorWidget:
+                                                  (context, url, error) =>
+                                                      new Icon(Icons.error),
+                                            )),
+                                      )
+                                    : CircleAvatar(
+                                        radius: 47,
+                                        backgroundColor: Colors.white,
+                                        child: ClipOval(
+                                          child: Image.asset(
+                                            'assets/therapistavatar.png',
+                                          ),
                                         ),
-                                      ),
-                                    )),
-                        ),
-                      ],
+                                      )),
+                          ),
+                        ],
+                      ),
+                      // child: Text("$name"),
+                      //
                     ),
-                    // child: Text("$name"),
-                    //
                   ),
                   // ListTile(
                   //   leading: Icon(Icons.favorite, color: Colors.green),
@@ -937,6 +948,20 @@ class _TherapistUIState extends State<TherapistUI> {
                               builder: (context) => ViewFeedbackBase()))
                     },
                   ),
+                  admin
+                      ? ListTile(
+                          leading: Icon(Icons.admin_panel_settings_sharp,
+                              color: Colors.green),
+                          title: Text(
+                            'Admin',
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          onTap: () => {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => ShareApp()))
+                          },
+                        )
+                      : SizedBox(),
                   // ListTile(
                   //   leading: Icon(Icons.pages, color: Colors.green),
                   //   title: Text(
@@ -961,7 +986,7 @@ class _TherapistUIState extends State<TherapistUI> {
                       await _auth.signOut().then((value) =>
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
-                                  builder: (context) => Login())));
+                                  builder: (context) => Login(""))));
                     } catch (e) {
                       print(e.toString());
                     }

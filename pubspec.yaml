@@ -40,7 +40,7 @@ dependencies:
   deep_collection: ^1.0.1
   intl: ^0.17.0
   pdf: ^3.4.2
-  flutter_full_pdf_viewer:
+  # flutter_full_pdf_viewer:
   path_provider: ^2.0.2
   permission_handler: ^8.1.4+2
   photo_view: ^0.12.0
@@ -56,6 +56,8 @@ dependencies:
   firebase_messaging: ^10.0.6
   stacked_cli: ^1.0.16
   open_file: ^3.2.1
+  mailer:
+  google_sign_in:
 
   # speech_recognition: ^0.3.0+1
 
@@ -95,6 +97,7 @@ flutter:
     - assets/therapistavatar.png
     - assets/nodata.png
     - assets/bhbs.png
+    - assets/app-release.apk
     # - assets/doc(1).png
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

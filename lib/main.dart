@@ -189,7 +189,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             onPressed: () {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) =>
-                                      TherapistDetails(null, null)));
+                                      TherapistDetails(null, null, true)));
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -251,7 +251,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 Route _createRoute() {
   return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => Login(),
+    pageBuilder: (context, animation, secondaryAnimation) => Login(""),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       var begin = Offset(0.0, 1.0);
       var end = Offset.zero;

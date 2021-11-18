@@ -11,7 +11,7 @@ class LoginProvider extends ChangeNotifier {
 
   Future loginProvider(String email, String password) async {
     userExists = await userRepository.login(email, password);
-    // return userExists;
+    return userExists;
   }
 
   Future<Widget> getUserType(type) async {

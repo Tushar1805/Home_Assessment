@@ -758,7 +758,7 @@ class _NurseUIState extends State<NurseUI> {
                   try {
                     await _auth.signOut();
                     Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => Login()));
+                        MaterialPageRoute(builder: (context) => Login("")));
                   } catch (e) {
                     print(e.toString());
                   }

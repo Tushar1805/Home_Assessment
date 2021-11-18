@@ -903,7 +903,7 @@ class _PatientUIState extends State<PatientUI> {
                   try {
                     await auth.signOut();
                     Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) => Login()));
+                        MaterialPageRoute(builder: (context) => Login("")));
                   } catch (e) {
                     print(e.toString());
                   }

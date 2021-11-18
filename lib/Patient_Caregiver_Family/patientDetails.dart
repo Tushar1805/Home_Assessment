@@ -11,7 +11,9 @@ import '../constants.dart';
 class PatientDetails extends StatefulWidget {
   final TherapistClass therapist;
   final PatientClass patient;
-  PatientDetails(this.therapist, this.patient, {Key key}) : super(key: key);
+  final bool needTherapist;
+  PatientDetails(this.therapist, this.patient, this.needTherapist, {Key key})
+      : super(key: key);
 
   @override
   _PatientDetailsState createState() => _PatientDetailsState();
@@ -354,138 +356,139 @@ class _PatientDetailsState extends State<PatientDetails> {
         ),
       ),
       backgroundColor: Colors.grey[200],
-      body: Container(
-          height: MediaQuery.of(context).size.height,
-          margin: EdgeInsets.all(24),
-          child: Form(
-            key: _formKey,
-            child: Stack(children: [
-              SingleChildScrollView(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+      body: SingleChildScrollView(
+        child: Container(
+            height: MediaQuery.of(context).size.height * 0.8,
+            margin: EdgeInsets.all(24),
+            child: Form(
+              key: _formKey,
+              child: Stack(children: [
+                Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                  _buildfName(),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  _buildlName(),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  _buildEmail(),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  // _buildPhone(),
+                  // SizedBox(
+                  //   height: 15,
+                  // ),
+                  _buildAddress(),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  _buildPhone(),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  _buildAge(),
+                  // SizedBox(
+                  //   height: 15,
+                  // ),
+                  // _buildGender(),
+                  // SizedBox(
+                  //   height: 50,
+                  // ),
+                ]),
+                Container(
+                  alignment: Alignment.bottomRight,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      _buildfName(),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      _buildlName(),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      _buildEmail(),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      // _buildPhone(),
-                      // SizedBox(
-                      //   height: 15,
-                      // ),
-                      _buildAddress(),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      _buildPhone(),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      _buildAge(),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      // _buildGender(),
-                      // SizedBox(
-                      //   height: 50,
-                      // ),
-                    ]),
-              ),
-              Container(
-                alignment: Alignment.bottomRight,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton(
-                      onPressed: () async {
-                        if (!_formKey.currentState.validate()) {
-                          return;
-                        }
-                        _formKey.currentState.save();
+                      TextButton(
+                        onPressed: () async {
+                          if (!_formKey.currentState.validate()) {
+                            return;
+                          }
+                          _formKey.currentState.save();
 
-                        PatientClass patient = patientDetails();
-                        bool check = await checkIfEmailInUse(patient.email);
+                          PatientClass patient = patientDetails();
+                          bool check = await checkIfEmailInUse(patient.email);
 
-                        check
-                            ? showSnackBar(context,
-                                "Email already exists use a different email address")
-                            : Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => TherapistDetails(
-                                    widget.therapist, patient)));
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.38,
-                        height: 40.0,
-                        decoration: new BoxDecoration(
-                          color: Color.fromRGBO(10, 80, 106, 1),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(5.0),
+                          check
+                              ? showSnackBar(context,
+                                  "Email already exists use a different email address")
+                              : Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => TherapistDetails(
+                                      widget.therapist,
+                                      patient,
+                                      widget.needTherapist)));
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.38,
+                          height: 40.0,
+                          decoration: new BoxDecoration(
+                            color: Color.fromRGBO(10, 80, 106, 1),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(5.0),
+                            ),
                           ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Previous',
-                            style: whiteTextStyle().copyWith(
-                                fontSize: 15.0, fontWeight: FontWeight.w600),
+                          child: Center(
+                            child: Text(
+                              'Previous',
+                              style: whiteTextStyle().copyWith(
+                                  fontSize: 15.0, fontWeight: FontWeight.w600),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        if (!_formKey.currentState.validate()) {
-                          return;
-                        }
-                        _formKey.currentState.save();
+                      TextButton(
+                        onPressed: () async {
+                          if (!_formKey.currentState.validate()) {
+                            return;
+                          }
+                          _formKey.currentState.save();
 
-                        PatientClass patient = patientDetails();
-                        bool check = await checkIfEmailInUse(patient.email);
+                          PatientClass patient = patientDetails();
+                          bool check = await checkIfEmailInUse(patient.email);
 
-                        check
-                            ? showSnackBar(context,
-                                "Email already exists use a different email address")
-                            : Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                    builder: (context) => ScheduleAssessment(
-                                        widget.therapist, patient)));
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.38,
-                        height: 40.0,
-                        decoration: new BoxDecoration(
-                          color: Color.fromRGBO(10, 80, 106, 1),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(5.0),
+                          check
+                              ? showSnackBar(context,
+                                  "Email already exists use a different email address")
+                              : Navigator.of(context).pushReplacement(
+                                  MaterialPageRoute(
+                                      builder: (context) => ScheduleAssessment(
+                                          widget.therapist,
+                                          patient,
+                                          widget.needTherapist)));
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width * 0.38,
+                          height: 40.0,
+                          decoration: new BoxDecoration(
+                            color: Color.fromRGBO(10, 80, 106, 1),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(5.0),
+                            ),
                           ),
-                        ),
-                        child: Center(
-                          child: Text(
-                            'Next',
-                            style: whiteTextStyle().copyWith(
-                                fontSize: 15.0, fontWeight: FontWeight.w600),
+                          child: Center(
+                            child: Text(
+                              'Next',
+                              style: whiteTextStyle().copyWith(
+                                  fontSize: 15.0, fontWeight: FontWeight.w600),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ]),
-          )),
+              ]),
+            )),
+      ),
     );
   }
 }
 
 class PatientClass {
-  String fname, lname, role, address, mobile, email, age, gender;
-  bool isNewUser;
+  String fname, lname, role, address, mobile, email, age, gender, isNewUser;
 
   PatientClass(
       {this.fname,
@@ -496,7 +499,7 @@ class PatientClass {
       this.mobile,
       this.age,
       // this.gender,
-      this.isNewUser = true});
+      this.isNewUser = "true"});
 
   Map<String, dynamic> toJson() => {
         'firstName': fname,

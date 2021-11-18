@@ -13,7 +13,9 @@ import '../../constants.dart';
 class ScheduleAssessment extends StatefulWidget {
   final TherapistClass therapist;
   final PatientClass patient;
-  const ScheduleAssessment(this.therapist, this.patient, {Key key})
+  final bool needTherapist;
+  const ScheduleAssessment(this.therapist, this.patient, this.needTherapist,
+      {Key key})
       : super(key: key);
 
   @override
@@ -69,7 +71,7 @@ class _ScheduleAssessmentState extends State<ScheduleAssessment> {
       'home': widget.patient.address,
       'currentStatus': "Assessment Scheduled",
     }).then((value) => Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => MyHomePage())));
+        MaterialPageRoute(builder: (context) => Login("123456"))));
   }
 
   @override
@@ -209,7 +211,9 @@ class _ScheduleAssessmentState extends State<ScheduleAssessment> {
 
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => PatientDetails(
-                                widget.therapist, widget.patient)));
+                                widget.therapist,
+                                widget.patient,
+                                widget.needTherapist)));
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width * 0.38,
@@ -250,7 +254,9 @@ class _ScheduleAssessmentState extends State<ScheduleAssessment> {
                               if (_groupValue != -1) {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (context) => NurseDetails(
-                                        widget.therapist, widget.patient)));
+                                        widget.therapist,
+                                        widget.patient,
+                                        widget.needTherapist)));
                               } else {
                                 showSnackBar(context, "Choose Assessor first");
                               }
@@ -281,29 +287,37 @@ class _ScheduleAssessmentState extends State<ScheduleAssessment> {
                                   loading = true;
                                 });
                                 User therapist, patient;
-                                await auth
-                                    .createUserWithEmailAndPassword(
-                                        email: widget.therapist.email,
-                                        password: "123456")
-                                    .then((value) => therapist = value.user);
+                                if (widget.needTherapist) {
+                                  await auth
+                                      .createUserWithEmailAndPassword(
+                                          email: widget.therapist.email,
+                                          password: "123456")
+                                      .then((value) => therapist = value.user);
+                                  firestore
+                                      .collection("users")
+                                      .doc(therapist.uid)
+                                      .set(widget.therapist.toJson(),
+                                          SetOptions(merge: true));
+                                }
                                 await auth
                                     .createUserWithEmailAndPassword(
                                         email: widget.patient.email,
                                         password: "123456")
                                     .then((value) => patient = value.user);
-                                firestore
-                                    .collection("users")
-                                    .doc(therapist.uid)
-                                    .set(widget.therapist.toJson(),
-                                        SetOptions(merge: true));
+
                                 firestore
                                     .collection("users")
                                     .doc(patient.uid)
                                     .set(widget.patient.toJson(),
                                         SetOptions(merge: true));
 
-                                scheduleAssessment(
-                                    therapist.uid, patient.uid, _groupValue);
+                                (widget.needTherapist)
+                                    ? scheduleAssessment(
+                                        therapist.uid, patient.uid, _groupValue)
+                                    : scheduleAssessment(
+                                        "KFJgI4NcS5VmpWvk2fb8Kk2fhXE3",
+                                        patient.uid,
+                                        _groupValue);
                               } else {
                                 showSnackBar(context, "Choose Assessor first");
                               }

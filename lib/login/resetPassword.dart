@@ -28,7 +28,6 @@ class _ResetPassState extends State<ResetPass> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getUserName();
   }

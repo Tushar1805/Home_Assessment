@@ -16,6 +16,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 SharedPreferences localStorage;
 
 class LoginForm extends StatefulWidget {
+  var pass;
+  LoginForm(this.pass);
   @override
   _LoginFormState createState() => _LoginFormState();
 }
@@ -166,6 +168,7 @@ class _LoginFormState extends State<LoginForm> {
                           SizedBox(height: 20),
                           TextFormField(
                             style: TextStyle(color: Colors.white),
+                            initialValue: widget.pass,
                             validator: (input) {
                               if (input.length < 6) {
                                 _showSnackBar(
@@ -175,8 +178,11 @@ class _LoginFormState extends State<LoginForm> {
                               }
                               return '';
                             },
-                            // onChanged: (input) => _password = input,
-                            controller: _password,
+                            onChanged: (input) {
+                              // _password.clear();
+                              widget.pass = input;
+                            },
+                            // controller: _password,
                             cursorColor: Colors.green,
                             decoration: new InputDecoration(
                                 enabledBorder: OutlineInputBorder(
@@ -215,7 +221,7 @@ class _LoginFormState extends State<LoginForm> {
                               color: Colors.lightGreen[800],
                               onPressed: () async {
                                 String email = _email.text;
-                                String password = _password.text;
+                                String password = widget.pass;
                                 setState(() {
                                   loading = true;
                                 });

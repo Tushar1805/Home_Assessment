@@ -12,7 +12,10 @@ import '../../main.dart';
 class NurseDetails extends StatefulWidget {
   final TherapistClass therapist;
   final PatientClass patient;
-  const NurseDetails(this.therapist, this.patient, {Key key}) : super(key: key);
+  final bool needTherapist;
+  const NurseDetails(this.therapist, this.patient, this.needTherapist,
+      {Key key})
+      : super(key: key);
 
   @override
   _NurseDetailsState createState() => _NurseDetailsState();
@@ -268,7 +271,7 @@ class _NurseDetailsState extends State<NurseDetails> {
                 SizedBox(
                   width: 10.0,
                 ),
-                Text('Nurse Details', style: titleBarWhiteTextStyle()),
+                Text('Case Manager Details', style: titleBarWhiteTextStyle()),
               ],
             ),
           ),
@@ -378,11 +381,19 @@ class _NurseDetailsState extends State<NurseDetails> {
                               "Email already exists use a different email address");
                         } else {
                           User therapist, patient, nurseUser;
-                          await auth
-                              .createUserWithEmailAndPassword(
-                                  email: widget.therapist.email,
-                                  password: "123456")
-                              .then((value) => therapist = value.user);
+                          if (widget.needTherapist) {
+                            await auth
+                                .createUserWithEmailAndPassword(
+                                    email: widget.therapist.email,
+                                    password: "123456")
+                                .then((value) => therapist = value.user);
+                            firestore
+                                .collection("users")
+                                .doc(therapist.uid)
+                                .set(widget.therapist.toJson(),
+                                    SetOptions(merge: true));
+                          }
+
                           await auth
                               .createUserWithEmailAndPassword(
                                   email: widget.patient.email,
@@ -392,9 +403,7 @@ class _NurseDetailsState extends State<NurseDetails> {
                               .createUserWithEmailAndPassword(
                                   email: nurse.email, password: "123456")
                               .then((value) => nurseUser = value.user);
-                          firestore.collection("users").doc(therapist.uid).set(
-                              widget.therapist.toJson(),
-                              SetOptions(merge: true));
+
                           firestore.collection("users").doc(patient.uid).set(
                               widget.patient.toJson(), SetOptions(merge: true));
                           firestore
@@ -402,8 +411,13 @@ class _NurseDetailsState extends State<NurseDetails> {
                               .doc(nurseUser.uid)
                               .set(nurse.toJson(), SetOptions(merge: true));
 
-                          scheduleAssessment(
-                              therapist.uid, patient.uid, nurseUser.uid);
+                          (widget.needTherapist)
+                              ? scheduleAssessment(
+                                  therapist.uid, patient.uid, nurseUser.uid)
+                              : scheduleAssessment(
+                                  "KFJgI4NcS5VmpWvk2fb8Kk2fhXE3",
+                                  patient.uid,
+                                  nurseUser.uid);
                         }
                       },
                       child: Container(
@@ -439,8 +453,7 @@ class _NurseDetailsState extends State<NurseDetails> {
 }
 
 class NurseClass {
-  String fname, lname, role, address, mobile, email, age, gender;
-  bool isNewUser;
+  String fname, lname, role, address, mobile, email, age, gender, isNewUser;
 
   NurseClass(
       {this.fname,
@@ -451,7 +464,7 @@ class NurseClass {
       this.mobile,
       this.age,
       // this.gender,
-      this.isNewUser = true});
+      this.isNewUser = "true"});
 
   Map<String, dynamic> toJson() => {
         'firstName': fname,

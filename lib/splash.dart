@@ -14,6 +14,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   var result = FirebaseAuth.instance.currentUser;
   StreamSubscription<User> _listener;
+  bool admin = false;
 
   @override
   void initState() {
@@ -57,6 +58,15 @@ class _SplashScreenState extends State<SplashScreen> {
               type = "therapist";
             });
           }
+          // if (value.data()["role"][i].toString() == "Admin") {
+          //   setState(() {
+          //     admin = true;
+          //   });
+          // } else {
+          //   setState(() {
+          //     admin = false;
+          //   });
+          // }
         }
       } else {
         setState(() {

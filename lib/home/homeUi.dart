@@ -42,7 +42,7 @@ class _DashPageState extends State<DashPage> {
                 try {
                   await _auth.signOut();
                   Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => Login()));
+                      MaterialPageRoute(builder: (context) => Login("")));
                 } catch (e) {
                   print(e.toString());
                 }
