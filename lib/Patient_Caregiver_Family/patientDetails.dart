@@ -402,7 +402,6 @@ class _PatientDetailsState extends State<PatientDetails> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-<<<<<<< HEAD
                       TextButton(
                         onPressed: () async {
                           if (!_formKey.currentState.validate()) {
@@ -430,73 +429,6 @@ class _PatientDetailsState extends State<PatientDetails> {
                             borderRadius: BorderRadius.all(
                               Radius.circular(5.0),
                             ),
-=======
-                      _buildfName(),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      _buildlName(),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      _buildEmail(),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      // _buildPhone(),
-                      // SizedBox(
-                      //   height: 15,
-                      // ),
-                      _buildAddress(),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      _buildPhone(),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      _buildAge(),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      // _buildGender(),
-                      // SizedBox(
-                      //   height: 50,
-                      // ),
-                    ]),
-              ),
-              Container(
-                alignment: Alignment.bottomRight,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton(
-                      onPressed: () async {
-                        if (!_formKey.currentState.validate()) {
-                          return;
-                        }
-                        _formKey.currentState.save();
-
-                        PatientClass patient = patientDetails();
-                        bool check = await checkIfEmailInUse(patient.email);
-
-                        check
-                            ? showSnackBar(context,
-                                "Email already exists use a different email address")
-                            : Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => TherapistDetails(
-                                    widget.therapist,
-                                    patient,
-                                    widget.needTherapist)));
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.38,
-                        height: 40.0,
-                        decoration: new BoxDecoration(
-                          color: Color.fromRGBO(10, 80, 106, 1),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(5.0),
->>>>>>> 0ff9bd72731ed03cf7d7a04842182492b6ffe499
                           ),
                           child: Center(
                             child: Text(
@@ -507,7 +439,6 @@ class _PatientDetailsState extends State<PatientDetails> {
                           ),
                         ),
                       ),
-<<<<<<< HEAD
                       TextButton(
                         onPressed: () async {
                           if (!_formKey.currentState.validate()) {
@@ -536,36 +467,6 @@ class _PatientDetailsState extends State<PatientDetails> {
                             borderRadius: BorderRadius.all(
                               Radius.circular(5.0),
                             ),
-=======
-                    ),
-                    TextButton(
-                      onPressed: () async {
-                        if (!_formKey.currentState.validate()) {
-                          return;
-                        }
-                        _formKey.currentState.save();
-
-                        PatientClass patient = patientDetails();
-                        bool check = await checkIfEmailInUse(patient.email);
-
-                        check
-                            ? showSnackBar(context,
-                                "Email already exists use a different email address")
-                            : Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                    builder: (context) => ScheduleAssessment(
-                                        widget.therapist,
-                                        patient,
-                                        widget.needTherapist)));
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.38,
-                        height: 40.0,
-                        decoration: new BoxDecoration(
-                          color: Color.fromRGBO(10, 80, 106, 1),
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(5.0),
->>>>>>> 0ff9bd72731ed03cf7d7a04842182492b6ffe499
                           ),
                           child: Center(
                             child: Text(

@@ -356,7 +356,6 @@ class _TherapistDetailsState extends State<TherapistDetails> {
         ),
       ),
       backgroundColor: Colors.grey[200],
-<<<<<<< HEAD
       body: SingleChildScrollView(
         child: Container(
             height: MediaQuery.of(context).size.height,
@@ -504,155 +503,10 @@ class _TherapistDetailsState extends State<TherapistDetails> {
                                     fontSize: 15.0,
                                     fontWeight: FontWeight.w600),
                               ),
-=======
-      body: Container(
-          height: MediaQuery.of(context).size.height,
-          margin: EdgeInsets.all(24),
-          child: Column(
-            children: [
-              Container(
-                padding: EdgeInsets.all(10),
-                child: Text(
-                  "Choose which therapist you want.",
-                  style: TextStyle(
-                      fontSize: 18, color: Color.fromRGBO(10, 80, 106, 1)),
-                ),
-              ),
-              RadioListTile(
-                value: 0,
-                groupValue: _groupValue,
-                title: Text("BHBS"),
-                onChanged: (newValue) => setState(() {
-                  // assessor = newValue;
-                  _groupValue = 0;
-                }),
-                activeColor: Colors.blue,
-              ),
-              RadioListTile(
-                value: 1,
-                groupValue: _groupValue,
-                title: Text("My Therapist"),
-                onChanged: (newValue) => setState(() {
-                  // assessor = newValue;
-                  _groupValue = 1;
-                }),
-                activeColor: Colors.blue,
-              ),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.595,
-                child: Stack(
-                  children: [
-                    SingleChildScrollView(
-                      child: Column(children: [
-                        (_groupValue != 0)
-                            ? Form(
-                                key: _formKey,
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      _buildfName(),
-                                      SizedBox(
-                                        height: 15,
-                                      ),
-                                      _buildlName(),
-                                      SizedBox(
-                                        height: 15,
-                                      ),
-                                      _buildEmail(),
-                                      SizedBox(
-                                        height: 15,
-                                      ),
-                                      // _buildPhone(),
-                                      // SizedBox(
-                                      //   height: 15,
-                                      // ),
-                                      _buildAddress(),
-                                      SizedBox(
-                                        height: 15,
-                                      ),
-                                      _buildPhone(),
-                                      SizedBox(
-                                        height: 15,
-                                      ),
-                                      _buildAge(),
-                                      SizedBox(
-                                        height: 15,
-                                      ),
-                                      // _buildGender(),
-                                      // SizedBox(
-                                      //   height: 50,
-                                      // ),
-                                    ]),
-                              )
-                            : SizedBox(),
-                      ]),
-                    ),
-                    // Positioned(
-                    // top: MediaQuery.of(context).size.height * 0.52,
-                    // left: MediaQuery.of(context).size.width * 0.4,
-                    Container(
-                      alignment: Alignment.bottomRight,
-                      child: TextButton(
-                        onPressed: () async {
-                          if (_groupValue == 0) {
-                            setState(() {
-                              widget.needTherapist = false;
-                            });
-                          } else {
-                            setState(() {
-                              widget.needTherapist = false;
-                            });
-                          }
-                          if (_groupValue != 0) {
-                            if (!_formKey.currentState.validate()) {
-                              return;
-                            }
-                            _formKey.currentState.save();
-
-                            TherapistClass therapist = therapistDetails();
-                            bool check =
-                                await checkIfEmailInUse(therapist.email);
-                            print("$check");
-
-                            check && _groupValue != -1
-                                ? showSnackBar(
-                                    context,
-                                    _groupValue != -1
-                                        ? "Email already exists use a different email address"
-                                        : "Select one of the options")
-                                : Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) => PatientDetails(
-                                        therapist,
-                                        widget.patient,
-                                        widget.needTherapist)));
-                          } else {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => PatientDetails(
-                                    new TherapistClass(),
-                                    widget.patient,
-                                    widget.needTherapist)));
-                          }
-                        },
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.4,
-                          height: 40.0,
-                          decoration: new BoxDecoration(
-                            color: Color.fromRGBO(10, 80, 106, 1),
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(5.0),
-                            ),
-                          ),
-                          child: Center(
-                            child: Text(
-                              'Next',
-                              style: whiteTextStyle().copyWith(
-                                  fontSize: 15.0, fontWeight: FontWeight.w600),
->>>>>>> 0ff9bd72731ed03cf7d7a04842182492b6ffe499
                             ),
                           ),
                         ),
                       ),
-<<<<<<< HEAD
                       // ),
                     ],
                   ),
@@ -660,15 +514,6 @@ class _TherapistDetailsState extends State<TherapistDetails> {
               ],
             )),
       ),
-=======
-                    ),
-                    // ),
-                  ],
-                ),
-              )
-            ],
-          )),
->>>>>>> 0ff9bd72731ed03cf7d7a04842182492b6ffe499
     );
   }
 }

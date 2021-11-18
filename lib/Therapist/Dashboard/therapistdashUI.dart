@@ -791,7 +791,6 @@ class _TherapistUIState extends State<TherapistUI> {
     return WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(
-<<<<<<< HEAD
             drawer: Drawer(
               child: ListView(
                 padding: EdgeInsets.zero,
@@ -799,30 +798,14 @@ class _TherapistUIState extends State<TherapistUI> {
                   Container(
                     height: MediaQuery.of(context).size.height * 0.35,
                     child: DrawerHeader(
-=======
-            drawer: Container(
-              // width: MediaQuery.of(context).size.width * 0.35,
-              child: Drawer(
-                child: ListView(
-                  padding: EdgeInsets.zero,
-                  children: <Widget>[
-                    DrawerHeader(
->>>>>>> 0ff9bd72731ed03cf7d7a04842182492b6ffe499
                       decoration: BoxDecoration(
                         color: Color.fromRGBO(10, 80, 106, 1),
                       ),
                       child: Row(
-<<<<<<< HEAD
                         children: [
                           Container(
                             width: MediaQuery.of(context).size.width * 0.49,
 
-=======
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.35,
->>>>>>> 0ff9bd72731ed03cf7d7a04842182492b6ffe499
                             // color: Colors.pink,
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.start,
@@ -874,11 +857,7 @@ class _TherapistUIState extends State<TherapistUI> {
                             },
                             child: Container(
                                 // height: 30,
-<<<<<<< HEAD
                                 alignment: Alignment.centerRight,
-=======
-                                // alignment: Alignment.centerLeft,
->>>>>>> 0ff9bd72731ed03cf7d7a04842182492b6ffe499
                                 // width: double.infinity,
                                 // color: Colors.red,
                                 child: (imgUrl != "" && imgUrl != null)
@@ -917,7 +896,6 @@ class _TherapistUIState extends State<TherapistUI> {
                       // child: Text("$name"),
                       //
                     ),
-<<<<<<< HEAD
                   ),
                   // ListTile(
                   //   leading: Icon(Icons.favorite, color: Colors.green),
@@ -957,70 +935,21 @@ class _TherapistUIState extends State<TherapistUI> {
                     title: Text(
                       'Assessments',
                       style: TextStyle(fontSize: 18),
-=======
-                    // ListTile(
-                    //   leading: Icon(Icons.favorite, color: Colors.green),
-                    //   title: Text(
-                    //     'Patients/Caregivers/Families',
-                    //     style: TextStyle(fontSize: 18),
-                    //   ),
-                    //   onTap: () => {
-                    //     Navigator.of(context).push(MaterialPageRoute(
-                    //         builder: (context) => PatientsList()))
-                    //   },
-                    // ),
-                    // ListTile(
-                    //   leading: Icon(Icons.home, color: Colors.green),
-                    //   title: Text(
-                    //     'Home Addresses',
-                    //     style: TextStyle(fontSize: 18),
-                    //   ),
-                    //   onTap: () => {
-                    //     Navigator.of(context).push(MaterialPageRoute(
-                    //         builder: (context) => HomeAddresses()))
-                    //   },
-                    // ),
-                    // ListTile(
-                    //   leading: Icon(Icons.people, color: Colors.green),
-                    //   title: Text(
-                    //     'Nurses/Case Managers',
-                    //     style: TextStyle(fontSize: 18),
-                    //   ),
-                    //   onTap: () => {
-                    //     Navigator.of(context).push(
-                    //         MaterialPageRoute(builder: (context) => NursesList()))
-                    //   },
-                    // ),
-                    ListTile(
-                      leading: Icon(Icons.assessment, color: Colors.green),
-                      title: Text(
-                        'Assessments',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      onTap: () => {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    AssesmentSplashScreen("therapist")))
-                      },
->>>>>>> 0ff9bd72731ed03cf7d7a04842182492b6ffe499
                     ),
-                    ListTile(
-                      leading:
-                          Icon(Icons.feedback_rounded, color: Colors.green),
-                      title: Text(
-                        'Feedback',
-                        style: TextStyle(fontSize: 18),
-                      ),
-                      onTap: () => {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ViewFeedbackBase()))
-                      },
+                    onTap: () => {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  AssesmentSplashScreen("therapist")))
+                    },
+                  ),
+                  ListTile(
+                    leading: Icon(Icons.feedback_rounded, color: Colors.green),
+                    title: Text(
+                      'Feedback',
+                      style: TextStyle(fontSize: 18),
                     ),
-<<<<<<< HEAD
                     onTap: () => {
                       Navigator.push(
                           context,
@@ -1051,32 +980,6 @@ class _TherapistUIState extends State<TherapistUI> {
                   //   onTap: () => {Navigator.of(context).pop()},
                   // ),
                 ],
-=======
-                    admin
-                        ? ListTile(
-                            leading: Icon(Icons.admin_panel_settings_sharp,
-                                color: Colors.green),
-                            title: Text(
-                              'Admin',
-                              style: TextStyle(fontSize: 18),
-                            ),
-                            onTap: () => {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => ShareApp()))
-                            },
-                          )
-                        : SizedBox(),
-                    // ListTile(
-                    //   leading: Icon(Icons.pages, color: Colors.green),
-                    //   title: Text(
-                    //     'Report',
-                    //     style: TextStyle(fontSize: 18),
-                    //   ),
-                    //   onTap: () => {Navigator.of(context).pop()},
-                    // ),
-                  ],
-                ),
->>>>>>> 0ff9bd72731ed03cf7d7a04842182492b6ffe499
               ),
             ),
             appBar: AppBar(

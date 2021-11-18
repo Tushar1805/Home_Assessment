@@ -189,11 +189,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             onPressed: () {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) =>
-<<<<<<< HEAD
                                       TherapistDetails(null, null, true)));
-=======
-                                      TherapistDetails(null, null, null)));
->>>>>>> 0ff9bd72731ed03cf7d7a04842182492b6ffe499
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
