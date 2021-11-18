@@ -58,6 +58,10 @@ dependencies:
   open_file: ^3.2.1
   mailer:
   google_sign_in:
+<<<<<<< HEAD
+=======
+  http: ^0.13.4
+>>>>>>> 0ff9bd72731ed03cf7d7a04842182492b6ffe499
 
   # speech_recognition: ^0.3.0+1
 

@@ -24,6 +24,7 @@ import 'package:provider/provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/pdfReview.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class ReportUI extends StatefulWidget {
   List<Map<String, dynamic>> assess;
@@ -84,13 +85,16 @@ class _ReportUIState extends State<ReportUI> {
   // }
 
   Future<String> getDirectoryPath() async {
-    Directory appDocDirectory = await getApplicationDocumentsDirectory();
+    if (kIsWeb) {
+    } else {
+      Directory appDocDirectory = await getApplicationDocumentsDirectory();
 
-    Directory directory =
-        await new Directory(appDocDirectory.path + '/' + 'dir')
-            .create(recursive: true);
+      Directory directory =
+          await new Directory(appDocDirectory.path + '/' + 'dir')
+              .create(recursive: true);
 
-    return directory.path;
+      return directory.path;
+    }
   }
 
   // Future downloadFile(Uri uri, path) async {
@@ -1389,7 +1393,7 @@ class _ReportUIState extends State<ReportUI> {
             ),
             highlightColor: Colors.transparent,
             onPressed: () async {
-              await imageLoader();
+              // await imageLoader();
               writeOnPdf();
               // await savePdf();
               pdfAsset().then((file) {

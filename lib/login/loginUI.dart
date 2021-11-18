@@ -211,7 +211,7 @@ class _LoginFormState extends State<LoginForm> {
                           ),
                           SizedBox(height: 30),
                           Container(
-                            width: MediaQuery.of(context).size.width * .5,
+                            width: MediaQuery.of(context).size.width * .3,
                             height: 50,
                             child: RaisedButton(
                               shape: RoundedRectangleBorder(

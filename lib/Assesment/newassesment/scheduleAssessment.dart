@@ -13,8 +13,13 @@ import '../../constants.dart';
 class ScheduleAssessment extends StatefulWidget {
   final TherapistClass therapist;
   final PatientClass patient;
+<<<<<<< HEAD
   final bool needTherapist;
   const ScheduleAssessment(this.therapist, this.patient, this.needTherapist,
+=======
+  bool needTherapist;
+  ScheduleAssessment(this.therapist, this.patient, this.needTherapist,
+>>>>>>> 0ff9bd72731ed03cf7d7a04842182492b6ffe499
       {Key key})
       : super(key: key);
 

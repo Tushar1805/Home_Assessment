@@ -1,6 +1,14 @@
+<<<<<<< HEAD
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+=======
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
+>>>>>>> 0ff9bd72731ed03cf7d7a04842182492b6ffe499
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +16,10 @@ import 'package:flutter/services.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+<<<<<<< HEAD
+=======
+import 'package:http/http.dart' as http;
+>>>>>>> 0ff9bd72731ed03cf7d7a04842182492b6ffe499
 
 import '../../constants.dart';
 
@@ -48,7 +60,11 @@ class _ShareAppState extends State<ShareApp> {
     setState(() {
       revRecipients = recipients.reversed.toList();
     });
+<<<<<<< HEAD
     print("revRecipients: $revRecipients");
+=======
+    // print("revRecipients: $revRecipients");
+>>>>>>> 0ff9bd72731ed03cf7d7a04842182492b6ffe499
   }
 
   void reverse(var recipient) {
@@ -91,7 +107,11 @@ class _ShareAppState extends State<ShareApp> {
         flexibleSpace: Container(
           width: MediaQuery.of(context).size.width,
           child: new Padding(
+<<<<<<< HEAD
             padding: const EdgeInsets.only(left: 10.0, top: 40, bottom: 10.0),
+=======
+            padding: const EdgeInsets.only(left: 10.0, top: 10, bottom: 10.0),
+>>>>>>> 0ff9bd72731ed03cf7d7a04842182492b6ffe499
             child: Row(
               children: [
                 IconButton(
@@ -120,7 +140,11 @@ class _ShareAppState extends State<ShareApp> {
               Container(
                   padding: EdgeInsets.all(10),
                   child: Text(
+<<<<<<< HEAD
                     "Enter below the email address to which you wish to send trial  version of prism app or website",
+=======
+                    "Enter below the email address to which you wish to send trial version of prism app or website",
+>>>>>>> 0ff9bd72731ed03cf7d7a04842182492b6ffe499
                     style: TextStyle(
                         color: Color.fromRGBO(10, 80, 106, 1), fontSize: 20),
                   )),
@@ -184,16 +208,40 @@ class _ShareAppState extends State<ShareApp> {
                 alignment: Alignment.bottomCenter,
                 child: ElevatedButton(
                   onPressed: () {
+<<<<<<< HEAD
                     if (recipientController.text.isNotEmpty) {
                       sendEmail();
 
+=======
+                    print("0000000");
+                    String subject = "Prism Application (Trial)";
+                    String url =
+                        "https://firebasestorage.googleapis.com/v0/b/prachitest-96f1d.appspot.com/o/app-release.apk?alt=media&token=c0eba96a-2f44-46e2-984c-cc41e2db131e";
+
+                    String message = "Please find below the links for the trial version of the Prism Application. \n\n" +
+                        "Following the links, you will also find attached documentation that will guide you to use the same." +
+                        "If you are using an android mobile device, click on the link below to download and install the trial version of the Prism Application :" +
+                        "\n\n $url \n\nDownload will start after clicking the above link. It is 42.74 MB file so wait untill it gets download." +
+                        "\n\nIf you are using an apple mobile device, open the following link in your device's web browser to run the trial version of the Prism Application : \n\n" +
+                        "https://prachitest-96f1d.web.app \n\nYou can fill details of patient and caregiver as you wish there password will also be 123456." +
+                        "\n\n Note: On clicking the link, it shows a small alert dialog box that tells us 'This kind of file may harm your device'" +
+                        " but don't worry about that we have taken care of it.";
+
+                    if (recipientController.text.isNotEmpty) {
+                      print("#######");
+                      sendEmailJs(recipient, subject, message);
+                      recipients.add(recipient);
+>>>>>>> 0ff9bd72731ed03cf7d7a04842182492b6ffe499
                       User user = auth.currentUser;
                       FirebaseFirestore.instance
                           .collection("users")
                           .doc(user.uid)
                           .set({"sharedTo": recipients},
                               SetOptions(merge: true));
+<<<<<<< HEAD
                       recipientController.clear();
+=======
+>>>>>>> 0ff9bd72731ed03cf7d7a04842182492b6ffe499
                     } else {
                       showSnackBar(context, "Receiver mail can't be empty");
                       setState(() {
@@ -223,25 +271,76 @@ class _ShareAppState extends State<ShareApp> {
     );
   }
 
+<<<<<<< HEAD
   Future<void> sendEmail() async {
     setState(() {
       loading = true;
       recipients.add(recipient);
       reverse(recipients);
+=======
+  Future<void> sendEmailJs(String email, String subject, String message) async {
+    setState(() {
+      loading = true;
+    });
+    final serviceId = 'service_qlkrgo9';
+    final templateId = 'template_hvch117';
+    final userId = 'user_1jFTI749lDVF2WSiMRYu7';
+
+    final url = Uri.parse("https://api.emailjs.com/api/v1.0/email/send");
+    final response = await http
+        .post(
+          url,
+          headers: {
+            "origin": 'http://localhost',
+            "Content-Type": 'application/json',
+          },
+          body: json.encode({
+            "service_id": serviceId,
+            "template_id": templateId,
+            "user_id": userId,
+            'template_params': {
+              'user_email': email,
+              'user_subject': subject,
+              'user_message': message
+            }
+          }),
+        )
+        .then((value) => showSnackBar(context, "Email sent successfully"));
+    setState(() {
+      loading = false;
+    });
+  }
+
+  Future<void> sendEmail() async {
+    print("****");
+    setState(() {
+      loading = true;
+>>>>>>> 0ff9bd72731ed03cf7d7a04842182492b6ffe499
     });
     final user = await GoogleAuthApi.signIn();
 
     if (user == null) return;
 
     final email = user.email;
+<<<<<<< HEAD
+=======
+    print("$email");
+>>>>>>> 0ff9bd72731ed03cf7d7a04842182492b6ffe499
     final auth = await user.authentication;
     final token = auth.accessToken;
 
     print("Authentication: $email");
     print("recipient: $recipient");
 
+<<<<<<< HEAD
     Reference ref = FirebaseStorage.instance.ref().child("/app-release.apk");
     String url = (await ref.getDownloadURL()).toString();
+=======
+    // Reference ref = FirebaseStorage.instance.ref().child("/app-release.apk");
+    // String url = (await ref.getDownloadURL()).toString();
+    String url =
+        "https://firebasestorage.googleapis.com/v0/b/prachitest-96f1d.appspot.com/o/app-release.apk?alt=media&token=c0eba96a-2f44-46e2-984c-cc41e2db131e";
+>>>>>>> 0ff9bd72731ed03cf7d7a04842182492b6ffe499
 
     final smtpServer = gmailSaslXoauth2(email, token);
     final message = Message()
@@ -253,6 +352,11 @@ class _ShareAppState extends State<ShareApp> {
           "If you are using an android mobile device, click on the link below to download and install the trial version of the Prism Application :" +
           "\n\n $url \n\nDownload will start after clicking the above link. It is 42.74 MB file so wait untill it gets download." +
           "\n\nIf you are using an apple mobile device, open the following link in your device's web browser to run the trial version of the Prism Application :\n\n" +
+<<<<<<< HEAD
+=======
+          "Click on start trial first fill your details and use this email as your username and your password will be 123456." +
+          " You can fill details of patient and caregiver as you wish there password will also be 123456." +
+>>>>>>> 0ff9bd72731ed03cf7d7a04842182492b6ffe499
           "\n\n Note: On clicking the link, it shows a small alert dialog box that tells us 'This kind of file may harm your device'" +
           " but don't worry about that we have taken care of it.";
 
@@ -276,8 +380,15 @@ class _ShareAppState extends State<ShareApp> {
 }
 
 class GoogleAuthApi {
+<<<<<<< HEAD
   static final _googleSignIn =
       GoogleSignIn(scopes: ['https://mail.google.com/']);
+=======
+  static final _clientIDWeb =
+      "360379890308-crcb8shgjqg6dlr4pjuv4llkj487njpf.apps.googleusercontent.com";
+  static final _googleSignIn = GoogleSignIn(
+      scopes: ['https://mail.google.com/'], clientId: _clientIDWeb);
+>>>>>>> 0ff9bd72731ed03cf7d7a04842182492b6ffe499
 
   static Future<GoogleSignInAccount> signIn() async {
     if (await _googleSignIn.isSignedIn()) {

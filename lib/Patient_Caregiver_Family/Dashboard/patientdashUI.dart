@@ -734,7 +734,7 @@ class _PatientUIState extends State<PatientUI> {
         onWillPop: () async => false,
         child: Scaffold(
           drawer: Container(
-            width: MediaQuery.of(context).size.width * 0.80,
+            width: MediaQuery.of(context).size.width * 0.35,
             child: Drawer(
               child: ListView(
                 padding: EdgeInsets.zero,
@@ -746,7 +746,7 @@ class _PatientUIState extends State<PatientUI> {
                     child: Row(
                       children: [
                         Container(
-                          width: MediaQuery.of(context).size.width * 0.45,
+                          width: MediaQuery.of(context).size.width * 0.2,
                           // color: Colors.pink,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
