@@ -40,7 +40,6 @@ dependencies:
   deep_collection: ^1.0.1
   intl: ^0.17.0
   pdf: ^3.4.2
-  flutter_full_pdf_viewer:
   path_provider: ^2.0.2
   permission_handler: ^8.1.4+2
   photo_view: ^0.12.0

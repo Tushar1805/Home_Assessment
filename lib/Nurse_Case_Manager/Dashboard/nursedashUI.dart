@@ -14,6 +14,7 @@ import 'package:tryapp/Patient_Caregiver_Family/Dashboard/reportbase.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/reportui.dart';
 import 'package:tryapp/Therapist/Dashboard/homeAddresses.dart';
 import 'package:tryapp/Therapist/Dashboard/patients.dart';
+import 'package:tryapp/products.dart';
 import 'package:tryapp/splash/assesment.dart';
 import 'package:tryapp/constants.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
@@ -710,6 +711,17 @@ class _NurseUIState extends State<NurseUI> {
                         MaterialPageRoute(
                             builder: (context) =>
                                 AssesmentSplashScreen("nurse/case manager")))
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.assessment, color: Colors.green),
+                  title: Text(
+                    'Products',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  onTap: () => {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Products()))
                   },
                 ),
               ],
