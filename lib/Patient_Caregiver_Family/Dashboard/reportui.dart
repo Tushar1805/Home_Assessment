@@ -7,23 +7,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:ndialog/ndialog.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
-import 'package:pdf/pdf.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import 'package:tryapp/Patient_Caregiver_Family/Dashboard/pdfReview.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class ReportUI extends StatefulWidget {
   List<Map<String, dynamic>> assess;
@@ -84,13 +76,16 @@ class _ReportUIState extends State<ReportUI> {
   // }
 
   Future<String> getDirectoryPath() async {
-    Directory appDocDirectory = await getApplicationDocumentsDirectory();
+    if (kIsWeb) {
+    } else {
+      Directory appDocDirectory = await getApplicationDocumentsDirectory();
 
-    Directory directory =
-        await new Directory(appDocDirectory.path + '/' + 'dir')
-            .create(recursive: true);
+      Directory directory =
+          await new Directory(appDocDirectory.path + '/' + 'dir')
+              .create(recursive: true);
 
-    return directory.path;
+      return directory.path;
+    }
   }
 
   // Future downloadFile(Uri uri, path) async {
@@ -127,7 +122,7 @@ class _ReportUIState extends State<ReportUI> {
             fname =
                 (capitalize(value.data()["firstName"].toString()) ?? "First");
             lname = (capitalize(value.data()["lastName"].toString()) ?? "Last");
-            gender = (capitalize(value.data()["gender"].toString()) ?? "Male");
+            // gender = (capitalize(value.data()["gender"].toString()) ?? "Male");
             address =
                 (capitalize(value.data()["houses"][0]["city"].toString()) ??
                     "Nagpur");
@@ -203,7 +198,8 @@ class _ReportUIState extends State<ReportUI> {
         // assess = List.castFrom(value["form"].toList());
         if (value.data()["date"] != null) {
           setState(() {
-            startingTime = value.data()["date"].toString();
+            startingTime =
+                DateFormat.yMd().format(value.data()["date"].toDate());
           });
         }
         if (value.data()["assessmentCompletionDate"] != null) {
@@ -557,9 +553,9 @@ class _ReportUIState extends State<ReportUI> {
               buildRow("Age", age),
               buildRow("Email", email),
               buildRow("Phone Number", phone),
-              buildRow("Height", "$height ft"),
-              buildRow("Weight(lbs)", "$weight kg"),
-              buildRow("Hand Dominance", handDominance),
+              // buildRow("Height", "$height ft"),
+              // buildRow("Weight(lbs)", "$weight kg"),
+              // buildRow("Hand Dominance", handDominance),
               // buildRow("Date of Assessment", "10/5/20"),
               buildRow("Assessment Start Time", startingTime),
               buildRow("Assessment End Time", closingTime),
@@ -1418,10 +1414,10 @@ class _ReportUIState extends State<ReportUI> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: buildUserCard(),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.all(20),
+            //   child: buildUserCard(),
+            // ),
             Padding(padding: const EdgeInsets.all(10), child: buildPrioOne()),
             Padding(padding: const EdgeInsets.all(10), child: buildPrioTwo()),
             Padding(padding: const EdgeInsets.all(10), child: buildPrioThree()),
