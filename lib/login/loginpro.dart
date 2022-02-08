@@ -11,7 +11,7 @@ class LoginProvider extends ChangeNotifier {
 
   Future loginProvider(String email, String password) async {
     userExists = await userRepository.login(email, password);
-    // return userExists;
+    return userExists;
   }
 
   Future<Widget> getUserType(type) async {
@@ -23,7 +23,7 @@ class LoginProvider extends ChangeNotifier {
       case 'patient':
         return Patient();
       default:
-        return Nurse();
+        return Therapist();
     }
   }
 }

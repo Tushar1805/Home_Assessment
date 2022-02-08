@@ -16,6 +16,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 SharedPreferences localStorage;
 
 class LoginForm extends StatefulWidget {
+  var pass;
+  LoginForm(this.pass);
   @override
   _LoginFormState createState() => _LoginFormState();
 }
@@ -29,6 +31,7 @@ class _LoginFormState extends State<LoginForm> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   bool loading = false;
   String token;
+  String type;
 
   void initState() {
     getToken();
@@ -166,6 +169,7 @@ class _LoginFormState extends State<LoginForm> {
                           SizedBox(height: 20),
                           TextFormField(
                             style: TextStyle(color: Colors.white),
+                            initialValue: widget.pass,
                             validator: (input) {
                               if (input.length < 6) {
                                 _showSnackBar(
@@ -175,8 +179,13 @@ class _LoginFormState extends State<LoginForm> {
                               }
                               return '';
                             },
+                            onChanged: (input) {
+                              // _password.clear();
+                              widget.pass = input;
+                              // _password.text = widget.pass;
+                            },
                             // onChanged: (input) => _password = input,
-                            controller: _password,
+                            // controller: _password,
                             cursorColor: Colors.green,
                             decoration: new InputDecoration(
                                 enabledBorder: OutlineInputBorder(
@@ -215,7 +224,7 @@ class _LoginFormState extends State<LoginForm> {
                               color: Colors.lightGreen[800],
                               onPressed: () async {
                                 String email = _email.text;
-                                String password = _password.text;
+                                String password = widget.pass;
                                 setState(() {
                                   loading = true;
                                 });
@@ -224,7 +233,7 @@ class _LoginFormState extends State<LoginForm> {
                                 // await loggeedIn.setString('email', email);
                                 var runtimeType;
                                 if (result != null) {
-                                  var type = await FirebaseFirestore.instance
+                                  await FirebaseFirestore.instance
                                       .collection('users')
                                       .doc(result)
                                       .get()
@@ -241,12 +250,16 @@ class _LoginFormState extends State<LoginForm> {
                                         if (value
                                                 .data()["role"][i]
                                                 .toString() ==
-                                            "Therapist") {
-                                          return "therapist";
+                                            "therapist") {
+                                          setState(() {
+                                            type = "therapist";
+                                          });
                                         }
                                       }
                                     } else {
-                                      return value.data()["role"];
+                                      setState(() {
+                                        type = value.data()["role"];
+                                      });
                                     }
                                   });
                                   print("*************$type");
