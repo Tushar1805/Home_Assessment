@@ -80,7 +80,7 @@ class _LaundryUIState extends State<LaundryUI> {
         print("runtime Type: $runtimeType");
         if (runtimeType == "List<dynamic>") {
           for (int i = 0; i < value.data()["role"].length; i++) {
-            if (value.data()["role"][i].toString() == "Therapist") {
+            if (value.data()["role"][i].toString() == "therapist") {
               setState(() {
                 role = "therapist";
               });
@@ -469,7 +469,15 @@ class _LaundryUIState extends State<LaundryUI> {
                   SizedBox(height: 10),
                   (uploading)
                       ? Center(
-                          child: Text("Getting Video...."),
+                          child: Column(
+                            children: [
+                              Text("Uploading Video...."),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              CircularProgressIndicator()
+                            ],
+                          ),
                         )
                       : (videoUrl != "" &&
                               videoUrl != null &&

@@ -153,7 +153,7 @@ class GaragePro extends ChangeNotifier {
         print("runtime Type: $runtimeType");
         if (runtimeType == "List<dynamic>") {
           for (int i = 0; i < value.data()["role"].length; i++) {
-            if (value.data()["role"][i].toString() == "Therapist") {
+            if (value.data()["role"][i].toString() == "therapist") {
               type = "therapist";
             }
           }

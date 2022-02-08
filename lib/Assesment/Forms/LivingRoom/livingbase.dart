@@ -14,7 +14,8 @@ class LivingRoom extends StatelessWidget {
     return MultiProvider(providers: [
       ChangeNotifierProvider<NewAssesmentProvider>(
           create: (_) => NewAssesmentProvider("")),
-      ChangeNotifierProvider<LivingProvider>(create: (_) => LivingProvider())
+      ChangeNotifierProvider<LivingProvider>(
+          create: (_) => LivingProvider(roomname, wholelist, accessname))
     ], child: LivingRoomUI(roomname, wholelist, accessname, docID));
 
     // return Scaffold(
