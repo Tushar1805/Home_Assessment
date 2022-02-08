@@ -7,6 +7,8 @@ import 'package:tryapp/splash.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'Therapist/Dashboard/TherapistDetails.dart';
+
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   print('Handling a background message ${message.messageId}');
@@ -179,18 +181,35 @@ class _MyHomePageState extends State<MyHomePage> {
                           width: 230,
                           height: 50,
                           child: RaisedButton(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20.0),
-                                // side: BorderSide(color: Colors.red)
-                              ),
-                              padding: EdgeInsets.all(10),
-                              color: Colors.white,
-                              onPressed: () {},
-                              child: Text('Sign Up',
-                                  style: TextStyle(
-                                    color: Colors.cyan[900],
-                                    fontSize: 15,
-                                  ))),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20.0),
+                              // side: BorderSide(color: Colors.red)
+                            ),
+                            padding: EdgeInsets.all(10),
+                            color: Colors.white,
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      TherapistDetails(null, null, true)));
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('Start Trial',
+                                    style: TextStyle(
+                                      color: Colors.cyan[900],
+                                      fontSize: 15,
+                                    )),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Icon(
+                                  Icons.navigate_next,
+                                  color: Colors.cyan[900],
+                                )
+                              ],
+                            ),
+                          ),
                         ))
                       ],
                     ))
@@ -233,7 +252,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 Route _createRoute() {
   return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => Login(),
+    pageBuilder: (context, animation, secondaryAnimation) => Login(""),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       var begin = Offset(0.0, 1.0);
       var end = Offset.zero;
