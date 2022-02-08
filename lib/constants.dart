@@ -17,6 +17,23 @@ Color gray() {
   return Color(0XFF999999);
 }
 
+TextStyle lightBlackTextStyle() {
+  return TextStyle(
+      fontFamily: 'Source Sans Pro',
+      fontSize: 14,
+      color: lightBlack(),
+      decoration: TextDecoration.none,
+      fontWeight: FontWeight.w600);
+}
+
+TextStyle whiteTextStyle() {
+  return TextStyle(
+      color: Colors.white,
+      fontSize: 18,
+      fontWeight: FontWeight.w700,
+      letterSpacing: 1.0);
+}
+
 Color orangeColor() {
   return Color(0XFFf59629);
 }
