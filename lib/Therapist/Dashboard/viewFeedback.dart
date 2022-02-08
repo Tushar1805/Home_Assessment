@@ -249,7 +249,7 @@ class _ViewFeedbackState extends State<ViewFeedback> {
                                                                 ? "${provider.datasetFeedback["$index"]["firstName"][0].toString().toUpperCase()}${provider.datasetFeedback["$index"]["firstName"].toString().substring(1)} ${provider.datasetFeedback["$index"]["lastName"][0].toString().toUpperCase()}${provider.datasetFeedback["$index"]["lastName"].toString().substring(1)}"
                                                                 : "",
                                                             style: TextStyle(
-                                                                fontSize: 20),
+                                                                fontSize: 18),
                                                           ),
                                                           SizedBox(height: 5),
                                                           Row(
