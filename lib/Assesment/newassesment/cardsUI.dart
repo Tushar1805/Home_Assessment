@@ -11,6 +11,7 @@ import 'package:tryapp/Assesment/Forms/LivingArrangements/livingArrangementbase.
 import 'package:tryapp/Assesment/Forms/Pathway/pathwaybase.dart';
 import 'package:tryapp/Assesment/Forms/Patio/patiobase.dart';
 import 'package:async_button_builder/async_button_builder.dart';
+import 'package:tryapp/Assesment/Forms/SwimmingPool/swimmingbase.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentpro.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
 import 'package:tryapp/Nurse_Case_Manager/Dashboard/nursedash.dart';
@@ -153,7 +154,7 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
               print("runtime Type: $runtimeType");
               if (runtimeType == "List<dynamic>") {
                 for (int i = 0; i < value.data()["role"].length; i++) {
-                  if (value.data()["role"][i].toString() == "Therapist") {
+                  if (value.data()["role"][i].toString() == "therapist") {
                     setState(() {
                       role = "therapist";
                     });
@@ -516,7 +517,7 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
                           _showSnackBar(
                               "Assessment submitted successfully", context);
                         } else {
-                          _showSnackBar("Complete the forms first", context);
+                          _showSnackBar("Form is incomplete", context);
                         }
                       } else if (role == "patient") {
                         if (save == true) {
@@ -533,7 +534,7 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
                           _showSnackBar(
                               "Assessment submitted successfully", context);
                         } else {
-                          _showSnackBar("Complete the forms first", context);
+                          _showSnackBar("Form is incomplete", context);
                         }
                       }
                       // } else {
@@ -549,7 +550,7 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
                       //   _showSnackBar(
                       //       "Assessment Submitted Successfully", context);
                       // } else {
-                      //   _showSnackBar("Complete the forms first", context);
+                      //   _showSnackBar("Form is incomplete", context);
                       // }
                     },
                     loadingSwitchInCurve: Curves.bounceInOut,
@@ -610,7 +611,7 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
     } else if (classname == 'Basement') {
       return 5;
     } else if (classname == 'Swimming Pool') {
-      return 7;
+      return 5;
     }
   }
 
@@ -641,7 +642,8 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
                           Stack(
                             children: [
                               Container(
-                                height: 20,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.03,
                                 decoration: BoxDecoration(
                                   border: Border.all(
                                       color: getbordercolor(
@@ -653,7 +655,8 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
                                 ),
                               ),
                               Container(
-                                height: 20,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.03,
                                 width: getwidth(
                                     innerlist['room${index1 + 1}']['complete'],
                                     innerlist['room${index1 + 1}']['total']),
@@ -812,6 +815,16 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
                 widget.wholelist[index][accessname]['complete'] =
                     value['complete'];
                 // widget.wholelist[index]['']
+              }));
+    } else if (innerlist['name'] == 'Swimming Pool') {
+      Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SwimmingPool(
+                      roomname, widget.wholelist, accessname, widget.docID)))
+          .then((value) => setState(() {
+                widget.wholelist[index][accessname]['complete'] =
+                    value['complete'];
               }));
     }
   }
