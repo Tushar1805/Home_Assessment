@@ -14,6 +14,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   var result = FirebaseAuth.instance.currentUser;
   StreamSubscription<User> _listener;
+  bool admin = false;
 
   @override
   void initState() {
@@ -52,7 +53,7 @@ class _SplashScreenState extends State<SplashScreen> {
       print("runtime Type: $runtimeType");
       if (runtimeType == "List<dynamic>") {
         for (int i = 0; i < value.data()["role"].length; i++) {
-          if (value.data()["role"][i].toString() == "Therapist") {
+          if (value.data()["role"][i].toString() == "therapist") {
             setState(() {
               type = "therapist";
             });
