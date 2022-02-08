@@ -496,7 +496,7 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(builder: (context) => Nurse()));
                         } else {
-                          _showSnackBar("Complete the forms first", context);
+                          _showSnackBar("Form is incomplete", context);
                         }
                       } else if (widget.role == "patient") {
                         if (save == true) {
@@ -506,7 +506,7 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                               MaterialPageRoute(
                                   builder: (context) => Patient()));
                         } else {
-                          _showSnackBar("Complete the forms first", context);
+                          _showSnackBar("form is incomplete", context);
                         }
                       }
                       // } else {
@@ -522,7 +522,7 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                       //   _showSnackBar(
                       //       "Assessment Submitted Successfully", context);
                       // } else {
-                      //   _showSnackBar("Complete the forms first", context);
+                      //   _showSnackBar("Form is incomplete", context);
                       // }
                       // // // print(widget.wholelist);
                       // // NewAssesmentRepository().setassessmentclosingtime(docID);
@@ -636,7 +636,8 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                           Stack(
                             children: [
                               Container(
-                                height: 20,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.03,
                                 decoration: BoxDecoration(
                                   border: Border.all(
                                       color: getbordercolor(
@@ -648,7 +649,8 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                                 ),
                               ),
                               Container(
-                                height: 20,
+                                height:
+                                    MediaQuery.of(context).size.height * 0.03,
                                 width: getwidth(
                                     innerlist['room${index1 + 1}']['complete'],
                                     innerlist['room${index1 + 1}']['total']),

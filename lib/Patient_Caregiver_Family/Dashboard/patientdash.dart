@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import './patientdashUI.dart';
+import '../patientdashUI.dart';
 import './patientdashprov.dart';
 
 class Patient extends StatelessWidget {

@@ -31,17 +31,29 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
   }
 
   getRole() async {
-    User user = await FirebaseAuth.instance.currentUser;
-
+    var runtimeType;
+    User user = FirebaseAuth.instance.currentUser;
     await FirebaseFirestore.instance
-        .collection('users')
+        .collection("users")
         .doc(user.uid)
         .get()
-        .then((value) {
-      setState(() {
-        role = value['role'];
-      });
-    });
+        .then((value) => setState(() {
+              runtimeType = value.data()['role'].runtimeType.toString();
+              print("runtime Type: $runtimeType");
+              if (runtimeType == "List<dynamic>") {
+                for (int i = 0; i < value.data()["role"].length; i++) {
+                  if (value.data()["role"][i].toString() == "therapist") {
+                    setState(() {
+                      role = "therapist";
+                    });
+                  }
+                }
+              } else {
+                setState(() {
+                  role = value.data()["role"];
+                });
+              }
+            }));
   }
 
   void _showSnackBar(snackbar, BuildContext buildContext) {

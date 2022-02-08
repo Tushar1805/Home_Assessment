@@ -8,13 +8,10 @@ import 'package:tryapp/CompleteAssessment/completeAssessmentBase.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/feedback.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/homeAddress.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdashprov.dart';
-import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdashrepo.dart';
-import 'package:tryapp/Patient_Caregiver_Family/Dashboard/provideMedicalHistory.dart';
-import 'package:tryapp/Patient_Caregiver_Family/Dashboard/reportbase.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/reportui.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/requestAssessment.dart';
-import 'package:tryapp/Therapist/Dashboard/therapistdashrepo.dart';
 import 'package:tryapp/constants.dart';
+import 'package:tryapp/main.dart';
 import '../../splash/assesment.dart';
 import '../../Assesment/newassesment/newassesmentbase.dart';
 import '../../login/login.dart';
@@ -520,7 +517,7 @@ class _PatientUIState extends State<PatientUI> {
           width: double.infinity,
           child: Wrap(children: [
             Text(
-              'Therapist Name: ',
+              'Assessing Therapist: ',
               style: TextStyle(fontSize: 16, color: Colors.black45),
             ),
             Text(
@@ -537,11 +534,11 @@ class _PatientUIState extends State<PatientUI> {
           width: double.infinity,
           child: Wrap(children: [
             Text(
-              'Therapist Name: ',
+              'Assessing Therapist: ',
               style: TextStyle(fontSize: 16, color: Colors.black45),
             ),
             Text(
-              'Thrapist',
+              'Therapist',
               style: TextStyle(
                 fontSize: 16,
               ),
@@ -613,7 +610,24 @@ class _PatientUIState extends State<PatientUI> {
                               getName(snapshot),
                               SizedBox(height: 2.5),
                               Divider(),
-                              getAddress(address),
+                              // getAddress(address),
+                              // SizedBox(height: 2.5),
+                              // Divider(),
+                              Container(
+                                child: Wrap(children: [
+                                  Text(
+                                    'Home Address: ',
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.black45),
+                                  ),
+                                  Text(
+                                    '${assessmentdata.data()["home"]}',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ]),
+                              ),
                               SizedBox(height: 2.5),
                               Divider(),
                               (assessmentdata.data()[
@@ -723,91 +737,95 @@ class _PatientUIState extends State<PatientUI> {
         onWillPop: () async => false,
         child: Scaffold(
           drawer: Container(
-            width: MediaQuery.of(context).size.width * 0.80,
+            width: MediaQuery.of(context).size.width * 0.85,
             child: Drawer(
               child: ListView(
                 padding: EdgeInsets.zero,
                 children: <Widget>[
-                  DrawerHeader(
-                    decoration: BoxDecoration(
-                      color: Color.fromRGBO(10, 80, 106, 1),
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: MediaQuery.of(context).size.width * 0.45,
-                          // color: Colors.pink,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                padding: EdgeInsets.only(top: 55),
-                                alignment: Alignment.bottomLeft,
-                                // color: Colors.red,
-                                child: Text(
-                                  "Hello,",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 22,
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.35,
+                    child: DrawerHeader(
+                      decoration: BoxDecoration(
+                        color: Color.fromRGBO(10, 80, 106, 1),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.45,
+                            // color: Colors.pink,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.only(top: 30),
+                                  alignment: Alignment.bottomLeft,
+                                  // color: Colors.red,
+                                  child: Text(
+                                    "Hello,",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 22,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Container(
-                                alignment: Alignment.bottomLeft,
-                                child: Text(
-                                  "${assesspro.capitalize(fname)}",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 37,
+                                Container(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text(
+                                    "${assesspro.capitalize(fname)}",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 37,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 7),
-                        InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) =>
-                                    ViewPhoto(imgUrl ?? "", "patient")));
-                          },
-                          child: Container(
-                            // height: 30,
-                            alignment: Alignment.centerRight,
-                            // width: double.infinity,
-                            // color: Colors.red,
-                            child: CircleAvatar(
-                              backgroundColor: Colors.white,
-                              radius: 47,
-                              // backgroundImage: (imgUrl != "" && imgUrl != null)
-                              //     ? NetworkImage(imgUrl)
-                              //     : Image.asset('assets/therapistavatar.png'),
-                              child: ClipOval(
-                                clipBehavior: Clip.hardEdge,
-                                child: (imgUrl != "" && imgUrl != null)
-                                    ? CachedNetworkImage(
-                                        imageUrl: imgUrl,
-                                        fit: BoxFit.cover,
-                                        width: 400,
-                                        height: 400,
-                                        placeholder: (context, url) =>
-                                            new CircularProgressIndicator(),
-                                        errorWidget: (context, url, error) =>
-                                            new Icon(Icons.error),
-                                      )
-                                    : Image.asset(
-                                        'assets/patientavatar.png',
-                                      ),
+                          SizedBox(height: 7),
+                          InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      ViewPhoto(imgUrl ?? "", "patient")));
+                            },
+                            child: Container(
+                              // height: 30,
+                              padding: EdgeInsets.only(top: 30),
+                              alignment: Alignment.centerRight,
+                              // width: double.infinity,
+                              // color: Colors.red,
+                              child: CircleAvatar(
+                                backgroundColor: Colors.white,
+                                radius: 47,
+                                // backgroundImage: (imgUrl != "" && imgUrl != null)
+                                //     ? NetworkImage(imgUrl)
+                                //     : Image.asset('assets/therapistavatar.png'),
+                                child: ClipOval(
+                                  clipBehavior: Clip.hardEdge,
+                                  child: (imgUrl != "" && imgUrl != null)
+                                      ? CachedNetworkImage(
+                                          imageUrl: imgUrl,
+                                          fit: BoxFit.cover,
+                                          width: 400,
+                                          height: 400,
+                                          placeholder: (context, url) =>
+                                              new CircularProgressIndicator(),
+                                          errorWidget: (context, url, error) =>
+                                              new Icon(Icons.error),
+                                        )
+                                      : Image.asset(
+                                          'assets/patientavatar.png',
+                                        ),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
+                      // child: Text("$name"),
+                      //
                     ),
-                    // child: Text("$name"),
-                    //
                   ),
                   // ListTile(
                   //   leading: Icon(Icons.favorite, color: Colors.green),
@@ -892,7 +910,7 @@ class _PatientUIState extends State<PatientUI> {
                   try {
                     await auth.signOut();
                     Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) => Login()));
+                        MaterialPageRoute(builder: (context) => MyHomePage()));
                   } catch (e) {
                     print(e.toString());
                   }

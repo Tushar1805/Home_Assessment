@@ -2,19 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
-import 'package:tryapp/Assesment/oldassessments/oldassessmentsbase.dart';
-import 'package:tryapp/Assesment/oldassessments/oldassessmentspro.dart';
 import 'package:tryapp/Nurse_Case_Manager/Dashboard/nursedash.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdash.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistdash.dart';
 import 'newassesmentpro.dart';
 import 'cardsUI.dart';
 import 'package:provider/provider.dart';
-import 'package:animations/animations.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 /// This page is about chosing the areas of home available
 
@@ -61,13 +54,28 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
   }
 
   getRole() async {
+    var runtimeType;
     User user = await _auth.currentUser;
-    firestore
+    await FirebaseFirestore.instance
         .collection("users")
         .doc(user.uid)
         .get()
         .then((value) => setState(() {
-              role = value.data()["role"];
+              runtimeType = value.data()['role'].runtimeType.toString();
+              print("runtime Type: $runtimeType");
+              if (runtimeType == "List<dynamic>") {
+                for (int i = 0; i < value.data()["role"].length; i++) {
+                  if (value.data()["role"][i].toString() == "therapist") {
+                    setState(() {
+                      role = "therapist";
+                    });
+                  }
+                }
+              } else {
+                setState(() {
+                  role = value.data()["role"];
+                });
+              }
             }));
   }
 
@@ -116,7 +124,7 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                       //     MaterialPageRoute(
                       //         builder: (context) => OldAssessments()));
                     },
-                    child: Text('Go It'),
+                    child: Text('Got It'),
                   ),
                 ],
               ),
@@ -164,7 +172,9 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                         /// This Living Arrangements will be taken care when we click on next button.
                         itemBuilder: (context, index) {
                           if (assesmentprovider.getlistdata()[index]['name'] ==
-                              'Living Arrangements') {
+                                  'Living Arrangements' ||
+                              assesmentprovider.getlistdata()[index]['name'] ==
+                                  'Warehouse') {
                             return SizedBox(height: 0);
                           } else {
                             return roomOuterCard(assesmentprovider, index);
