@@ -5,6 +5,7 @@ import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
 import 'package:tryapp/Nurse_Case_Manager/Dashboard/nursedash.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdash.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistdash.dart';
+import '../../constants.dart';
 import 'newassesmentpro.dart';
 import 'cardsUI.dart';
 import 'package:provider/provider.dart';
@@ -393,6 +394,7 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                                             prov.getlistdata()[index]['name']),
                                         'question': getMaps(
                                             prov.getlistdata()[index]['name']),
+                                        'isUsed': [true, false]
                                       };
 
                                       // This will help us to  remove rooms when we reduce the number
@@ -422,37 +424,161 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                         ],
                       ),
                       (prov.listofRooms[index]['count'] > 0)
-                          ? Container(
-                              child: Padding(
-                                padding: EdgeInsets.all(15),
-                                child: ConstrainedBox(
-                                  constraints: BoxConstraints(
-                                      maxHeight: 1000,
-                                      minHeight:
-                                          MediaQuery.of(context).size.height /
-                                              10),
-                                  child: ListView.builder(
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    shrinkWrap: true,
-                                    itemCount: prov.listofRooms[index]['count'],
-                                    itemBuilder: (context, index1) {
-                                      return TextFormField(
-                                        decoration: InputDecoration(
-                                            labelText:
-                                                '${prov.getlistdata()[index]['name']} (Name)'),
-                                        onChanged: (text) {
-                                          if (text != null) {
-                                            prov.listofRooms[index]
-                                                    ['room${index1 + 1}']
-                                                ['name'] = capitalize(text);
-                                          }
-                                        },
-                                      );
-                                    },
+                          ? Column(
+                              children: [
+                                Container(
+                                  padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                                  alignment: Alignment.centerRight,
+                                  child: Text(
+                                    "Currently Using ?",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
-                              ),
+                                Container(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(8),
+                                    child: ConstrainedBox(
+                                      constraints: BoxConstraints(
+                                          maxHeight: 1000,
+                                          minHeight: MediaQuery.of(context)
+                                                  .size
+                                                  .height /
+                                              10),
+                                      child: ListView.builder(
+                                        physics:
+                                            const NeverScrollableScrollPhysics(),
+                                        shrinkWrap: true,
+                                        itemCount: prov.listofRooms[index]
+                                            ['count'],
+                                        itemBuilder: (context, index1) {
+                                          return Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Container(
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.5,
+                                                padding: EdgeInsets.fromLTRB(
+                                                    0, 10, 0, 10),
+                                                child: TextFormField(
+                                                  decoration: InputDecoration(
+                                                    labelText:
+                                                        '${prov.getlistdata()[index]['name']} (Name)',
+                                                    contentPadding:
+                                                        EdgeInsets.only(
+                                                            left: 20.0,
+                                                            right: 20.0),
+                                                    focusColor: lightBlack(),
+                                                    counterText: "",
+                                                    filled: true,
+                                                    fillColor: Colors.white54,
+                                                    enabledBorder:
+                                                        OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  3.0)),
+                                                      borderSide: BorderSide(
+                                                          color: lightGray(),
+                                                          width: 1),
+                                                    ),
+                                                    focusedBorder:
+                                                        OutlineInputBorder(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  3.0)),
+                                                      borderSide: BorderSide(
+                                                        color: lightGray(),
+                                                        width: 1,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  // decoration: InputDecoration(
+                                                  //     labelText:
+                                                  //         '${prov.getlistdata()[index]['name']} (Name)'),
+                                                  onChanged: (text) {
+                                                    if (text != null) {
+                                                      prov.listofRooms[index][
+                                                                  'room${index1 + 1}']
+                                                              ['name'] =
+                                                          capitalize(text);
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                              Container(
+                                                height: 35,
+                                                child: ToggleButtons(
+                                                  borderColor: Colors.black,
+                                                  fillColor: Colors.green,
+                                                  borderWidth: 0,
+                                                  selectedBorderColor:
+                                                      Colors.black,
+                                                  selectedColor: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(20),
+                                                  children: <Widget>[
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Text(
+                                                        'Yes',
+                                                        style: TextStyle(
+                                                            fontSize: 16),
+                                                      ),
+                                                    ),
+                                                    Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              8.0),
+                                                      child: Text(
+                                                        'No',
+                                                        style: TextStyle(
+                                                            fontSize: 16),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                  onPressed: (int select) {
+                                                    setState(() {
+                                                      for (int i = 0;
+                                                          i <
+                                                              prov
+                                                                  .listofRooms[
+                                                                      index][
+                                                                      'room${index1 + 1}']
+                                                                      ['isUsed']
+                                                                  .length;
+                                                          i++) {
+                                                        prov.listofRooms[index][
+                                                                    'room${index1 + 1}']
+                                                                ['isUsed'][i] =
+                                                            i == select;
+                                                      }
+                                                    });
+                                                  },
+                                                  isSelected: prov.listofRooms[
+                                                              index]
+                                                          ['room${index1 + 1}']
+                                                      ['isUsed'],
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             )
                           : SizedBox(),
                     ],

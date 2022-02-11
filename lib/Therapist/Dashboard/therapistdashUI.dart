@@ -793,7 +793,7 @@ class _TherapistUIState extends State<TherapistUI> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Container(
-                                    padding: EdgeInsets.only(top: 30),
+                                    padding: EdgeInsets.only(top: 40),
                                     alignment: Alignment.centerLeft,
                                     // color: Colors.red,
                                     child: Text(

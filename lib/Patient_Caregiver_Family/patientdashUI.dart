@@ -758,7 +758,7 @@ class _PatientUIState extends State<PatientUI> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Container(
-                                  padding: EdgeInsets.only(top: 30),
+                                  padding: EdgeInsets.only(top: 40),
                                   alignment: Alignment.bottomLeft,
                                   // color: Colors.red,
                                   child: Text(
@@ -792,7 +792,7 @@ class _PatientUIState extends State<PatientUI> {
                             child: Container(
                               // height: 30,
                               padding: EdgeInsets.only(top: 30),
-                              alignment: Alignment.centerRight,
+                              alignment: Alignment.topRight,
                               // width: double.infinity,
                               // color: Colors.red,
                               child: CircleAvatar(
