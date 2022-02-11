@@ -19,6 +19,7 @@ import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdash.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistdash.dart';
 import 'package:tryapp/constants.dart';
 import '../Forms/LivingRoom/livingbase.dart';
+import 'newassesmentbase.dart';
 
 /// Frame of this page:
 ///     There are certain functions defined to take care of things such as colour and border dimension
@@ -109,6 +110,7 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
   Color _color = Colors.lightBlue;
   String role;
   FirebaseAuth _auth = FirebaseAuth.instance;
+  String assessor;
 
   @override
   void initState() {
@@ -138,6 +140,7 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
     });
     getRole();
     print(role);
+    check();
   }
 
   /// This fucntio will help us to get the width of the container.
@@ -257,6 +260,18 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
       ..showSnackBar(snackBar);
   }
 
+  void check() async {
+    await FirebaseFirestore.instance
+        .collection('assessments')
+        .doc(widget.docID)
+        .get()
+        .then((value) {
+      setState(() {
+        assessor = value.data()["assessor"];
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // NewAssesmentProvider assesmentProvider = NewAssesmentProvider("");
@@ -280,6 +295,24 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
           appBar: AppBar(
             title: Text('Assessment'),
             backgroundColor: _colorgreen,
+            actions: [
+              (_auth.currentUser.uid == assessor)
+                  ? IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => NewAssesment(
+                                    widget.docID, role, widget.wholelist)));
+                      },
+                      icon: Icon(
+                        Icons.edit,
+                      ),
+                      tooltip: "Edit Rooms",
+                      highlightColor: Colors.transparent,
+                    )
+                  : SizedBox()
+            ],
           ),
           body: Stack(
             children: [

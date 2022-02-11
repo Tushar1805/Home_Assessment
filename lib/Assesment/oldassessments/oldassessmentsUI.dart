@@ -582,7 +582,7 @@ class _OldAssessmentsUIState extends State<OldAssessmentsUI> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => NewAssesment(
-                          assesspro.curretnassessmentdocref, role)));
+                          assesspro.curretnassessmentdocref, role, null)));
             } else if (assessmentdata.data()['currentStatus'] ==
                 "Report Generated") {
               Navigator.push(

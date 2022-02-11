@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
+import 'package:tryapp/CompleteAssessment/completeAssessmentBase.dart';
 import 'package:tryapp/Nurse_Case_Manager/Dashboard/nursedash.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdash.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistdash.dart';
@@ -37,7 +38,8 @@ final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
 class NewAssesmentUI extends StatefulWidget {
   String docID;
-  NewAssesmentUI(this.docID);
+  List<Map<String, dynamic>> wholelist;
+  NewAssesmentUI(this.docID, this.wholelist);
   @override
   _NewAssesmentUIState createState() => _NewAssesmentUIState();
 }
@@ -46,12 +48,18 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
   FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   String role;
+  bool edit = false;
 
   @override
   void initState() {
     super.initState();
     getRole();
     print(role);
+    if (widget.wholelist != null) {
+      setState(() {
+        edit = true;
+      });
+    }
   }
 
   getRole() async {
@@ -83,6 +91,9 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
   @override
   Widget build(BuildContext context) {
     final assesmentprovider = Provider.of<NewAssesmentProvider>(context);
+    if (edit) {
+      assesmentprovider.listofRooms = widget.wholelist;
+    }
     double _w = MediaQuery.of(context).size.width;
     return WillPopScope(
       /// This will give a pop up whenever we try to get back from the
@@ -247,35 +258,48 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
 
                               assesmentprovider
                                   .setassessmainstatus(widget.docID);
-                              for (int i = 0;
-                                  i < assesmentprovider.listofRooms.length;
-                                  i++) {
-                                if (assesmentprovider.listofRooms[i]['name'] ==
-                                    'Living Arrangements') {
-                                  setState(() {
-                                    assesmentprovider.listofRooms[i]
-                                        ['room$i'] = {
-                                      'name':
-                                          '${assesmentprovider.listofRooms[i]['name']}',
-                                      'complete': 0,
-                                      'total': gettotal(assesmentprovider
-                                          .getlistdata()[i]['name']),
-                                      'question': getMaps(assesmentprovider
-                                          .getlistdata()[i]['name']),
-                                    };
-                                  });
+                              if (!edit) {
+                                for (int i = 0;
+                                    i < assesmentprovider.listofRooms.length;
+                                    i++) {
+                                  if (assesmentprovider.listofRooms[i]
+                                          ['name'] ==
+                                      'Living Arrangements') {
+                                    setState(() {
+                                      assesmentprovider.listofRooms[i]
+                                          ['room$i'] = {
+                                        'name':
+                                            '${assesmentprovider.listofRooms[i]['name']}',
+                                        'complete': 0,
+                                        'total': gettotal(assesmentprovider
+                                            .getlistdata()[i]['name']),
+                                        'question': getMaps(assesmentprovider
+                                            .getlistdata()[i]['name']),
+                                      };
+                                    });
+                                  }
                                 }
                               }
 
                               /// Here we are calling the Cards UI page where each and every rooms created
                               /// will be displayed but we are also passing the provider link. Because the same data
                               /// will be needing rthe rooms data in further pages.
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => CardsUINew(
-                                          assesmentprovider.getlistdata(),
-                                          widget.docID)));
+                              edit
+                                  ? Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              CompleteAssessmentBase(
+                                                  assesmentprovider
+                                                      .getlistdata(),
+                                                  widget.docID,
+                                                  role)))
+                                  : Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => CardsUINew(
+                                              assesmentprovider.getlistdata(),
+                                              widget.docID)));
                               NewAssesmentRepository()
                                   .setAssessmentCurrentStatus(
                                       "Assessment in Progress", widget.docID);
@@ -341,6 +365,8 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                           Expanded(
                             child: NumericStepButton(
                               maxValue: 20,
+                              initialValue:
+                                  edit ? widget.wholelist[index]['count'] : 0,
                               onChanged: (text) {
                                 /// Note: Read this to understand below code.
                                 /// as we get number count from the numeric button.
@@ -385,7 +411,12 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                                 setState(
                                   () {
                                     if (text > 0) {
-                                      prov.listofRooms[index]['count'] = text;
+                                      (edit)
+                                          ? widget.wholelist[index]['count'] =
+                                              text
+                                          : prov.listofRooms[index]['count'] =
+                                              text;
+
                                       prov.listofRooms[index]['room$text'] = {
                                         'name':
                                             '${prov.listofRooms[index]['name']} $text',
@@ -394,7 +425,7 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                                             prov.getlistdata()[index]['name']),
                                         'question': getMaps(
                                             prov.getlistdata()[index]['name']),
-                                        'isUsed': [true, false]
+                                        'isUsed': <bool>[true, false]
                                       };
 
                                       // This will help us to  remove rooms when we reduce the number
@@ -498,6 +529,11 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                                                       ),
                                                     ),
                                                   ),
+                                                  initialValue: (edit)
+                                                      ? prov.listofRooms[index][
+                                                              'room${index1 + 1}']
+                                                          ['name']
+                                                      : null,
                                                   // decoration: InputDecoration(
                                                   //     labelText:
                                                   //         '${prov.getlistdata()[index]['name']} (Name)'),
@@ -565,10 +601,11 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                                                       }
                                                     });
                                                   },
-                                                  isSelected: prov.listofRooms[
-                                                              index]
+                                                  isSelected: prov
+                                                      .listofRooms[index]
                                                           ['room${index1 + 1}']
-                                                      ['isUsed'],
+                                                          ['isUsed']
+                                                      .cast<bool>(),
                                                 ),
                                               ),
                                             ],
@@ -592,21 +629,27 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
 class NumericStepButton extends StatefulWidget {
   final int minValue;
   final int maxValue;
+  final int initialValue;
 
   final ValueChanged<int> onChanged;
 
   NumericStepButton(
-      {Key key, this.minValue = 0, this.maxValue = 10, this.onChanged})
+      {Key key,
+      this.minValue = 0,
+      this.maxValue = 10,
+      this.onChanged,
+      this.initialValue})
       : super(key: key);
 
   @override
   State<NumericStepButton> createState() {
-    return _NumericStepButtonState();
+    return _NumericStepButtonState(initialValue);
   }
 }
 
 class _NumericStepButtonState extends State<NumericStepButton> {
-  int counter = 0;
+  int counter;
+  _NumericStepButtonState(this.counter);
 
   @override
   Widget build(BuildContext context) {

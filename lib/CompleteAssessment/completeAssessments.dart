@@ -12,6 +12,7 @@ import 'package:tryapp/Assesment/Forms/LivingRoom/livingbase.dart';
 import 'package:tryapp/Assesment/Forms/Pathway/pathwaybase.dart';
 import 'package:tryapp/Assesment/Forms/Patio/patiobase.dart';
 import 'package:async_button_builder/async_button_builder.dart';
+import 'package:tryapp/Assesment/newassesment/newassesmentbase.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
 import 'package:tryapp/Nurse_Case_Manager/Dashboard/nursedash.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/patientdash.dart';
@@ -107,6 +108,7 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
   Color _color = Colors.lightBlue;
 
   FirebaseAuth _auth = FirebaseAuth.instance;
+  String assessor;
 
   @override
   void initState() {
@@ -135,6 +137,7 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
       });
     });
     print("index = ${widget.wholelist.length}");
+    check();
   }
 
   // getRole() async {
@@ -266,6 +269,18 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
       ..showSnackBar(snackBar);
   }
 
+  void check() async {
+    await FirebaseFirestore.instance
+        .collection('assessments')
+        .doc(widget.docID)
+        .get()
+        .then((value) {
+      setState(() {
+        assessor = value.data()["assessor"];
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     //   final assessmentprovider = Provider.of<NewAssesmentProvider>(context);
@@ -288,6 +303,24 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
           appBar: AppBar(
             title: Text('Assessment'),
             backgroundColor: _colorgreen,
+            actions: [
+              (_auth.currentUser.uid == assessor)
+                  ? IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => NewAssesment(widget.docID,
+                                    widget.role, widget.wholelist)));
+                      },
+                      icon: Icon(
+                        Icons.edit,
+                      ),
+                      tooltip: "Edit Rooms",
+                      highlightColor: Colors.transparent,
+                    )
+                  : SizedBox()
+            ],
             leading: IconButton(
               icon: Icon(Icons.arrow_back),
               onPressed: () {

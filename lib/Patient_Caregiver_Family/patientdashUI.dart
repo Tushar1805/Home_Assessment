@@ -143,7 +143,8 @@ class _PatientUIState extends State<PatientUI> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => NewAssesment(docID, "patient")));
+                    builder: (context) =>
+                        NewAssesment(docID, "patient", null)));
           },
           child: Text(
             "Begin Assessment",

@@ -157,7 +157,7 @@ class _NurseUIState extends State<NurseUI> {
                 context,
                 MaterialPageRoute(
                     builder: (context) =>
-                        NewAssesment(docID, "nurse/case manager")));
+                        NewAssesment(docID, "nurse/case manager", null)));
           },
           child: Text(
             "Begin Assessment",

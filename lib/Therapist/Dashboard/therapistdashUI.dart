@@ -187,7 +187,8 @@ class _TherapistUIState extends State<TherapistUI> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => NewAssesment(docID, "therapist")));
+                    builder: (context) =>
+                        NewAssesment(docID, "therapist", null)));
           },
           child: Text(
             "Begin Assessment",
