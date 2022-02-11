@@ -90,7 +90,7 @@ class _ResetPassState extends State<ResetPass> {
       });
       if (mounted) {
         Navigator.pushReplacement(
-            context, MaterialPageRoute(builder: (context) => MyHomePage()));
+            context, MaterialPageRoute(builder: (context) => widget.page));
       }
     }
   }
