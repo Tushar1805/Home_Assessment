@@ -177,11 +177,19 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
     setState(() {});
   }
 
-  double getwidth(completed, total) {
-    if (completed <= 1) {
-      return widthh * completed / total;
+  double getwidth(completed, total, isSwim) {
+    if (isSwim) {
+      if (completed <= 1) {
+        return widthh * completed / total;
+      } else {
+        return widthh * ((completed) / total);
+      }
     } else {
-      return widthh * ((completed - 0.5) / total);
+      if (completed <= 1) {
+        return widthh * completed / total;
+      } else {
+        return widthh * ((completed - 0.5) / total);
+      }
     }
   }
 
@@ -687,18 +695,39 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
                                   ),
                                 ),
                               ),
-                              Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.03,
-                                width: getwidth(
-                                    innerlist['room${index1 + 1}']['complete'],
-                                    innerlist['room${index1 + 1}']['total']),
-                                decoration: BoxDecoration(
-                                    color:
-                                        getbordercolor(innerlist, index1 + 1),
-                                    borderRadius:
-                                        getborderradius(innerlist, index1 + 1)),
-                              ),
+                              (innerlist['name'] == "Swimming Pool")
+                                  ? Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.03,
+                                      width: getwidth(
+                                          innerlist['room${index1 + 1}']
+                                              ['complete'],
+                                          innerlist['room${index1 + 1}']
+                                              ['total'],
+                                          true),
+                                      decoration: BoxDecoration(
+                                          color: getbordercolor(
+                                              innerlist, index1 + 1),
+                                          borderRadius: getborderradius(
+                                              innerlist, index1 + 1)),
+                                    )
+                                  : Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.03,
+                                      width: getwidth(
+                                          innerlist['room${index1 + 1}']
+                                              ['complete'],
+                                          innerlist['room${index1 + 1}']
+                                              ['total'],
+                                          false),
+                                      decoration: BoxDecoration(
+                                          color: getbordercolor(
+                                              innerlist, index1 + 1),
+                                          borderRadius: getborderradius(
+                                              innerlist, index1 + 1)),
+                                    ),
                             ],
                           ),
                           Container(
