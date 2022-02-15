@@ -107,6 +107,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
     getRole();
     getAssessData();
     setinitialsdata();
+    print("RoomName: ${widget.roomname}");
   }
 
   Future<Null> selectTime1(BuildContext context) async {
@@ -645,31 +646,2576 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
       }
     }
 
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Assessment'),
-          automaticallyImplyLeading: false,
+    void _listen(index) async {
+      if (!_isListening) {
+        bool available = await _speech.initialize(
+          onStatus: (val) {
+            print('onStatus: $val');
+            setState(() {
+              // _isListening = false;
+              //
+            });
+          },
+          onError: (val) => print('onError: $val'),
+        );
+        if (available) {
+          setState(() {
+            _isListening = true;
+            //colorsset["field$index"] = Colors.red;
+            isListening['field$index'] = true;
+          });
+          _speech.listen(
+            onResult: (val) => setState(() {
+              _controllers["field$index"].text = widget.wholelist[1]
+                          [widget.accessname]['question']["$index"]
+                      ['Recommendation'] +
+                  " " +
+                  val.recognizedWords;
+            }),
+          );
+        }
+      } else {
+        setState(() {
+          _isListening = false;
+          isListening['field$index'] = false;
+          colorsset["field$index"] = Color.fromRGBO(10, 80, 106, 1);
+        });
+        _speech.stop();
+      }
+    }
+
+    setdatalisten(index) {
+      setState(() {
+        widget.wholelist[1][widget.accessname]['question']["$index"]
+            ['Recommendation'] = _controllers["field$index"].text;
+        cur = !cur;
+      });
+    }
+
+    void _listenthera(index) async {
+      if (!_isListening) {
+        bool available = await _speech.initialize(
+          onStatus: (val) {
+            print('onStatus: $val');
+            setState(() {
+              // _isListening = false;
+              //
+            });
+          },
+          onError: (val) => print('onError: $val'),
+        );
+        if (available) {
+          setState(() {
+            _isListening = true;
+            // colorsset["field$index"] = Colors.red;
+            isListening['field$index'] = true;
+          });
+          _speech.listen(
+            onResult: (val) => setState(() {
+              _controllerstreco["field$index"].text = widget.wholelist[1]
+                          [widget.accessname]['question']["$index"]
+                      ['Recommendationthera'] +
+                  " " +
+                  val.recognizedWords;
+            }),
+          );
+        }
+      } else {
+        setState(() {
+          _isListening = false;
+          isListening['field$index'] = false;
+          colorsset["field$index"] = Color.fromRGBO(10, 80, 106, 1);
+        });
+        _speech.stop();
+      }
+    }
+
+    setdatalistenthera(index) {
+      setState(() {
+        widget.wholelist[1][widget.accessname]['question']["$index"]
+            ['Recommendationthera'] = _controllerstreco["field$index"].text;
+        cur = !cur;
+      });
+    }
+
+    Widget getrecowid(index, BuildContext context) {
+      if (widget.wholelist[1][widget.accessname]["question"]["$index"]
+              ["Recommendationthera"] !=
+          "") {
+        setState(() {
+          isColor = true;
+          // saveToForm = true;
+          // widget.wholelist[1][widget.accessname]["isSave"] = saveToForm;
+        });
+      } else {
+        setState(() {
+          isColor = false;
+          // saveToForm = false;
+          // widget.wholelist[1][widget.accessname]["isSave"] = saveToForm;
+        });
+      }
+      if (falseIndex == -1) {
+        if (widget.wholelist[1][widget.accessname]["question"]["$index"]
+                ["Recommendationthera"] !=
+            "") {
+          setState(() {
+            saveToForm = true;
+            trueIndex = index;
+            widget.wholelist[1][widget.accessname]["isSave"] = true;
+          });
+        } else {
+          setState(() {
+            saveToForm = false;
+            falseIndex = index;
+            widget.wholelist[1][widget.accessname]["isSave"] = false;
+          });
+        }
+      } else {
+        if (index == falseIndex) {
+          if (widget.wholelist[1][widget.accessname]["question"]["$index"]
+                  ["Recommendationthera"] !=
+              "") {
+            setState(() {
+              widget.wholelist[1][widget.accessname]["isSave"] = true;
+              falseIndex = -1;
+            });
+          } else {
+            setState(() {
+              widget.wholelist[1][widget.accessname]["isSave"] = false;
+            });
+          }
+        }
+      }
+      return Column(
+        children: [
+          SizedBox(height: 8),
+          TextFormField(
+            onChanged: (value) {
+              FocusScope.of(context).requestFocus();
+              new TextEditingController().clear();
+              setrecothera(index, value);
+              // setState(() {
+              //   // print("Color Changed");
+              //   if (value.length != 0) {
+              //     isColor = true;
+              //   } else {
+              //     isColor = false;
+              //   }
+              // });
+            },
+            controller: _controllerstreco["field$index"],
+            cursorColor: (isColor) ? Colors.green : Colors.red,
+            decoration: InputDecoration(
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: (isColor) ? Colors.green : Colors.red, width: 1),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(
+                      color: (isColor) ? Colors.green : Colors.red, width: 1),
+                ),
+                suffix: Container(
+                  // color: Colors.red,
+                  width: 40,
+                  height: 30,
+                  padding: EdgeInsets.all(0),
+                  child: Row(children: [
+                    Container(
+                      // color: Colors.green,
+                      alignment: Alignment.center,
+                      width: 40,
+                      height: 60,
+                      margin: EdgeInsets.all(0),
+                      child: FloatingActionButton(
+                        heroTag: null,
+                        child: Icon(
+                          Icons.mic,
+                          size: 20,
+                        ),
+                        onPressed: () {
+                          _listenthera(index);
+                          setdatalistenthera(index);
+                        },
+                      ),
+                    ),
+                  ]),
+                ),
+                labelStyle:
+                    TextStyle(color: (isColor) ? Colors.green : Colors.red),
+                labelText: 'Recommendation'),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text('Priority'),
+              Row(
+                children: [
+                  Radio(
+                    value: '1',
+                    onChanged: (value) {
+                      setprio(index, value);
+                    },
+                    groupValue: getprio(index),
+                  ),
+                  Text('1'),
+                  Radio(
+                    value: '2',
+                    onChanged: (value) {
+                      setState(() {
+                        setprio(index, value);
+                      });
+                    },
+                    groupValue: getprio(index),
+                  ),
+                  Text('2'),
+                  Radio(
+                    value: '3',
+                    onChanged: (value) {
+                      setState(() {
+                        setprio(index, value);
+                      });
+                    },
+                    groupValue: getprio(index),
+                  ),
+                  Text('3'),
+                ],
+              )
+            ],
+          )
+        ],
+      );
+    }
+
+    Widget getrecomain(int index, bool isthera, BuildContext context) {
+      return SingleChildScrollView(
+        // reverse: true,
+        child: Container(
+          // color: Colors.red,
+          child: Column(
+            children: [
+              Container(
+                child: TextFormField(
+                  maxLines: null,
+                  showCursor: cur,
+                  controller: _controllers["field$index"],
+                  decoration: InputDecoration(
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: colorsset["field$index"], width: 1),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            width: 1, color: colorsset["field$index"]),
+                      ),
+                      suffix: Container(
+                        // color: Colors.red,
+                        width: 40,
+                        height: 30,
+                        padding: EdgeInsets.all(0),
+                        child: Row(children: [
+                          Container(
+                            // color: Colors.green,
+                            alignment: Alignment.center,
+                            width: 40,
+                            height: 60,
+                            margin: EdgeInsets.all(0),
+                            child: AvatarGlow(
+                              animate: isListening['field$index'],
+                              glowColor: Theme.of(context).primaryColor,
+                              endRadius: 500.0,
+                              duration: const Duration(milliseconds: 2000),
+                              repeatPauseDuration:
+                                  const Duration(milliseconds: 100),
+                              repeat: true,
+                              child: FloatingActionButton(
+                                heroTag: "btn$index",
+                                child: Icon(
+                                  Icons.mic,
+                                  size: 20,
+                                ),
+                                onPressed: () {
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    _listen(index);
+                                    setdatalisten(index);
+                                  } else if (role != "therapist") {
+                                    _listen(index);
+                                    setdatalisten(index);
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                        ]),
+                      ),
+                      labelText: 'Comments'),
+                  onChanged: (value) {
+                    // print(widget.accessname);
+                    if (assessor == therapist && role == "therapist") {
+                      setreco(index, value);
+                      FocusScope.of(context).requestFocus();
+                      new TextEditingController().clear();
+                    } else if (role != "therapist") {
+                      setreco(index, value);
+                      FocusScope.of(context).requestFocus();
+                      new TextEditingController().clear();
+                    } else {
+                      _showSnackBar(
+                          "You can't change the other fields", context);
+                    }
+                  },
+                ),
+              ),
+              (role == 'therapist' && isthera)
+                  ? getrecowid(index, context)
+                  : SizedBox(),
+            ],
+          ),
+        ),
+      );
+    }
+
+    Widget flightcountwidget(index, BuildContext context) {
+      return Container(
+        child: Column(
+          children: [
+            Container(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                child: TextFormField(
+                  initialValue: widget.wholelist[1][widget.accessname]
+                      ['question']["11"]['Flights']["flight$index"]["flight"],
+                  keyboardType: TextInputType.phone,
+                  decoration: InputDecoration(
+                      focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: colorsset["field${7}"], width: 1),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(width: 1, color: colorsset["field${7}"]),
+                      ),
+                      labelText: 'Number of steps in flight$index:'),
+                  onChanged: (value) {
+                    FocusScope.of(context).requestFocus();
+                    new TextEditingController().clear();
+                    if (assessor == therapist && role == "therapist") {
+                      setState(() {
+                        widget.wholelist[1][widget.accessname]['question']["11"]
+                            ['Flights']['flight$index']["flight"] = value;
+                      });
+                    } else if (role != "therapist") {
+                      setState(() {
+                        widget.wholelist[1][widget.accessname]['question']["11"]
+                            ['Flights']['flight$index']["flight"] = value;
+                      });
+                    } else {
+                      _showSnackBar(
+                          "You can't change the other fields", context);
+                    }
+                    // print(widget.wholelist[0][widget.accessname]['question']
+                    //     [7]);
+                  },
+                ),
+              ),
+            ),
+            SizedBox(height: 7)
+          ],
+        ),
+      );
+    }
+
+    Widget roomatecountwidget(index, BuildContext context) {
+      return Container(
+        child: Column(
+          children: [
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width * .3,
+                    child: Text('Relationship',
+                        style: TextStyle(
+                          color: Color.fromRGBO(10, 80, 106, 1),
+                          fontSize: 20,
+                        )),
+                  ),
+                  DropdownButton(
+                      items: [
+                        DropdownMenuItem(
+                          child: Text('--'),
+                          value: '',
+                        ),
+                        DropdownMenuItem(
+                          child: Text('Spouse'),
+                          value: 'Spouse',
+                        ),
+                        DropdownMenuItem(
+                          child: Text('Son'),
+                          value: 'Son',
+                        ),
+                        DropdownMenuItem(
+                          child: Text('Daughter'),
+                          value: 'Daughter',
+                        ),
+                        DropdownMenuItem(
+                          child: Text('Grand-Son'),
+                          value: 'Grand-Son',
+                        ),
+                        DropdownMenuItem(
+                          child: Text('Daughter-In-Law'),
+                          value: 'Daughter-In-Law',
+                        ),
+                        DropdownMenuItem(
+                          child: Text('Grand-Daughter'),
+                          value: 'Grand-Daughter',
+                        ),
+                        DropdownMenuItem(
+                          child: Text('Son-In-Law'),
+                          value: 'Son-In-Law',
+                        ),
+                        DropdownMenuItem(
+                          child: Text('Niece'),
+                          value: 'Niece',
+                        ),
+                        DropdownMenuItem(
+                          child: Text('Family-other'),
+                          value: 'Family-other',
+                        ),
+                        DropdownMenuItem(
+                          child: Text('Acquaintance'),
+                          value: 'Acquaintance',
+                        ),
+                        DropdownMenuItem(
+                          child: Text('Caregiver'),
+                          value: 'Caregiver',
+                        ),
+                        DropdownMenuItem(
+                          child: Text('Professional'),
+                          value: 'Professional',
+                        ),
+                        DropdownMenuItem(
+                          child: Text('Friend'),
+                          value: 'Friend',
+                        ),
+                        DropdownMenuItem(
+                          child: Text('Nephew'),
+                          value: 'Nephew',
+                        ),
+                      ],
+                      onChanged: (value) {
+                        FocusScope.of(context).requestFocus();
+                        new TextEditingController().clear();
+                        // print(widget.accessname);
+                        if (assessor == therapist && role == "therapist") {
+                          setState(() {
+                            widget.wholelist[1][widget.accessname]['question']
+                                    ["5"]['Roomate']['roomate$index']
+                                ['Relationship'] = value;
+                          });
+                        } else if (role != "therapist") {
+                          setState(() {
+                            widget.wholelist[1][widget.accessname]['question']
+                                    ["5"]['Roomate']['roomate$index']
+                                ['Relationship'] = value;
+                          });
+                        } else {
+                          _showSnackBar(
+                              "You can't change the other fields", context);
+                        }
+                      },
+                      value: widget.wholelist[1][widget.accessname]['question']
+                          ["5"]['Roomate']['roomate$index']['Relationship'])
+                ],
+              ),
+            ),
+            Container(
+              child: SingleChildScrollView(
+                // reverse: true,
+                child: Container(
+                  // color: Colors.yellow,
+                  child: Column(
+                    children: [
+                      Container(
+                        child: TextFormField(
+                          showCursor: cur,
+                          initialValue: widget.wholelist[1][widget.accessname]
+                                  ['question']["5"]['Roomate']['roomate$index']
+                              ['FirstName'],
+                          decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: colorsset["field$index"], width: 1),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    width: 1, color: colorsset["field$index"]),
+                              ),
+                              labelText: 'First Name'),
+                          onChanged: (value) {
+                            FocusScope.of(context).requestFocus();
+                            new TextEditingController().clear();
+                            // print(widget.accessname);
+                            if (assessor == therapist && role == "therapist") {
+                              widget.wholelist[1][widget.accessname]['question']
+                                      ["5"]['Roomate']['roomate$index']
+                                  ['FirstName'] = value;
+                            } else if (role != "therapist") {
+                              widget.wholelist[1][widget.accessname]['question']
+                                      ["5"]['Roomate']['roomate$index']
+                                  ['FirstName'] = value;
+                            } else {
+                              _showSnackBar(
+                                  "You can't change the other fields", context);
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              child: SingleChildScrollView(
+                // reverse: true,
+                child: Container(
+                  // color: Colors.yellow,
+                  child: Column(
+                    children: [
+                      Container(
+                        child: TextFormField(
+                          showCursor: cur,
+                          initialValue: widget.wholelist[1][widget.accessname]
+                                  ['question']["5"]['Roomate']['roomate$index']
+                              ['LastName'],
+                          decoration: InputDecoration(
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: colorsset["field$index"], width: 1),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    width: 1, color: colorsset["field$index"]),
+                              ),
+                              labelText: 'Last Name'),
+                          onChanged: (value) {
+                            FocusScope.of(context).requestFocus();
+                            new TextEditingController().clear();
+                            // print(widget.accessname);
+                            if (assessor == therapist && role == "therapist") {
+                              widget.wholelist[1][widget.accessname]['question']
+                                      ["5"]['Roomate']['roomate$index']
+                                  ['LastName'] = value;
+                            } else if (role != "therapist") {
+                              widget.wholelist[1][widget.accessname]['question']
+                                      ["5"]['Roomate']['roomate$index']
+                                  ['LastName'] = value;
+                            } else {
+                              _showSnackBar(
+                                  "You can't change the other fields", context);
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+          ],
+        ),
+      );
+    }
+
+    Widget form() => SliverToBoxAdapter(
+          child: Column(
+            children: [
+              SizedBox(height: 10),
+              (uploading)
+                  ? Center(
+                      child: Column(
+                        children: [
+                          Text("Uploading Video...."),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          CircularProgressIndicator()
+                        ],
+                      ),
+                    )
+                  : (videoUrl != "" &&
+                          videoUrl != null &&
+                          videoName != "" &&
+                          videoName != null)
+                      ? InkWell(
+                          // ignore: missing_return
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) =>
+                                    ViewVideo(videoUrl, widget.roomname)));
+                          },
+                          child: Container(
+                            decoration: new BoxDecoration(
+                              color: Color(0xFFeeeef5),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(40.0),
+                              ),
+                            ),
+                            width: (videoName == '' || videoName == null)
+                                ? 0.0
+                                : MediaQuery.of(context).size.width - 50,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                SizedBox(
+                                  width: (videoName == '' || videoName == null)
+                                      ? 0.0
+                                      : MediaQuery.of(context).size.width - 150,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 15.0, vertical: 15.0),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(
+                                          child: (videoName == null ||
+                                                  videoName == "")
+                                              ? SizedBox()
+                                              : Text(
+                                                  "$videoName",
+                                                  style: normalTextStyle()
+                                                      .copyWith(fontSize: 14.0),
+                                                  overflow: TextOverflow.fade,
+                                                  maxLines: 1,
+                                                  softWrap: false,
+                                                ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Spacer(),
+                                (videoName == '')
+                                    ? SizedBox()
+                                    : IconButton(
+                                        onPressed: () {
+                                          if (therapist == assessor &&
+                                              role == "therapist") {
+                                            setState(() {
+                                              widget.wholelist[1]
+                                                      [widget.accessname]
+                                                  ["videos"]["name"] = "";
+                                              widget.wholelist[1]
+                                                      [widget.accessname]
+                                                  ["videos"]["url"] = "";
+                                              deleteFile(videoUrl);
+                                              deleteVideo();
+                                              NewAssesmentRepository().setForm(
+                                                  widget.wholelist,
+                                                  widget.docID);
+                                            });
+                                          } else if (role != "therapist") {
+                                            setState(() {
+                                              widget.wholelist[1]
+                                                      [widget.accessname]
+                                                  ["videos"]["name"] = "";
+                                              widget.wholelist[1]
+                                                      [widget.accessname]
+                                                  ["videos"]["url"] = "";
+                                              deleteFile(videoUrl);
+                                              deleteVideo();
+                                              NewAssesmentRepository().setForm(
+                                                  widget.wholelist,
+                                                  widget.docID);
+                                            });
+                                          } else {
+                                            _showSnackBar(
+                                                "You can't change the other fields",
+                                                context);
+                                          }
+                                        },
+                                        icon: Icon(
+                                          Icons.delete_outline_rounded,
+                                          color: Color.fromRGBO(10, 80, 106, 1),
+                                        ),
+                                      ),
+                                SizedBox(
+                                  width: 15.0,
+                                )
+                              ],
+                            ),
+                          ),
+                        )
+                      : SizedBox(),
+
+              // Container(
+              //   height: 200.0,
+              //   child: ListView.builder(
+              //       scrollDirection: Axis.horizontal,
+              //       itemCount: widget
+              //           .wholelist[1][widget.accessname]["images"].length,
+              //       itemBuilder: (BuildContext context, int index) {
+              //         return Padding(
+              //           padding: const EdgeInsets.only(right: 8.0),
+              //           child: Column(
+              //             children: <Widget>[
+              //               ExtendedImage.network(
+              //                 widget.wholelist[1][widget.accessname]
+              //                     ["images"][index],
+              //                 width: 150.0,
+              //                 height: 150.0,
+              //                 fit: BoxFit.cover,
+              //                 cache: true,
+              //                 loadStateChanged: (ExtendedImageState state) {
+              //                   switch (state.extendedImageLoadState) {
+              //                     case LoadState.loading:
+              //                       return Center(
+              //                           child: Container(
+              //                         height: 32.0,
+              //                         width: 32.0,
+              //                         child: CircularProgressIndicator(),
+              //                       ));
+              //                       break;
+              //                     case LoadState.completed:
+              //                       return ExtendedRawImage(
+              //                         image: state.extendedImageInfo?.image,
+              //                         width: 150.0,
+              //                         height: 150.0,
+              //                       );
+              //                       break;
+              //                     case LoadState.failed:
+              //                       return Center(
+              //                           child: Container(
+              //                         height: 32.0,
+              //                         width: 32.0,
+              //                         child: Icon(
+              //                           Icons.error,
+              //                           color:
+              //                               Color.fromRGBO(10, 80, 106, 1),
+              //                         ),
+              //                       ));
+              //                       break;
+              //                     default:
+              //                       return Center(
+              //                           child: Container(
+              //                         height: 32.0,
+              //                         width: 32.0,
+              //                         child: CircularProgressIndicator(),
+              //                       ));
+              //                   }
+              //                 },
+              //               ),
+              //               IconButton(
+              //                   icon: Icon(Icons.delete,
+              //                       size: 16.0,
+              //                       color: Color.fromRGBO(10, 80, 106, 1)),
+              //                   onPressed: () {
+              //                     _deleteMedia(index, assesspro);
+              //                   })
+              //             ],
+              //           ),
+              //         );
+              //       }),
+              // ),
+              // Container(
+              //   decoration: new BoxDecoration(
+              //     color: Color(0xFFeeeef5),
+              //     borderRadius: BorderRadius.all(
+              //       Radius.circular(40.0),
+              //     ),
+              //   ),
+              //   width: assesspro.imageName == ''
+              //       ? 0.0
+              //       : MediaQuery.of(context).size.width - 50,
+              //   child: Row(
+              //     mainAxisSize: MainAxisSize.min,
+              //     children: [
+              //       SizedBox(
+              //         width: assesspro.imageName == ''
+              //             ? 0.0
+              //             : MediaQuery.of(context).size.width - 150,
+              //         child: Padding(
+              //           padding: const EdgeInsets.symmetric(
+              //               horizontal: 15.0, vertical: 15.0),
+              //           child: Row(
+              //             mainAxisSize: MainAxisSize.min,
+              //             children: [
+              //               Flexible(
+              //                 child: Text(
+              //                   assesspro.imageName == ''
+              //                       ? ''
+              //                       : assesspro.imageName,
+              //                   style: normalTextStyle()
+              //                       .copyWith(fontSize: 14.0),
+              //                   overflow: TextOverflow.fade,
+              //                   maxLines: 1,
+              //                   softWrap: false,
+              //                 ),
+              //               )
+              //             ],
+              //           ),
+              //         ),
+              //       ),
+              //       Spacer(),
+              //       assesspro.imageName == ''
+              //           ? SizedBox()
+              //           : IconButton(
+              //               onPressed: () {
+              //                 assesspro.deleteImage();
+              //                 setState(() {});
+              //               },
+              //               icon: Icon(
+              //                 Icons.delete_outline_rounded,
+              //                 color: Color.fromRGBO(10, 80, 106, 1),
+              //               ),
+              //             ),
+              //       SizedBox(
+              //         width: 15.0,
+              //       )
+              //     ],
+              //   ),
+              // ),
+              Container(
+                padding: EdgeInsets.all(15),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 15,
+                    ),
+                    // Divider(
+                    //   height: dividerheight,
+                    //   color: Color.fromRGBO(10, 80, 106, 1),
+                    // ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * .5,
+                          child: Text('House Type',
+                              style: TextStyle(
+                                color: Color.fromRGBO(10, 80, 106, 1),
+                                fontSize: 20,
+                              )),
+                        ),
+                        Container(
+                          child: DropdownButton(
+                            items: [
+                              DropdownMenuItem(
+                                child: Text('--'),
+                                value: '',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('Apartment'),
+                                value: 'Apartment',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('House'),
+                                value: 'House',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('Condominium'),
+                                value: 'Condominium',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('Other'),
+                                value: 'Other',
+                              ),
+                            ],
+                            onChanged: (value) {
+                              FocusScope.of(context).requestFocus();
+                              new TextEditingController().clear();
+                              if (assessor == therapist &&
+                                  role == "therapist") {
+                                assesspro.setdata(1, value, 'House Type');
+                              } else if (role != "therapist" &&
+                                  (role == "patient" ||
+                                      role == "nurse/case manager")) {
+                                assesspro.setdata(1, value, 'House Type');
+                              } else {
+                                _showSnackBar(
+                                    "You can't change the other fields",
+                                    context);
+                              }
+                            },
+                            value: getvalue(1),
+                          ),
+                        )
+                      ],
+                    ),
+                    (getvalue(1) == "Other")
+                        ? getrecomain(1, false, context)
+                        : SizedBox(),
+                    SizedBox(height: 15),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * .5,
+                          child: Text('Number of Levels',
+                              style: TextStyle(
+                                color: Color.fromRGBO(10, 80, 106, 1),
+                                fontSize: 20,
+                              )),
+                        ),
+                        Container(
+                          child: DropdownButton(
+                            items: [
+                              DropdownMenuItem(
+                                child: Text('--'),
+                                value: '',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('1'),
+                                value: '1',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('2'),
+                                value: '2',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('3'),
+                                value: '3',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('4'),
+                                value: '4',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('5'),
+                                value: '5',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('Other'),
+                                value: 'Other',
+                              ),
+                            ],
+                            onChanged: (value) {
+                              FocusScope.of(context).requestFocus();
+                              new TextEditingController().clear();
+                              // print(widget.accessname);
+                              if (assessor == therapist &&
+                                  role == "therapist") {
+                                assesspro.setdata(2, value, 'Number of Levels');
+                              } else if (role != "therapist") {
+                                assesspro.setdata(2, value, 'Number of Levels');
+                              } else {
+                                _showSnackBar(
+                                    "You can't change the other fields",
+                                    context);
+                              }
+                            },
+                            value: getvalue(2),
+                          ),
+                        )
+                      ],
+                    ),
+                    // (getvalue(2) == "Other")
+                    //     ? getrecomain(2, false)
+                    //     : SizedBox(),
+                    (getvalue(2) != '' &&
+                            getvalue(2) != '0' &&
+                            getvalue(2) != '1')
+                        ? Container(
+                            padding: EdgeInsets.only(top: 15),
+                            child: Column(
+                              children: [
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                .65,
+                                        child: Text('Mode Of Transportation',
+                                            style: TextStyle(
+                                              color: Color.fromRGBO(
+                                                  10, 80, 106, 1),
+                                              fontSize: 20,
+                                            )),
+                                      ),
+                                      DropdownButton(
+                                        items: [
+                                          DropdownMenuItem(
+                                            child: Text('--'),
+                                            value: '',
+                                          ),
+                                          DropdownMenuItem(
+                                            child: Text('Stairs'),
+                                            value: 'Stairs',
+                                          ),
+                                          DropdownMenuItem(
+                                            child: Text('Elevator'),
+                                            value: 'Elevator',
+                                          ),
+                                          DropdownMenuItem(
+                                            child: Text('Ramp'),
+                                            value: 'Ramp',
+                                          ),
+                                          DropdownMenuItem(
+                                            child: Text('Tramp'),
+                                            value: 'Tramp',
+                                          ),
+                                          DropdownMenuItem(
+                                            child: Text('Other'),
+                                            value: 'Other',
+                                          ),
+                                        ],
+                                        onChanged: (value) {
+                                          setState(() {
+                                            if (assessor == therapist &&
+                                                role == "therapist") {
+                                              widget.wholelist[1]
+                                                          [widget.accessname]
+                                                      ['question']["2"]
+                                                  ['Modetrnas'] = value;
+                                            } else if (role != "therapist") {
+                                              widget.wholelist[1]
+                                                          [widget.accessname]
+                                                      ['question']["2"]
+                                                  ['Modetrnas'] = value;
+                                            } else {
+                                              _showSnackBar(
+                                                  "You can't change the other fields",
+                                                  context);
+                                            }
+                                          });
+                                          // setdata(
+                                          //   2,
+                                          //   value,
+                                          //   'Mode Of Transportation'
+                                          // );
+                                        },
+                                        value: widget.wholelist[1]
+                                                [widget.accessname]['question']
+                                            ["2"]['Modetrnas'],
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(height: 5),
+                                (widget.wholelist[1][widget.accessname]
+                                                    ['question']["2"]
+                                                ['Modetrnas'] ==
+                                            'Other' ||
+                                        getvalue(2) == "Other")
+                                    ? getrecomain(2, false, context)
+                                    : SizedBox(),
+                              ],
+                            ),
+                          )
+                        : SizedBox(),
+                    SizedBox(height: 15),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * .5,
+                          child: Text('Living on Level',
+                              style: TextStyle(
+                                color: Color.fromRGBO(10, 80, 106, 1),
+                                fontSize: 20,
+                              )),
+                        ),
+                        Container(
+                          child: DropdownButton(
+                            items: [
+                              DropdownMenuItem(child: Text('--'), value: ''),
+                              DropdownMenuItem(
+                                child: Text('1'),
+                                value: '1',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('2'),
+                                value: '2',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('3'),
+                                value: '3',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('4'),
+                                value: '4',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('5'),
+                                value: '5',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('6'),
+                                value: '6',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('7'),
+                                value: '7',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('Other'),
+                                value: 'Other',
+                              ),
+                            ],
+                            onChanged: (value) {
+                              FocusScope.of(context).requestFocus();
+                              new TextEditingController().clear();
+                              // print(widget.accessname);
+                              if (assessor == therapist &&
+                                  role == "therapist") {
+                                assesspro.setdata(3, value, 'Living on Level');
+                              } else if (role != "therapist") {
+                                assesspro.setdata(3, value, 'Living on Level');
+                              } else {
+                                _showSnackBar(
+                                    "You can't change the other fields",
+                                    context);
+                              }
+                            },
+                            value: getvalue(3),
+                          ),
+                        )
+                      ],
+                    ),
+                    // SizedBox(height: 5),
+                    (getvalue(3) == 'Other')
+                        ? getrecomain(3, false, context)
+                        : SizedBox(),
+                    SizedBox(height: 15),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * .5,
+                          child: Text('Living Arrangements',
+                              style: TextStyle(
+                                color: Color.fromRGBO(10, 80, 106, 1),
+                                fontSize: 20,
+                              )),
+                        ),
+                        Container(
+                          child: DropdownButton(
+                            items: [
+                              DropdownMenuItem(
+                                child: Text('--'),
+                                value: '',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('Alone'),
+                                value: 'Alone',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('Alone Sometimes'),
+                                value: 'Alone Sometimes',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('Never Alone'),
+                                value: 'Never Alone',
+                              ),
+                            ],
+                            onChanged: (value) {
+                              FocusScope.of(context).requestFocus();
+                              new TextEditingController().clear();
+                              // print(widget.accessname);
+                              if (assessor == therapist &&
+                                  role == "therapist") {
+                                assesspro.setdata(
+                                    4, value, 'Living Arrangements');
+                              } else if (role != "therapist") {
+                                assesspro.setdata(
+                                    4, value, 'Living Arrangements');
+                              } else {
+                                _showSnackBar(
+                                    "You can't change the other fields",
+                                    context);
+                              }
+                            },
+                            value: getvalue(4),
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(height: 5),
+                    (getvalue(4) != 'Never Alone' && getvalue(4) != '')
+                        ? (getvalue(4) == 'Alone')
+                            ? getrecomain(4, true, context)
+                            : Container(
+                                padding: EdgeInsets.fromLTRB(5, 5, 5, 0),
+                                child: Column(
+                                  children: [
+                                    SizedBox(
+                                      height: 7,
+                                    ),
+                                    Container(
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .41,
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  'From:',
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                                Container(
+                                                  margin: EdgeInsets.fromLTRB(
+                                                      3, 0, 0, 0),
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.3,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  4)),
+                                                      shape: BoxShape.rectangle,
+                                                      border: Border.all(
+                                                        color: _colorgreen,
+                                                        width: 1,
+                                                      )),
+                                                  child: Row(children: [
+                                                    Container(
+                                                      // color: Colors.red,
+                                                      width: 35,
+                                                      child: IconButton(
+                                                        icon: Icon(Icons.alarm),
+                                                        onPressed: () {
+                                                          selectTime1(context);
+                                                        },
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      '${time1.hour}:${time1.minute}',
+                                                      style: TextStyle(
+                                                        fontSize: 20,
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 10),
+                                                  ]),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          SizedBox(width: 10),
+                                          Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .39,
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  'Till:',
+                                                  style: TextStyle(
+                                                    fontSize: 15,
+                                                  ),
+                                                ),
+                                                Container(
+                                                  margin: EdgeInsets.fromLTRB(
+                                                      3, 0, 0, 0),
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.3,
+                                                  decoration: BoxDecoration(
+                                                      borderRadius:
+                                                          BorderRadius.all(
+                                                              Radius.circular(
+                                                                  4)),
+                                                      shape: BoxShape.rectangle,
+                                                      border: Border.all(
+                                                        color: _colorgreen,
+                                                        width: 1,
+                                                      )),
+                                                  child: Row(children: [
+                                                    Container(
+                                                        // color: Colors.red,
+                                                        width: 35,
+                                                        child: IconButton(
+                                                          icon:
+                                                              Icon(Icons.alarm),
+                                                          onPressed: () {
+                                                            selectTime2(
+                                                                context);
+                                                            // print(time2);
+                                                          },
+                                                        )),
+                                                    Text(
+                                                      '${time2.hour}:${time2.minute}',
+                                                      style: TextStyle(
+                                                        fontSize: 20,
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 10),
+                                                  ]),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+                        : SizedBox(),
+                    SizedBox(height: 15),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * .5,
+                          child: Text('Has Room-mate?',
+                              style: TextStyle(
+                                color: Color.fromRGBO(10, 80, 106, 1),
+                                fontSize: 20,
+                              )),
+                        ),
+                        DropdownButton(
+                          items: [
+                            DropdownMenuItem(
+                              child: Text('--'),
+                              value: '',
+                            ),
+                            DropdownMenuItem(
+                              child: Text('Yes'),
+                              value: 'Yes',
+                            ),
+                            DropdownMenuItem(
+                              child: Text('No'),
+                              value: 'No',
+                            ),
+                          ],
+                          onChanged: (value) {
+                            FocusScope.of(context).requestFocus();
+                            new TextEditingController().clear();
+                            // print(widget.accessname);
+                            if (assessor == therapist && role == "therapist") {
+                              assesspro.setdata(5, value, 'Has Room-mate?');
+                            } else if (role != "therapist") {
+                              assesspro.setdata(5, value, 'Has Room-mate?');
+                            } else {
+                              _showSnackBar(
+                                  "You can't change the other fields", context);
+                            }
+                          },
+                          value: getvalue(5),
+                        )
+                      ],
+                    ),
+                    SizedBox(height: 15),
+                    (getvalue(5) == 'Yes')
+                        ? SingleChildScrollView(
+                            // reverse: true,
+                            child: Container(
+                              // color: Colors.yellow,
+                              child: Column(
+                                children: [
+                                  Container(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Container(
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              .5,
+                                          child: Text('Number of Room-mates',
+                                              style: TextStyle(
+                                                color: Color.fromRGBO(
+                                                    10, 80, 106, 1),
+                                                fontSize: 20,
+                                              )),
+                                        ),
+                                        SizedBox(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                .35,
+                                            child: NumericStepButton(
+                                              counterval: roomatecount,
+                                              onChanged: (value) {
+                                                if (assessor == therapist &&
+                                                    role == "therapist") {
+                                                  setState(() {
+                                                    widget.wholelist[1][widget
+                                                                    .accessname]
+                                                                ['question']
+                                                            ["5"]['Roomate']
+                                                        ['count'] = value;
+                                                    roomatecount = widget
+                                                                    .wholelist[1]
+                                                                [
+                                                                widget
+                                                                    .accessname]
+                                                            ['question']["5"]
+                                                        ['Roomate']['count'];
+                                                    if (value > 0) {
+                                                      widget.wholelist[1][widget
+                                                                      .accessname]
+                                                                  ['question']
+                                                              ["5"]['Roomate']
+                                                          ['roomate$value'] = {
+                                                        'Relationship': '',
+                                                        'FirstName': '',
+                                                        'LastName': '',
+                                                      };
+
+                                                      if (widget.wholelist[1][
+                                                              widget.accessname]
+                                                              ['question']["5"]
+                                                              ['Roomate']
+                                                          .containsKey(
+                                                              'roomate${value + 1}')) {
+                                                        widget.wholelist[1][
+                                                                widget
+                                                                    .accessname]
+                                                                ['question']
+                                                                ["5"]['Roomate']
+                                                            .remove(
+                                                                'roomate${value + 1}');
+                                                      }
+                                                    } else if (value == 0) {
+                                                      if (widget.wholelist[1][
+                                                              widget.accessname]
+                                                              ['question']["5"]
+                                                              ['Roomate']
+                                                          .containsKey(
+                                                              'roomate${value + 1}')) {
+                                                        widget.wholelist[1][
+                                                                widget
+                                                                    .accessname]
+                                                                ['question']
+                                                                ["5"]['Roomate']
+                                                            .remove(
+                                                                'roomate${value + 1}');
+                                                      }
+                                                    }
+                                                  });
+                                                } else if (role !=
+                                                    "therapist") {
+                                                  setState(() {
+                                                    widget.wholelist[1][widget
+                                                                    .accessname]
+                                                                ['question']
+                                                            ["5"]['Roomate']
+                                                        ['count'] = value;
+                                                    roomatecount = widget
+                                                                    .wholelist[1]
+                                                                [
+                                                                widget
+                                                                    .accessname]
+                                                            ['question']["5"]
+                                                        ['Roomate']['count'];
+                                                    if (value > 0) {
+                                                      widget.wholelist[1][widget
+                                                                      .accessname]
+                                                                  ['question']
+                                                              ["5"]['Roomate']
+                                                          ['roomate$value'] = {
+                                                        'Relationship': '',
+                                                        'FirstName': '',
+                                                        'LastName': '',
+                                                      };
+
+                                                      if (widget.wholelist[1][
+                                                              widget.accessname]
+                                                              ['question']["5"]
+                                                              ['Roomate']
+                                                          .containsKey(
+                                                              'roomate${value + 1}')) {
+                                                        widget.wholelist[1][
+                                                                widget
+                                                                    .accessname]
+                                                                ['question']
+                                                                ["5"]['Roomate']
+                                                            .remove(
+                                                                'roomate${value + 1}');
+                                                      }
+                                                    } else if (value == 0) {
+                                                      if (widget.wholelist[1][
+                                                              widget.accessname]
+                                                              ['question']["5"]
+                                                              ['Roomate']
+                                                          .containsKey(
+                                                              'roomate${value + 1}')) {
+                                                        widget.wholelist[1][
+                                                                widget
+                                                                    .accessname]
+                                                                ['question']
+                                                                ["5"]['Roomate']
+                                                            .remove(
+                                                                'roomate${value + 1}');
+                                                      }
+                                                    }
+                                                  });
+                                                } else {
+                                                  _showSnackBar(
+                                                      "You can't change the other fields",
+                                                      context);
+                                                }
+
+                                                // print(widget.wholelist[1][
+                                                //             widget.accessname]
+                                                //         ['question']["5"]
+                                                //     ['Roomate']);
+                                              },
+                                            )),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(height: 10),
+                                  (roomatecount > 0)
+                                      ? Container(
+                                          child: Padding(
+                                            padding: EdgeInsets.fromLTRB(
+                                                0, 10, 0, 10),
+                                            child: ConstrainedBox(
+                                              constraints: BoxConstraints(
+                                                  maxHeight: 1000,
+                                                  minHeight:
+                                                      MediaQuery.of(context)
+                                                              .size
+                                                              .height /
+                                                          10),
+                                              child: ListView.builder(
+                                                physics:
+                                                    const NeverScrollableScrollPhysics(),
+                                                shrinkWrap: true,
+                                                itemCount: roomatecount,
+                                                itemBuilder: (context, index1) {
+                                                  return roomatecountwidget(
+                                                      index1 + 1, context);
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : SizedBox()
+                                ],
+                              ),
+                            ),
+                          )
+                        : SizedBox(),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * .5,
+                          child: Text('Able to get in & out of doors & steps?',
+                              style: TextStyle(
+                                color: Color.fromRGBO(10, 80, 106, 1),
+                                fontSize: 20,
+                              )),
+                        ),
+                        DropdownButton(
+                          items: [
+                            DropdownMenuItem(
+                              child: Text('--'),
+                              value: '',
+                            ),
+                            DropdownMenuItem(
+                              child: Text('Fairly Well'),
+                              value: 'Fairly Well',
+                            ),
+                            DropdownMenuItem(
+                              child: Text('With Difficulty'),
+                              value: 'With Difficulty',
+                            ),
+                            (role == "therapist")
+                                ? DropdownMenuItem(
+                                    child: Text('Min(A)'),
+                                    value: 'Min(A)',
+                                  )
+                                : DropdownMenuItem(
+                                    child: Text('25% Assistance'),
+                                    value: 'Min(A)',
+                                  ),
+                            (role == "therapist")
+                                ? DropdownMenuItem(
+                                    child: Text('Mod(A)'),
+                                    value: 'Mod(A)',
+                                  )
+                                : DropdownMenuItem(
+                                    child: Text('50% Assistance'),
+                                    value: 'Mod(A)',
+                                  ),
+                            (role == "therapist")
+                                ? DropdownMenuItem(
+                                    child: Text('Max(A)'),
+                                    value: 'Max(A)',
+                                  )
+                                : DropdownMenuItem(
+                                    child: Text('75% Assistance'),
+                                    value: 'Max(A)',
+                                  ),
+                            (role == "therapist")
+                                ? DropdownMenuItem(
+                                    child: Text('Max(A) x2'),
+                                    value: 'Max(A) x2',
+                                  )
+                                : DropdownMenuItem(
+                                    child: Text('100% Assistance'),
+                                    value: 'Max(A) x2',
+                                  ),
+                          ],
+                          onChanged: (value) {
+                            FocusScope.of(context).requestFocus();
+                            new TextEditingController().clear();
+                            // print(widget.accessname);
+                            if (assessor == therapist && role == "therapist") {
+                              assesspro.setdata(6, value,
+                                  'Able to get in & out of doors & steps?');
+                            } else if (role != "therapist") {
+                              assesspro.setdata(6, value,
+                                  'Able to get in & out of doors & steps?');
+                            } else {
+                              _showSnackBar(
+                                  "You can't change the other fields", context);
+                            }
+                          },
+                          value: getvalue(6),
+                        )
+                      ],
+                    ),
+                    (getvalue(6) != 'Fairly Well' && getvalue(6) != '')
+                        ? getrecomain(6, true, context)
+                        : SizedBox(),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * .5,
+                          child: Text('Using assistive device?',
+                              style: TextStyle(
+                                color: Color.fromRGBO(10, 80, 106, 1),
+                                fontSize: 20,
+                              )),
+                        ),
+                        DropdownButton(
+                          items: [
+                            DropdownMenuItem(
+                              child: Text('--'),
+                              value: '',
+                            ),
+                            DropdownMenuItem(
+                              child: Text('Yes'),
+                              value: 'Yes',
+                            ),
+                            DropdownMenuItem(
+                              child: Text('No'),
+                              value: 'No',
+                            ),
+                          ],
+                          onChanged: (value) {
+                            FocusScope.of(context).requestFocus();
+                            new TextEditingController().clear();
+                            // print(widget.accessname);
+                            if (assessor == therapist && role == "therapist") {
+                              assesspro.setdata(
+                                  7, value, 'Using assistive device?');
+                            } else if (role != "therapist") {
+                              assesspro.setdata(
+                                  7, value, 'Using assistive device?');
+                            } else {
+                              _showSnackBar(
+                                  "You can't change the other fields", context);
+                            }
+                          },
+                          value: getvalue(7),
+                        )
+                      ],
+                    ),
+                    (getvalue(7) == 'Yes')
+                        ? Container(
+                            padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  width: MediaQuery.of(context).size.width * .3,
+                                  child: Text('Assistive Device?',
+                                      style: TextStyle(
+                                        color: Color.fromRGBO(10, 80, 106, 1),
+                                        fontSize: 20,
+                                      )),
+                                ),
+                                Container(
+                                    child: IconButton(
+                                        onPressed: () {
+                                          for (int i = 0;
+                                              i < assistiveDevice.length;
+                                              i++) {
+                                            if (assistiveDevice[i]['name'] ==
+                                                widget.wholelist[1][widget
+                                                                .accessname]
+                                                            ['question']["7"]
+                                                        ['additional']
+                                                    ["assistiveDevice"]) {
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          ProductDetails(
+                                                              assistiveDevice[i]
+                                                                  ['name'],
+                                                              assistiveDevice[i]
+                                                                  [
+                                                                  'description'],
+                                                              assistiveDevice[i]
+                                                                  ['url'])));
+                                            }
+                                          }
+                                        },
+                                        icon: Icon(Icons.info))),
+                                DropdownButton(
+                                  items: [
+                                    DropdownMenuItem(
+                                      child: Text('--'),
+                                      value: '',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('SC/Quad'),
+                                      value: 'SC/Quad',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Cane/Std'),
+                                      value: 'Cane/Std',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Walker'),
+                                      value: 'Walker',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Front Wheel Walker'),
+                                      value: 'Front Wheel Walker',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('4 Whl. Walker'),
+                                      value: '4 Whl. Whalker',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Manual Whl Chair'),
+                                      value: 'Manual Whl Chair',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Power W/c'),
+                                      value: 'Power W/c',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Crutches'),
+                                      value: 'Crutches',
+                                    ),
+                                    DropdownMenuItem(
+                                      child: Text('Scooter'),
+                                      value: 'Scooter',
+                                    ),
+                                  ],
+                                  onChanged: (value) {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    if (assessor == therapist &&
+                                        role == "therapist") {
+                                      widget.wholelist[1][widget.accessname]
+                                              ['question']["7"]['additional']
+                                          ["assistiveDevice"] = value;
+                                    } else if (role != "therapist") {
+                                      widget.wholelist[1][widget.accessname]
+                                              ['question']["7"]['additional']
+                                          ["assistiveDevice"] = value;
+                                    } else {
+                                      _showSnackBar(
+                                          "You can't change the other fields",
+                                          context);
+                                    }
+
+                                    // setrecothera(7, value);
+                                  },
+                                  value: widget.wholelist[1][widget.accessname]
+                                          ['question']["7"]['additional']
+                                      ["assistiveDevice"],
+                                )
+                              ],
+                            ),
+                          )
+                        : SizedBox(),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * .4,
+                          child: Text('Gait pattern noted',
+                              style: TextStyle(
+                                color: Color.fromRGBO(10, 80, 106, 1),
+                                fontSize: 20,
+                              )),
+                        ),
+                        Container(
+                          // width: MediaQuery.of(context).size.width * .3,
+                          child: DropdownButton(
+                            items: [
+                              DropdownMenuItem(
+                                child: Text('--'),
+                                value: '',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('Normal'),
+                                value: 'Normal',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('Slight Shuffling'),
+                                value: 'Slight Shuffling',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('Limping'),
+                                value: 'Limping',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('Significant Shuffling'),
+                                value: 'Significant Shuffling',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('Other'),
+                                value: 'Other',
+                              ),
+                            ],
+                            onChanged: (value) {
+                              FocusScope.of(context).requestFocus();
+                              new TextEditingController().clear();
+                              // print(widget.accessname);
+                              if (assessor == therapist &&
+                                  role == "therapist") {
+                                assesspro.setdata(
+                                    8, value, 'Gait pattern noted');
+                              } else if (role != "therapist") {
+                                assesspro.setdata(
+                                    8, value, 'Gait pattern noted');
+                              } else {
+                                _showSnackBar(
+                                    "You can't change the other fields",
+                                    context);
+                              }
+                            },
+                            value: getvalue(8),
+                          ),
+                        ),
+                      ],
+                    ),
+                    (getvalue(8) == 'Slight Shuffling' ||
+                            getvalue(8) == 'Limping' ||
+                            getvalue(8) == 'Significant Shuffling' ||
+                            getvalue(8) == 'Other')
+                        ? getrecomain(8, true, context)
+                        : SizedBox(),
+                    SizedBox(height: 15),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * .5,
+                          child: Text('Access to Curbside',
+                              style: TextStyle(
+                                color: Color.fromRGBO(10, 80, 106, 1),
+                                fontSize: 20,
+                              )),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * .35,
+                          child: DropdownButton(
+                            isExpanded: true,
+                            items: [
+                              DropdownMenuItem(
+                                child: Text('--'),
+                                value: '',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('Never goes to the curbside'),
+                                value: 'Never goes to the curbside',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('Sometimes goes to the curbside'),
+                                value: 'Sometimes goes to the curbside',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('Often goes to the curbside'),
+                                value: 'Often goes to the curbside',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('Other'),
+                                value: 'Other',
+                              ),
+                            ],
+                            onChanged: (value) {
+                              FocusScope.of(context).requestFocus();
+                              new TextEditingController().clear();
+                              // print(widget.accessname);
+                              if (assessor == therapist &&
+                                  role == "therapist") {
+                                assesspro.setdata(
+                                    9, value, 'Access to Curbside');
+                              } else if (role != "therapist") {
+                                assesspro.setdata(
+                                    9, value, 'Access to Curbside');
+                              } else {
+                                _showSnackBar(
+                                    "You can't change the other fields",
+                                    context);
+                              }
+                            },
+                            value: getvalue(9),
+                          ),
+                        )
+                      ],
+                    ),
+                    (getvalue(9) != 'Never goes to the curbside' &&
+                            // getvalue(9) != 'Other' &&
+                            getvalue(9) != '')
+                        ? getrecomain(9, true, context)
+                        : SizedBox(),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * .6,
+                          child: Text('Access to curbside specify',
+                              style: TextStyle(
+                                color: Color.fromRGBO(10, 80, 106, 1),
+                                fontSize: 20,
+                              )),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                        // height: 10000,
+                        child: TextFormField(
+                      maxLines: null,
+                      controller: _controllers["field${10}"],
+                      decoration: InputDecoration(
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: colorsset["field${10}"], width: 1),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              width: 1, color: colorsset["field${10}"]),
+                        ),
+                        suffix: Container(
+                          padding: EdgeInsets.all(0),
+                          child: Column(children: [
+                            Container(
+                              alignment: Alignment.topRight,
+                              width: 58,
+                              height: 30,
+                              margin: EdgeInsets.all(0),
+                              child: AvatarGlow(
+                                animate: isListening['field${10}'],
+                                glowColor: Theme.of(context).primaryColor,
+                                endRadius: 300.0,
+                                duration: const Duration(milliseconds: 2000),
+                                repeatPauseDuration:
+                                    const Duration(milliseconds: 100),
+                                repeat: true,
+                                child: FlatButton(
+                                  child: Icon(isListening['field${10}']
+                                      ? Icons.cancel
+                                      : Icons.mic),
+                                  onPressed: () {
+                                    if (assessor == therapist &&
+                                        role == "therapist") {
+                                      _listen(10);
+                                      setdatalisten(10);
+                                    } else if (role != "therapist") {
+                                      _listen(10);
+                                      setdatalisten(10);
+                                    } else {
+                                      _showSnackBar(
+                                          "You can't change the other fields",
+                                          context);
+                                    }
+                                  },
+                                ),
+                              ),
+                            ),
+                          ]),
+                        ),
+                      ),
+                      onChanged: (value) {
+                        FocusScope.of(context).requestFocus();
+                        new TextEditingController().clear();
+                        // print(widget.accessname);
+                        if (assessor == therapist && role == "therapist") {
+                          assesspro.setdata(
+                              10, value, 'Access to curbside specify');
+                        } else if (role != "therapist") {
+                          assesspro.setdata(
+                              10, value, 'Access to curbside specify');
+                        } else {
+                          _showSnackBar(
+                              "You can't change the other fields", context);
+                        }
+                      },
+                    )),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    Container(
+                      child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * .50,
+                              child: Text('Number of Flight of Stairs',
+                                  style: TextStyle(
+                                    color: Color.fromRGBO(10, 80, 106, 1),
+                                    fontSize: 20,
+                                  )),
+                            ),
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width * .35,
+                              child: NumericStepButton(
+                                counterval: flightcount,
+                                onChanged: (value) {
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    assesspro.setFlightData(11, value,
+                                        'Number of flight of stairs');
+                                    setState(() {
+                                      // widget.wholelist[1][widget.accessname]
+                                      //             ['question']["11"]
+                                      //         ['Question'] =
+                                      //     'Number of Flight of Stairs';
+                                      widget.wholelist[1][widget.accessname]
+                                              ['question']["11"]['Flights']
+                                          ["count"] = value;
+                                      // widget.wholelist[1][widget.accessname]
+                                      //         ['question']["11"]['Answer'] =
+                                      //     value;
+                                      flightcount = widget.wholelist[1]
+                                              [widget.accessname]['question']
+                                          ["11"]['Flights']["count"];
+                                      print(widget.wholelist[1]
+                                              [widget.accessname]['question']
+                                          ["11"]['Flights']["count"]);
+                                      // if (value == 0) {
+                                      //   if (widget.wholelist[1][widget
+                                      //                       .accessname]
+                                      //                   ['question']["11"]
+                                      //               ["Answer"] ==
+                                      //           0 ||
+                                      //       widget.wholelist[1][widget
+                                      //                       .accessname]
+                                      //                   ['question']["11"]
+                                      //               ["Answer"] ==
+                                      //           "") {
+                                      //   } else {
+                                      //     widget.wholelist[1]
+                                      //             [widget.accessname]
+                                      //         ['complete'] -= 1;
+                                      //     widget.wholelist[1]
+                                      //                 [widget.accessname]
+                                      //             ['question']["11"]
+                                      //         ["Answer"] = value;
+                                      //   }
+                                      // } else {
+                                      //   if (widget.wholelist[1]
+                                      //                   [widget.accessname]
+                                      //               ['question']["11"]
+                                      //           ["Answer"] ==
+                                      //       value) {
+                                      //   } else {
+                                      //     widget.wholelist[1]
+                                      //             [widget.accessname]
+                                      //         ['complete'] += 1;
+                                      //   }
+                                      //   widget.wholelist[1]
+                                      //               [widget.accessname]
+                                      //           ['question']["11"]
+                                      //       ["Answer"] = value;
+                                      // }
+                                      if (value > 0) {
+                                        widget.wholelist[1][widget.accessname]
+                                                ['question']["11"]['Flights']
+                                            ['flight$value'] = {"flight": ''};
+
+                                        if (widget.wholelist[1]
+                                                [widget.accessname]['question']
+                                                ["11"]['Flights']
+                                            .containsKey(
+                                                'flight${value + 1}')) {
+                                          widget.wholelist[1][widget.accessname]
+                                                  ['question']["11"]['Flights']
+                                              .remove('flight${value + 1}');
+                                        }
+                                      } else if (value == 0) {
+                                        if (widget.wholelist[1]
+                                                [widget.accessname]['question']
+                                                ["11"]['Flights']
+                                            .containsKey(
+                                                'flight${value + 1}')) {
+                                          widget.wholelist[1][widget.accessname]
+                                                  ['question']["11"]['Flights']
+                                              .remove('flight${value + 1}');
+                                        }
+                                      }
+                                    });
+                                  } else if (role != "therapist") {
+                                    assesspro.setFlightData(11, value,
+                                        'Number of flight of stairs');
+                                    setState(() {
+                                      // widget.wholelist[1][widget.accessname]
+                                      //             ['question']["11"]
+                                      //         ['Question'] =
+                                      //     'Number of Flight of Stairs';
+                                      widget.wholelist[1][widget.accessname]
+                                              ['question']["11"]['Flights']
+                                          ["count"] = value;
+                                      // widget.wholelist[1][widget.accessname]
+                                      //         ['question']["11"]['Answer'] =
+                                      //     value;
+                                      flightcount = widget.wholelist[1]
+                                              [widget.accessname]['question']
+                                          ["11"]['Flights']["count"];
+                                      print(widget.wholelist[1]
+                                              [widget.accessname]['question']
+                                          ["11"]['Flights']["count"]);
+                                      // if (value == 0) {
+                                      //   if (widget.wholelist[1]
+                                      //                   [widget.accessname]
+                                      //               ['question']["11"]
+                                      //           ["Answer"] ==
+                                      //       0) {
+                                      //   } else {
+                                      //     widget.wholelist[1]
+                                      //             [widget.accessname]
+                                      //         ['complete'] -= 1;
+                                      //     widget.wholelist[1]
+                                      //                 [widget.accessname]
+                                      //             ['question']["11"]
+                                      //         ["Answer"] = value;
+                                      //   }
+                                      // } else {
+                                      //   if (widget.wholelist[1]
+                                      //                   [widget.accessname]
+                                      //               ['question']["11"]
+                                      //           ["Answer"] !=
+                                      //       0) {
+                                      //   } else {
+                                      //     widget.wholelist[1]
+                                      //             [widget.accessname]
+                                      //         ['complete'] += 1;
+                                      //   }
+                                      //   widget.wholelist[1]
+                                      //               [widget.accessname]
+                                      //           ['question']["11"]
+                                      //       ["Answer"] = value;
+                                      // }
+                                      if (value > 0) {
+                                        widget.wholelist[1][widget.accessname]
+                                                ['question']["11"]['Flights']
+                                            ['flight$value'] = {"flight": ''};
+
+                                        if (widget.wholelist[1]
+                                                [widget.accessname]['question']
+                                                ["11"]['Flights']
+                                            .containsKey(
+                                                'flight${value + 1}')) {
+                                          widget.wholelist[1][widget.accessname]
+                                                  ['question']["11"]['Flights']
+                                              .remove('flight${value + 1}');
+                                        }
+                                        if (widget.wholelist[1]
+                                                    [widget.accessname]
+                                                ['question']["11"]["Answer"] ==
+                                            0) {
+                                          widget.wholelist[1][widget.accessname]
+                                              ['complete'] += 1;
+                                          widget.wholelist[1][widget.accessname]
+                                                  ['question']["11"]["Answer"] =
+                                              value;
+                                        }
+                                      } else if (value == 0) {
+                                        if (widget.wholelist[1]
+                                                [widget.accessname]['question']
+                                                ["11"]['Flights']
+                                            .containsKey(
+                                                'flight${value + 1}')) {
+                                          widget.wholelist[1][widget.accessname]
+                                                  ['question']["11"]['Flights']
+                                              .remove('flight${value + 1}');
+                                        }
+                                        if (widget.wholelist[1]
+                                                    [widget.accessname]
+                                                ['question']["11"]["Answer"] !=
+                                            0) {
+                                          widget.wholelist[1][widget.accessname]
+                                              ['complete'] -= 1;
+                                          widget.wholelist[1][widget.accessname]
+                                                  ['question']["11"]["Answer"] =
+                                              value;
+                                        }
+                                      }
+                                    });
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
+
+                                  // print(widget.wholelist[1]
+                                  //         [widget.accessname]['question']
+                                  //     ["11"]['Flights']);
+                                },
+                              ),
+                            ),
+                          ]),
+                    ),
+                    // SizedBox(height: 10),
+                    (flightcount > 0)
+                        ? Container(
+                            child: Padding(
+                              padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(
+                                    maxHeight: 1000,
+                                    minHeight:
+                                        MediaQuery.of(context).size.height /
+                                            10),
+                                child: ListView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: flightcount,
+                                  itemBuilder: (context, index1) {
+                                    return flightcountwidget(
+                                        index1 + 1, context);
+                                  },
+                                ),
+                              ),
+                            ),
+                          )
+                        : SizedBox(
+                            height: 15,
+                          ),
+
+                    // SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * .6,
+                          child: Text(
+                              'Smoke detector batteries checked annually/replaced?',
+                              style: TextStyle(
+                                color: Color.fromRGBO(10, 80, 106, 1),
+                                fontSize: 20,
+                              )),
+                        ),
+                        DropdownButton(
+                          items: [
+                            DropdownMenuItem(
+                              child: Text('--'),
+                              value: '',
+                            ),
+                            DropdownMenuItem(
+                              child: Text('Yes'),
+                              value: 'Yes',
+                            ),
+                            DropdownMenuItem(
+                              child: Text('No'),
+                              value: 'No',
+                            ),
+                          ],
+                          onChanged: (value) {
+                            FocusScope.of(context).requestFocus();
+                            new TextEditingController().clear();
+                            // print(widget.accessname);
+                            if (assessor == therapist && role == "therapist") {
+                              assesspro.setdata(12, value,
+                                  'Smoke setector batteries checked annually/replaced?');
+                            } else if (role != "therapist") {
+                              assesspro.setdata(12, value,
+                                  'Smoke setector batteries checked annually/replaced?');
+                            } else {
+                              _showSnackBar(
+                                  "You can't change the other fields", context);
+                            }
+                          },
+                          value: getvalue(12),
+                        )
+                      ],
+                    ),
+                    (getvalue(12) == 'No')
+                        ? getrecomain(12, true, context)
+                        : SizedBox(height: 5),
+                    SizedBox(height: 15),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.8,
+                          child: Text(
+                              'Person responsible to change smoke detector batteries',
+                              style: TextStyle(
+                                color: Color.fromRGBO(10, 80, 106, 1),
+                                fontSize: 20,
+                              )),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                        // height: 10000,
+                        child: TextFormField(
+                      initialValue: getvalue(13),
+                      maxLines: 1,
+                      decoration: InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Color.fromRGBO(10, 80, 106, 1),
+                                width: 1),
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(width: 1),
+                          ),
+                          // isDense: true,
+                          labelText: 'Specify Name'),
+                      onChanged: (value) {
+                        FocusScope.of(context).requestFocus();
+                        new TextEditingController().clear();
+                        // print(widget.accessname);
+                        if (assessor == therapist && role == "therapist") {
+                          assesspro.setdata(13, value,
+                              'Person responsible to change smoke detector batteries');
+                        } else if (role != "therapist") {
+                          assesspro.setdata(13, value,
+                              'Person responsible to change smoke detector batteries');
+                        } else {
+                          _showSnackBar(
+                              "You can't change the other fields", context);
+                        }
+                      },
+                    )),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * .5,
+                          child: Text('Observations',
+                              style: TextStyle(
+                                color: Color.fromRGBO(10, 80, 106, 1),
+                                fontSize: 20,
+                              )),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                        // height: 10000,
+                        child: TextFormField(
+                      initialValue: getvalue(14),
+                      maxLines: 6,
+                      decoration: InputDecoration(
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                              color: Color.fromRGBO(10, 80, 106, 1), width: 1),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(width: 1),
+                        ),
+                        // isDense: true,
+                      ),
+                      onChanged: (value) {
+                        FocusScope.of(context).requestFocus();
+                        new TextEditingController().clear();
+                        // print(widget.accessname);
+                        if (assessor == therapist && role == "therapist") {
+                          assesspro.setdata(14, value, 'Observations');
+                        } else if (role != "therapist") {
+                          assesspro.setdata(14, value, 'Observations');
+                        } else {
+                          _showSnackBar(
+                              "You can't change the other fields", context);
+                        }
+                      },
+                    )),
+                  ],
+                ),
+              ),
+              Container(
+                  child: RaisedButton(
+                      color: colorb,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        'Submit',
+                        style: TextStyle(color: Colors.white, fontSize: 16),
+                      ),
+                      onPressed: () {
+                        // uploadFile(_image);
+                        // // _mediaList.add(assesspro.uploadImage().toString());
+                        // widget.wholelist[1][widget.accessname]["images"] =
+                        //     _mediaList;
+                        // bool isValid = _formKey.currentState.validate();
+                        var test =
+                            widget.wholelist[1][widget.accessname]["complete"];
+                        for (int i = 0;
+                            i <
+                                widget
+                                    .wholelist[1][widget.accessname]['question']
+                                    .length;
+                            i++) {
+                          setdatalisten(i + 1);
+                          setdatalistenthera(i + 1);
+                        }
+                        // if (!isValid) {
+                        // _showSnackBar("Recommendation Required", context);
+                        // } else {
+                        // if (test == 0) {
+                        //   _showSnackBar(
+                        //       "You Must Have to Fill the Form First",
+                        //       context);
+                        // } else {
+                        if (role == "therapist") {
+                          // if (saveToForm) {
+                          NewAssesmentRepository()
+                              .setLatestChangeDate(widget.docID);
+                          NewAssesmentRepository()
+                              .setForm(widget.wholelist, widget.docID);
+                          // Navigator.pop(context,
+                          //     widget.wholelist[1][widget.accessname]);
+                          Navigator.pop(
+                              context, widget.wholelist[1][widget.accessname]);
+                          // } else {
+                          //   _showSnackBar(
+                          //       "Provide all recommendations", context);
+                          // }
+                        } else {
+                          NewAssesmentRepository()
+                              .setLatestChangeDate(widget.docID);
+                          NewAssesmentRepository()
+                              .setForm(widget.wholelist, widget.docID);
+                          // Navigator.pop(context,
+                          //     widget.wholelist[1][widget.accessname]);
+                          Navigator.pop(
+                              context, widget.wholelist[1][widget.accessname]);
+                        }
+                      }
+                      // }
+                      // },
+                      ))
+            ],
+          ),
+        );
+
+    Widget header() => Container(
+          width: double.infinity,
+          padding: EdgeInsets.fromLTRB(10, 80, 10, 20),
+          child: Card(
+            elevation: 8,
+            child: Container(
+              // width: MediaQuery.of(context).size.width / 10,
+              padding: EdgeInsets.all(25),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: MediaQuery.of(context).size.width / 1.6,
+                    child: Text(
+                      '${widget.roomname} Details',
+                      style: TextStyle(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromRGBO(10, 80, 106, 1),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    alignment: Alignment.topRight,
+                    width: MediaQuery.of(context).size.width * 0.15,
+                    decoration: BoxDecoration(
+                        color: _colorgreen,
+                        // border: Border.all(
+                        //   color: Colors.red[500],
+                        // ),
+                        borderRadius: BorderRadius.all(Radius.circular(25))),
+                    // color: Colors.red,
+                    child: RawMaterialButton(
+                      onPressed: () {
+                        if (videoUrl == "" && videoName == "") {
+                          if (curUid == assessor) {
+                            uploadVideo(context);
+                          } else {
+                            _showSnackBar(
+                                "You are not allowed to upload video", context);
+                          }
+                        } else {
+                          _showSnackBar("You can add only one video", context);
+                        }
+                      },
+                      child: Icon(
+                        Icons.camera_alt,
+                        color: Colors.white,
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+
+    return Scaffold(
+        body: CustomScrollView(
+      slivers: [
+        SliverAppBar(
+          expandedHeight: 180,
+          title: (widget.roomname != null)
+              ? Text("${widget.roomname}")
+              : Text('Assessment'),
           backgroundColor: _colorgreen,
+          floating: true,
+          pinned: true,
           actions: [
-            // (uploading)
-            //     ? Center(
-            //         child: Container(
-            //           child: Text(
-            //             "Uploading...${value.round()}%",
-            //             style: TextStyle(fontSize: 18),
-            //           ),
-            //         ),
-            //       )
-            //     :
             IconButton(
               icon: Icon(Icons.done_all, color: Colors.white),
               onPressed: () async {
-                // await uploadFile(_image);
-                // widget.wholelist[1][widget.accessname]["images"] =
-                //     mediaList.toList();
-
                 try {
                   var test = widget.wholelist[1][widget.accessname]["complete"];
                   for (int i = 0;
@@ -680,2688 +3226,2164 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                     setdatalisten(i + 1);
                     setdatalistenthera(i + 1);
                   }
-
-                  // if (test == 0) {
-                  //   _showSnackBar(
-                  //       "You Must Have to Fill the Form First", context);
-                  // } else {
                   if (role == "therapist") {
-                    // if (saveToForm) {
                     NewAssesmentRepository().setLatestChangeDate(widget.docID);
                     NewAssesmentRepository()
                         .setForm(widget.wholelist, widget.docID);
-                    // Navigator.pop(context,
-                    //     widget.wholelist[1][widget.accessname]);
                     Navigator.pop(
                         context, widget.wholelist[1][widget.accessname]);
-                    // } else {
-                    //   _showSnackBar("Provide all recommendations", context);
-                    // }
                   } else {
                     NewAssesmentRepository().setLatestChangeDate(widget.docID);
                     NewAssesmentRepository()
                         .setForm(widget.wholelist, widget.docID);
-                    // Navigator.pop(context,
-                    //     widget.wholelist[1][widget.accessname]);
                     Navigator.pop(
                         context, widget.wholelist[1][widget.accessname]);
                   }
-                  // }
                 } catch (e) {
                   print(e.toString());
                 }
               },
-              // label: Text(
-              //   'Logout',
-              //   style: TextStyle(color: Colors.white, fontSize: 16),
-              // ),
             )
           ],
-        ),
-        body: Container(
-          child: Padding(
-            padding: EdgeInsets.all(10),
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Container(
-                    width: double.infinity,
-                    child: Card(
-                      elevation: 8,
-                      child: Container(
-                        // width: MediaQuery.of(context).size.width / 10,
-                        padding: EdgeInsets.all(25),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width / 1.6,
-                              child: Text(
-                                '${widget.roomname} Details',
-                                style: TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color.fromRGBO(10, 80, 106, 1),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              alignment: Alignment.topRight,
-                              width: 45,
-                              decoration: BoxDecoration(
-                                  color: _colorgreen,
-                                  // border: Border.all(
-                                  //   color: Colors.red[500],
-                                  // ),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(50))),
-                              // color: Colors.red,
-                              child: RawMaterialButton(
-                                onPressed: () {
-                                  if (videoUrl == "" && videoName == "") {
-                                    if (curUid == assessor) {
-                                      uploadVideo(context);
-                                    } else {
-                                      _showSnackBar(
-                                          "You are not allowed to upload video",
-                                          context);
-                                    }
-                                  } else {
-                                    _showSnackBar(
-                                        "You can add only one video", context);
-                                  }
-                                },
-                                child: Icon(
-                                  Icons.camera_alt,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 10),
-                  (uploading)
-                      ? Center(
-                          child: Column(
-                            children: [
-                              Text("Uploading Video...."),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              CircularProgressIndicator()
-                            ],
-                          ),
-                        )
-                      : (videoUrl != "" &&
-                              videoUrl != null &&
-                              videoName != "" &&
-                              videoName != null)
-                          ? InkWell(
-                              // ignore: missing_return
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        ViewVideo(videoUrl, widget.roomname)));
-                              },
-                              child: Container(
-                                decoration: new BoxDecoration(
-                                  color: Color(0xFFeeeef5),
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(40.0),
-                                  ),
-                                ),
-                                width: (videoName == '' || videoName == null)
-                                    ? 0.0
-                                    : MediaQuery.of(context).size.width - 50,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    SizedBox(
-                                      width: (videoName == '' ||
-                                              videoName == null)
-                                          ? 0.0
-                                          : MediaQuery.of(context).size.width -
-                                              150,
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 15.0, vertical: 15.0),
-                                        child: Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            Flexible(
-                                              child: (videoName == null ||
-                                                      videoName == "")
-                                                  ? SizedBox()
-                                                  : Text(
-                                                      "$videoName",
-                                                      style: normalTextStyle()
-                                                          .copyWith(
-                                                              fontSize: 14.0),
-                                                      overflow:
-                                                          TextOverflow.fade,
-                                                      maxLines: 1,
-                                                      softWrap: false,
-                                                    ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Spacer(),
-                                    (videoName == '')
-                                        ? SizedBox()
-                                        : IconButton(
-                                            onPressed: () {
-                                              if (therapist == assessor &&
-                                                  role == "therapist") {
-                                                setState(() {
-                                                  widget.wholelist[1]
-                                                          [widget.accessname]
-                                                      ["videos"]["name"] = "";
-                                                  widget.wholelist[1]
-                                                          [widget.accessname]
-                                                      ["videos"]["url"] = "";
-                                                  deleteFile(videoUrl);
-                                                  deleteVideo();
-                                                  NewAssesmentRepository()
-                                                      .setForm(widget.wholelist,
-                                                          widget.docID);
-                                                });
-                                              } else if (role != "therapist") {
-                                                setState(() {
-                                                  widget.wholelist[1]
-                                                          [widget.accessname]
-                                                      ["videos"]["name"] = "";
-                                                  widget.wholelist[1]
-                                                          [widget.accessname]
-                                                      ["videos"]["url"] = "";
-                                                  deleteFile(videoUrl);
-                                                  deleteVideo();
-                                                  NewAssesmentRepository()
-                                                      .setForm(widget.wholelist,
-                                                          widget.docID);
-                                                });
-                                              } else {
-                                                _showSnackBar(
-                                                    "You can't change the other fields",
-                                                    context);
-                                              }
-                                            },
-                                            icon: Icon(
-                                              Icons.delete_outline_rounded,
-                                              color: Color.fromRGBO(
-                                                  10, 80, 106, 1),
-                                            ),
-                                          ),
-                                    SizedBox(
-                                      width: 15.0,
-                                    )
-                                  ],
-                                ),
-                              ),
-                            )
-                          : SizedBox(),
-
-                  // Container(
-                  //   height: 200.0,
-                  //   child: ListView.builder(
-                  //       scrollDirection: Axis.horizontal,
-                  //       itemCount: widget
-                  //           .wholelist[1][widget.accessname]["images"].length,
-                  //       itemBuilder: (BuildContext context, int index) {
-                  //         return Padding(
-                  //           padding: const EdgeInsets.only(right: 8.0),
-                  //           child: Column(
-                  //             children: <Widget>[
-                  //               ExtendedImage.network(
-                  //                 widget.wholelist[1][widget.accessname]
-                  //                     ["images"][index],
-                  //                 width: 150.0,
-                  //                 height: 150.0,
-                  //                 fit: BoxFit.cover,
-                  //                 cache: true,
-                  //                 loadStateChanged: (ExtendedImageState state) {
-                  //                   switch (state.extendedImageLoadState) {
-                  //                     case LoadState.loading:
-                  //                       return Center(
-                  //                           child: Container(
-                  //                         height: 32.0,
-                  //                         width: 32.0,
-                  //                         child: CircularProgressIndicator(),
-                  //                       ));
-                  //                       break;
-                  //                     case LoadState.completed:
-                  //                       return ExtendedRawImage(
-                  //                         image: state.extendedImageInfo?.image,
-                  //                         width: 150.0,
-                  //                         height: 150.0,
-                  //                       );
-                  //                       break;
-                  //                     case LoadState.failed:
-                  //                       return Center(
-                  //                           child: Container(
-                  //                         height: 32.0,
-                  //                         width: 32.0,
-                  //                         child: Icon(
-                  //                           Icons.error,
-                  //                           color:
-                  //                               Color.fromRGBO(10, 80, 106, 1),
-                  //                         ),
-                  //                       ));
-                  //                       break;
-                  //                     default:
-                  //                       return Center(
-                  //                           child: Container(
-                  //                         height: 32.0,
-                  //                         width: 32.0,
-                  //                         child: CircularProgressIndicator(),
-                  //                       ));
-                  //                   }
-                  //                 },
-                  //               ),
-                  //               IconButton(
-                  //                   icon: Icon(Icons.delete,
-                  //                       size: 16.0,
-                  //                       color: Color.fromRGBO(10, 80, 106, 1)),
-                  //                   onPressed: () {
-                  //                     _deleteMedia(index, assesspro);
-                  //                   })
-                  //             ],
-                  //           ),
-                  //         );
-                  //       }),
-                  // ),
-                  // Container(
-                  //   decoration: new BoxDecoration(
-                  //     color: Color(0xFFeeeef5),
-                  //     borderRadius: BorderRadius.all(
-                  //       Radius.circular(40.0),
-                  //     ),
-                  //   ),
-                  //   width: assesspro.imageName == ''
-                  //       ? 0.0
-                  //       : MediaQuery.of(context).size.width - 50,
-                  //   child: Row(
-                  //     mainAxisSize: MainAxisSize.min,
-                  //     children: [
-                  //       SizedBox(
-                  //         width: assesspro.imageName == ''
-                  //             ? 0.0
-                  //             : MediaQuery.of(context).size.width - 150,
-                  //         child: Padding(
-                  //           padding: const EdgeInsets.symmetric(
-                  //               horizontal: 15.0, vertical: 15.0),
-                  //           child: Row(
-                  //             mainAxisSize: MainAxisSize.min,
-                  //             children: [
-                  //               Flexible(
-                  //                 child: Text(
-                  //                   assesspro.imageName == ''
-                  //                       ? ''
-                  //                       : assesspro.imageName,
-                  //                   style: normalTextStyle()
-                  //                       .copyWith(fontSize: 14.0),
-                  //                   overflow: TextOverflow.fade,
-                  //                   maxLines: 1,
-                  //                   softWrap: false,
-                  //                 ),
-                  //               )
-                  //             ],
-                  //           ),
-                  //         ),
-                  //       ),
-                  //       Spacer(),
-                  //       assesspro.imageName == ''
-                  //           ? SizedBox()
-                  //           : IconButton(
-                  //               onPressed: () {
-                  //                 assesspro.deleteImage();
-                  //                 setState(() {});
-                  //               },
-                  //               icon: Icon(
-                  //                 Icons.delete_outline_rounded,
-                  //                 color: Color.fromRGBO(10, 80, 106, 1),
-                  //               ),
-                  //             ),
-                  //       SizedBox(
-                  //         width: 15.0,
-                  //       )
-                  //     ],
-                  //   ),
-                  // ),
-                  Container(
-                    padding: EdgeInsets.all(15),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 15,
-                        ),
-                        // Divider(
-                        //   height: dividerheight,
-                        //   color: Color.fromRGBO(10, 80, 106, 1),
-                        // ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * .5,
-                              child: Text('House Type',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(10, 80, 106, 1),
-                                    fontSize: 20,
-                                  )),
-                            ),
-                            Container(
-                              child: DropdownButton(
-                                items: [
-                                  DropdownMenuItem(
-                                    child: Text('--'),
-                                    value: '',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Apartment'),
-                                    value: 'Apartment',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('House'),
-                                    value: 'House',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Condominium'),
-                                    value: 'Condominium',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Other'),
-                                    value: 'Other',
-                                  ),
-                                ],
-                                onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  if (assessor == therapist &&
-                                      role == "therapist") {
-                                    assesspro.setdata(1, value, 'House Type');
-                                  } else if (role != "therapist" &&
-                                      (role == "patient" ||
-                                          role == "nurse/case manager")) {
-                                    assesspro.setdata(1, value, 'House Type');
-                                  } else {
-                                    _showSnackBar(
-                                        "You can't change the other fields",
-                                        context);
-                                  }
-                                },
-                                value: getvalue(1),
-                              ),
-                            )
-                          ],
-                        ),
-                        (getvalue(1) == "Other")
-                            ? getrecomain(1, false, context)
-                            : SizedBox(),
-                        SizedBox(height: 15),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * .5,
-                              child: Text('Number of Levels',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(10, 80, 106, 1),
-                                    fontSize: 20,
-                                  )),
-                            ),
-                            Container(
-                              child: DropdownButton(
-                                items: [
-                                  DropdownMenuItem(
-                                    child: Text('--'),
-                                    value: '',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('1'),
-                                    value: '1',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('2'),
-                                    value: '2',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('3'),
-                                    value: '3',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('4'),
-                                    value: '4',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('5'),
-                                    value: '5',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Other'),
-                                    value: 'Other',
-                                  ),
-                                ],
-                                onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  if (assessor == therapist &&
-                                      role == "therapist") {
-                                    assesspro.setdata(
-                                        2, value, 'Number of Levels');
-                                  } else if (role != "therapist") {
-                                    assesspro.setdata(
-                                        2, value, 'Number of Levels');
-                                  } else {
-                                    _showSnackBar(
-                                        "You can't change the other fields",
-                                        context);
-                                  }
-                                },
-                                value: getvalue(2),
-                              ),
-                            )
-                          ],
-                        ),
-                        // (getvalue(2) == "Other")
-                        //     ? getrecomain(2, false)
-                        //     : SizedBox(),
-                        (getvalue(2) != '' &&
-                                getvalue(2) != '0' &&
-                                getvalue(2) != '1')
-                            ? Container(
-                                padding: EdgeInsets.only(top: 15),
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                .65,
-                                            child:
-                                                Text('Mode Of Transportation',
-                                                    style: TextStyle(
-                                                      color: Color.fromRGBO(
-                                                          10, 80, 106, 1),
-                                                      fontSize: 20,
-                                                    )),
-                                          ),
-                                          DropdownButton(
-                                            items: [
-                                              DropdownMenuItem(
-                                                child: Text('--'),
-                                                value: '',
-                                              ),
-                                              DropdownMenuItem(
-                                                child: Text('Stairs'),
-                                                value: 'Stairs',
-                                              ),
-                                              DropdownMenuItem(
-                                                child: Text('Elevator'),
-                                                value: 'Elevator',
-                                              ),
-                                              DropdownMenuItem(
-                                                child: Text('Ramp'),
-                                                value: 'Ramp',
-                                              ),
-                                              DropdownMenuItem(
-                                                child: Text('Tramp'),
-                                                value: 'Tramp',
-                                              ),
-                                              DropdownMenuItem(
-                                                child: Text('Other'),
-                                                value: 'Other',
-                                              ),
-                                            ],
-                                            onChanged: (value) {
-                                              setState(() {
-                                                if (assessor == therapist &&
-                                                    role == "therapist") {
-                                                  widget.wholelist[1][
-                                                              widget.accessname]
-                                                          ['question']["2"]
-                                                      ['Modetrnas'] = value;
-                                                } else if (role !=
-                                                    "therapist") {
-                                                  widget.wholelist[1][
-                                                              widget.accessname]
-                                                          ['question']["2"]
-                                                      ['Modetrnas'] = value;
-                                                } else {
-                                                  _showSnackBar(
-                                                      "You can't change the other fields",
-                                                      context);
-                                                }
-                                              });
-                                              // setdata(
-                                              //   2,
-                                              //   value,
-                                              //   'Mode Of Transportation'
-                                              // );
-                                            },
-                                            value: widget.wholelist[1]
-                                                    [widget.accessname]
-                                                ['question']["2"]['Modetrnas'],
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                    SizedBox(height: 5),
-                                    (widget.wholelist[1][widget.accessname]
-                                                        ['question']["2"]
-                                                    ['Modetrnas'] ==
-                                                'Other' ||
-                                            getvalue(2) == "Other")
-                                        ? getrecomain(2, false, context)
-                                        : SizedBox(),
-                                  ],
-                                ),
-                              )
-                            : SizedBox(),
-                        SizedBox(height: 15),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * .5,
-                              child: Text('Living on Level',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(10, 80, 106, 1),
-                                    fontSize: 20,
-                                  )),
-                            ),
-                            Container(
-                              child: DropdownButton(
-                                items: [
-                                  DropdownMenuItem(
-                                      child: Text('--'), value: ''),
-                                  DropdownMenuItem(
-                                    child: Text('1'),
-                                    value: '1',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('2'),
-                                    value: '2',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('3'),
-                                    value: '3',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('4'),
-                                    value: '4',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('5'),
-                                    value: '5',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('6'),
-                                    value: '6',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('7'),
-                                    value: '7',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Other'),
-                                    value: 'Other',
-                                  ),
-                                ],
-                                onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  if (assessor == therapist &&
-                                      role == "therapist") {
-                                    assesspro.setdata(
-                                        3, value, 'Living on Level');
-                                  } else if (role != "therapist") {
-                                    assesspro.setdata(
-                                        3, value, 'Living on Level');
-                                  } else {
-                                    _showSnackBar(
-                                        "You can't change the other fields",
-                                        context);
-                                  }
-                                },
-                                value: getvalue(3),
-                              ),
-                            )
-                          ],
-                        ),
-                        // SizedBox(height: 5),
-                        (getvalue(3) == 'Other')
-                            ? getrecomain(3, false, context)
-                            : SizedBox(),
-                        SizedBox(height: 15),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * .5,
-                              child: Text('Living Arrangements',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(10, 80, 106, 1),
-                                    fontSize: 20,
-                                  )),
-                            ),
-                            Container(
-                              child: DropdownButton(
-                                items: [
-                                  DropdownMenuItem(
-                                    child: Text('--'),
-                                    value: '',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Alone'),
-                                    value: 'Alone',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Alone Sometimes'),
-                                    value: 'Alone Sometimes',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Never Alone'),
-                                    value: 'Never Alone',
-                                  ),
-                                ],
-                                onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  if (assessor == therapist &&
-                                      role == "therapist") {
-                                    assesspro.setdata(
-                                        4, value, 'Living Arrangements');
-                                  } else if (role != "therapist") {
-                                    assesspro.setdata(
-                                        4, value, 'Living Arrangements');
-                                  } else {
-                                    _showSnackBar(
-                                        "You can't change the other fields",
-                                        context);
-                                  }
-                                },
-                                value: getvalue(4),
-                              ),
-                            )
-                          ],
-                        ),
-                        SizedBox(height: 5),
-                        (getvalue(4) != 'Never Alone' && getvalue(4) != '')
-                            ? (getvalue(4) == 'Alone')
-                                ? getrecomain(4, true, context)
-                                : Container(
-                                    padding: EdgeInsets.fromLTRB(5, 5, 5, 0),
-                                    child: Column(
-                                      children: [
-                                        SizedBox(
-                                          height: 7,
-                                        ),
-                                        Container(
-                                          child: Row(
-                                            children: [
-                                              Container(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .41,
-                                                child: Row(
-                                                  children: [
-                                                    Text(
-                                                      'From:',
-                                                      style: TextStyle(
-                                                        fontSize: 15,
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      margin:
-                                                          EdgeInsets.fromLTRB(
-                                                              3, 0, 0, 0),
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              0.3,
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          4)),
-                                                          shape: BoxShape
-                                                              .rectangle,
-                                                          border: Border.all(
-                                                            color: _colorgreen,
-                                                            width: 1,
-                                                          )),
-                                                      child: Row(children: [
-                                                        Container(
-                                                          // color: Colors.red,
-                                                          width: 35,
-                                                          child: IconButton(
-                                                            icon: Icon(
-                                                                Icons.alarm),
-                                                            onPressed: () {
-                                                              selectTime1(
-                                                                  context);
-                                                            },
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          '${time1.hour}:${time1.minute}',
-                                                          style: TextStyle(
-                                                            fontSize: 20,
-                                                          ),
-                                                        ),
-                                                        SizedBox(width: 10),
-                                                      ]),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              SizedBox(width: 10),
-                                              Container(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .39,
-                                                child: Row(
-                                                  children: [
-                                                    Text(
-                                                      'Till:',
-                                                      style: TextStyle(
-                                                        fontSize: 15,
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      margin:
-                                                          EdgeInsets.fromLTRB(
-                                                              3, 0, 0, 0),
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width *
-                                                              0.3,
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  Radius
-                                                                      .circular(
-                                                                          4)),
-                                                          shape: BoxShape
-                                                              .rectangle,
-                                                          border: Border.all(
-                                                            color: _colorgreen,
-                                                            width: 1,
-                                                          )),
-                                                      child: Row(children: [
-                                                        Container(
-                                                            // color: Colors.red,
-                                                            width: 35,
-                                                            child: IconButton(
-                                                              icon: Icon(
-                                                                  Icons.alarm),
-                                                              onPressed: () {
-                                                                selectTime2(
-                                                                    context);
-                                                                // print(time2);
-                                                              },
-                                                            )),
-                                                        Text(
-                                                          '${time2.hour}:${time2.minute}',
-                                                          style: TextStyle(
-                                                            fontSize: 20,
-                                                          ),
-                                                        ),
-                                                        SizedBox(width: 10),
-                                                      ]),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                            : SizedBox(),
-                        SizedBox(height: 15),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * .5,
-                              child: Text('Has Room-mate?',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(10, 80, 106, 1),
-                                    fontSize: 20,
-                                  )),
-                            ),
-                            DropdownButton(
-                              items: [
-                                DropdownMenuItem(
-                                  child: Text('--'),
-                                  value: '',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Yes'),
-                                  value: 'Yes',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('No'),
-                                  value: 'No',
-                                ),
-                              ],
-                              onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                if (assessor == therapist &&
-                                    role == "therapist") {
-                                  assesspro.setdata(5, value, 'Has Room-mate?');
-                                } else if (role != "therapist") {
-                                  assesspro.setdata(5, value, 'Has Room-mate?');
-                                } else {
-                                  _showSnackBar(
-                                      "You can't change the other fields",
-                                      context);
-                                }
-                              },
-                              value: getvalue(5),
-                            )
-                          ],
-                        ),
-                        SizedBox(height: 15),
-                        (getvalue(5) == 'Yes')
-                            ? SingleChildScrollView(
-                                // reverse: true,
-                                child: Container(
-                                  // color: Colors.yellow,
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Container(
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  .5,
-                                              child:
-                                                  Text('Number of Room-mates',
-                                                      style: TextStyle(
-                                                        color: Color.fromRGBO(
-                                                            10, 80, 106, 1),
-                                                        fontSize: 20,
-                                                      )),
-                                            ),
-                                            SizedBox(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .35,
-                                                child: NumericStepButton(
-                                                  counterval: roomatecount,
-                                                  onChanged: (value) {
-                                                    if (assessor == therapist &&
-                                                        role == "therapist") {
-                                                      setState(() {
-                                                        widget.wholelist[1][widget
-                                                                        .accessname]
-                                                                    ['question']
-                                                                ["5"]['Roomate']
-                                                            ['count'] = value;
-                                                        roomatecount = widget
-                                                                        .wholelist[1]
-                                                                    [
-                                                                    widget
-                                                                        .accessname]
-                                                                [
-                                                                'question']["5"]
-                                                            [
-                                                            'Roomate']['count'];
-                                                        if (value > 0) {
-                                                          widget.wholelist[1][widget
-                                                                          .accessname]
-                                                                      [
-                                                                      'question']
-                                                                  [
-                                                                  "5"]['Roomate']
-                                                              [
-                                                              'roomate$value'] = {
-                                                            'Relationship': '',
-                                                            'FirstName': '',
-                                                            'LastName': '',
-                                                          };
-
-                                                          if (widget
-                                                              .wholelist[1][
-                                                                  widget
-                                                                      .accessname]
-                                                                  ['question']
-                                                                  ["5"]
-                                                                  ['Roomate']
-                                                              .containsKey(
-                                                                  'roomate${value + 1}')) {
-                                                            widget.wholelist[1][
-                                                                    widget
-                                                                        .accessname]
-                                                                    ['question']
-                                                                    ["5"]
-                                                                    ['Roomate']
-                                                                .remove(
-                                                                    'roomate${value + 1}');
-                                                          }
-                                                        } else if (value == 0) {
-                                                          if (widget
-                                                              .wholelist[1][
-                                                                  widget
-                                                                      .accessname]
-                                                                  ['question']
-                                                                  ["5"]
-                                                                  ['Roomate']
-                                                              .containsKey(
-                                                                  'roomate${value + 1}')) {
-                                                            widget.wholelist[1][
-                                                                    widget
-                                                                        .accessname]
-                                                                    ['question']
-                                                                    ["5"]
-                                                                    ['Roomate']
-                                                                .remove(
-                                                                    'roomate${value + 1}');
-                                                          }
-                                                        }
-                                                      });
-                                                    } else if (role !=
-                                                        "therapist") {
-                                                      setState(() {
-                                                        widget.wholelist[1][widget
-                                                                        .accessname]
-                                                                    ['question']
-                                                                ["5"]['Roomate']
-                                                            ['count'] = value;
-                                                        roomatecount = widget
-                                                                        .wholelist[1]
-                                                                    [
-                                                                    widget
-                                                                        .accessname]
-                                                                [
-                                                                'question']["5"]
-                                                            [
-                                                            'Roomate']['count'];
-                                                        if (value > 0) {
-                                                          widget.wholelist[1][widget
-                                                                          .accessname]
-                                                                      [
-                                                                      'question']
-                                                                  [
-                                                                  "5"]['Roomate']
-                                                              [
-                                                              'roomate$value'] = {
-                                                            'Relationship': '',
-                                                            'FirstName': '',
-                                                            'LastName': '',
-                                                          };
-
-                                                          if (widget
-                                                              .wholelist[1][
-                                                                  widget
-                                                                      .accessname]
-                                                                  ['question']
-                                                                  ["5"]
-                                                                  ['Roomate']
-                                                              .containsKey(
-                                                                  'roomate${value + 1}')) {
-                                                            widget.wholelist[1][
-                                                                    widget
-                                                                        .accessname]
-                                                                    ['question']
-                                                                    ["5"]
-                                                                    ['Roomate']
-                                                                .remove(
-                                                                    'roomate${value + 1}');
-                                                          }
-                                                        } else if (value == 0) {
-                                                          if (widget
-                                                              .wholelist[1][
-                                                                  widget
-                                                                      .accessname]
-                                                                  ['question']
-                                                                  ["5"]
-                                                                  ['Roomate']
-                                                              .containsKey(
-                                                                  'roomate${value + 1}')) {
-                                                            widget.wholelist[1][
-                                                                    widget
-                                                                        .accessname]
-                                                                    ['question']
-                                                                    ["5"]
-                                                                    ['Roomate']
-                                                                .remove(
-                                                                    'roomate${value + 1}');
-                                                          }
-                                                        }
-                                                      });
-                                                    } else {
-                                                      _showSnackBar(
-                                                          "You can't change the other fields",
-                                                          context);
-                                                    }
-
-                                                    // print(widget.wholelist[1][
-                                                    //             widget.accessname]
-                                                    //         ['question']["5"]
-                                                    //     ['Roomate']);
-                                                  },
-                                                )),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(height: 10),
-                                      (roomatecount > 0)
-                                          ? Container(
-                                              child: Padding(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    0, 10, 0, 10),
-                                                child: ConstrainedBox(
-                                                  constraints: BoxConstraints(
-                                                      maxHeight: 1000,
-                                                      minHeight:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .height /
-                                                              10),
-                                                  child: ListView.builder(
-                                                    physics:
-                                                        const NeverScrollableScrollPhysics(),
-                                                    shrinkWrap: true,
-                                                    itemCount: roomatecount,
-                                                    itemBuilder:
-                                                        (context, index1) {
-                                                      return roomatecountwidget(
-                                                          index1 + 1, context);
-                                                    },
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          : SizedBox()
-                                    ],
-                                  ),
-                                ),
-                              )
-                            : SizedBox(),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * .5,
-                              child:
-                                  Text('Able to get in & out of doors & steps?',
-                                      style: TextStyle(
-                                        color: Color.fromRGBO(10, 80, 106, 1),
-                                        fontSize: 20,
-                                      )),
-                            ),
-                            DropdownButton(
-                              items: [
-                                DropdownMenuItem(
-                                  child: Text('--'),
-                                  value: '',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Fairly Well'),
-                                  value: 'Fairly Well',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('With Difficulty'),
-                                  value: 'With Difficulty',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Min(A)'),
-                                  value: 'Min(A)',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Mod(A)'),
-                                  value: 'Mod(A)',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Max(A)'),
-                                  value: 'Max(A)',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Max(A) x2'),
-                                  value: 'Max(A) x2',
-                                )
-                              ],
-                              onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                if (assessor == therapist &&
-                                    role == "therapist") {
-                                  assesspro.setdata(6, value,
-                                      'Able to get in & out of doors & steps?');
-                                } else if (role != "therapist") {
-                                  assesspro.setdata(6, value,
-                                      'Able to get in & out of doors & steps?');
-                                } else {
-                                  _showSnackBar(
-                                      "You can't change the other fields",
-                                      context);
-                                }
-                              },
-                              value: getvalue(6),
-                            )
-                          ],
-                        ),
-                        (getvalue(6) != 'Fairly Well' && getvalue(6) != '')
-                            ? getrecomain(6, true, context)
-                            : SizedBox(),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * .5,
-                              child: Text('Using assistive device?',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(10, 80, 106, 1),
-                                    fontSize: 20,
-                                  )),
-                            ),
-                            DropdownButton(
-                              items: [
-                                DropdownMenuItem(
-                                  child: Text('--'),
-                                  value: '',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Yes'),
-                                  value: 'Yes',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('No'),
-                                  value: 'No',
-                                ),
-                              ],
-                              onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                if (assessor == therapist &&
-                                    role == "therapist") {
-                                  assesspro.setdata(
-                                      7, value, 'Using assistive device?');
-                                } else if (role != "therapist") {
-                                  assesspro.setdata(
-                                      7, value, 'Using assistive device?');
-                                } else {
-                                  _showSnackBar(
-                                      "You can't change the other fields",
-                                      context);
-                                }
-                              },
-                              value: getvalue(7),
-                            )
-                          ],
-                        ),
-                        (getvalue(7) == 'Yes')
-                            ? Container(
-                                padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Container(
-                                      width: MediaQuery.of(context).size.width *
-                                          .3,
-                                      child: Text('Assistive Device?',
-                                          style: TextStyle(
-                                            color:
-                                                Color.fromRGBO(10, 80, 106, 1),
-                                            fontSize: 20,
-                                          )),
-                                    ),
-                                    Container(
-                                        child: IconButton(
-                                            onPressed: () {
-                                              for (int i = 0;
-                                                  i < assistiveDevice.length;
-                                                  i++) {
-                                                if (assistiveDevice[i]
-                                                        ['name'] ==
-                                                    widget.wholelist[1][widget
-                                                                    .accessname]
-                                                                ['question']
-                                                            ["7"]['additional']
-                                                        ["assistiveDevice"]) {
-                                                  Navigator.of(context).push(
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              ProductDetails(
-                                                                  assistiveDevice[
-                                                                          i]
-                                                                      ['name'],
-                                                                  assistiveDevice[
-                                                                          i][
-                                                                      'description'],
-                                                                  assistiveDevice[
-                                                                          i][
-                                                                      'url'])));
-                                                }
-                                              }
-                                            },
-                                            icon: Icon(Icons.info))),
-                                    DropdownButton(
-                                      items: [
-                                        DropdownMenuItem(
-                                          child: Text('--'),
-                                          value: '',
-                                        ),
-                                        DropdownMenuItem(
-                                          child: Text('SC/Quad'),
-                                          value: 'SC/Quad',
-                                        ),
-                                        DropdownMenuItem(
-                                          child: Text('Cane/Std'),
-                                          value: 'Cane/Std',
-                                        ),
-                                        DropdownMenuItem(
-                                          child: Text('Walker'),
-                                          value: 'Walker',
-                                        ),
-                                        DropdownMenuItem(
-                                          child: Text('Front Wheel Walker'),
-                                          value: 'Front Wheel Walker',
-                                        ),
-                                        DropdownMenuItem(
-                                          child: Text('4 Whl. Walker'),
-                                          value: '4 Whl. Whalker',
-                                        ),
-                                        DropdownMenuItem(
-                                          child: Text('Manual Whl Chair'),
-                                          value: 'Manual Whl Chair',
-                                        ),
-                                        DropdownMenuItem(
-                                          child: Text('Power W/c'),
-                                          value: 'Power W/c',
-                                        ),
-                                        DropdownMenuItem(
-                                          child: Text('Crutches'),
-                                          value: 'Crutches',
-                                        ),
-                                        DropdownMenuItem(
-                                          child: Text('Scooter'),
-                                          value: 'Scooter',
-                                        ),
-                                      ],
-                                      onChanged: (value) {
-                                        FocusScope.of(context).requestFocus();
-                                        new TextEditingController().clear();
-                                        // print(widget.accessname);
-                                        if (assessor == therapist &&
-                                            role == "therapist") {
-                                          widget.wholelist[1][widget.accessname]
-                                                      ['question']["7"]
-                                                  ['additional']
-                                              ["assistiveDevice"] = value;
-                                        } else if (role != "therapist") {
-                                          widget.wholelist[1][widget.accessname]
-                                                      ['question']["7"]
-                                                  ['additional']
-                                              ["assistiveDevice"] = value;
-                                        } else {
-                                          _showSnackBar(
-                                              "You can't change the other fields",
-                                              context);
-                                        }
-
-                                        // setrecothera(7, value);
-                                      },
-                                      value: widget.wholelist[1]
-                                                  [widget.accessname]
-                                              ['question']["7"]['additional']
-                                          ["assistiveDevice"],
-                                    )
-                                  ],
-                                ),
-                              )
-                            : SizedBox(),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * .4,
-                              child: Text('Gait pattern noted',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(10, 80, 106, 1),
-                                    fontSize: 20,
-                                  )),
-                            ),
-                            Container(
-                              // width: MediaQuery.of(context).size.width * .3,
-                              child: DropdownButton(
-                                items: [
-                                  DropdownMenuItem(
-                                    child: Text('--'),
-                                    value: '',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Normal'),
-                                    value: 'Normal',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Slight Shuffling'),
-                                    value: 'Slight Shuffling',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Limping'),
-                                    value: 'Limping',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Significant Shuffling'),
-                                    value: 'Significant Shuffling',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Other'),
-                                    value: 'Other',
-                                  ),
-                                ],
-                                onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  if (assessor == therapist &&
-                                      role == "therapist") {
-                                    assesspro.setdata(
-                                        8, value, 'Gait pattern noted');
-                                  } else if (role != "therapist") {
-                                    assesspro.setdata(
-                                        8, value, 'Gait pattern noted');
-                                  } else {
-                                    _showSnackBar(
-                                        "You can't change the other fields",
-                                        context);
-                                  }
-                                },
-                                value: getvalue(8),
-                              ),
-                            ),
-                          ],
-                        ),
-                        (getvalue(8) == 'Slight Shuffling' ||
-                                getvalue(8) == 'Limping' ||
-                                getvalue(8) == 'Significant Shuffling' ||
-                                getvalue(8) == 'Other')
-                            ? getrecomain(8, true, context)
-                            : SizedBox(),
-                        SizedBox(height: 15),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * .5,
-                              child: Text('Access to Curbside',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(10, 80, 106, 1),
-                                    fontSize: 20,
-                                  )),
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width * .35,
-                              child: DropdownButton(
-                                isExpanded: true,
-                                items: [
-                                  DropdownMenuItem(
-                                    child: Text('--'),
-                                    value: '',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Never goes to the curbside'),
-                                    value: 'Never goes to the curbside',
-                                  ),
-                                  DropdownMenuItem(
-                                    child:
-                                        Text('Sometimes goes to the curbside'),
-                                    value: 'Sometimes goes to the curbside',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Often goes to the curbside'),
-                                    value: 'Often goes to the curbside',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Other'),
-                                    value: 'Other',
-                                  ),
-                                ],
-                                onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  if (assessor == therapist &&
-                                      role == "therapist") {
-                                    assesspro.setdata(
-                                        9, value, 'Access to Curbside');
-                                  } else if (role != "therapist") {
-                                    assesspro.setdata(
-                                        9, value, 'Access to Curbside');
-                                  } else {
-                                    _showSnackBar(
-                                        "You can't change the other fields",
-                                        context);
-                                  }
-                                },
-                                value: getvalue(9),
-                              ),
-                            )
-                          ],
-                        ),
-                        (getvalue(9) != 'Never goes to the curbside' &&
-                                // getvalue(9) != 'Other' &&
-                                getvalue(9) != '')
-                            ? getrecomain(9, true, context)
-                            : SizedBox(),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * .6,
-                              child: Text('Access to curbside specify',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(10, 80, 106, 1),
-                                    fontSize: 20,
-                                  )),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                            // height: 10000,
-                            child: TextFormField(
-                          maxLines: null,
-                          controller: _controllers["field${10}"],
-                          decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: colorsset["field${10}"], width: 1),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  width: 1, color: colorsset["field${10}"]),
-                            ),
-                            suffix: Container(
-                              padding: EdgeInsets.all(0),
-                              child: Column(children: [
-                                Container(
-                                  alignment: Alignment.topRight,
-                                  width: 58,
-                                  height: 30,
-                                  margin: EdgeInsets.all(0),
-                                  child: AvatarGlow(
-                                    animate: isListening['field${10}'],
-                                    glowColor: Theme.of(context).primaryColor,
-                                    endRadius: 300.0,
-                                    duration:
-                                        const Duration(milliseconds: 2000),
-                                    repeatPauseDuration:
-                                        const Duration(milliseconds: 100),
-                                    repeat: true,
-                                    child: FlatButton(
-                                      child: Icon(isListening['field${10}']
-                                          ? Icons.cancel
-                                          : Icons.mic),
-                                      onPressed: () {
-                                        if (assessor == therapist &&
-                                            role == "therapist") {
-                                          _listen(10);
-                                          setdatalisten(10);
-                                        } else if (role != "therapist") {
-                                          _listen(10);
-                                          setdatalisten(10);
-                                        } else {
-                                          _showSnackBar(
-                                              "You can't change the other fields",
-                                              context);
-                                        }
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              ]),
-                            ),
-                          ),
-                          onChanged: (value) {
-                            FocusScope.of(context).requestFocus();
-                            new TextEditingController().clear();
-                            // print(widget.accessname);
-                            if (assessor == therapist && role == "therapist") {
-                              assesspro.setdata(
-                                  10, value, 'Access to curbside specify');
-                            } else if (role != "therapist") {
-                              assesspro.setdata(
-                                  10, value, 'Access to curbside specify');
-                            } else {
-                              _showSnackBar(
-                                  "You can't change the other fields", context);
-                            }
-                          },
-                        )),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Container(
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * .50,
-                                  child: Text('Number of Flight of Stairs',
-                                      style: TextStyle(
-                                        color: Color.fromRGBO(10, 80, 106, 1),
-                                        fontSize: 20,
-                                      )),
-                                ),
-                                SizedBox(
-                                  width:
-                                      MediaQuery.of(context).size.width * .35,
-                                  child: NumericStepButton(
-                                    counterval: flightcount,
-                                    onChanged: (value) {
-                                      if (assessor == therapist &&
-                                          role == "therapist") {
-                                        assesspro.setFlightData(11, value,
-                                            'Number of flight of stairs');
-                                        setState(() {
-                                          // widget.wholelist[1][widget.accessname]
-                                          //             ['question']["11"]
-                                          //         ['Question'] =
-                                          //     'Number of Flight of Stairs';
-                                          widget.wholelist[1][widget.accessname]
-                                                  ['question']["11"]['Flights']
-                                              ["count"] = value;
-                                          // widget.wholelist[1][widget.accessname]
-                                          //         ['question']["11"]['Answer'] =
-                                          //     value;
-                                          flightcount = widget.wholelist[1]
-                                                      [widget.accessname]
-                                                  ['question']["11"]['Flights']
-                                              ["count"];
-                                          print(widget.wholelist[1]
-                                                      [widget.accessname]
-                                                  ['question']["11"]['Flights']
-                                              ["count"]);
-                                          // if (value == 0) {
-                                          //   if (widget.wholelist[1][widget
-                                          //                       .accessname]
-                                          //                   ['question']["11"]
-                                          //               ["Answer"] ==
-                                          //           0 ||
-                                          //       widget.wholelist[1][widget
-                                          //                       .accessname]
-                                          //                   ['question']["11"]
-                                          //               ["Answer"] ==
-                                          //           "") {
-                                          //   } else {
-                                          //     widget.wholelist[1]
-                                          //             [widget.accessname]
-                                          //         ['complete'] -= 1;
-                                          //     widget.wholelist[1]
-                                          //                 [widget.accessname]
-                                          //             ['question']["11"]
-                                          //         ["Answer"] = value;
-                                          //   }
-                                          // } else {
-                                          //   if (widget.wholelist[1]
-                                          //                   [widget.accessname]
-                                          //               ['question']["11"]
-                                          //           ["Answer"] ==
-                                          //       value) {
-                                          //   } else {
-                                          //     widget.wholelist[1]
-                                          //             [widget.accessname]
-                                          //         ['complete'] += 1;
-                                          //   }
-                                          //   widget.wholelist[1]
-                                          //               [widget.accessname]
-                                          //           ['question']["11"]
-                                          //       ["Answer"] = value;
-                                          // }
-                                          if (value > 0) {
-                                            widget.wholelist[1]
-                                                        [widget.accessname]
-                                                    ['question']["11"]
-                                                ['Flights']['flight$value'] = {
-                                              "flight": ''
-                                            };
-
-                                            if (widget.wholelist[1]
-                                                    [widget.accessname]
-                                                    ['question']["11"]
-                                                    ['Flights']
-                                                .containsKey(
-                                                    'flight${value + 1}')) {
-                                              widget.wholelist[1]
-                                                      [widget.accessname]
-                                                      ['question']["11"]
-                                                      ['Flights']
-                                                  .remove('flight${value + 1}');
-                                            }
-                                          } else if (value == 0) {
-                                            if (widget.wholelist[1]
-                                                    [widget.accessname]
-                                                    ['question']["11"]
-                                                    ['Flights']
-                                                .containsKey(
-                                                    'flight${value + 1}')) {
-                                              widget.wholelist[1]
-                                                      [widget.accessname]
-                                                      ['question']["11"]
-                                                      ['Flights']
-                                                  .remove('flight${value + 1}');
-                                            }
-                                          }
-                                        });
-                                      } else if (role != "therapist") {
-                                        assesspro.setFlightData(11, value,
-                                            'Number of flight of stairs');
-                                        setState(() {
-                                          // widget.wholelist[1][widget.accessname]
-                                          //             ['question']["11"]
-                                          //         ['Question'] =
-                                          //     'Number of Flight of Stairs';
-                                          widget.wholelist[1][widget.accessname]
-                                                  ['question']["11"]['Flights']
-                                              ["count"] = value;
-                                          // widget.wholelist[1][widget.accessname]
-                                          //         ['question']["11"]['Answer'] =
-                                          //     value;
-                                          flightcount = widget.wholelist[1]
-                                                      [widget.accessname]
-                                                  ['question']["11"]['Flights']
-                                              ["count"];
-                                          print(widget.wholelist[1]
-                                                      [widget.accessname]
-                                                  ['question']["11"]['Flights']
-                                              ["count"]);
-                                          // if (value == 0) {
-                                          //   if (widget.wholelist[1]
-                                          //                   [widget.accessname]
-                                          //               ['question']["11"]
-                                          //           ["Answer"] ==
-                                          //       0) {
-                                          //   } else {
-                                          //     widget.wholelist[1]
-                                          //             [widget.accessname]
-                                          //         ['complete'] -= 1;
-                                          //     widget.wholelist[1]
-                                          //                 [widget.accessname]
-                                          //             ['question']["11"]
-                                          //         ["Answer"] = value;
-                                          //   }
-                                          // } else {
-                                          //   if (widget.wholelist[1]
-                                          //                   [widget.accessname]
-                                          //               ['question']["11"]
-                                          //           ["Answer"] !=
-                                          //       0) {
-                                          //   } else {
-                                          //     widget.wholelist[1]
-                                          //             [widget.accessname]
-                                          //         ['complete'] += 1;
-                                          //   }
-                                          //   widget.wholelist[1]
-                                          //               [widget.accessname]
-                                          //           ['question']["11"]
-                                          //       ["Answer"] = value;
-                                          // }
-                                          if (value > 0) {
-                                            widget.wholelist[1]
-                                                        [widget.accessname]
-                                                    ['question']["11"]
-                                                ['Flights']['flight$value'] = {
-                                              "flight": ''
-                                            };
-
-                                            if (widget.wholelist[1]
-                                                    [widget.accessname]
-                                                    ['question']["11"]
-                                                    ['Flights']
-                                                .containsKey(
-                                                    'flight${value + 1}')) {
-                                              widget.wholelist[1]
-                                                      [widget.accessname]
-                                                      ['question']["11"]
-                                                      ['Flights']
-                                                  .remove('flight${value + 1}');
-                                            }
-                                            if (widget.wholelist[1]
-                                                            [widget.accessname]
-                                                        ['question']["11"]
-                                                    ["Answer"] ==
-                                                0) {
-                                              widget.wholelist[1]
-                                                      [widget.accessname]
-                                                  ['complete'] += 1;
-                                              widget.wholelist[1]
-                                                          [widget.accessname]
-                                                      ['question']["11"]
-                                                  ["Answer"] = value;
-                                            }
-                                          } else if (value == 0) {
-                                            if (widget.wholelist[1]
-                                                    [widget.accessname]
-                                                    ['question']["11"]
-                                                    ['Flights']
-                                                .containsKey(
-                                                    'flight${value + 1}')) {
-                                              widget.wholelist[1]
-                                                      [widget.accessname]
-                                                      ['question']["11"]
-                                                      ['Flights']
-                                                  .remove('flight${value + 1}');
-                                            }
-                                            if (widget.wholelist[1]
-                                                            [widget.accessname]
-                                                        ['question']["11"]
-                                                    ["Answer"] !=
-                                                0) {
-                                              widget.wholelist[1]
-                                                      [widget.accessname]
-                                                  ['complete'] -= 1;
-                                              widget.wholelist[1]
-                                                          [widget.accessname]
-                                                      ['question']["11"]
-                                                  ["Answer"] = value;
-                                            }
-                                          }
-                                        });
-                                      } else {
-                                        _showSnackBar(
-                                            "You can't change the other fields",
-                                            context);
-                                      }
-
-                                      // print(widget.wholelist[1]
-                                      //         [widget.accessname]['question']
-                                      //     ["11"]['Flights']);
-                                    },
-                                  ),
-                                ),
-                              ]),
-                        ),
-                        // SizedBox(height: 10),
-                        (flightcount > 0)
-                            ? Container(
-                                child: Padding(
-                                  padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                                  child: ConstrainedBox(
-                                    constraints: BoxConstraints(
-                                        maxHeight: 1000,
-                                        minHeight:
-                                            MediaQuery.of(context).size.height /
-                                                10),
-                                    child: ListView.builder(
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      shrinkWrap: true,
-                                      itemCount: flightcount,
-                                      itemBuilder: (context, index1) {
-                                        return flightcountwidget(
-                                            index1 + 1, context);
-                                      },
-                                    ),
-                                  ),
-                                ),
-                              )
-                            : SizedBox(
-                                height: 15,
-                              ),
-
-                        // SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * .6,
-                              child: Text(
-                                  'Smoke detector batteries checked annually/replaced?',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(10, 80, 106, 1),
-                                    fontSize: 20,
-                                  )),
-                            ),
-                            DropdownButton(
-                              items: [
-                                DropdownMenuItem(
-                                  child: Text('--'),
-                                  value: '',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Yes'),
-                                  value: 'Yes',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('No'),
-                                  value: 'No',
-                                ),
-                              ],
-                              onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                if (assessor == therapist &&
-                                    role == "therapist") {
-                                  assesspro.setdata(12, value,
-                                      'Smoke setector batteries checked annually/replaced?');
-                                } else if (role != "therapist") {
-                                  assesspro.setdata(12, value,
-                                      'Smoke setector batteries checked annually/replaced?');
-                                } else {
-                                  _showSnackBar(
-                                      "You can't change the other fields",
-                                      context);
-                                }
-                              },
-                              value: getvalue(12),
-                            )
-                          ],
-                        ),
-                        (getvalue(12) == 'No')
-                            ? getrecomain(12, true, context)
-                            : SizedBox(height: 5),
-                        SizedBox(height: 15),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.8,
-                              child: Text(
-                                  'Person responsible to change smoke detector batteries',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(10, 80, 106, 1),
-                                    fontSize: 20,
-                                  )),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                            // height: 10000,
-                            child: TextFormField(
-                          initialValue: getvalue(13),
-                          maxLines: 1,
-                          decoration: InputDecoration(
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Color.fromRGBO(10, 80, 106, 1),
-                                    width: 1),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(width: 1),
-                              ),
-                              // isDense: true,
-                              labelText: 'Specify Name'),
-                          onChanged: (value) {
-                            FocusScope.of(context).requestFocus();
-                            new TextEditingController().clear();
-                            // print(widget.accessname);
-                            if (assessor == therapist && role == "therapist") {
-                              assesspro.setdata(13, value,
-                                  'Person responsible to change smoke detector batteries');
-                            } else if (role != "therapist") {
-                              assesspro.setdata(13, value,
-                                  'Person responsible to change smoke detector batteries');
-                            } else {
-                              _showSnackBar(
-                                  "You can't change the other fields", context);
-                            }
-                          },
-                        )),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * .5,
-                              child: Text('Observations',
-                                  style: TextStyle(
-                                    color: Color.fromRGBO(10, 80, 106, 1),
-                                    fontSize: 20,
-                                  )),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                            // height: 10000,
-                            child: TextFormField(
-                          initialValue: getvalue(14),
-                          maxLines: 6,
-                          decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Color.fromRGBO(10, 80, 106, 1),
-                                  width: 1),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(width: 1),
-                            ),
-                            // isDense: true,
-                          ),
-                          onChanged: (value) {
-                            FocusScope.of(context).requestFocus();
-                            new TextEditingController().clear();
-                            // print(widget.accessname);
-                            if (assessor == therapist && role == "therapist") {
-                              assesspro.setdata(14, value, 'Observations');
-                            } else if (role != "therapist") {
-                              assesspro.setdata(14, value, 'Observations');
-                            } else {
-                              _showSnackBar(
-                                  "You can't change the other fields", context);
-                            }
-                          },
-                        )),
-                      ],
-                    ),
-                  ),
-                  Container(
-                      child: RaisedButton(
-                          color: colorb,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            'Submit',
-                            style: TextStyle(color: Colors.white, fontSize: 16),
-                          ),
-                          onPressed: () {
-                            // uploadFile(_image);
-                            // // _mediaList.add(assesspro.uploadImage().toString());
-                            // widget.wholelist[1][widget.accessname]["images"] =
-                            //     _mediaList;
-                            // bool isValid = _formKey.currentState.validate();
-                            var test = widget.wholelist[1][widget.accessname]
-                                ["complete"];
-                            for (int i = 0;
-                                i <
-                                    widget
-                                        .wholelist[1][widget.accessname]
-                                            ['question']
-                                        .length;
-                                i++) {
-                              setdatalisten(i + 1);
-                              setdatalistenthera(i + 1);
-                            }
-                            // if (!isValid) {
-                            // _showSnackBar("Recommendation Required", context);
-                            // } else {
-                            // if (test == 0) {
-                            //   _showSnackBar(
-                            //       "You Must Have to Fill the Form First",
-                            //       context);
-                            // } else {
-                            if (role == "therapist") {
-                              // if (saveToForm) {
-                              NewAssesmentRepository()
-                                  .setLatestChangeDate(widget.docID);
-                              NewAssesmentRepository()
-                                  .setForm(widget.wholelist, widget.docID);
-                              // Navigator.pop(context,
-                              //     widget.wholelist[1][widget.accessname]);
-                              Navigator.pop(context,
-                                  widget.wholelist[1][widget.accessname]);
-                              // } else {
-                              //   _showSnackBar(
-                              //       "Provide all recommendations", context);
-                              // }
-                            } else {
-                              NewAssesmentRepository()
-                                  .setLatestChangeDate(widget.docID);
-                              NewAssesmentRepository()
-                                  .setForm(widget.wholelist, widget.docID);
-                              // Navigator.pop(context,
-                              //     widget.wholelist[1][widget.accessname]);
-                              Navigator.pop(context,
-                                  widget.wholelist[1][widget.accessname]);
-                            }
-                          }
-                          // }
-                          // },
-                          ))
-                ],
-              ),
-            ),
+          flexibleSpace: FlexibleSpaceBar(
+            background: header(),
           ),
         ),
-      ),
-    );
-  }
-
-  Widget getrecomain(int index, bool isthera, BuildContext context) {
-    return SingleChildScrollView(
-      // reverse: true,
-      child: Container(
-        // color: Colors.red,
-        child: Column(
-          children: [
-            Container(
-              child: TextFormField(
-                maxLines: null,
-                showCursor: cur,
-                controller: _controllers["field$index"],
-                decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: colorsset["field$index"], width: 1),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(width: 1, color: colorsset["field$index"]),
-                    ),
-                    suffix: Container(
-                      // color: Colors.red,
-                      width: 40,
-                      height: 30,
-                      padding: EdgeInsets.all(0),
-                      child: Row(children: [
-                        Container(
-                          // color: Colors.green,
-                          alignment: Alignment.center,
-                          width: 40,
-                          height: 60,
-                          margin: EdgeInsets.all(0),
-                          child: AvatarGlow(
-                            animate: isListening['field$index'],
-                            glowColor: Theme.of(context).primaryColor,
-                            endRadius: 500.0,
-                            duration: const Duration(milliseconds: 2000),
-                            repeatPauseDuration:
-                                const Duration(milliseconds: 100),
-                            repeat: true,
-                            child: FloatingActionButton(
-                              heroTag: "btn$index",
-                              child: Icon(
-                                Icons.mic,
-                                size: 20,
-                              ),
-                              onPressed: () {
-                                if (assessor == therapist &&
-                                    role == "therapist") {
-                                  _listen(index);
-                                  setdatalisten(index);
-                                } else if (role != "therapist") {
-                                  _listen(index);
-                                  setdatalisten(index);
-                                } else {
-                                  _showSnackBar(
-                                      "You can't change the other fields",
-                                      context);
-                                }
-                              },
-                            ),
-                          ),
-                        ),
-                      ]),
-                    ),
-                    labelText: 'Comments'),
-                onChanged: (value) {
-                  // print(widget.accessname);
-                  if (assessor == therapist && role == "therapist") {
-                    setreco(index, value);
-                    FocusScope.of(context).requestFocus();
-                    new TextEditingController().clear();
-                  } else if (role != "therapist") {
-                    setreco(index, value);
-                    FocusScope.of(context).requestFocus();
-                    new TextEditingController().clear();
-                  } else {
-                    _showSnackBar("You can't change the other fields", context);
-                  }
-                },
-              ),
-            ),
-            (role == 'therapist' && isthera)
-                ? getrecowid(index, context)
-                : SizedBox(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget getrecowid(index, BuildContext context) {
-    if (widget.wholelist[1][widget.accessname]["question"]["$index"]
-            ["Recommendationthera"] !=
-        "") {
-      setState(() {
-        isColor = true;
-        // saveToForm = true;
-        // widget.wholelist[1][widget.accessname]["isSave"] = saveToForm;
-      });
-    } else {
-      setState(() {
-        isColor = false;
-        // saveToForm = false;
-        // widget.wholelist[1][widget.accessname]["isSave"] = saveToForm;
-      });
-    }
-    if (falseIndex == -1) {
-      if (widget.wholelist[1][widget.accessname]["question"]["$index"]
-              ["Recommendationthera"] !=
-          "") {
-        setState(() {
-          saveToForm = true;
-          trueIndex = index;
-          widget.wholelist[1][widget.accessname]["isSave"] = true;
-        });
-      } else {
-        setState(() {
-          saveToForm = false;
-          falseIndex = index;
-          widget.wholelist[1][widget.accessname]["isSave"] = false;
-        });
-      }
-    } else {
-      if (index == falseIndex) {
-        if (widget.wholelist[1][widget.accessname]["question"]["$index"]
-                ["Recommendationthera"] !=
-            "") {
-          setState(() {
-            widget.wholelist[1][widget.accessname]["isSave"] = true;
-            falseIndex = -1;
-          });
-        } else {
-          setState(() {
-            widget.wholelist[1][widget.accessname]["isSave"] = false;
-          });
-        }
-      }
-    }
-    return Column(
-      children: [
-        SizedBox(height: 8),
-        TextFormField(
-          onChanged: (value) {
-            FocusScope.of(context).requestFocus();
-            new TextEditingController().clear();
-            setrecothera(index, value);
-            // setState(() {
-            //   // print("Color Changed");
-            //   if (value.length != 0) {
-            //     isColor = true;
-            //   } else {
-            //     isColor = false;
-            //   }
-            // });
-          },
-          controller: _controllerstreco["field$index"],
-          cursorColor: (isColor) ? Colors.green : Colors.red,
-          decoration: InputDecoration(
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: (isColor) ? Colors.green : Colors.red, width: 1),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: (isColor) ? Colors.green : Colors.red, width: 1),
-              ),
-              suffix: Container(
-                // color: Colors.red,
-                width: 40,
-                height: 30,
-                padding: EdgeInsets.all(0),
-                child: Row(children: [
-                  Container(
-                    // color: Colors.green,
-                    alignment: Alignment.center,
-                    width: 40,
-                    height: 60,
-                    margin: EdgeInsets.all(0),
-                    child: FloatingActionButton(
-                      heroTag: null,
-                      child: Icon(
-                        Icons.mic,
-                        size: 20,
-                      ),
-                      onPressed: () {
-                        _listenthera(index);
-                        setdatalistenthera(index);
-                      },
-                    ),
-                  ),
-                ]),
-              ),
-              labelStyle:
-                  TextStyle(color: (isColor) ? Colors.green : Colors.red),
-              labelText: 'Recommendation'),
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text('Priority'),
-            Row(
-              children: [
-                Radio(
-                  value: '1',
-                  onChanged: (value) {
-                    setprio(index, value);
-                  },
-                  groupValue: getprio(index),
-                ),
-                Text('1'),
-                Radio(
-                  value: '2',
-                  onChanged: (value) {
-                    setState(() {
-                      setprio(index, value);
-                    });
-                  },
-                  groupValue: getprio(index),
-                ),
-                Text('2'),
-                Radio(
-                  value: '3',
-                  onChanged: (value) {
-                    setState(() {
-                      setprio(index, value);
-                    });
-                  },
-                  groupValue: getprio(index),
-                ),
-                Text('3'),
-              ],
-            )
-          ],
-        )
+        form(),
       ],
-    );
-  }
+    ));
 
-  void _listen(index) async {
-    if (!_isListening) {
-      bool available = await _speech.initialize(
-        onStatus: (val) {
-          print('onStatus: $val');
-          setState(() {
-            // _isListening = false;
-            //
-          });
-        },
-        onError: (val) => print('onError: $val'),
-      );
-      if (available) {
-        setState(() {
-          _isListening = true;
-          //colorsset["field$index"] = Colors.red;
-          isListening['field$index'] = true;
-        });
-        _speech.listen(
-          onResult: (val) => setState(() {
-            _controllers["field$index"].text = widget.wholelist[1]
-                        [widget.accessname]['question']["$index"]
-                    ['Recommendation'] +
-                " " +
-                val.recognizedWords;
-          }),
-        );
-      }
-    } else {
-      setState(() {
-        _isListening = false;
-        isListening['field$index'] = false;
-        colorsset["field$index"] = Color.fromRGBO(10, 80, 106, 1);
-      });
-      _speech.stop();
-    }
-  }
+    //   return WillPopScope(
+    //     onWillPop: () async => false,
+    //     child: Scaffold(
+    //       appBar: AppBar(
+    //         title: (widget.roomname != null)
+    //             ? Text("${widget.roomname}")
+    //             : Text('Assessment'),
+    //         automaticallyImplyLeading: false,
+    //         backgroundColor: _colorgreen,
+    //         actions: [
+    //           // (uploading)
+    //           //     ? Center(
+    //           //         child: Container(
+    //           //           child: Text(
+    //           //             "Uploading...${value.round()}%",
+    //           //             style: TextStyle(fontSize: 18),
+    //           //           ),
+    //           //         ),
+    //           //       )
+    //           //     :
+    //           IconButton(
+    //             icon: Icon(Icons.done_all, color: Colors.white),
+    //             onPressed: () async {
+    //               // await uploadFile(_image);
+    //               // widget.wholelist[1][widget.accessname]["images"] =
+    //               //     mediaList.toList();
 
-  setdatalisten(index) {
-    setState(() {
-      widget.wholelist[1][widget.accessname]['question']["$index"]
-          ['Recommendation'] = _controllers["field$index"].text;
-      cur = !cur;
-    });
-  }
+    //               try {
+    //                 var test = widget.wholelist[1][widget.accessname]["complete"];
+    //                 for (int i = 0;
+    //                     i <
+    //                         widget.wholelist[1][widget.accessname]['question']
+    //                             .length;
+    //                     i++) {
+    //                   setdatalisten(i + 1);
+    //                   setdatalistenthera(i + 1);
+    //                 }
 
-  void _listenthera(index) async {
-    if (!_isListening) {
-      bool available = await _speech.initialize(
-        onStatus: (val) {
-          print('onStatus: $val');
-          setState(() {
-            // _isListening = false;
-            //
-          });
-        },
-        onError: (val) => print('onError: $val'),
-      );
-      if (available) {
-        setState(() {
-          _isListening = true;
-          // colorsset["field$index"] = Colors.red;
-          isListening['field$index'] = true;
-        });
-        _speech.listen(
-          onResult: (val) => setState(() {
-            _controllerstreco["field$index"].text = widget.wholelist[1]
-                        [widget.accessname]['question']["$index"]
-                    ['Recommendationthera'] +
-                " " +
-                val.recognizedWords;
-          }),
-        );
-      }
-    } else {
-      setState(() {
-        _isListening = false;
-        isListening['field$index'] = false;
-        colorsset["field$index"] = Color.fromRGBO(10, 80, 106, 1);
-      });
-      _speech.stop();
-    }
-  }
+    //                 // if (test == 0) {
+    //                 //   _showSnackBar(
+    //                 //       "You Must Have to Fill the Form First", context);
+    //                 // } else {
+    //                 if (role == "therapist") {
+    //                   // if (saveToForm) {
+    //                   NewAssesmentRepository().setLatestChangeDate(widget.docID);
+    //                   NewAssesmentRepository()
+    //                       .setForm(widget.wholelist, widget.docID);
+    //                   // Navigator.pop(context,
+    //                   //     widget.wholelist[1][widget.accessname]);
+    //                   Navigator.pop(
+    //                       context, widget.wholelist[1][widget.accessname]);
+    //                   // } else {
+    //                   //   _showSnackBar("Provide all recommendations", context);
+    //                   // }
+    //                 } else {
+    //                   NewAssesmentRepository().setLatestChangeDate(widget.docID);
+    //                   NewAssesmentRepository()
+    //                       .setForm(widget.wholelist, widget.docID);
+    //                   // Navigator.pop(context,
+    //                   //     widget.wholelist[1][widget.accessname]);
+    //                   Navigator.pop(
+    //                       context, widget.wholelist[1][widget.accessname]);
+    //                 }
+    //                 // }
+    //               } catch (e) {
+    //                 print(e.toString());
+    //               }
+    //             },
+    //             // label: Text(
+    //             //   'Logout',
+    //             //   style: TextStyle(color: Colors.white, fontSize: 16),
+    //             // ),
+    //           )
+    //         ],
+    //       ),
+    //       body: Container(
+    //         child: Padding(
+    //           padding: EdgeInsets.all(10),
+    //           child: SingleChildScrollView(
+    //             child: Column(
+    //               children: [
+    //                 Container(
+    //                   width: double.infinity,
+    //                   child: Card(
+    //                     elevation: 8,
+    //                     child: Container(
+    //                       // width: MediaQuery.of(context).size.width / 10,
+    //                       padding: EdgeInsets.all(25),
+    //                       child: Row(
+    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                         children: [
+    //                           Container(
+    //                             width: MediaQuery.of(context).size.width / 1.6,
+    //                             child: Text(
+    //                               '${widget.roomname} Details',
+    //                               style: TextStyle(
+    //                                 fontSize: 25,
+    //                                 fontWeight: FontWeight.bold,
+    //                                 color: Color.fromRGBO(10, 80, 106, 1),
+    //                               ),
+    //                             ),
+    //                           ),
+    //                           Container(
+    //                             alignment: Alignment.topRight,
+    //                             width: 45,
+    //                             decoration: BoxDecoration(
+    //                                 color: _colorgreen,
+    //                                 // border: Border.all(
+    //                                 //   color: Colors.red[500],
+    //                                 // ),
+    //                                 borderRadius:
+    //                                     BorderRadius.all(Radius.circular(50))),
+    //                             // color: Colors.red,
+    //                             child: RawMaterialButton(
+    //                               onPressed: () {
+    //                                 if (videoUrl == "" && videoName == "") {
+    //                                   if (curUid == assessor) {
+    //                                     uploadVideo(context);
+    //                                   } else {
+    //                                     _showSnackBar(
+    //                                         "You are not allowed to upload video",
+    //                                         context);
+    //                                   }
+    //                                 } else {
+    //                                   _showSnackBar(
+    //                                       "You can add only one video", context);
+    //                                 }
+    //                               },
+    //                               child: Icon(
+    //                                 Icons.camera_alt,
+    //                                 color: Colors.white,
+    //                               ),
+    //                             ),
+    //                           )
+    //                         ],
+    //                       ),
+    //                     ),
+    //                   ),
+    //                 ),
+    //                 SizedBox(height: 10),
+    //                 (uploading)
+    //                     ? Center(
+    //                         child: Column(
+    //                           children: [
+    //                             Text("Uploading Video...."),
+    //                             SizedBox(
+    //                               height: 5,
+    //                             ),
+    //                             CircularProgressIndicator()
+    //                           ],
+    //                         ),
+    //                       )
+    //                     : (videoUrl != "" &&
+    //                             videoUrl != null &&
+    //                             videoName != "" &&
+    //                             videoName != null)
+    //                         ? InkWell(
+    //                             // ignore: missing_return
+    //                             onTap: () {
+    //                               Navigator.of(context).push(MaterialPageRoute(
+    //                                   builder: (context) =>
+    //                                       ViewVideo(videoUrl, widget.roomname)));
+    //                             },
+    //                             child: Container(
+    //                               decoration: new BoxDecoration(
+    //                                 color: Color(0xFFeeeef5),
+    //                                 borderRadius: BorderRadius.all(
+    //                                   Radius.circular(40.0),
+    //                                 ),
+    //                               ),
+    //                               width: (videoName == '' || videoName == null)
+    //                                   ? 0.0
+    //                                   : MediaQuery.of(context).size.width - 50,
+    //                               child: Row(
+    //                                 mainAxisSize: MainAxisSize.min,
+    //                                 children: [
+    //                                   SizedBox(
+    //                                     width: (videoName == '' ||
+    //                                             videoName == null)
+    //                                         ? 0.0
+    //                                         : MediaQuery.of(context).size.width -
+    //                                             150,
+    //                                     child: Padding(
+    //                                       padding: const EdgeInsets.symmetric(
+    //                                           horizontal: 15.0, vertical: 15.0),
+    //                                       child: Row(
+    //                                         mainAxisSize: MainAxisSize.min,
+    //                                         children: [
+    //                                           Flexible(
+    //                                             child: (videoName == null ||
+    //                                                     videoName == "")
+    //                                                 ? SizedBox()
+    //                                                 : Text(
+    //                                                     "$videoName",
+    //                                                     style: normalTextStyle()
+    //                                                         .copyWith(
+    //                                                             fontSize: 14.0),
+    //                                                     overflow:
+    //                                                         TextOverflow.fade,
+    //                                                     maxLines: 1,
+    //                                                     softWrap: false,
+    //                                                   ),
+    //                                           )
+    //                                         ],
+    //                                       ),
+    //                                     ),
+    //                                   ),
+    //                                   Spacer(),
+    //                                   (videoName == '')
+    //                                       ? SizedBox()
+    //                                       : IconButton(
+    //                                           onPressed: () {
+    //                                             if (therapist == assessor &&
+    //                                                 role == "therapist") {
+    //                                               setState(() {
+    //                                                 widget.wholelist[1]
+    //                                                         [widget.accessname]
+    //                                                     ["videos"]["name"] = "";
+    //                                                 widget.wholelist[1]
+    //                                                         [widget.accessname]
+    //                                                     ["videos"]["url"] = "";
+    //                                                 deleteFile(videoUrl);
+    //                                                 deleteVideo();
+    //                                                 NewAssesmentRepository()
+    //                                                     .setForm(widget.wholelist,
+    //                                                         widget.docID);
+    //                                               });
+    //                                             } else if (role != "therapist") {
+    //                                               setState(() {
+    //                                                 widget.wholelist[1]
+    //                                                         [widget.accessname]
+    //                                                     ["videos"]["name"] = "";
+    //                                                 widget.wholelist[1]
+    //                                                         [widget.accessname]
+    //                                                     ["videos"]["url"] = "";
+    //                                                 deleteFile(videoUrl);
+    //                                                 deleteVideo();
+    //                                                 NewAssesmentRepository()
+    //                                                     .setForm(widget.wholelist,
+    //                                                         widget.docID);
+    //                                               });
+    //                                             } else {
+    //                                               _showSnackBar(
+    //                                                   "You can't change the other fields",
+    //                                                   context);
+    //                                             }
+    //                                           },
+    //                                           icon: Icon(
+    //                                             Icons.delete_outline_rounded,
+    //                                             color: Color.fromRGBO(
+    //                                                 10, 80, 106, 1),
+    //                                           ),
+    //                                         ),
+    //                                   SizedBox(
+    //                                     width: 15.0,
+    //                                   )
+    //                                 ],
+    //                               ),
+    //                             ),
+    //                           )
+    //                         : SizedBox(),
 
-  setdatalistenthera(index) {
-    setState(() {
-      widget.wholelist[1][widget.accessname]['question']["$index"]
-          ['Recommendationthera'] = _controllerstreco["field$index"].text;
-      cur = !cur;
-    });
-  }
+    //                 // Container(
+    //                 //   height: 200.0,
+    //                 //   child: ListView.builder(
+    //                 //       scrollDirection: Axis.horizontal,
+    //                 //       itemCount: widget
+    //                 //           .wholelist[1][widget.accessname]["images"].length,
+    //                 //       itemBuilder: (BuildContext context, int index) {
+    //                 //         return Padding(
+    //                 //           padding: const EdgeInsets.only(right: 8.0),
+    //                 //           child: Column(
+    //                 //             children: <Widget>[
+    //                 //               ExtendedImage.network(
+    //                 //                 widget.wholelist[1][widget.accessname]
+    //                 //                     ["images"][index],
+    //                 //                 width: 150.0,
+    //                 //                 height: 150.0,
+    //                 //                 fit: BoxFit.cover,
+    //                 //                 cache: true,
+    //                 //                 loadStateChanged: (ExtendedImageState state) {
+    //                 //                   switch (state.extendedImageLoadState) {
+    //                 //                     case LoadState.loading:
+    //                 //                       return Center(
+    //                 //                           child: Container(
+    //                 //                         height: 32.0,
+    //                 //                         width: 32.0,
+    //                 //                         child: CircularProgressIndicator(),
+    //                 //                       ));
+    //                 //                       break;
+    //                 //                     case LoadState.completed:
+    //                 //                       return ExtendedRawImage(
+    //                 //                         image: state.extendedImageInfo?.image,
+    //                 //                         width: 150.0,
+    //                 //                         height: 150.0,
+    //                 //                       );
+    //                 //                       break;
+    //                 //                     case LoadState.failed:
+    //                 //                       return Center(
+    //                 //                           child: Container(
+    //                 //                         height: 32.0,
+    //                 //                         width: 32.0,
+    //                 //                         child: Icon(
+    //                 //                           Icons.error,
+    //                 //                           color:
+    //                 //                               Color.fromRGBO(10, 80, 106, 1),
+    //                 //                         ),
+    //                 //                       ));
+    //                 //                       break;
+    //                 //                     default:
+    //                 //                       return Center(
+    //                 //                           child: Container(
+    //                 //                         height: 32.0,
+    //                 //                         width: 32.0,
+    //                 //                         child: CircularProgressIndicator(),
+    //                 //                       ));
+    //                 //                   }
+    //                 //                 },
+    //                 //               ),
+    //                 //               IconButton(
+    //                 //                   icon: Icon(Icons.delete,
+    //                 //                       size: 16.0,
+    //                 //                       color: Color.fromRGBO(10, 80, 106, 1)),
+    //                 //                   onPressed: () {
+    //                 //                     _deleteMedia(index, assesspro);
+    //                 //                   })
+    //                 //             ],
+    //                 //           ),
+    //                 //         );
+    //                 //       }),
+    //                 // ),
+    //                 // Container(
+    //                 //   decoration: new BoxDecoration(
+    //                 //     color: Color(0xFFeeeef5),
+    //                 //     borderRadius: BorderRadius.all(
+    //                 //       Radius.circular(40.0),
+    //                 //     ),
+    //                 //   ),
+    //                 //   width: assesspro.imageName == ''
+    //                 //       ? 0.0
+    //                 //       : MediaQuery.of(context).size.width - 50,
+    //                 //   child: Row(
+    //                 //     mainAxisSize: MainAxisSize.min,
+    //                 //     children: [
+    //                 //       SizedBox(
+    //                 //         width: assesspro.imageName == ''
+    //                 //             ? 0.0
+    //                 //             : MediaQuery.of(context).size.width - 150,
+    //                 //         child: Padding(
+    //                 //           padding: const EdgeInsets.symmetric(
+    //                 //               horizontal: 15.0, vertical: 15.0),
+    //                 //           child: Row(
+    //                 //             mainAxisSize: MainAxisSize.min,
+    //                 //             children: [
+    //                 //               Flexible(
+    //                 //                 child: Text(
+    //                 //                   assesspro.imageName == ''
+    //                 //                       ? ''
+    //                 //                       : assesspro.imageName,
+    //                 //                   style: normalTextStyle()
+    //                 //                       .copyWith(fontSize: 14.0),
+    //                 //                   overflow: TextOverflow.fade,
+    //                 //                   maxLines: 1,
+    //                 //                   softWrap: false,
+    //                 //                 ),
+    //                 //               )
+    //                 //             ],
+    //                 //           ),
+    //                 //         ),
+    //                 //       ),
+    //                 //       Spacer(),
+    //                 //       assesspro.imageName == ''
+    //                 //           ? SizedBox()
+    //                 //           : IconButton(
+    //                 //               onPressed: () {
+    //                 //                 assesspro.deleteImage();
+    //                 //                 setState(() {});
+    //                 //               },
+    //                 //               icon: Icon(
+    //                 //                 Icons.delete_outline_rounded,
+    //                 //                 color: Color.fromRGBO(10, 80, 106, 1),
+    //                 //               ),
+    //                 //             ),
+    //                 //       SizedBox(
+    //                 //         width: 15.0,
+    //                 //       )
+    //                 //     ],
+    //                 //   ),
+    //                 // ),
+    //                 Container(
+    //                   padding: EdgeInsets.all(15),
+    //                   child: Column(
+    //                     children: [
+    //                       SizedBox(
+    //                         height: 15,
+    //                       ),
+    //                       // Divider(
+    //                       //   height: dividerheight,
+    //                       //   color: Color.fromRGBO(10, 80, 106, 1),
+    //                       // ),
+    //                       Row(
+    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                         children: [
+    //                           Container(
+    //                             width: MediaQuery.of(context).size.width * .5,
+    //                             child: Text('House Type',
+    //                                 style: TextStyle(
+    //                                   color: Color.fromRGBO(10, 80, 106, 1),
+    //                                   fontSize: 20,
+    //                                 )),
+    //                           ),
+    //                           Container(
+    //                             child: DropdownButton(
+    //                               items: [
+    //                                 DropdownMenuItem(
+    //                                   child: Text('--'),
+    //                                   value: '',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('Apartment'),
+    //                                   value: 'Apartment',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('House'),
+    //                                   value: 'House',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('Condominium'),
+    //                                   value: 'Condominium',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('Other'),
+    //                                   value: 'Other',
+    //                                 ),
+    //                               ],
+    //                               onChanged: (value) {
+    //                                 FocusScope.of(context).requestFocus();
+    //                                 new TextEditingController().clear();
+    //                                 if (assessor == therapist &&
+    //                                     role == "therapist") {
+    //                                   assesspro.setdata(1, value, 'House Type');
+    //                                 } else if (role != "therapist" &&
+    //                                     (role == "patient" ||
+    //                                         role == "nurse/case manager")) {
+    //                                   assesspro.setdata(1, value, 'House Type');
+    //                                 } else {
+    //                                   _showSnackBar(
+    //                                       "You can't change the other fields",
+    //                                       context);
+    //                                 }
+    //                               },
+    //                               value: getvalue(1),
+    //                             ),
+    //                           )
+    //                         ],
+    //                       ),
+    //                       (getvalue(1) == "Other")
+    //                           ? getrecomain(1, false, context)
+    //                           : SizedBox(),
+    //                       SizedBox(height: 15),
+    //                       Row(
+    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                         children: [
+    //                           Container(
+    //                             width: MediaQuery.of(context).size.width * .5,
+    //                             child: Text('Number of Levels',
+    //                                 style: TextStyle(
+    //                                   color: Color.fromRGBO(10, 80, 106, 1),
+    //                                   fontSize: 20,
+    //                                 )),
+    //                           ),
+    //                           Container(
+    //                             child: DropdownButton(
+    //                               items: [
+    //                                 DropdownMenuItem(
+    //                                   child: Text('--'),
+    //                                   value: '',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('1'),
+    //                                   value: '1',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('2'),
+    //                                   value: '2',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('3'),
+    //                                   value: '3',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('4'),
+    //                                   value: '4',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('5'),
+    //                                   value: '5',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('Other'),
+    //                                   value: 'Other',
+    //                                 ),
+    //                               ],
+    //                               onChanged: (value) {
+    //                                 FocusScope.of(context).requestFocus();
+    //                                 new TextEditingController().clear();
+    //                                 // print(widget.accessname);
+    //                                 if (assessor == therapist &&
+    //                                     role == "therapist") {
+    //                                   assesspro.setdata(
+    //                                       2, value, 'Number of Levels');
+    //                                 } else if (role != "therapist") {
+    //                                   assesspro.setdata(
+    //                                       2, value, 'Number of Levels');
+    //                                 } else {
+    //                                   _showSnackBar(
+    //                                       "You can't change the other fields",
+    //                                       context);
+    //                                 }
+    //                               },
+    //                               value: getvalue(2),
+    //                             ),
+    //                           )
+    //                         ],
+    //                       ),
+    //                       // (getvalue(2) == "Other")
+    //                       //     ? getrecomain(2, false)
+    //                       //     : SizedBox(),
+    //                       (getvalue(2) != '' &&
+    //                               getvalue(2) != '0' &&
+    //                               getvalue(2) != '1')
+    //                           ? Container(
+    //                               padding: EdgeInsets.only(top: 15),
+    //                               child: Column(
+    //                                 children: [
+    //                                   Container(
+    //                                     child: Row(
+    //                                       mainAxisAlignment:
+    //                                           MainAxisAlignment.spaceBetween,
+    //                                       children: [
+    //                                         Container(
+    //                                           width: MediaQuery.of(context)
+    //                                                   .size
+    //                                                   .width *
+    //                                               .65,
+    //                                           child:
+    //                                               Text('Mode Of Transportation',
+    //                                                   style: TextStyle(
+    //                                                     color: Color.fromRGBO(
+    //                                                         10, 80, 106, 1),
+    //                                                     fontSize: 20,
+    //                                                   )),
+    //                                         ),
+    //                                         DropdownButton(
+    //                                           items: [
+    //                                             DropdownMenuItem(
+    //                                               child: Text('--'),
+    //                                               value: '',
+    //                                             ),
+    //                                             DropdownMenuItem(
+    //                                               child: Text('Stairs'),
+    //                                               value: 'Stairs',
+    //                                             ),
+    //                                             DropdownMenuItem(
+    //                                               child: Text('Elevator'),
+    //                                               value: 'Elevator',
+    //                                             ),
+    //                                             DropdownMenuItem(
+    //                                               child: Text('Ramp'),
+    //                                               value: 'Ramp',
+    //                                             ),
+    //                                             DropdownMenuItem(
+    //                                               child: Text('Tramp'),
+    //                                               value: 'Tramp',
+    //                                             ),
+    //                                             DropdownMenuItem(
+    //                                               child: Text('Other'),
+    //                                               value: 'Other',
+    //                                             ),
+    //                                           ],
+    //                                           onChanged: (value) {
+    //                                             setState(() {
+    //                                               if (assessor == therapist &&
+    //                                                   role == "therapist") {
+    //                                                 widget.wholelist[1][
+    //                                                             widget.accessname]
+    //                                                         ['question']["2"]
+    //                                                     ['Modetrnas'] = value;
+    //                                               } else if (role !=
+    //                                                   "therapist") {
+    //                                                 widget.wholelist[1][
+    //                                                             widget.accessname]
+    //                                                         ['question']["2"]
+    //                                                     ['Modetrnas'] = value;
+    //                                               } else {
+    //                                                 _showSnackBar(
+    //                                                     "You can't change the other fields",
+    //                                                     context);
+    //                                               }
+    //                                             });
+    //                                             // setdata(
+    //                                             //   2,
+    //                                             //   value,
+    //                                             //   'Mode Of Transportation'
+    //                                             // );
+    //                                           },
+    //                                           value: widget.wholelist[1]
+    //                                                   [widget.accessname]
+    //                                               ['question']["2"]['Modetrnas'],
+    //                                         )
+    //                                       ],
+    //                                     ),
+    //                                   ),
+    //                                   SizedBox(height: 5),
+    //                                   (widget.wholelist[1][widget.accessname]
+    //                                                       ['question']["2"]
+    //                                                   ['Modetrnas'] ==
+    //                                               'Other' ||
+    //                                           getvalue(2) == "Other")
+    //                                       ? getrecomain(2, false, context)
+    //                                       : SizedBox(),
+    //                                 ],
+    //                               ),
+    //                             )
+    //                           : SizedBox(),
+    //                       SizedBox(height: 15),
+    //                       Row(
+    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                         children: [
+    //                           Container(
+    //                             width: MediaQuery.of(context).size.width * .5,
+    //                             child: Text('Living on Level',
+    //                                 style: TextStyle(
+    //                                   color: Color.fromRGBO(10, 80, 106, 1),
+    //                                   fontSize: 20,
+    //                                 )),
+    //                           ),
+    //                           Container(
+    //                             child: DropdownButton(
+    //                               items: [
+    //                                 DropdownMenuItem(
+    //                                     child: Text('--'), value: ''),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('1'),
+    //                                   value: '1',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('2'),
+    //                                   value: '2',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('3'),
+    //                                   value: '3',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('4'),
+    //                                   value: '4',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('5'),
+    //                                   value: '5',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('6'),
+    //                                   value: '6',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('7'),
+    //                                   value: '7',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('Other'),
+    //                                   value: 'Other',
+    //                                 ),
+    //                               ],
+    //                               onChanged: (value) {
+    //                                 FocusScope.of(context).requestFocus();
+    //                                 new TextEditingController().clear();
+    //                                 // print(widget.accessname);
+    //                                 if (assessor == therapist &&
+    //                                     role == "therapist") {
+    //                                   assesspro.setdata(
+    //                                       3, value, 'Living on Level');
+    //                                 } else if (role != "therapist") {
+    //                                   assesspro.setdata(
+    //                                       3, value, 'Living on Level');
+    //                                 } else {
+    //                                   _showSnackBar(
+    //                                       "You can't change the other fields",
+    //                                       context);
+    //                                 }
+    //                               },
+    //                               value: getvalue(3),
+    //                             ),
+    //                           )
+    //                         ],
+    //                       ),
+    //                       // SizedBox(height: 5),
+    //                       (getvalue(3) == 'Other')
+    //                           ? getrecomain(3, false, context)
+    //                           : SizedBox(),
+    //                       SizedBox(height: 15),
+    //                       Row(
+    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                         children: [
+    //                           Container(
+    //                             width: MediaQuery.of(context).size.width * .5,
+    //                             child: Text('Living Arrangements',
+    //                                 style: TextStyle(
+    //                                   color: Color.fromRGBO(10, 80, 106, 1),
+    //                                   fontSize: 20,
+    //                                 )),
+    //                           ),
+    //                           Container(
+    //                             child: DropdownButton(
+    //                               items: [
+    //                                 DropdownMenuItem(
+    //                                   child: Text('--'),
+    //                                   value: '',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('Alone'),
+    //                                   value: 'Alone',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('Alone Sometimes'),
+    //                                   value: 'Alone Sometimes',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('Never Alone'),
+    //                                   value: 'Never Alone',
+    //                                 ),
+    //                               ],
+    //                               onChanged: (value) {
+    //                                 FocusScope.of(context).requestFocus();
+    //                                 new TextEditingController().clear();
+    //                                 // print(widget.accessname);
+    //                                 if (assessor == therapist &&
+    //                                     role == "therapist") {
+    //                                   assesspro.setdata(
+    //                                       4, value, 'Living Arrangements');
+    //                                 } else if (role != "therapist") {
+    //                                   assesspro.setdata(
+    //                                       4, value, 'Living Arrangements');
+    //                                 } else {
+    //                                   _showSnackBar(
+    //                                       "You can't change the other fields",
+    //                                       context);
+    //                                 }
+    //                               },
+    //                               value: getvalue(4),
+    //                             ),
+    //                           )
+    //                         ],
+    //                       ),
+    //                       SizedBox(height: 5),
+    //                       (getvalue(4) != 'Never Alone' && getvalue(4) != '')
+    //                           ? (getvalue(4) == 'Alone')
+    //                               ? getrecomain(4, true, context)
+    //                               : Container(
+    //                                   padding: EdgeInsets.fromLTRB(5, 5, 5, 0),
+    //                                   child: Column(
+    //                                     children: [
+    //                                       SizedBox(
+    //                                         height: 7,
+    //                                       ),
+    //                                       Container(
+    //                                         child: Row(
+    //                                           children: [
+    //                                             Container(
+    //                                               width: MediaQuery.of(context)
+    //                                                       .size
+    //                                                       .width *
+    //                                                   .41,
+    //                                               child: Row(
+    //                                                 children: [
+    //                                                   Text(
+    //                                                     'From:',
+    //                                                     style: TextStyle(
+    //                                                       fontSize: 15,
+    //                                                     ),
+    //                                                   ),
+    //                                                   Container(
+    //                                                     margin:
+    //                                                         EdgeInsets.fromLTRB(
+    //                                                             3, 0, 0, 0),
+    //                                                     width:
+    //                                                         MediaQuery.of(context)
+    //                                                                 .size
+    //                                                                 .width *
+    //                                                             0.3,
+    //                                                     decoration: BoxDecoration(
+    //                                                         borderRadius:
+    //                                                             BorderRadius.all(
+    //                                                                 Radius
+    //                                                                     .circular(
+    //                                                                         4)),
+    //                                                         shape: BoxShape
+    //                                                             .rectangle,
+    //                                                         border: Border.all(
+    //                                                           color: _colorgreen,
+    //                                                           width: 1,
+    //                                                         )),
+    //                                                     child: Row(children: [
+    //                                                       Container(
+    //                                                         // color: Colors.red,
+    //                                                         width: 35,
+    //                                                         child: IconButton(
+    //                                                           icon: Icon(
+    //                                                               Icons.alarm),
+    //                                                           onPressed: () {
+    //                                                             selectTime1(
+    //                                                                 context);
+    //                                                           },
+    //                                                         ),
+    //                                                       ),
+    //                                                       Text(
+    //                                                         '${time1.hour}:${time1.minute}',
+    //                                                         style: TextStyle(
+    //                                                           fontSize: 20,
+    //                                                         ),
+    //                                                       ),
+    //                                                       SizedBox(width: 10),
+    //                                                     ]),
+    //                                                   ),
+    //                                                 ],
+    //                                               ),
+    //                                             ),
+    //                                             SizedBox(width: 10),
+    //                                             Container(
+    //                                               width: MediaQuery.of(context)
+    //                                                       .size
+    //                                                       .width *
+    //                                                   .39,
+    //                                               child: Row(
+    //                                                 children: [
+    //                                                   Text(
+    //                                                     'Till:',
+    //                                                     style: TextStyle(
+    //                                                       fontSize: 15,
+    //                                                     ),
+    //                                                   ),
+    //                                                   Container(
+    //                                                     margin:
+    //                                                         EdgeInsets.fromLTRB(
+    //                                                             3, 0, 0, 0),
+    //                                                     width:
+    //                                                         MediaQuery.of(context)
+    //                                                                 .size
+    //                                                                 .width *
+    //                                                             0.3,
+    //                                                     decoration: BoxDecoration(
+    //                                                         borderRadius:
+    //                                                             BorderRadius.all(
+    //                                                                 Radius
+    //                                                                     .circular(
+    //                                                                         4)),
+    //                                                         shape: BoxShape
+    //                                                             .rectangle,
+    //                                                         border: Border.all(
+    //                                                           color: _colorgreen,
+    //                                                           width: 1,
+    //                                                         )),
+    //                                                     child: Row(children: [
+    //                                                       Container(
+    //                                                           // color: Colors.red,
+    //                                                           width: 35,
+    //                                                           child: IconButton(
+    //                                                             icon: Icon(
+    //                                                                 Icons.alarm),
+    //                                                             onPressed: () {
+    //                                                               selectTime2(
+    //                                                                   context);
+    //                                                               // print(time2);
+    //                                                             },
+    //                                                           )),
+    //                                                       Text(
+    //                                                         '${time2.hour}:${time2.minute}',
+    //                                                         style: TextStyle(
+    //                                                           fontSize: 20,
+    //                                                         ),
+    //                                                       ),
+    //                                                       SizedBox(width: 10),
+    //                                                     ]),
+    //                                                   ),
+    //                                                 ],
+    //                                               ),
+    //                                             ),
+    //                                           ],
+    //                                         ),
+    //                                       )
+    //                                     ],
+    //                                   ),
+    //                                 )
+    //                           : SizedBox(),
+    //                       SizedBox(height: 15),
+    //                       Row(
+    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                         children: [
+    //                           Container(
+    //                             width: MediaQuery.of(context).size.width * .5,
+    //                             child: Text('Has Room-mate?',
+    //                                 style: TextStyle(
+    //                                   color: Color.fromRGBO(10, 80, 106, 1),
+    //                                   fontSize: 20,
+    //                                 )),
+    //                           ),
+    //                           DropdownButton(
+    //                             items: [
+    //                               DropdownMenuItem(
+    //                                 child: Text('--'),
+    //                                 value: '',
+    //                               ),
+    //                               DropdownMenuItem(
+    //                                 child: Text('Yes'),
+    //                                 value: 'Yes',
+    //                               ),
+    //                               DropdownMenuItem(
+    //                                 child: Text('No'),
+    //                                 value: 'No',
+    //                               ),
+    //                             ],
+    //                             onChanged: (value) {
+    //                               FocusScope.of(context).requestFocus();
+    //                               new TextEditingController().clear();
+    //                               // print(widget.accessname);
+    //                               if (assessor == therapist &&
+    //                                   role == "therapist") {
+    //                                 assesspro.setdata(5, value, 'Has Room-mate?');
+    //                               } else if (role != "therapist") {
+    //                                 assesspro.setdata(5, value, 'Has Room-mate?');
+    //                               } else {
+    //                                 _showSnackBar(
+    //                                     "You can't change the other fields",
+    //                                     context);
+    //                               }
+    //                             },
+    //                             value: getvalue(5),
+    //                           )
+    //                         ],
+    //                       ),
+    //                       SizedBox(height: 15),
+    //                       (getvalue(5) == 'Yes')
+    //                           ? SingleChildScrollView(
+    //                               // reverse: true,
+    //                               child: Container(
+    //                                 // color: Colors.yellow,
+    //                                 child: Column(
+    //                                   children: [
+    //                                     Container(
+    //                                       child: Row(
+    //                                         mainAxisAlignment:
+    //                                             MainAxisAlignment.spaceBetween,
+    //                                         children: [
+    //                                           Container(
+    //                                             width: MediaQuery.of(context)
+    //                                                     .size
+    //                                                     .width *
+    //                                                 .5,
+    //                                             child:
+    //                                                 Text('Number of Room-mates',
+    //                                                     style: TextStyle(
+    //                                                       color: Color.fromRGBO(
+    //                                                           10, 80, 106, 1),
+    //                                                       fontSize: 20,
+    //                                                     )),
+    //                                           ),
+    //                                           SizedBox(
+    //                                               width: MediaQuery.of(context)
+    //                                                       .size
+    //                                                       .width *
+    //                                                   .35,
+    //                                               child: NumericStepButton(
+    //                                                 counterval: roomatecount,
+    //                                                 onChanged: (value) {
+    //                                                   if (assessor == therapist &&
+    //                                                       role == "therapist") {
+    //                                                     setState(() {
+    //                                                       widget.wholelist[1][widget
+    //                                                                       .accessname]
+    //                                                                   ['question']
+    //                                                               ["5"]['Roomate']
+    //                                                           ['count'] = value;
+    //                                                       roomatecount = widget
+    //                                                                       .wholelist[1]
+    //                                                                   [
+    //                                                                   widget
+    //                                                                       .accessname]
+    //                                                               [
+    //                                                               'question']["5"]
+    //                                                           [
+    //                                                           'Roomate']['count'];
+    //                                                       if (value > 0) {
+    //                                                         widget.wholelist[1][widget
+    //                                                                         .accessname]
+    //                                                                     [
+    //                                                                     'question']
+    //                                                                 [
+    //                                                                 "5"]['Roomate']
+    //                                                             [
+    //                                                             'roomate$value'] = {
+    //                                                           'Relationship': '',
+    //                                                           'FirstName': '',
+    //                                                           'LastName': '',
+    //                                                         };
 
-  Widget flightcountwidget(index, BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Container(
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              child: TextFormField(
-                initialValue: widget.wholelist[1][widget.accessname]['question']
-                    ["11"]['Flights']["flight$index"]["flight"],
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: colorsset["field${7}"], width: 1),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(width: 1, color: colorsset["field${7}"]),
-                    ),
-                    labelText: 'Number of steps in flight$index:'),
-                onChanged: (value) {
-                  FocusScope.of(context).requestFocus();
-                  new TextEditingController().clear();
-                  if (assessor == therapist && role == "therapist") {
-                    setState(() {
-                      widget.wholelist[1][widget.accessname]['question']["11"]
-                          ['Flights']['flight$index']["flight"] = value;
-                    });
-                  } else if (role != "therapist") {
-                    setState(() {
-                      widget.wholelist[1][widget.accessname]['question']["11"]
-                          ['Flights']['flight$index']["flight"] = value;
-                    });
-                  } else {
-                    _showSnackBar("You can't change the other fields", context);
-                  }
-                  // print(widget.wholelist[0][widget.accessname]['question']
-                  //     [7]);
-                },
-              ),
-            ),
-          ),
-          SizedBox(height: 7)
-        ],
-      ),
-    );
-  }
+    //                                                         if (widget
+    //                                                             .wholelist[1][
+    //                                                                 widget
+    //                                                                     .accessname]
+    //                                                                 ['question']
+    //                                                                 ["5"]
+    //                                                                 ['Roomate']
+    //                                                             .containsKey(
+    //                                                                 'roomate${value + 1}')) {
+    //                                                           widget.wholelist[1][
+    //                                                                   widget
+    //                                                                       .accessname]
+    //                                                                   ['question']
+    //                                                                   ["5"]
+    //                                                                   ['Roomate']
+    //                                                               .remove(
+    //                                                                   'roomate${value + 1}');
+    //                                                         }
+    //                                                       } else if (value == 0) {
+    //                                                         if (widget
+    //                                                             .wholelist[1][
+    //                                                                 widget
+    //                                                                     .accessname]
+    //                                                                 ['question']
+    //                                                                 ["5"]
+    //                                                                 ['Roomate']
+    //                                                             .containsKey(
+    //                                                                 'roomate${value + 1}')) {
+    //                                                           widget.wholelist[1][
+    //                                                                   widget
+    //                                                                       .accessname]
+    //                                                                   ['question']
+    //                                                                   ["5"]
+    //                                                                   ['Roomate']
+    //                                                               .remove(
+    //                                                                   'roomate${value + 1}');
+    //                                                         }
+    //                                                       }
+    //                                                     });
+    //                                                   } else if (role !=
+    //                                                       "therapist") {
+    //                                                     setState(() {
+    //                                                       widget.wholelist[1][widget
+    //                                                                       .accessname]
+    //                                                                   ['question']
+    //                                                               ["5"]['Roomate']
+    //                                                           ['count'] = value;
+    //                                                       roomatecount = widget
+    //                                                                       .wholelist[1]
+    //                                                                   [
+    //                                                                   widget
+    //                                                                       .accessname]
+    //                                                               [
+    //                                                               'question']["5"]
+    //                                                           [
+    //                                                           'Roomate']['count'];
+    //                                                       if (value > 0) {
+    //                                                         widget.wholelist[1][widget
+    //                                                                         .accessname]
+    //                                                                     [
+    //                                                                     'question']
+    //                                                                 [
+    //                                                                 "5"]['Roomate']
+    //                                                             [
+    //                                                             'roomate$value'] = {
+    //                                                           'Relationship': '',
+    //                                                           'FirstName': '',
+    //                                                           'LastName': '',
+    //                                                         };
 
-  Widget roomatecountwidget(index, BuildContext context) {
-    return Container(
-      child: Column(
-        children: [
-          Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width * .3,
-                  child: Text('Relationship',
-                      style: TextStyle(
-                        color: Color.fromRGBO(10, 80, 106, 1),
-                        fontSize: 20,
-                      )),
-                ),
-                DropdownButton(
-                    items: [
-                      DropdownMenuItem(
-                        child: Text('--'),
-                        value: '',
-                      ),
-                      DropdownMenuItem(
-                        child: Text('Spouse'),
-                        value: 'Spouse',
-                      ),
-                      DropdownMenuItem(
-                        child: Text('Son'),
-                        value: 'Son',
-                      ),
-                      DropdownMenuItem(
-                        child: Text('Daughter'),
-                        value: 'Daughter',
-                      ),
-                      DropdownMenuItem(
-                        child: Text('Grand-Son'),
-                        value: 'Grand-Son',
-                      ),
-                      DropdownMenuItem(
-                        child: Text('Daughter-In-Law'),
-                        value: 'Daughter-In-Law',
-                      ),
-                      DropdownMenuItem(
-                        child: Text('Grand-Daughter'),
-                        value: 'Grand-Daughter',
-                      ),
-                      DropdownMenuItem(
-                        child: Text('Son-In-Law'),
-                        value: 'Son-In-Law',
-                      ),
-                      DropdownMenuItem(
-                        child: Text('Niece'),
-                        value: 'Niece',
-                      ),
-                      DropdownMenuItem(
-                        child: Text('Family-other'),
-                        value: 'Family-other',
-                      ),
-                      DropdownMenuItem(
-                        child: Text('Acquaintance'),
-                        value: 'Acquaintance',
-                      ),
-                      DropdownMenuItem(
-                        child: Text('Caregiver'),
-                        value: 'Caregiver',
-                      ),
-                      DropdownMenuItem(
-                        child: Text('Professional'),
-                        value: 'Professional',
-                      ),
-                      DropdownMenuItem(
-                        child: Text('Friend'),
-                        value: 'Friend',
-                      ),
-                      DropdownMenuItem(
-                        child: Text('Nephew'),
-                        value: 'Nephew',
-                      ),
-                    ],
-                    onChanged: (value) {
-                      FocusScope.of(context).requestFocus();
-                      new TextEditingController().clear();
-                      // print(widget.accessname);
-                      if (assessor == therapist && role == "therapist") {
-                        setState(() {
-                          widget.wholelist[1][widget.accessname]['question']
-                                  ["5"]['Roomate']['roomate$index']
-                              ['Relationship'] = value;
-                        });
-                      } else if (role != "therapist") {
-                        setState(() {
-                          widget.wholelist[1][widget.accessname]['question']
-                                  ["5"]['Roomate']['roomate$index']
-                              ['Relationship'] = value;
-                        });
-                      } else {
-                        _showSnackBar(
-                            "You can't change the other fields", context);
-                      }
-                    },
-                    value: widget.wholelist[1][widget.accessname]['question']
-                        ["5"]['Roomate']['roomate$index']['Relationship'])
-              ],
-            ),
-          ),
-          Container(
-            child: SingleChildScrollView(
-              // reverse: true,
-              child: Container(
-                // color: Colors.yellow,
-                child: Column(
-                  children: [
-                    Container(
-                      child: TextFormField(
-                        showCursor: cur,
-                        initialValue: widget.wholelist[1][widget.accessname]
-                                ['question']["5"]['Roomate']['roomate$index']
-                            ['FirstName'],
-                        decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: colorsset["field$index"], width: 1),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  width: 1, color: colorsset["field$index"]),
-                            ),
-                            labelText: 'First Name'),
-                        onChanged: (value) {
-                          FocusScope.of(context).requestFocus();
-                          new TextEditingController().clear();
-                          // print(widget.accessname);
-                          if (assessor == therapist && role == "therapist") {
-                            widget.wholelist[1][widget.accessname]['question']
-                                    ["5"]['Roomate']['roomate$index']
-                                ['FirstName'] = value;
-                          } else if (role != "therapist") {
-                            widget.wholelist[1][widget.accessname]['question']
-                                    ["5"]['Roomate']['roomate$index']
-                                ['FirstName'] = value;
-                          } else {
-                            _showSnackBar(
-                                "You can't change the other fields", context);
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Container(
-            child: SingleChildScrollView(
-              // reverse: true,
-              child: Container(
-                // color: Colors.yellow,
-                child: Column(
-                  children: [
-                    Container(
-                      child: TextFormField(
-                        showCursor: cur,
-                        initialValue: widget.wholelist[1][widget.accessname]
-                                ['question']["5"]['Roomate']['roomate$index']
-                            ['LastName'],
-                        decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: colorsset["field$index"], width: 1),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  width: 1, color: colorsset["field$index"]),
-                            ),
-                            labelText: 'Last Name'),
-                        onChanged: (value) {
-                          FocusScope.of(context).requestFocus();
-                          new TextEditingController().clear();
-                          // print(widget.accessname);
-                          if (assessor == therapist && role == "therapist") {
-                            widget.wholelist[1][widget.accessname]['question']
-                                    ["5"]['Roomate']['roomate$index']
-                                ['LastName'] = value;
-                          } else if (role != "therapist") {
-                            widget.wholelist[1][widget.accessname]['question']
-                                    ["5"]['Roomate']['roomate$index']
-                                ['LastName'] = value;
-                          } else {
-                            _showSnackBar(
-                                "You can't change the other fields", context);
-                          }
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          SizedBox(height: 10),
-        ],
-      ),
-    );
+    //                                                         if (widget
+    //                                                             .wholelist[1][
+    //                                                                 widget
+    //                                                                     .accessname]
+    //                                                                 ['question']
+    //                                                                 ["5"]
+    //                                                                 ['Roomate']
+    //                                                             .containsKey(
+    //                                                                 'roomate${value + 1}')) {
+    //                                                           widget.wholelist[1][
+    //                                                                   widget
+    //                                                                       .accessname]
+    //                                                                   ['question']
+    //                                                                   ["5"]
+    //                                                                   ['Roomate']
+    //                                                               .remove(
+    //                                                                   'roomate${value + 1}');
+    //                                                         }
+    //                                                       } else if (value == 0) {
+    //                                                         if (widget
+    //                                                             .wholelist[1][
+    //                                                                 widget
+    //                                                                     .accessname]
+    //                                                                 ['question']
+    //                                                                 ["5"]
+    //                                                                 ['Roomate']
+    //                                                             .containsKey(
+    //                                                                 'roomate${value + 1}')) {
+    //                                                           widget.wholelist[1][
+    //                                                                   widget
+    //                                                                       .accessname]
+    //                                                                   ['question']
+    //                                                                   ["5"]
+    //                                                                   ['Roomate']
+    //                                                               .remove(
+    //                                                                   'roomate${value + 1}');
+    //                                                         }
+    //                                                       }
+    //                                                     });
+    //                                                   } else {
+    //                                                     _showSnackBar(
+    //                                                         "You can't change the other fields",
+    //                                                         context);
+    //                                                   }
+
+    //                                                   // print(widget.wholelist[1][
+    //                                                   //             widget.accessname]
+    //                                                   //         ['question']["5"]
+    //                                                   //     ['Roomate']);
+    //                                                 },
+    //                                               )),
+    //                                         ],
+    //                                       ),
+    //                                     ),
+    //                                     SizedBox(height: 10),
+    //                                     (roomatecount > 0)
+    //                                         ? Container(
+    //                                             child: Padding(
+    //                                               padding: EdgeInsets.fromLTRB(
+    //                                                   0, 10, 0, 10),
+    //                                               child: ConstrainedBox(
+    //                                                 constraints: BoxConstraints(
+    //                                                     maxHeight: 1000,
+    //                                                     minHeight:
+    //                                                         MediaQuery.of(context)
+    //                                                                 .size
+    //                                                                 .height /
+    //                                                             10),
+    //                                                 child: ListView.builder(
+    //                                                   physics:
+    //                                                       const NeverScrollableScrollPhysics(),
+    //                                                   shrinkWrap: true,
+    //                                                   itemCount: roomatecount,
+    //                                                   itemBuilder:
+    //                                                       (context, index1) {
+    //                                                     return roomatecountwidget(
+    //                                                         index1 + 1, context);
+    //                                                   },
+    //                                                 ),
+    //                                               ),
+    //                                             ),
+    //                                           )
+    //                                         : SizedBox()
+    //                                   ],
+    //                                 ),
+    //                               ),
+    //                             )
+    //                           : SizedBox(),
+    //                       SizedBox(
+    //                         height: 15,
+    //                       ),
+    //                       Row(
+    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                         children: [
+    //                           Container(
+    //                             width: MediaQuery.of(context).size.width * .5,
+    //                             child:
+    //                                 Text('Able to get in & out of doors & steps?',
+    //                                     style: TextStyle(
+    //                                       color: Color.fromRGBO(10, 80, 106, 1),
+    //                                       fontSize: 20,
+    //                                     )),
+    //                           ),
+    //                           DropdownButton(
+    //                             items: [
+    //                               DropdownMenuItem(
+    //                                 child: Text('--'),
+    //                                 value: '',
+    //                               ),
+    //                               DropdownMenuItem(
+    //                                 child: Text('Fairly Well'),
+    //                                 value: 'Fairly Well',
+    //                               ),
+    //                               DropdownMenuItem(
+    //                                 child: Text('With Difficulty'),
+    //                                 value: 'With Difficulty',
+    //                               ),
+    //                               DropdownMenuItem(
+    //                                 child: Text('Min(A)'),
+    //                                 value: 'Min(A)',
+    //                               ),
+    //                               DropdownMenuItem(
+    //                                 child: Text('Mod(A)'),
+    //                                 value: 'Mod(A)',
+    //                               ),
+    //                               DropdownMenuItem(
+    //                                 child: Text('Max(A)'),
+    //                                 value: 'Max(A)',
+    //                               ),
+    //                               DropdownMenuItem(
+    //                                 child: Text('Max(A) x2'),
+    //                                 value: 'Max(A) x2',
+    //                               )
+    //                             ],
+    //                             onChanged: (value) {
+    //                               FocusScope.of(context).requestFocus();
+    //                               new TextEditingController().clear();
+    //                               // print(widget.accessname);
+    //                               if (assessor == therapist &&
+    //                                   role == "therapist") {
+    //                                 assesspro.setdata(6, value,
+    //                                     'Able to get in & out of doors & steps?');
+    //                               } else if (role != "therapist") {
+    //                                 assesspro.setdata(6, value,
+    //                                     'Able to get in & out of doors & steps?');
+    //                               } else {
+    //                                 _showSnackBar(
+    //                                     "You can't change the other fields",
+    //                                     context);
+    //                               }
+    //                             },
+    //                             value: getvalue(6),
+    //                           )
+    //                         ],
+    //                       ),
+    //                       (getvalue(6) != 'Fairly Well' && getvalue(6) != '')
+    //                           ? getrecomain(6, true, context)
+    //                           : SizedBox(),
+    //                       SizedBox(
+    //                         height: 15,
+    //                       ),
+    //                       Row(
+    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                         children: [
+    //                           Container(
+    //                             width: MediaQuery.of(context).size.width * .5,
+    //                             child: Text('Using assistive device?',
+    //                                 style: TextStyle(
+    //                                   color: Color.fromRGBO(10, 80, 106, 1),
+    //                                   fontSize: 20,
+    //                                 )),
+    //                           ),
+    //                           DropdownButton(
+    //                             items: [
+    //                               DropdownMenuItem(
+    //                                 child: Text('--'),
+    //                                 value: '',
+    //                               ),
+    //                               DropdownMenuItem(
+    //                                 child: Text('Yes'),
+    //                                 value: 'Yes',
+    //                               ),
+    //                               DropdownMenuItem(
+    //                                 child: Text('No'),
+    //                                 value: 'No',
+    //                               ),
+    //                             ],
+    //                             onChanged: (value) {
+    //                               FocusScope.of(context).requestFocus();
+    //                               new TextEditingController().clear();
+    //                               // print(widget.accessname);
+    //                               if (assessor == therapist &&
+    //                                   role == "therapist") {
+    //                                 assesspro.setdata(
+    //                                     7, value, 'Using assistive device?');
+    //                               } else if (role != "therapist") {
+    //                                 assesspro.setdata(
+    //                                     7, value, 'Using assistive device?');
+    //                               } else {
+    //                                 _showSnackBar(
+    //                                     "You can't change the other fields",
+    //                                     context);
+    //                               }
+    //                             },
+    //                             value: getvalue(7),
+    //                           )
+    //                         ],
+    //                       ),
+    //                       (getvalue(7) == 'Yes')
+    //                           ? Container(
+    //                               padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
+    //                               child: Row(
+    //                                 mainAxisAlignment:
+    //                                     MainAxisAlignment.spaceBetween,
+    //                                 children: [
+    //                                   Container(
+    //                                     width: MediaQuery.of(context).size.width *
+    //                                         .3,
+    //                                     child: Text('Assistive Device?',
+    //                                         style: TextStyle(
+    //                                           color:
+    //                                               Color.fromRGBO(10, 80, 106, 1),
+    //                                           fontSize: 20,
+    //                                         )),
+    //                                   ),
+    //                                   Container(
+    //                                       child: IconButton(
+    //                                           onPressed: () {
+    //                                             for (int i = 0;
+    //                                                 i < assistiveDevice.length;
+    //                                                 i++) {
+    //                                               if (assistiveDevice[i]
+    //                                                       ['name'] ==
+    //                                                   widget.wholelist[1][widget
+    //                                                                   .accessname]
+    //                                                               ['question']
+    //                                                           ["7"]['additional']
+    //                                                       ["assistiveDevice"]) {
+    //                                                 Navigator.of(context).push(
+    //                                                     MaterialPageRoute(
+    //                                                         builder: (context) =>
+    //                                                             ProductDetails(
+    //                                                                 assistiveDevice[
+    //                                                                         i]
+    //                                                                     ['name'],
+    //                                                                 assistiveDevice[
+    //                                                                         i][
+    //                                                                     'description'],
+    //                                                                 assistiveDevice[
+    //                                                                         i][
+    //                                                                     'url'])));
+    //                                               }
+    //                                             }
+    //                                           },
+    //                                           icon: Icon(Icons.info))),
+    //                                   DropdownButton(
+    //                                     items: [
+    //                                       DropdownMenuItem(
+    //                                         child: Text('--'),
+    //                                         value: '',
+    //                                       ),
+    //                                       DropdownMenuItem(
+    //                                         child: Text('SC/Quad'),
+    //                                         value: 'SC/Quad',
+    //                                       ),
+    //                                       DropdownMenuItem(
+    //                                         child: Text('Cane/Std'),
+    //                                         value: 'Cane/Std',
+    //                                       ),
+    //                                       DropdownMenuItem(
+    //                                         child: Text('Walker'),
+    //                                         value: 'Walker',
+    //                                       ),
+    //                                       DropdownMenuItem(
+    //                                         child: Text('Front Wheel Walker'),
+    //                                         value: 'Front Wheel Walker',
+    //                                       ),
+    //                                       DropdownMenuItem(
+    //                                         child: Text('4 Whl. Walker'),
+    //                                         value: '4 Whl. Whalker',
+    //                                       ),
+    //                                       DropdownMenuItem(
+    //                                         child: Text('Manual Whl Chair'),
+    //                                         value: 'Manual Whl Chair',
+    //                                       ),
+    //                                       DropdownMenuItem(
+    //                                         child: Text('Power W/c'),
+    //                                         value: 'Power W/c',
+    //                                       ),
+    //                                       DropdownMenuItem(
+    //                                         child: Text('Crutches'),
+    //                                         value: 'Crutches',
+    //                                       ),
+    //                                       DropdownMenuItem(
+    //                                         child: Text('Scooter'),
+    //                                         value: 'Scooter',
+    //                                       ),
+    //                                     ],
+    //                                     onChanged: (value) {
+    //                                       FocusScope.of(context).requestFocus();
+    //                                       new TextEditingController().clear();
+    //                                       // print(widget.accessname);
+    //                                       if (assessor == therapist &&
+    //                                           role == "therapist") {
+    //                                         widget.wholelist[1][widget.accessname]
+    //                                                     ['question']["7"]
+    //                                                 ['additional']
+    //                                             ["assistiveDevice"] = value;
+    //                                       } else if (role != "therapist") {
+    //                                         widget.wholelist[1][widget.accessname]
+    //                                                     ['question']["7"]
+    //                                                 ['additional']
+    //                                             ["assistiveDevice"] = value;
+    //                                       } else {
+    //                                         _showSnackBar(
+    //                                             "You can't change the other fields",
+    //                                             context);
+    //                                       }
+
+    //                                       // setrecothera(7, value);
+    //                                     },
+    //                                     value: widget.wholelist[1]
+    //                                                 [widget.accessname]
+    //                                             ['question']["7"]['additional']
+    //                                         ["assistiveDevice"],
+    //                                   )
+    //                                 ],
+    //                               ),
+    //                             )
+    //                           : SizedBox(),
+    //                       SizedBox(
+    //                         height: 15,
+    //                       ),
+    //                       Row(
+    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                         children: [
+    //                           Container(
+    //                             width: MediaQuery.of(context).size.width * .4,
+    //                             child: Text('Gait pattern noted',
+    //                                 style: TextStyle(
+    //                                   color: Color.fromRGBO(10, 80, 106, 1),
+    //                                   fontSize: 20,
+    //                                 )),
+    //                           ),
+    //                           Container(
+    //                             // width: MediaQuery.of(context).size.width * .3,
+    //                             child: DropdownButton(
+    //                               items: [
+    //                                 DropdownMenuItem(
+    //                                   child: Text('--'),
+    //                                   value: '',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('Normal'),
+    //                                   value: 'Normal',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('Slight Shuffling'),
+    //                                   value: 'Slight Shuffling',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('Limping'),
+    //                                   value: 'Limping',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('Significant Shuffling'),
+    //                                   value: 'Significant Shuffling',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('Other'),
+    //                                   value: 'Other',
+    //                                 ),
+    //                               ],
+    //                               onChanged: (value) {
+    //                                 FocusScope.of(context).requestFocus();
+    //                                 new TextEditingController().clear();
+    //                                 // print(widget.accessname);
+    //                                 if (assessor == therapist &&
+    //                                     role == "therapist") {
+    //                                   assesspro.setdata(
+    //                                       8, value, 'Gait pattern noted');
+    //                                 } else if (role != "therapist") {
+    //                                   assesspro.setdata(
+    //                                       8, value, 'Gait pattern noted');
+    //                                 } else {
+    //                                   _showSnackBar(
+    //                                       "You can't change the other fields",
+    //                                       context);
+    //                                 }
+    //                               },
+    //                               value: getvalue(8),
+    //                             ),
+    //                           ),
+    //                         ],
+    //                       ),
+    //                       (getvalue(8) == 'Slight Shuffling' ||
+    //                               getvalue(8) == 'Limping' ||
+    //                               getvalue(8) == 'Significant Shuffling' ||
+    //                               getvalue(8) == 'Other')
+    //                           ? getrecomain(8, true, context)
+    //                           : SizedBox(),
+    //                       SizedBox(height: 15),
+    //                       Row(
+    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                         children: [
+    //                           Container(
+    //                             width: MediaQuery.of(context).size.width * .5,
+    //                             child: Text('Access to Curbside',
+    //                                 style: TextStyle(
+    //                                   color: Color.fromRGBO(10, 80, 106, 1),
+    //                                   fontSize: 20,
+    //                                 )),
+    //                           ),
+    //                           Container(
+    //                             width: MediaQuery.of(context).size.width * .35,
+    //                             child: DropdownButton(
+    //                               isExpanded: true,
+    //                               items: [
+    //                                 DropdownMenuItem(
+    //                                   child: Text('--'),
+    //                                   value: '',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('Never goes to the curbside'),
+    //                                   value: 'Never goes to the curbside',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child:
+    //                                       Text('Sometimes goes to the curbside'),
+    //                                   value: 'Sometimes goes to the curbside',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('Often goes to the curbside'),
+    //                                   value: 'Often goes to the curbside',
+    //                                 ),
+    //                                 DropdownMenuItem(
+    //                                   child: Text('Other'),
+    //                                   value: 'Other',
+    //                                 ),
+    //                               ],
+    //                               onChanged: (value) {
+    //                                 FocusScope.of(context).requestFocus();
+    //                                 new TextEditingController().clear();
+    //                                 // print(widget.accessname);
+    //                                 if (assessor == therapist &&
+    //                                     role == "therapist") {
+    //                                   assesspro.setdata(
+    //                                       9, value, 'Access to Curbside');
+    //                                 } else if (role != "therapist") {
+    //                                   assesspro.setdata(
+    //                                       9, value, 'Access to Curbside');
+    //                                 } else {
+    //                                   _showSnackBar(
+    //                                       "You can't change the other fields",
+    //                                       context);
+    //                                 }
+    //                               },
+    //                               value: getvalue(9),
+    //                             ),
+    //                           )
+    //                         ],
+    //                       ),
+    //                       (getvalue(9) != 'Never goes to the curbside' &&
+    //                               // getvalue(9) != 'Other' &&
+    //                               getvalue(9) != '')
+    //                           ? getrecomain(9, true, context)
+    //                           : SizedBox(),
+    //                       SizedBox(
+    //                         height: 15,
+    //                       ),
+    //                       Row(
+    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                         children: [
+    //                           Container(
+    //                             width: MediaQuery.of(context).size.width * .6,
+    //                             child: Text('Access to curbside specify',
+    //                                 style: TextStyle(
+    //                                   color: Color.fromRGBO(10, 80, 106, 1),
+    //                                   fontSize: 20,
+    //                                 )),
+    //                           ),
+    //                         ],
+    //                       ),
+    //                       SizedBox(
+    //                         height: 10,
+    //                       ),
+    //                       Container(
+    //                           // height: 10000,
+    //                           child: TextFormField(
+    //                         maxLines: null,
+    //                         controller: _controllers["field${10}"],
+    //                         decoration: InputDecoration(
+    //                           focusedBorder: OutlineInputBorder(
+    //                             borderSide: BorderSide(
+    //                                 color: colorsset["field${10}"], width: 1),
+    //                           ),
+    //                           enabledBorder: OutlineInputBorder(
+    //                             borderSide: BorderSide(
+    //                                 width: 1, color: colorsset["field${10}"]),
+    //                           ),
+    //                           suffix: Container(
+    //                             padding: EdgeInsets.all(0),
+    //                             child: Column(children: [
+    //                               Container(
+    //                                 alignment: Alignment.topRight,
+    //                                 width: 58,
+    //                                 height: 30,
+    //                                 margin: EdgeInsets.all(0),
+    //                                 child: AvatarGlow(
+    //                                   animate: isListening['field${10}'],
+    //                                   glowColor: Theme.of(context).primaryColor,
+    //                                   endRadius: 300.0,
+    //                                   duration:
+    //                                       const Duration(milliseconds: 2000),
+    //                                   repeatPauseDuration:
+    //                                       const Duration(milliseconds: 100),
+    //                                   repeat: true,
+    //                                   child: FlatButton(
+    //                                     child: Icon(isListening['field${10}']
+    //                                         ? Icons.cancel
+    //                                         : Icons.mic),
+    //                                     onPressed: () {
+    //                                       if (assessor == therapist &&
+    //                                           role == "therapist") {
+    //                                         _listen(10);
+    //                                         setdatalisten(10);
+    //                                       } else if (role != "therapist") {
+    //                                         _listen(10);
+    //                                         setdatalisten(10);
+    //                                       } else {
+    //                                         _showSnackBar(
+    //                                             "You can't change the other fields",
+    //                                             context);
+    //                                       }
+    //                                     },
+    //                                   ),
+    //                                 ),
+    //                               ),
+    //                             ]),
+    //                           ),
+    //                         ),
+    //                         onChanged: (value) {
+    //                           FocusScope.of(context).requestFocus();
+    //                           new TextEditingController().clear();
+    //                           // print(widget.accessname);
+    //                           if (assessor == therapist && role == "therapist") {
+    //                             assesspro.setdata(
+    //                                 10, value, 'Access to curbside specify');
+    //                           } else if (role != "therapist") {
+    //                             assesspro.setdata(
+    //                                 10, value, 'Access to curbside specify');
+    //                           } else {
+    //                             _showSnackBar(
+    //                                 "You can't change the other fields", context);
+    //                           }
+    //                         },
+    //                       )),
+    //                       SizedBox(
+    //                         height: 15,
+    //                       ),
+    //                       Container(
+    //                         child: Row(
+    //                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                             children: [
+    //                               Container(
+    //                                 width:
+    //                                     MediaQuery.of(context).size.width * .50,
+    //                                 child: Text('Number of Flight of Stairs',
+    //                                     style: TextStyle(
+    //                                       color: Color.fromRGBO(10, 80, 106, 1),
+    //                                       fontSize: 20,
+    //                                     )),
+    //                               ),
+    //                               SizedBox(
+    //                                 width:
+    //                                     MediaQuery.of(context).size.width * .35,
+    //                                 child: NumericStepButton(
+    //                                   counterval: flightcount,
+    //                                   onChanged: (value) {
+    //                                     if (assessor == therapist &&
+    //                                         role == "therapist") {
+    //                                       assesspro.setFlightData(11, value,
+    //                                           'Number of flight of stairs');
+    //                                       setState(() {
+    //                                         // widget.wholelist[1][widget.accessname]
+    //                                         //             ['question']["11"]
+    //                                         //         ['Question'] =
+    //                                         //     'Number of Flight of Stairs';
+    //                                         widget.wholelist[1][widget.accessname]
+    //                                                 ['question']["11"]['Flights']
+    //                                             ["count"] = value;
+    //                                         // widget.wholelist[1][widget.accessname]
+    //                                         //         ['question']["11"]['Answer'] =
+    //                                         //     value;
+    //                                         flightcount = widget.wholelist[1]
+    //                                                     [widget.accessname]
+    //                                                 ['question']["11"]['Flights']
+    //                                             ["count"];
+    //                                         print(widget.wholelist[1]
+    //                                                     [widget.accessname]
+    //                                                 ['question']["11"]['Flights']
+    //                                             ["count"]);
+    //                                         // if (value == 0) {
+    //                                         //   if (widget.wholelist[1][widget
+    //                                         //                       .accessname]
+    //                                         //                   ['question']["11"]
+    //                                         //               ["Answer"] ==
+    //                                         //           0 ||
+    //                                         //       widget.wholelist[1][widget
+    //                                         //                       .accessname]
+    //                                         //                   ['question']["11"]
+    //                                         //               ["Answer"] ==
+    //                                         //           "") {
+    //                                         //   } else {
+    //                                         //     widget.wholelist[1]
+    //                                         //             [widget.accessname]
+    //                                         //         ['complete'] -= 1;
+    //                                         //     widget.wholelist[1]
+    //                                         //                 [widget.accessname]
+    //                                         //             ['question']["11"]
+    //                                         //         ["Answer"] = value;
+    //                                         //   }
+    //                                         // } else {
+    //                                         //   if (widget.wholelist[1]
+    //                                         //                   [widget.accessname]
+    //                                         //               ['question']["11"]
+    //                                         //           ["Answer"] ==
+    //                                         //       value) {
+    //                                         //   } else {
+    //                                         //     widget.wholelist[1]
+    //                                         //             [widget.accessname]
+    //                                         //         ['complete'] += 1;
+    //                                         //   }
+    //                                         //   widget.wholelist[1]
+    //                                         //               [widget.accessname]
+    //                                         //           ['question']["11"]
+    //                                         //       ["Answer"] = value;
+    //                                         // }
+    //                                         if (value > 0) {
+    //                                           widget.wholelist[1]
+    //                                                       [widget.accessname]
+    //                                                   ['question']["11"]
+    //                                               ['Flights']['flight$value'] = {
+    //                                             "flight": ''
+    //                                           };
+
+    //                                           if (widget.wholelist[1]
+    //                                                   [widget.accessname]
+    //                                                   ['question']["11"]
+    //                                                   ['Flights']
+    //                                               .containsKey(
+    //                                                   'flight${value + 1}')) {
+    //                                             widget.wholelist[1]
+    //                                                     [widget.accessname]
+    //                                                     ['question']["11"]
+    //                                                     ['Flights']
+    //                                                 .remove('flight${value + 1}');
+    //                                           }
+    //                                         } else if (value == 0) {
+    //                                           if (widget.wholelist[1]
+    //                                                   [widget.accessname]
+    //                                                   ['question']["11"]
+    //                                                   ['Flights']
+    //                                               .containsKey(
+    //                                                   'flight${value + 1}')) {
+    //                                             widget.wholelist[1]
+    //                                                     [widget.accessname]
+    //                                                     ['question']["11"]
+    //                                                     ['Flights']
+    //                                                 .remove('flight${value + 1}');
+    //                                           }
+    //                                         }
+    //                                       });
+    //                                     } else if (role != "therapist") {
+    //                                       assesspro.setFlightData(11, value,
+    //                                           'Number of flight of stairs');
+    //                                       setState(() {
+    //                                         // widget.wholelist[1][widget.accessname]
+    //                                         //             ['question']["11"]
+    //                                         //         ['Question'] =
+    //                                         //     'Number of Flight of Stairs';
+    //                                         widget.wholelist[1][widget.accessname]
+    //                                                 ['question']["11"]['Flights']
+    //                                             ["count"] = value;
+    //                                         // widget.wholelist[1][widget.accessname]
+    //                                         //         ['question']["11"]['Answer'] =
+    //                                         //     value;
+    //                                         flightcount = widget.wholelist[1]
+    //                                                     [widget.accessname]
+    //                                                 ['question']["11"]['Flights']
+    //                                             ["count"];
+    //                                         print(widget.wholelist[1]
+    //                                                     [widget.accessname]
+    //                                                 ['question']["11"]['Flights']
+    //                                             ["count"]);
+    //                                         // if (value == 0) {
+    //                                         //   if (widget.wholelist[1]
+    //                                         //                   [widget.accessname]
+    //                                         //               ['question']["11"]
+    //                                         //           ["Answer"] ==
+    //                                         //       0) {
+    //                                         //   } else {
+    //                                         //     widget.wholelist[1]
+    //                                         //             [widget.accessname]
+    //                                         //         ['complete'] -= 1;
+    //                                         //     widget.wholelist[1]
+    //                                         //                 [widget.accessname]
+    //                                         //             ['question']["11"]
+    //                                         //         ["Answer"] = value;
+    //                                         //   }
+    //                                         // } else {
+    //                                         //   if (widget.wholelist[1]
+    //                                         //                   [widget.accessname]
+    //                                         //               ['question']["11"]
+    //                                         //           ["Answer"] !=
+    //                                         //       0) {
+    //                                         //   } else {
+    //                                         //     widget.wholelist[1]
+    //                                         //             [widget.accessname]
+    //                                         //         ['complete'] += 1;
+    //                                         //   }
+    //                                         //   widget.wholelist[1]
+    //                                         //               [widget.accessname]
+    //                                         //           ['question']["11"]
+    //                                         //       ["Answer"] = value;
+    //                                         // }
+    //                                         if (value > 0) {
+    //                                           widget.wholelist[1]
+    //                                                       [widget.accessname]
+    //                                                   ['question']["11"]
+    //                                               ['Flights']['flight$value'] = {
+    //                                             "flight": ''
+    //                                           };
+
+    //                                           if (widget.wholelist[1]
+    //                                                   [widget.accessname]
+    //                                                   ['question']["11"]
+    //                                                   ['Flights']
+    //                                               .containsKey(
+    //                                                   'flight${value + 1}')) {
+    //                                             widget.wholelist[1]
+    //                                                     [widget.accessname]
+    //                                                     ['question']["11"]
+    //                                                     ['Flights']
+    //                                                 .remove('flight${value + 1}');
+    //                                           }
+    //                                           if (widget.wholelist[1]
+    //                                                           [widget.accessname]
+    //                                                       ['question']["11"]
+    //                                                   ["Answer"] ==
+    //                                               0) {
+    //                                             widget.wholelist[1]
+    //                                                     [widget.accessname]
+    //                                                 ['complete'] += 1;
+    //                                             widget.wholelist[1]
+    //                                                         [widget.accessname]
+    //                                                     ['question']["11"]
+    //                                                 ["Answer"] = value;
+    //                                           }
+    //                                         } else if (value == 0) {
+    //                                           if (widget.wholelist[1]
+    //                                                   [widget.accessname]
+    //                                                   ['question']["11"]
+    //                                                   ['Flights']
+    //                                               .containsKey(
+    //                                                   'flight${value + 1}')) {
+    //                                             widget.wholelist[1]
+    //                                                     [widget.accessname]
+    //                                                     ['question']["11"]
+    //                                                     ['Flights']
+    //                                                 .remove('flight${value + 1}');
+    //                                           }
+    //                                           if (widget.wholelist[1]
+    //                                                           [widget.accessname]
+    //                                                       ['question']["11"]
+    //                                                   ["Answer"] !=
+    //                                               0) {
+    //                                             widget.wholelist[1]
+    //                                                     [widget.accessname]
+    //                                                 ['complete'] -= 1;
+    //                                             widget.wholelist[1]
+    //                                                         [widget.accessname]
+    //                                                     ['question']["11"]
+    //                                                 ["Answer"] = value;
+    //                                           }
+    //                                         }
+    //                                       });
+    //                                     } else {
+    //                                       _showSnackBar(
+    //                                           "You can't change the other fields",
+    //                                           context);
+    //                                     }
+
+    //                                     // print(widget.wholelist[1]
+    //                                     //         [widget.accessname]['question']
+    //                                     //     ["11"]['Flights']);
+    //                                   },
+    //                                 ),
+    //                               ),
+    //                             ]),
+    //                       ),
+    //                       // SizedBox(height: 10),
+    //                       (flightcount > 0)
+    //                           ? Container(
+    //                               child: Padding(
+    //                                 padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+    //                                 child: ConstrainedBox(
+    //                                   constraints: BoxConstraints(
+    //                                       maxHeight: 1000,
+    //                                       minHeight:
+    //                                           MediaQuery.of(context).size.height /
+    //                                               10),
+    //                                   child: ListView.builder(
+    //                                     physics:
+    //                                         const NeverScrollableScrollPhysics(),
+    //                                     shrinkWrap: true,
+    //                                     itemCount: flightcount,
+    //                                     itemBuilder: (context, index1) {
+    //                                       return flightcountwidget(
+    //                                           index1 + 1, context);
+    //                                     },
+    //                                   ),
+    //                                 ),
+    //                               ),
+    //                             )
+    //                           : SizedBox(
+    //                               height: 15,
+    //                             ),
+
+    //                       // SizedBox(height: 10),
+    //                       Row(
+    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                         children: [
+    //                           Container(
+    //                             width: MediaQuery.of(context).size.width * .6,
+    //                             child: Text(
+    //                                 'Smoke detector batteries checked annually/replaced?',
+    //                                 style: TextStyle(
+    //                                   color: Color.fromRGBO(10, 80, 106, 1),
+    //                                   fontSize: 20,
+    //                                 )),
+    //                           ),
+    //                           DropdownButton(
+    //                             items: [
+    //                               DropdownMenuItem(
+    //                                 child: Text('--'),
+    //                                 value: '',
+    //                               ),
+    //                               DropdownMenuItem(
+    //                                 child: Text('Yes'),
+    //                                 value: 'Yes',
+    //                               ),
+    //                               DropdownMenuItem(
+    //                                 child: Text('No'),
+    //                                 value: 'No',
+    //                               ),
+    //                             ],
+    //                             onChanged: (value) {
+    //                               FocusScope.of(context).requestFocus();
+    //                               new TextEditingController().clear();
+    //                               // print(widget.accessname);
+    //                               if (assessor == therapist &&
+    //                                   role == "therapist") {
+    //                                 assesspro.setdata(12, value,
+    //                                     'Smoke setector batteries checked annually/replaced?');
+    //                               } else if (role != "therapist") {
+    //                                 assesspro.setdata(12, value,
+    //                                     'Smoke setector batteries checked annually/replaced?');
+    //                               } else {
+    //                                 _showSnackBar(
+    //                                     "You can't change the other fields",
+    //                                     context);
+    //                               }
+    //                             },
+    //                             value: getvalue(12),
+    //                           )
+    //                         ],
+    //                       ),
+    //                       (getvalue(12) == 'No')
+    //                           ? getrecomain(12, true, context)
+    //                           : SizedBox(height: 5),
+    //                       SizedBox(height: 15),
+    //                       Row(
+    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                         children: [
+    //                           Container(
+    //                             width: MediaQuery.of(context).size.width * 0.8,
+    //                             child: Text(
+    //                                 'Person responsible to change smoke detector batteries',
+    //                                 style: TextStyle(
+    //                                   color: Color.fromRGBO(10, 80, 106, 1),
+    //                                   fontSize: 20,
+    //                                 )),
+    //                           ),
+    //                         ],
+    //                       ),
+    //                       SizedBox(
+    //                         height: 10,
+    //                       ),
+    //                       Container(
+    //                           // height: 10000,
+    //                           child: TextFormField(
+    //                         initialValue: getvalue(13),
+    //                         maxLines: 1,
+    //                         decoration: InputDecoration(
+    //                             focusedBorder: OutlineInputBorder(
+    //                               borderSide: BorderSide(
+    //                                   color: Color.fromRGBO(10, 80, 106, 1),
+    //                                   width: 1),
+    //                             ),
+    //                             enabledBorder: OutlineInputBorder(
+    //                               borderSide: BorderSide(width: 1),
+    //                             ),
+    //                             // isDense: true,
+    //                             labelText: 'Specify Name'),
+    //                         onChanged: (value) {
+    //                           FocusScope.of(context).requestFocus();
+    //                           new TextEditingController().clear();
+    //                           // print(widget.accessname);
+    //                           if (assessor == therapist && role == "therapist") {
+    //                             assesspro.setdata(13, value,
+    //                                 'Person responsible to change smoke detector batteries');
+    //                           } else if (role != "therapist") {
+    //                             assesspro.setdata(13, value,
+    //                                 'Person responsible to change smoke detector batteries');
+    //                           } else {
+    //                             _showSnackBar(
+    //                                 "You can't change the other fields", context);
+    //                           }
+    //                         },
+    //                       )),
+    //                       SizedBox(
+    //                         height: 20,
+    //                       ),
+    //                       Row(
+    //                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //                         children: [
+    //                           Container(
+    //                             width: MediaQuery.of(context).size.width * .5,
+    //                             child: Text('Observations',
+    //                                 style: TextStyle(
+    //                                   color: Color.fromRGBO(10, 80, 106, 1),
+    //                                   fontSize: 20,
+    //                                 )),
+    //                           ),
+    //                         ],
+    //                       ),
+    //                       SizedBox(
+    //                         height: 10,
+    //                       ),
+    //                       Container(
+    //                           // height: 10000,
+    //                           child: TextFormField(
+    //                         initialValue: getvalue(14),
+    //                         maxLines: 6,
+    //                         decoration: InputDecoration(
+    //                           focusedBorder: OutlineInputBorder(
+    //                             borderSide: BorderSide(
+    //                                 color: Color.fromRGBO(10, 80, 106, 1),
+    //                                 width: 1),
+    //                           ),
+    //                           enabledBorder: OutlineInputBorder(
+    //                             borderSide: BorderSide(width: 1),
+    //                           ),
+    //                           // isDense: true,
+    //                         ),
+    //                         onChanged: (value) {
+    //                           FocusScope.of(context).requestFocus();
+    //                           new TextEditingController().clear();
+    //                           // print(widget.accessname);
+    //                           if (assessor == therapist && role == "therapist") {
+    //                             assesspro.setdata(14, value, 'Observations');
+    //                           } else if (role != "therapist") {
+    //                             assesspro.setdata(14, value, 'Observations');
+    //                           } else {
+    //                             _showSnackBar(
+    //                                 "You can't change the other fields", context);
+    //                           }
+    //                         },
+    //                       )),
+    //                     ],
+    //                   ),
+    //                 ),
+    //                 Container(
+    //                     child: RaisedButton(
+    //                         color: colorb,
+    //                         shape: RoundedRectangleBorder(
+    //                           borderRadius: new BorderRadius.circular(20),
+    //                         ),
+    //                         child: Text(
+    //                           'Submit',
+    //                           style: TextStyle(color: Colors.white, fontSize: 16),
+    //                         ),
+    //                         onPressed: () {
+    //                           // uploadFile(_image);
+    //                           // // _mediaList.add(assesspro.uploadImage().toString());
+    //                           // widget.wholelist[1][widget.accessname]["images"] =
+    //                           //     _mediaList;
+    //                           // bool isValid = _formKey.currentState.validate();
+    //                           var test = widget.wholelist[1][widget.accessname]
+    //                               ["complete"];
+    //                           for (int i = 0;
+    //                               i <
+    //                                   widget
+    //                                       .wholelist[1][widget.accessname]
+    //                                           ['question']
+    //                                       .length;
+    //                               i++) {
+    //                             setdatalisten(i + 1);
+    //                             setdatalistenthera(i + 1);
+    //                           }
+    //                           // if (!isValid) {
+    //                           // _showSnackBar("Recommendation Required", context);
+    //                           // } else {
+    //                           // if (test == 0) {
+    //                           //   _showSnackBar(
+    //                           //       "You Must Have to Fill the Form First",
+    //                           //       context);
+    //                           // } else {
+    //                           if (role == "therapist") {
+    //                             // if (saveToForm) {
+    //                             NewAssesmentRepository()
+    //                                 .setLatestChangeDate(widget.docID);
+    //                             NewAssesmentRepository()
+    //                                 .setForm(widget.wholelist, widget.docID);
+    //                             // Navigator.pop(context,
+    //                             //     widget.wholelist[1][widget.accessname]);
+    //                             Navigator.pop(context,
+    //                                 widget.wholelist[1][widget.accessname]);
+    //                             // } else {
+    //                             //   _showSnackBar(
+    //                             //       "Provide all recommendations", context);
+    //                             // }
+    //                           } else {
+    //                             NewAssesmentRepository()
+    //                                 .setLatestChangeDate(widget.docID);
+    //                             NewAssesmentRepository()
+    //                                 .setForm(widget.wholelist, widget.docID);
+    //                             // Navigator.pop(context,
+    //                             //     widget.wholelist[1][widget.accessname]);
+    //                             Navigator.pop(context,
+    //                                 widget.wholelist[1][widget.accessname]);
+    //                           }
+    //                         }
+    //                         // }
+    //                         // },
+    //                         ))
+    //               ],
+    //             ),
+    //           ),
+    //         ),
+    //       ),
+    //     ),
+    //   );
+    // }
   }
 }
 

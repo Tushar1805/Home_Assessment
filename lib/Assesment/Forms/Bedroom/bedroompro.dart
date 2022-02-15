@@ -98,10 +98,10 @@ class BedroomPro extends ChangeNotifier {
     } else {
       wholelist[6][accessname]['question']["7"]['doorwidth'] = 0;
     }
-    if (wholelist[6][accessname]['question']["9"]
+    if (wholelist[6][accessname]['question']["15"]
         .containsKey('telephoneType')) {
     } else {
-      wholelist[6][accessname]['question']["9"]['telephoneType'] = "";
+      wholelist[6][accessname]['question']["15"]['telephoneType'] = "";
     }
 
     // if (wholelist[6][accessname]['question']["15"].containsKey('ManageInOut')) {

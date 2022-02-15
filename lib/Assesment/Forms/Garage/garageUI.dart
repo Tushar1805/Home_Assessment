@@ -407,7 +407,7 @@ class _GarageUIState extends State<GarageUI> {
       onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Assessment'),
+          title: Text(widget.roomname),
           automaticallyImplyLeading: false,
           backgroundColor: _colorgreen,
           actions: [
@@ -1388,6 +1388,7 @@ class _GarageUIState extends State<GarageUI> {
                                               ],
                                             ),
                                           ),
+                                          SizedBox(height: 10,),
                                           Container(
                                               padding: EdgeInsets.all(5),
                                               child: Row(
@@ -1770,7 +1771,8 @@ class _GarageUIState extends State<GarageUI> {
                                       ),
                                     ),
                                   )
-                            : SizedBox(height: 15),
+                            : SizedBox(),
+                            SizedBox(height: 15,),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [

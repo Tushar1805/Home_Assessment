@@ -469,7 +469,7 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
       onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Assessment'),
+          title: Text(widget.roomname),
           automaticallyImplyLeading: false,
           backgroundColor: _colorgreen,
           actions: [

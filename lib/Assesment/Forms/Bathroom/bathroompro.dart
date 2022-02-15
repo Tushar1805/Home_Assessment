@@ -112,11 +112,43 @@ class BathroomPro extends ChangeNotifier {
       wholelist[5][accessname]['question']["16"]['Grabbar'] = {};
     }
 
-    if (wholelist[5][accessname]['question']["17"]
+    if (wholelist[5][accessname]['question']["16"]['Grabbar']
+        .containsKey('Grabplacement')) {
+    } else {
+      wholelist[5][accessname]['question']["16"]['Grabbar']["Grabplacement"] =
+          '';
+    }
+
+    if (wholelist[5][accessname]['question']["16"]['Grabbar']['Grabplacement']
         .containsKey('sidefentrance')) {
     } else {
-      wholelist[5][accessname]['question']["17"]['sidefentrance'] = '';
+      wholelist[5][accessname]['question']["16"]['Grabbar']['sidefentrance'] =
+          '';
     }
+
+    if (wholelist[5][accessname]['question']["16"]['Grabbar']
+        .containsKey('distanceFromFloor')) {
+    } else {
+      wholelist[5][accessname]['question']["16"]['Grabbar']
+          ['distanceFromFloor'] = '';
+    }
+    if (wholelist[5][accessname]['question']["16"]['Grabbar']
+        .containsKey('grabBarLength')) {
+    } else {
+      wholelist[5][accessname]['question']["16"]['Grabbar']['grabBarLength'] =
+          '';
+    }
+
+    if (wholelist[5][accessname]['question']["20"].containsKey('ManageInOut')) {
+    } else {
+      wholelist[5][accessname]['question']["20"]['ManageInOut'] = '';
+    }
+
+    // if (wholelist[5][accessname]['question']["17"]
+    //     .containsKey('sidefentrance')) {
+    // } else {
+    //   wholelist[5][accessname]['question']["17"]['sidefentrance'] = '';
+    // }
   }
 
   Future<void> addVideo(String path) {

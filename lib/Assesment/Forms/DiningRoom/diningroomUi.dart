@@ -465,7 +465,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
       onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Assessment'),
+          title: Text(widget.roomname),
           automaticallyImplyLeading: false,
           backgroundColor: _colorgreen,
           actions: [

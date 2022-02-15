@@ -497,7 +497,7 @@ class _PatioUIState extends State<PatioUI> {
       onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Assessment'),
+          title: Text(widget.roomname),
           automaticallyImplyLeading: false,
           backgroundColor: _colorgreen,
           actions: [

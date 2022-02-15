@@ -12,6 +12,7 @@ import 'package:tryapp/Assesment/Forms/LivingRoom/livingbase.dart';
 import 'package:tryapp/Assesment/Forms/Pathway/pathwaybase.dart';
 import 'package:tryapp/Assesment/Forms/Patio/patiobase.dart';
 import 'package:async_button_builder/async_button_builder.dart';
+import 'package:tryapp/Assesment/Forms/SwimmingPool/swimmingbase.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentbase.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
 import 'package:tryapp/Nurse_Case_Manager/Dashboard/nursedash.dart';
@@ -624,7 +625,7 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
     } else if (classname == 'Bedroom') {
       return 18;
     } else if (classname == 'Bathroom') {
-      return 28;
+      return 25;
     } else if (classname == 'Dining Room') {
       return 13;
     } else if (classname == 'Kitchen') {
@@ -842,6 +843,16 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                 widget.wholelist[index][accessname]['complete'] =
                     value['complete'];
                 // widget.wholelist[index]['']
+              }));
+    } else if (innerlist['name'] == 'Swimming Pool') {
+      Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => SwimmingPool(
+                      roomname, widget.wholelist, accessname, widget.docID)))
+          .then((value) => setState(() {
+                widget.wholelist[index][accessname]['complete'] =
+                    value['complete'];
               }));
     }
   }
