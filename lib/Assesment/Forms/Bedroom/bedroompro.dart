@@ -94,14 +94,67 @@ class BedroomPro extends ChangeNotifier {
 
       wholelist[6][accessname]["videos"] = {'name': '', 'url': ''};
     }
+
+    if (wholelist[6][accessname]['question']["5"].containsKey('toggle')) {
+    } else {
+      wholelist[6][accessname]['question']["5"]['toggle'] = <bool>[true, false];
+    }
+
     if (wholelist[6][accessname]['question']["7"].containsKey('doorwidth')) {
     } else {
       wholelist[6][accessname]['question']["7"]['doorwidth'] = 0;
     }
+
+    if (wholelist[6][accessname]['question']["8"].containsKey('toggle')) {
+    } else {
+      wholelist[6][accessname]['question']["8"]['toggle'] = <bool>[true, false];
+    }
+
+    if (wholelist[6][accessname]['question']["9"].containsKey('toggle')) {
+    } else {
+      wholelist[6][accessname]['question']["9"]['toggle'] = <bool>[true, false];
+    }
+
+    if (wholelist[6][accessname]['question']["10"].containsKey('toggle')) {
+    } else {
+      wholelist[6][accessname]['question']["10"]
+          ['toggle'] = <bool>[true, false];
+    }
+
+    if (wholelist[6][accessname]['question']["13"].containsKey('toggle')) {
+    } else {
+      wholelist[6][accessname]['question']["13"]
+          ['toggle'] = <bool>[true, false];
+    }
+
+    if (wholelist[6][accessname]['question']["14"].containsKey('toggle')) {
+    } else {
+      wholelist[6][accessname]['question']["14"]
+          ['toggle'] = <bool>[true, false];
+    }
+
+    if (wholelist[6][accessname]['question']["15"].containsKey('toggle')) {
+    } else {
+      wholelist[6][accessname]['question']["15"]
+          ['toggle'] = <bool>[true, false];
+    }
+
     if (wholelist[6][accessname]['question']["15"]
         .containsKey('telephoneType')) {
     } else {
       wholelist[6][accessname]['question']["15"]['telephoneType'] = "";
+    }
+
+    if (wholelist[6][accessname]['question']["16"].containsKey('toggle')) {
+    } else {
+      wholelist[6][accessname]['question']["16"]
+          ['toggle'] = <bool>[true, false];
+    }
+
+    if (wholelist[6][accessname]['question']["17"].containsKey('toggle')) {
+    } else {
+      wholelist[6][accessname]['question']["17"]
+          ['toggle'] = <bool>[true, false];
     }
 
     // if (wholelist[6][accessname]['question']["15"].containsKey('ManageInOut')) {

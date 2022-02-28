@@ -116,6 +116,33 @@ class LaundryPro extends ChangeNotifier {
       print('getting created');
       wholelist[7][accessname]['question']["7"]['doorwidth'] = 0;
     }
+
+    if (wholelist[7][accessname]['question']["5"].containsKey('toggle')) {
+    } else {
+      wholelist[7][accessname]['question']["5"]['toggle'] = <bool>[true, false];
+    }
+
+    if (wholelist[7][accessname]['question']["8"].containsKey('toggle')) {
+    } else {
+      wholelist[7][accessname]['question']["8"]['toggle'] = <bool>[true, false];
+    }
+
+    if (wholelist[7][accessname]['question']["9"].containsKey('toggle')) {
+    } else {
+      wholelist[7][accessname]['question']["9"]['toggle'] = <bool>[true, false];
+    }
+
+    if (wholelist[7][accessname]['question']["12"].containsKey('toggle')) {
+    } else {
+      wholelist[7][accessname]['question']["12"]
+          ['toggle'] = <bool>[true, false];
+    }
+
+    if (wholelist[7][accessname]['question']["13"].containsKey('toggle')) {
+    } else {
+      wholelist[7][accessname]['question']["13"]
+          ['toggle'] = <bool>[true, false];
+    }
   }
 
   Future<void> addVideo(String path) {

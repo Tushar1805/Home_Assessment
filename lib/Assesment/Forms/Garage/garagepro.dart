@@ -96,6 +96,23 @@ class GaragePro extends ChangeNotifier {
 
       wholelist[9][accessname]["videos"] = {'name': '', 'url': ''};
     }
+
+    if (wholelist[9][accessname]['question']["5"].containsKey('toggle')) {
+    } else {
+      wholelist[9][accessname]['question']["5"]['toggle'] = <bool>[true, false];
+    }
+
+    if (wholelist[9][accessname]['question']["8"].containsKey('toggle')) {
+    } else {
+      wholelist[9][accessname]['question']["8"]['toggle'] = <bool>[true, false];
+    }
+
+    if (wholelist[9][accessname]['question']["11"].containsKey('toggle')) {
+    } else {
+      wholelist[9][accessname]['question']["11"]
+          ['toggle'] = <bool>[true, false];
+    }
+
     if (wholelist[9][accessname]['question']["7"].containsKey('doorwidth')) {
     } else {
       print('getting created');

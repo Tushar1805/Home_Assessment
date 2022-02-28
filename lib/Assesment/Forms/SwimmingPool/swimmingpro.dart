@@ -104,6 +104,17 @@ class SwimmingPoolProvider extends ChangeNotifier {
       wholelist[11][accessname]["videos"] = {'name': '', 'url': ''};
     }
 
+    if (wholelist[11][accessname]['question']["1"].containsKey('toggle1')) {
+    } else {
+      wholelist[11][accessname]['question']["1"]
+          ['toggle1'] = <bool>[true, false];
+    }
+    if (wholelist[11][accessname]['question']["1"].containsKey('toggle2')) {
+    } else {
+      wholelist[11][accessname]['question']["1"]
+          ['toggle2'] = <bool>[true, false];
+    }
+
     if (wholelist[11][accessname]['question']["1"].containsKey('aboveGround')) {
     } else {
       wholelist[11][accessname]['question']["1"]['aboveGround'] = {
@@ -119,6 +130,17 @@ class SwimmingPoolProvider extends ChangeNotifier {
       wholelist[11][accessname]['question']["1"]
           ['inGround'] = {'adaptationAvailable': "", 'isClientSafe': ""};
       notifyListeners();
+    }
+
+    if (wholelist[11][accessname]['question']["2"].containsKey('toggle')) {
+    } else {
+      wholelist[11][accessname]['question']["2"]
+          ['toggle'] = <bool>[true, false];
+    }
+    if (wholelist[11][accessname]['question']["4"].containsKey('toggle')) {
+    } else {
+      wholelist[11][accessname]['question']["4"]
+          ['toggle'] = <bool>[true, false];
     }
   }
 

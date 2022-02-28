@@ -91,15 +91,86 @@ class BathroomPro extends ChangeNotifier {
 
       wholelist[5][accessname]["videos"] = {'name': '', 'url': ''};
     }
+
+    if (wholelist[5][accessname]['question']["5"].containsKey('toggle')) {
+    } else {
+      wholelist[5][accessname]['question']["5"]['toggle'] = <bool>[true, false];
+      wholelist[5][accessname]['question']["5"]['toggle'][0]
+          ? wholelist[5][accessname]['question']["5"]['Answer'] = 'Yes'
+          : wholelist[5][accessname]['question']["5"]['Answer'] = 'No';
+    }
+
     if (wholelist[5][accessname]['question']["7"].containsKey('doorwidth')) {
     } else {
       print('getting created');
       wholelist[5][accessname]['question']["7"]['doorwidth'] = 0;
     }
+
+    if (wholelist[5][accessname]['question']["8"].containsKey('toggle')) {
+    } else {
+      wholelist[5][accessname]['question']["8"]['toggle'] = <bool>[true, false];
+      wholelist[5][accessname]['question']["8"]['toggle'][0]
+          ? wholelist[5][accessname]['question']["8"]['Answer'] = 'Yes'
+          : wholelist[5][accessname]['question']["8"]['Answer'] = 'No';
+    }
+
+    if (wholelist[5][accessname]['question']["9"].containsKey('toggle')) {
+    } else {
+      wholelist[5][accessname]['question']["9"]['toggle'] = <bool>[true, false];
+      wholelist[5][accessname]['question']["9"]['toggle'][0]
+          ? wholelist[5][accessname]['question']["9"]['Answer'] = 'Yes'
+          : wholelist[5][accessname]['question']["9"]['Answer'] = 'No';
+    }
+
     if (wholelist[5][accessname]['question']["9"]
         .containsKey('telephoneType')) {
     } else {
       wholelist[5][accessname]['question']["9"]['telephoneType'] = "";
+    }
+
+    if (wholelist[5][accessname]['question']["10"].containsKey('toggle')) {
+    } else {
+      wholelist[5][accessname]['question']["10"]
+          ['toggle'] = <bool>[true, false];
+      wholelist[5][accessname]['question']["10"]['toggle'][0]
+          ? wholelist[5][accessname]['question']["10"]['Answer'] = 'Yes'
+          : wholelist[5][accessname]['question']["10"]['Answer'] = 'No';
+    }
+
+    if (wholelist[5][accessname]['question']["12"].containsKey('toggle')) {
+    } else {
+      wholelist[5][accessname]['question']["12"]
+          ['toggle'] = <bool>[true, false];
+      wholelist[5][accessname]['question']["12"]['toggle'][0]
+          ? wholelist[5][accessname]['question']["12"]['Answer'] = 'Yes'
+          : wholelist[5][accessname]['question']["12"]['Answer'] = 'No';
+    }
+
+    if (wholelist[5][accessname]['question']["13"].containsKey('toggle')) {
+    } else {
+      wholelist[5][accessname]['question']["13"]
+          ['toggle'] = <bool>[true, false];
+      wholelist[5][accessname]['question']["13"]['toggle'][0]
+          ? wholelist[5][accessname]['question']["13"]['Answer'] = 'Yes'
+          : wholelist[5][accessname]['question']["13"]['Answer'] = 'No';
+    }
+
+    if (wholelist[5][accessname]['question']["14"].containsKey('toggle')) {
+    } else {
+      wholelist[5][accessname]['question']["14"]
+          ['toggle'] = <bool>[true, false];
+      wholelist[5][accessname]['question']["14"]['toggle'][0]
+          ? wholelist[5][accessname]['question']["14"]['Answer'] = 'Yes'
+          : wholelist[5][accessname]['question']["14"]['Answer'] = 'No';
+    }
+
+    if (wholelist[5][accessname]['question']["15"].containsKey('toggle')) {
+    } else {
+      wholelist[5][accessname]['question']["15"]
+          ['toggle'] = <bool>[true, false];
+      wholelist[5][accessname]['question']["15"]['toggle'][0]
+          ? wholelist[5][accessname]['question']["15"]['Answer'] = 'Yes'
+          : wholelist[5][accessname]['question']["15"]['Answer'] = 'No';
     }
 
     if (wholelist[5][accessname]['question']["15"].containsKey('ManageInOut')) {
@@ -107,9 +178,30 @@ class BathroomPro extends ChangeNotifier {
       wholelist[5][accessname]['question']["15"]['ManageInOut'] = '';
     }
 
+    if (wholelist[5][accessname]['question']["16"].containsKey('toggle')) {
+    } else {
+      wholelist[5][accessname]['question']["16"]
+          ['toggle'] = <bool>[true, false];
+      wholelist[5][accessname]['question']["16"]['toggle'][0]
+          ? wholelist[5][accessname]['question']["16"]['Answer'] = 'Yes'
+          : wholelist[5][accessname]['question']["16"]['Answer'] = 'No';
+    }
+
     if (wholelist[5][accessname]['question']["16"].containsKey('Grabbar')) {
     } else {
       wholelist[5][accessname]['question']["16"]['Grabbar'] = {};
+    }
+
+    if (wholelist[5][accessname]['question']["16"]["Grabbar"]
+        .containsKey('toggle')) {
+    } else {
+      wholelist[5][accessname]['question']["16"]['Grabbar']
+          ['toggle'] = <bool>[true, false];
+      wholelist[5][accessname]['question']["16"]['Grabbar']['toggle'][0]
+          ? wholelist[5][accessname]['question']["16"]['Grabbar']
+              ['Grabneeded'] = 'Yes'
+          : wholelist[5][accessname]['question']["16"]['Grabbar']
+              ['Grabneeded'] = 'No';
     }
 
     if (wholelist[5][accessname]['question']["16"]['Grabbar']
@@ -119,7 +211,7 @@ class BathroomPro extends ChangeNotifier {
           '';
     }
 
-    if (wholelist[5][accessname]['question']["16"]['Grabbar']['Grabplacement']
+    if (wholelist[5][accessname]['question']["16"]['Grabbar']
         .containsKey('sidefentrance')) {
     } else {
       wholelist[5][accessname]['question']["16"]['Grabbar']['sidefentrance'] =
@@ -137,6 +229,60 @@ class BathroomPro extends ChangeNotifier {
     } else {
       wholelist[5][accessname]['question']["16"]['Grabbar']['grabBarLength'] =
           '';
+    }
+
+    if (wholelist[5][accessname]['question']["18"].containsKey('toggle')) {
+    } else {
+      wholelist[5][accessname]['question']["18"]
+          ['toggle'] = <bool>[true, false];
+      wholelist[5][accessname]['question']["18"]['toggle'][0]
+          ? wholelist[5][accessname]['question']["18"]['Answer'] = 'Yes'
+          : wholelist[5][accessname]['question']["18"]['Answer'] = 'No';
+    }
+
+    if (wholelist[5][accessname]['question']["20"].containsKey('toggle')) {
+    } else {
+      wholelist[5][accessname]['question']["20"]
+          ['toggle'] = <bool>[true, false];
+      wholelist[5][accessname]['question']["20"]['toggle'][0]
+          ? wholelist[5][accessname]['question']["20"]['Answer'] = 'Yes'
+          : wholelist[5][accessname]['question']["20"]['Answer'] = 'No';
+    }
+
+    if (wholelist[5][accessname]['question']["20"].containsKey('toggle2')) {
+    } else {
+      wholelist[5][accessname]['question']["20"]
+          ['toggle2'] = <bool>[true, false];
+      wholelist[5][accessname]['question']["20"]['toggle2'][0]
+          ? wholelist[5][accessname]['question']["20"]['ManageInOut'] = 'Yes'
+          : wholelist[5][accessname]['question']["20"]['ManageInOut'] = 'No';
+    }
+
+    if (wholelist[5][accessname]['question']["21"].containsKey('toggle')) {
+    } else {
+      wholelist[5][accessname]['question']["21"]
+          ['toggle'] = <bool>[true, false];
+      wholelist[5][accessname]['question']["21"]['toggle'][0]
+          ? wholelist[5][accessname]['question']["21"]['Answer'] = 'Yes'
+          : wholelist[5][accessname]['question']["21"]['Answer'] = 'No';
+    }
+
+    if (wholelist[5][accessname]['question']["23"].containsKey('toggle')) {
+    } else {
+      wholelist[5][accessname]['question']["23"]
+          ['toggle'] = <bool>[true, false];
+      wholelist[5][accessname]['question']["23"]['toggle'][0]
+          ? wholelist[5][accessname]['question']["23"]['Answer'] = 'Yes'
+          : wholelist[5][accessname]['question']["23"]['Answer'] = 'No';
+    }
+
+    if (wholelist[5][accessname]['question']["24"].containsKey('toggle')) {
+    } else {
+      wholelist[5][accessname]['question']["24"]
+          ['toggle'] = <bool>[true, false];
+      wholelist[5][accessname]['question']["24"]['toggle'][0]
+          ? wholelist[5][accessname]['question']["24"]['Answer'] = 'Yes'
+          : wholelist[5][accessname]['question']["24"]['Answer'] = 'No';
     }
 
     if (wholelist[5][accessname]['question']["20"].containsKey('ManageInOut')) {

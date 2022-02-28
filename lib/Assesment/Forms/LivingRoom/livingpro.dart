@@ -80,9 +80,30 @@ class LivingProvider extends ChangeNotifier {
       wholelist[2][accessname]["videos"] = {'name': '', 'url': ''};
     }
 
+    if (wholelist[2][accessname]['question']["5"].containsKey('toggle')) {
+    } else {
+      wholelist[2][accessname]['question']["5"]['toggle'] = <bool>[true, false];
+    }
+
     if (wholelist[2][accessname]['question']["7"].containsKey('doorwidth')) {
     } else {
       wholelist[2][accessname]['question']["7"]['doorwidth'] = 0;
+    }
+
+    if (wholelist[2][accessname]['question']["8"].containsKey('toggle')) {
+    } else {
+      wholelist[2][accessname]['question']["8"]['toggle'] = <bool>[true, false];
+    }
+
+    if (wholelist[2][accessname]['question']["9"].containsKey('toggle')) {
+    } else {
+      wholelist[2][accessname]['question']["9"]['toggle'] = <bool>[true, false];
+    }
+
+    if (wholelist[2][accessname]['question']["10"].containsKey('toggle')) {
+    } else {
+      wholelist[2][accessname]['question']["10"]
+          ['toggle'] = <bool>[true, false];
     }
   }
 

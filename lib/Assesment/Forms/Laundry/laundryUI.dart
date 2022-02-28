@@ -353,6 +353,85 @@ class _LaundryUIState extends State<LaundryUI> {
       }
     }
 
+    Widget toggleButton(BuildContext context, LaundryPro assesmentprovider,
+        int queIndex, String que) {
+      return Container(
+        height: 35,
+        child: ToggleButtons(
+          borderColor: Colors.black,
+          fillColor: Colors.green,
+          borderWidth: 0,
+          selectedBorderColor: Colors.black,
+          selectedColor: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Yes',
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'No',
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+          ],
+          onPressed: (int select) {
+            if (assessor == therapist && role == "therapist") {
+              setState(() {
+                for (int i = 0;
+                    i <
+                        widget
+                            .wholelist[7][widget.accessname]['question']
+                                ['$queIndex']['toggle']
+                            .length;
+                    i++) {
+                  widget.wholelist[7][widget.accessname]['question']
+                      ['$queIndex']['toggle'][i] = i == select;
+                }
+              });
+              assesmentprovider.setdata(
+                  queIndex,
+                  widget.wholelist[7][widget.accessname]['question']
+                          ['$queIndex']['toggle'][0]
+                      ? 'Yes'
+                      : 'No',
+                  que);
+            } else if (role != "therapist") {
+              setState(() {
+                for (int i = 0;
+                    i <
+                        widget
+                            .wholelist[7][widget.accessname]['question']
+                                ['$queIndex']['toggle']
+                            .length;
+                    i++) {
+                  widget.wholelist[7][widget.accessname]['question']
+                      ['$queIndex']['toggle'][i] = i == select;
+                }
+              });
+              assesmentprovider.setdata(
+                  queIndex,
+                  widget.wholelist[7][widget.accessname]['question']
+                          ['$queIndex']['toggle'][0]
+                      ? 'Yes'
+                      : 'No',
+                  que);
+            } else {
+              _showSnackBar("You can't change the other fields", context);
+            }
+          },
+          isSelected: widget.wholelist[7][widget.accessname]['question']
+                  ['$queIndex']['toggle']
+              .cast<bool>(),
+        ),
+      );
+    }
+
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -891,52 +970,54 @@ class _LaundryUIState extends State<LaundryUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .6,
+                              width: MediaQuery.of(context).size.width * .58,
                               child: Text('Able to Operate Switches?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
                                   )),
                             ),
-                            Container(
-                              child: DropdownButton(
-                                items: [
-                                  DropdownMenuItem(
-                                    child: Text('--'),
-                                    value: '',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Yes'),
-                                    value: 'Yes',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('No'),
-                                    value: 'No',
-                                  ),
-                                ],
-                                onChanged: (value) {
-                                  if (assessor == therapist &&
-                                      role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
-                                    new TextEditingController().clear();
-                                    // print(widget.accessname);
-                                    assesmentprovider.setdata(
-                                        5, value, 'Able to Operate Switches?');
-                                  } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
-                                    new TextEditingController().clear();
-                                    // print(widget.accessname);
-                                    assesmentprovider.setdata(
-                                        5, value, 'Able to Operate Switches?');
-                                  } else {
-                                    _showSnackBar(
-                                        "You can't change the other fields",
-                                        context);
-                                  }
-                                },
-                                value: assesmentprovider.getvalue(5),
-                              ),
-                            ),
+                            // Container(
+                            //   child: DropdownButton(
+                            //     items: [
+                            //       DropdownMenuItem(
+                            //         child: Text('--'),
+                            //         value: '',
+                            //       ),
+                            //       DropdownMenuItem(
+                            //         child: Text('Yes'),
+                            //         value: 'Yes',
+                            //       ),
+                            //       DropdownMenuItem(
+                            //         child: Text('No'),
+                            //         value: 'No',
+                            //       ),
+                            //     ],
+                            //     onChanged: (value) {
+                            //       if (assessor == therapist &&
+                            //           role == "therapist") {
+                            //         FocusScope.of(context).requestFocus();
+                            //         new TextEditingController().clear();
+                            //         // print(widget.accessname);
+                            //         assesmentprovider.setdata(
+                            //             5, value, 'Able to Operate Switches?');
+                            //       } else if (role != "therapist") {
+                            //         FocusScope.of(context).requestFocus();
+                            //         new TextEditingController().clear();
+                            //         // print(widget.accessname);
+                            //         assesmentprovider.setdata(
+                            //             5, value, 'Able to Operate Switches?');
+                            //       } else {
+                            //         _showSnackBar(
+                            //             "You can't change the other fields",
+                            //             context);
+                            //       }
+                            //     },
+                            //     value: assesmentprovider.getvalue(5),
+                            //   ),
+                            // ),
+                            toggleButton(context, assesmentprovider, 5,
+                                'Able to Operate Switches?')
                           ],
                         ),
                         (assesmentprovider.getvalue(5) != 'Yes' &&
@@ -1127,50 +1208,52 @@ class _LaundryUIState extends State<LaundryUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .6,
+                              width: MediaQuery.of(context).size.width * .58,
                               child: Text('Obstacle/Clutter Present?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
                                   )),
                             ),
-                            DropdownButton(
-                              items: [
-                                DropdownMenuItem(
-                                  child: Text('--'),
-                                  value: '',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Yes'),
-                                  value: 'Yes',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('No'),
-                                  value: 'No',
-                                )
-                              ],
-                              onChanged: (value) {
-                                if (assessor == therapist &&
-                                    role == "therapist") {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  assesmentprovider.setdata(
-                                      8, value, 'Obstacle/Clutter Present?');
-                                } else if (role != "therapist") {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  assesmentprovider.setdata(
-                                      8, value, 'Obstacle/Clutter Present?');
-                                } else {
-                                  _showSnackBar(
-                                      "You can't change the other fields",
-                                      context);
-                                }
-                              },
-                              value: assesmentprovider.getvalue(8),
-                            )
+                            // DropdownButton(
+                            //   items: [
+                            //     DropdownMenuItem(
+                            //       child: Text('--'),
+                            //       value: '',
+                            //     ),
+                            //     DropdownMenuItem(
+                            //       child: Text('Yes'),
+                            //       value: 'Yes',
+                            //     ),
+                            //     DropdownMenuItem(
+                            //       child: Text('No'),
+                            //       value: 'No',
+                            //     )
+                            //   ],
+                            //   onChanged: (value) {
+                            //     if (assessor == therapist &&
+                            //         role == "therapist") {
+                            //       FocusScope.of(context).requestFocus();
+                            //       new TextEditingController().clear();
+                            //       // print(widget.accessname);
+                            //       assesmentprovider.setdata(
+                            //           8, value, 'Obstacle/Clutter Present?');
+                            //     } else if (role != "therapist") {
+                            //       FocusScope.of(context).requestFocus();
+                            //       new TextEditingController().clear();
+                            //       // print(widget.accessname);
+                            //       assesmentprovider.setdata(
+                            //           8, value, 'Obstacle/Clutter Present?');
+                            //     } else {
+                            //       _showSnackBar(
+                            //           "You can't change the other fields",
+                            //           context);
+                            //     }
+                            //   },
+                            //   value: assesmentprovider.getvalue(8),
+                            // )
+                            toggleButton(context, assesmentprovider, 8,
+                                'Obstacle/Clutter Present?')
                           ],
                         ),
                         (assesmentprovider.getvalue(8) == 'Yes')
@@ -1190,50 +1273,52 @@ class _LaundryUIState extends State<LaundryUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .7,
+                              width: MediaQuery.of(context).size.width * .58,
                               child: Text('Able to access washer & dryer?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
                                   )),
                             ),
-                            DropdownButton(
-                              items: [
-                                DropdownMenuItem(
-                                  child: Text('--'),
-                                  value: '',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Yes'),
-                                  value: 'Yes',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('No'),
-                                  value: 'No',
-                                ),
-                              ],
-                              onChanged: (value) {
-                                if (assessor == therapist &&
-                                    role == "therapist") {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  assesmentprovider.setdata(9, value,
-                                      'Able to access washer & dryer?');
-                                } else if (role != "therapist") {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  assesmentprovider.setdata(9, value,
-                                      'Able to access washer & dryer?');
-                                } else {
-                                  _showSnackBar(
-                                      "You can't change the other fields",
-                                      context);
-                                }
-                              },
-                              value: assesmentprovider.getvalue(9),
-                            )
+                            // DropdownButton(
+                            //   items: [
+                            //     DropdownMenuItem(
+                            //       child: Text('--'),
+                            //       value: '',
+                            //     ),
+                            //     DropdownMenuItem(
+                            //       child: Text('Yes'),
+                            //       value: 'Yes',
+                            //     ),
+                            //     DropdownMenuItem(
+                            //       child: Text('No'),
+                            //       value: 'No',
+                            //     ),
+                            //   ],
+                            //   onChanged: (value) {
+                            //     if (assessor == therapist &&
+                            //         role == "therapist") {
+                            //       FocusScope.of(context).requestFocus();
+                            //       new TextEditingController().clear();
+                            //       // print(widget.accessname);
+                            //       assesmentprovider.setdata(9, value,
+                            //           'Able to access washer & dryer?');
+                            //     } else if (role != "therapist") {
+                            //       FocusScope.of(context).requestFocus();
+                            //       new TextEditingController().clear();
+                            //       // print(widget.accessname);
+                            //       assesmentprovider.setdata(9, value,
+                            //           'Able to access washer & dryer?');
+                            //     } else {
+                            //       _showSnackBar(
+                            //           "You can't change the other fields",
+                            //           context);
+                            //     }
+                            //   },
+                            //   value: assesmentprovider.getvalue(9),
+                            // )
+                            toggleButton(context, assesmentprovider, 9,
+                                'Able to access washer & dryer?')
                           ],
                         ),
                         (assesmentprovider.getvalue(9) == 'No' &&
@@ -1390,50 +1475,52 @@ class _LaundryUIState extends State<LaundryUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .7,
+                              width: MediaQuery.of(context).size.width * .58,
                               child: Text('Able to access laundry cabinets?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
                                   )),
                             ),
-                            DropdownButton(
-                              items: [
-                                DropdownMenuItem(
-                                  child: Text('--'),
-                                  value: '',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Yes'),
-                                  value: 'Yes',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('No'),
-                                  value: 'No',
-                                ),
-                              ],
-                              onChanged: (value) {
-                                if (assessor == therapist &&
-                                    role == "therapist") {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  assesmentprovider.setdata(12, value,
-                                      'Able to access laundry cabinets?');
-                                } else if (role != "therapist") {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  assesmentprovider.setdata(12, value,
-                                      'Able to access laundry cabinets?');
-                                } else {
-                                  _showSnackBar(
-                                      "You can't change the other fields",
-                                      context);
-                                }
-                              },
-                              value: assesmentprovider.getvalue(12),
-                            )
+                            // DropdownButton(
+                            //   items: [
+                            //     DropdownMenuItem(
+                            //       child: Text('--'),
+                            //       value: '',
+                            //     ),
+                            //     DropdownMenuItem(
+                            //       child: Text('Yes'),
+                            //       value: 'Yes',
+                            //     ),
+                            //     DropdownMenuItem(
+                            //       child: Text('No'),
+                            //       value: 'No',
+                            //     ),
+                            //   ],
+                            //   onChanged: (value) {
+                            //     if (assessor == therapist &&
+                            //         role == "therapist") {
+                            //       FocusScope.of(context).requestFocus();
+                            //       new TextEditingController().clear();
+                            //       // print(widget.accessname);
+                            //       assesmentprovider.setdata(12, value,
+                            //           'Able to access laundry cabinets?');
+                            //     } else if (role != "therapist") {
+                            //       FocusScope.of(context).requestFocus();
+                            //       new TextEditingController().clear();
+                            //       // print(widget.accessname);
+                            //       assesmentprovider.setdata(12, value,
+                            //           'Able to access laundry cabinets?');
+                            //     } else {
+                            //       _showSnackBar(
+                            //           "You can't change the other fields",
+                            //           context);
+                            //     }
+                            //   },
+                            //   value: assesmentprovider.getvalue(12),
+                            // )
+                            toggleButton(context, assesmentprovider, 12,
+                                'Able to access laundry cabinets?')
                           ],
                         ),
                         (assesmentprovider.getvalue(12) == 'No')
@@ -1455,50 +1542,52 @@ class _LaundryUIState extends State<LaundryUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .6,
+                              width: MediaQuery.of(context).size.width * .58,
                               child: Text('Smoke Detector Present?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
                                   )),
                             ),
-                            DropdownButton(
-                              items: [
-                                DropdownMenuItem(
-                                  child: Text('--'),
-                                  value: '',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Yes'),
-                                  value: 'Yes',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('No'),
-                                  value: 'No',
-                                ),
-                              ],
-                              onChanged: (value) {
-                                if (assessor == therapist &&
-                                    role == "therapist") {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  assesmentprovider.setdata(
-                                      13, value, 'Smoke Detector Present?');
-                                } else if (role != "therapist") {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  assesmentprovider.setdata(
-                                      13, value, 'Smoke Detector Present?');
-                                } else {
-                                  _showSnackBar(
-                                      "You can't change the other fields",
-                                      context);
-                                }
-                              },
-                              value: assesmentprovider.getvalue(13),
-                            )
+                            // DropdownButton(
+                            //   items: [
+                            //     DropdownMenuItem(
+                            //       child: Text('--'),
+                            //       value: '',
+                            //     ),
+                            //     DropdownMenuItem(
+                            //       child: Text('Yes'),
+                            //       value: 'Yes',
+                            //     ),
+                            //     DropdownMenuItem(
+                            //       child: Text('No'),
+                            //       value: 'No',
+                            //     ),
+                            //   ],
+                            //   onChanged: (value) {
+                            //     if (assessor == therapist &&
+                            //         role == "therapist") {
+                            //       FocusScope.of(context).requestFocus();
+                            //       new TextEditingController().clear();
+                            //       // print(widget.accessname);
+                            //       assesmentprovider.setdata(
+                            //           13, value, 'Smoke Detector Present?');
+                            //     } else if (role != "therapist") {
+                            //       FocusScope.of(context).requestFocus();
+                            //       new TextEditingController().clear();
+                            //       // print(widget.accessname);
+                            //       assesmentprovider.setdata(
+                            //           13, value, 'Smoke Detector Present?');
+                            //     } else {
+                            //       _showSnackBar(
+                            //           "You can't change the other fields",
+                            //           context);
+                            //     }
+                            //   },
+                            //   value: assesmentprovider.getvalue(13),
+                            // )
+                            toggleButton(context, assesmentprovider, 13,
+                                'Smoke Detector Present?')
                           ],
                         ),
                         (assesmentprovider.getvalue(13) == 'No')

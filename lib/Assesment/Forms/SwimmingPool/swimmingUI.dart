@@ -465,6 +465,85 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
       }
     }
 
+    Widget toggleButton(BuildContext context,
+        SwimmingPoolProvider assesmentprovider, int queIndex, String que) {
+      return Container(
+        height: 35,
+        child: ToggleButtons(
+          borderColor: Colors.black,
+          fillColor: Colors.green,
+          borderWidth: 0,
+          selectedBorderColor: Colors.black,
+          selectedColor: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'Yes',
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text(
+                'No',
+                style: TextStyle(fontSize: 16),
+              ),
+            ),
+          ],
+          onPressed: (int select) {
+            if (assessor == therapist && role == "therapist") {
+              setState(() {
+                for (int i = 0;
+                    i <
+                        widget
+                            .wholelist[11][widget.accessname]['question']
+                                ['$queIndex']['toggle']
+                            .length;
+                    i++) {
+                  widget.wholelist[11][widget.accessname]['question']
+                      ['$queIndex']['toggle'][i] = i == select;
+                }
+              });
+              assesmentprovider.setdata(
+                  queIndex,
+                  widget.wholelist[11][widget.accessname]['question']
+                          ['$queIndex']['toggle'][0]
+                      ? 'Yes'
+                      : 'No',
+                  que);
+            } else if (role != "therapist") {
+              setState(() {
+                for (int i = 0;
+                    i <
+                        widget
+                            .wholelist[11][widget.accessname]['question']
+                                ['$queIndex']['toggle']
+                            .length;
+                    i++) {
+                  widget.wholelist[11][widget.accessname]['question']
+                      ['$queIndex']['toggle'][i] = i == select;
+                }
+              });
+              assesmentprovider.setdata(
+                  queIndex,
+                  widget.wholelist[11][widget.accessname]['question']
+                          ['$queIndex']['toggle'][0]
+                      ? 'Yes'
+                      : 'No',
+                  que);
+            } else {
+              _showSnackBar("You can't change the other fields", context);
+            }
+          },
+          isSelected: widget.wholelist[11][widget.accessname]['question']
+                  ['$queIndex']['toggle']
+              .cast<bool>(),
+        ),
+      );
+    }
+
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -765,7 +844,7 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
                                           width: MediaQuery.of(context)
                                                   .size
                                                   .width *
-                                              .5,
+                                              .58,
                                           child: Text('Adaptations Available',
                                               style: TextStyle(
                                                 color: Color.fromRGBO(
@@ -773,58 +852,164 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
                                                 fontSize: 20,
                                               )),
                                         ),
+                                        // Container(
+                                        //   child: DropdownButton(
+                                        //     items: [
+                                        //       DropdownMenuItem(
+                                        //         child: Text('--'),
+                                        //         value: '',
+                                        //       ),
+                                        //       DropdownMenuItem(
+                                        //         child: Text('Yes'),
+                                        //         value: 'Yes',
+                                        //       ),
+                                        //       DropdownMenuItem(
+                                        //         child: Text('No'),
+                                        //         value: 'No',
+                                        //       ),
+                                        //     ],
+                                        //     onChanged: (value) {
+                                        //       FocusScope.of(context)
+                                        //           .requestFocus();
+                                        //       new TextEditingController()
+                                        //           .clear();
+                                        //       if (assessor == therapist &&
+                                        //           role == "therapist") {
+                                        //         widget.wholelist[11][widget
+                                        //                             .accessname]
+                                        //                         ['question']["1"]
+                                        //                     ['aboveGround'][
+                                        //                 'adaptationAvailable'] =
+                                        //             value;
+                                        //       } else if (role != "therapist" &&
+                                        //           (role == "patient" ||
+                                        //               role ==
+                                        //                   "nurse/case manager")) {
+                                        //         widget.wholelist[11][widget
+                                        //                             .accessname]
+                                        //                         ['question']["1"]
+                                        //                     ['aboveGround'][
+                                        //                 'adaptationAvailable'] =
+                                        //             value;
+                                        //       } else {
+                                        //         _showSnackBar(
+                                        //             "You can't change the other fields",
+                                        //             context);
+                                        //       }
+                                        //     },
+                                        //     value: widget.wholelist[11]
+                                        //                     [widget.accessname]
+                                        //                 ['question']["1"]
+                                        //             ['aboveGround']
+                                        //         ['adaptationAvailable'],
+                                        //   ),
+                                        // ),
                                         Container(
-                                          child: DropdownButton(
-                                            items: [
-                                              DropdownMenuItem(
-                                                child: Text('--'),
-                                                value: '',
+                                          height: 35,
+                                          child: ToggleButtons(
+                                            borderColor: Colors.black,
+                                            fillColor: Colors.green,
+                                            borderWidth: 0,
+                                            selectedBorderColor: Colors.black,
+                                            selectedColor: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            children: <Widget>[
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  'Yes',
+                                                  style:
+                                                      TextStyle(fontSize: 16),
+                                                ),
                                               ),
-                                              DropdownMenuItem(
-                                                child: Text('Yes'),
-                                                value: 'Yes',
-                                              ),
-                                              DropdownMenuItem(
-                                                child: Text('No'),
-                                                value: 'No',
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  'No',
+                                                  style:
+                                                      TextStyle(fontSize: 16),
+                                                ),
                                               ),
                                             ],
-                                            onChanged: (value) {
-                                              FocusScope.of(context)
-                                                  .requestFocus();
-                                              new TextEditingController()
-                                                  .clear();
+                                            onPressed: (int select) {
                                               if (assessor == therapist &&
                                                   role == "therapist") {
-                                                widget.wholelist[11][widget
+                                                setState(() {
+                                                  for (int i = 0;
+                                                      i <
+                                                          widget
+                                                              .wholelist[11][
+                                                                  widget
+                                                                      .accessname]
+                                                                  ['question']
+                                                                  ['1']
+                                                                  ['toggle1']
+                                                              .length;
+                                                      i++) {
+                                                    widget.wholelist[11][widget
                                                                     .accessname]
-                                                                ['question']["1"]
-                                                            ['aboveGround'][
-                                                        'adaptationAvailable'] =
-                                                    value;
-                                              } else if (role != "therapist" &&
-                                                  (role == "patient" ||
-                                                      role ==
-                                                          "nurse/case manager")) {
-                                                widget.wholelist[11][widget
+                                                                ['question']
+                                                            ['1']['toggle1']
+                                                        [i] = i == select;
+                                                  }
+                                                  widget.wholelist[11]
+                                                                  [widget.accessname]
+                                                              ['question']["1"]
+                                                          ['aboveGround']
+                                                      ['adaptationAvailable'] = widget
+                                                                      .wholelist[11]
+                                                                  [widget.accessname]
+                                                              ['question']['1']
+                                                          ['toggle1'][0]
+                                                      ? 'Yes'
+                                                      : 'No';
+                                                });
+                                              } else if (role != "therapist") {
+                                                setState(() {
+                                                  for (int i = 0;
+                                                      i <
+                                                          widget
+                                                              .wholelist[11][
+                                                                  widget
+                                                                      .accessname]
+                                                                  ['question']
+                                                                  ['1']
+                                                                  ['toggle1']
+                                                              .length;
+                                                      i++) {
+                                                    widget.wholelist[11][widget
                                                                     .accessname]
-                                                                ['question']["1"]
-                                                            ['aboveGround'][
-                                                        'adaptationAvailable'] =
-                                                    value;
+                                                                ['question']
+                                                            ['1']['toggle1'][i] =
+                                                        i == select;
+                                                  }
+                                                  widget.wholelist[11]
+                                                                  [widget.accessname]
+                                                              ['question']["1"]
+                                                          ['aboveGround']
+                                                      ['adaptationAvailable'] = widget
+                                                                      .wholelist[11]
+                                                                  [widget.accessname]
+                                                              ['question']['1']
+                                                          ['toggle1'][0]
+                                                      ? 'Yes'
+                                                      : 'No';
+                                                });
                                               } else {
                                                 _showSnackBar(
                                                     "You can't change the other fields",
                                                     context);
                                               }
                                             },
-                                            value: widget.wholelist[11]
-                                                            [widget.accessname]
-                                                        ['question']["1"]
-                                                    ['aboveGround']
-                                                ['adaptationAvailable'],
+                                            isSelected: widget.wholelist[11]
+                                                    [widget.accessname]
+                                                    ['question']['1']['toggle1']
+                                                .cast<bool>(),
                                           ),
-                                        )
+                                        ),
                                       ],
                                     ),
                                     SizedBox(
@@ -1130,7 +1315,7 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
                                                           MediaQuery.of(context)
                                                                   .size
                                                                   .width *
-                                                              .5,
+                                                              .58,
                                                       child: Text(
                                                           'Can the Client Safely use the adaptations?',
                                                           style: TextStyle(
@@ -1143,73 +1328,185 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
                                                             fontSize: 20,
                                                           )),
                                                     ),
+                                                    // Container(
+                                                    //   child: DropdownButton(
+                                                    //     items: [
+                                                    //       DropdownMenuItem(
+                                                    //         child: Text('--'),
+                                                    //         value: '',
+                                                    //       ),
+                                                    //       DropdownMenuItem(
+                                                    //         child: Text('Yes'),
+                                                    //         value: 'Yes',
+                                                    //       ),
+                                                    //       DropdownMenuItem(
+                                                    //         child: Text('No'),
+                                                    //         value: 'No',
+                                                    //       ),
+                                                    //     ],
+                                                    //     onChanged: (value) {
+                                                    //       FocusScope.of(context)
+                                                    //           .requestFocus();
+                                                    //       new TextEditingController()
+                                                    //           .clear();
+                                                    //       if (assessor ==
+                                                    //               therapist &&
+                                                    //           role ==
+                                                    //               "therapist") {
+                                                    //         widget.wholelist[11]
+                                                    //                         [
+                                                    //                         widget
+                                                    //                             .accessname]
+                                                    //                     [
+                                                    //                     'question']["1"]
+                                                    //                 [
+                                                    //                 'aboveGround']
+                                                    //             [
+                                                    //             'isClientSafe'] = value;
+                                                    //       } else if (role !=
+                                                    //               "therapist" &&
+                                                    //           (role ==
+                                                    //                   "patient" ||
+                                                    //               role ==
+                                                    //                   "nurse/case manager")) {
+                                                    //         widget.wholelist[11]
+                                                    //                         [
+                                                    //                         widget
+                                                    //                             .accessname]
+                                                    //                     [
+                                                    //                     'question']["1"]
+                                                    //                 [
+                                                    //                 'aboveGround']
+                                                    //             [
+                                                    //             'isClientSafe'] = value;
+                                                    //       } else {
+                                                    //         _showSnackBar(
+                                                    //             "You can't change the other fields",
+                                                    //             context);
+                                                    //       }
+                                                    //     },
+                                                    //     value: widget.wholelist[
+                                                    //                         11][
+                                                    //                     widget
+                                                    //                         .accessname]
+                                                    //                 ['question']
+                                                    //             [
+                                                    //             "1"]['aboveGround']
+                                                    //         ['isClientSafe'],
+                                                    //   ),
+                                                    // ),
                                                     Container(
-                                                      child: DropdownButton(
-                                                        items: [
-                                                          DropdownMenuItem(
-                                                            child: Text('--'),
-                                                            value: '',
-                                                          ),
-                                                          DropdownMenuItem(
-                                                            child: Text('Yes'),
-                                                            value: 'Yes',
-                                                          ),
-                                                          DropdownMenuItem(
-                                                            child: Text('No'),
-                                                            value: 'No',
-                                                          ),
-                                                        ],
-                                                        onChanged: (value) {
-                                                          FocusScope.of(context)
-                                                              .requestFocus();
-                                                          new TextEditingController()
-                                                              .clear();
-                                                          if (assessor ==
-                                                                  therapist &&
-                                                              role ==
-                                                                  "therapist") {
-                                                            widget.wholelist[11]
-                                                                            [
-                                                                            widget
-                                                                                .accessname]
-                                                                        [
-                                                                        'question']["1"]
-                                                                    [
-                                                                    'aboveGround']
-                                                                [
-                                                                'isClientSafe'] = value;
-                                                          } else if (role !=
-                                                                  "therapist" &&
-                                                              (role ==
-                                                                      "patient" ||
-                                                                  role ==
-                                                                      "nurse/case manager")) {
-                                                            widget.wholelist[11]
-                                                                            [
-                                                                            widget
-                                                                                .accessname]
-                                                                        [
-                                                                        'question']["1"]
-                                                                    [
-                                                                    'aboveGround']
-                                                                [
-                                                                'isClientSafe'] = value;
-                                                          } else {
-                                                            _showSnackBar(
-                                                                "You can't change the other fields",
-                                                                context);
-                                                          }
-                                                        },
-                                                        value: widget.wholelist[
+                                          height: 35,
+                                          child: ToggleButtons(
+                                            borderColor: Colors.black,
+                                            fillColor: Colors.green,
+                                            borderWidth: 0,
+                                            selectedBorderColor: Colors.black,
+                                            selectedColor: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            children: <Widget>[
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  'Yes',
+                                                  style:
+                                                      TextStyle(fontSize: 16),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  'No',
+                                                  style:
+                                                      TextStyle(fontSize: 16),
+                                                ),
+                                              ),
+                                            ],
+                                            onPressed: (int select) {
+                                              if (assessor == therapist &&
+                                                  role == "therapist") {
+                                                setState(() {
+                                                  for (int i = 0;
+                                                      i <
+                                                          widget
+                                                              .wholelist[11][
+                                                                  widget
+                                                                      .accessname]
+                                                                  ['question']
+                                                                  ['1']
+                                                                  ['toggle2']
+                                                              .length;
+                                                      i++) {
+                                                    widget.wholelist[11][widget
+                                                                    .accessname]
+                                                                ['question']
+                                                            ['1']['toggle2']
+                                                        [i] = i == select;
+                                                  }
+                                                  widget.wholelist[
                                                                             11][
                                                                         widget
                                                                             .accessname]
                                                                     ['question']
                                                                 [
                                                                 "1"]['aboveGround']
-                                                            ['isClientSafe'],
-                                                      ),
-                                                    )
+                                                            ['isClientSafe'] = widget
+                                                                      .wholelist[11]
+                                                                  [widget.accessname]
+                                                              ['question']['1']
+                                                          ['toggle2'][0]
+                                                      ? 'Yes'
+                                                      : 'No';
+                                                });
+                                              } else if (role != "therapist") {
+                                                setState(() {
+                                                  for (int i = 0;
+                                                      i <
+                                                          widget
+                                                              .wholelist[11][
+                                                                  widget
+                                                                      .accessname]
+                                                                  ['question']
+                                                                  ['1']
+                                                                  ['toggle2']
+                                                              .length;
+                                                      i++) {
+                                                    widget.wholelist[11][widget
+                                                                    .accessname]
+                                                                ['question']
+                                                            ['1']['toggle2'][i] =
+                                                        i == select;
+                                                  }
+                                                  widget.wholelist[
+                                                                            11][
+                                                                        widget
+                                                                            .accessname]
+                                                                    ['question']
+                                                                [
+                                                                "1"]['aboveGround']
+                                                            ['isClientSafe'] = widget
+                                                                      .wholelist[11]
+                                                                  [widget.accessname]
+                                                              ['question']['1']
+                                                          ['toggle2'][0]
+                                                      ? 'Yes'
+                                                      : 'No';
+                                                });
+                                              } else {
+                                                _showSnackBar(
+                                                    "You can't change the other fields",
+                                                    context);
+                                              }
+                                            },
+                                            isSelected: widget.wholelist[11]
+                                                    [widget.accessname]
+                                                    ['question']['1']['toggle2']
+                                                .cast<bool>(),
+                                          ),
+                                        ),
                                                   ],
                                                 ),
                                                 SizedBox(height: 5),
@@ -1250,67 +1547,174 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
                                                 fontSize: 20,
                                               )),
                                         ),
+                                        // Container(
+                                        //   child: DropdownButton(
+                                        //     items: [
+                                        //       DropdownMenuItem(
+                                        //         child: Text('--'),
+                                        //         value: '',
+                                        //       ),
+                                        //       DropdownMenuItem(
+                                        //         child: Text('Yes'),
+                                        //         value: 'Yes',
+                                        //       ),
+                                        //       DropdownMenuItem(
+                                        //         child: Text('No'),
+                                        //         value: 'No',
+                                        //       ),
+                                        //     ],
+                                        //     onChanged: (value) {
+                                        //       FocusScope.of(context)
+                                        //           .requestFocus();
+                                        //       new TextEditingController()
+                                        //           .clear();
+                                        //       if (assessor == therapist &&
+                                        //           role == "therapist") {
+                                        //         widget.wholelist[11][widget
+                                        //                             .accessname]
+                                        //                         ['question']["1"]
+                                        //                     ['inGround'][
+                                        //                 'adaptationAvailable'] =
+                                        //             value;
+                                        //       } else if (role != "therapist" &&
+                                        //           (role == "patient" ||
+                                        //               role ==
+                                        //                   "nurse/case manager")) {
+                                        //         widget.wholelist[11][widget
+                                        //                             .accessname]
+                                        //                         ['question']["1"]
+                                        //                     ['inGround'][
+                                        //                 'adaptationAvailable'] =
+                                        //             value;
+                                        //       } else {
+                                        //         _showSnackBar(
+                                        //             "You can't change the other fields",
+                                        //             context);
+                                        //       }
+                                        //     },
+                                        //     value: widget.wholelist[11]
+                                        //                     [widget.accessname]
+                                        //                 ['question']["1"]
+                                        //             ['inGround']
+                                        //         ['adaptationAvailable'],
+                                        //   ),
+                                        // ),
                                         Container(
-                                          child: DropdownButton(
-                                            items: [
-                                              DropdownMenuItem(
-                                                child: Text('--'),
-                                                value: '',
+                                          height: 35,
+                                          child: ToggleButtons(
+                                            borderColor: Colors.black,
+                                            fillColor: Colors.green,
+                                            borderWidth: 0,
+                                            selectedBorderColor: Colors.black,
+                                            selectedColor: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            children: <Widget>[
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  'Yes',
+                                                  style:
+                                                      TextStyle(fontSize: 16),
+                                                ),
                                               ),
-                                              DropdownMenuItem(
-                                                child: Text('Yes'),
-                                                value: 'Yes',
-                                              ),
-                                              DropdownMenuItem(
-                                                child: Text('No'),
-                                                value: 'No',
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  'No',
+                                                  style:
+                                                      TextStyle(fontSize: 16),
+                                                ),
                                               ),
                                             ],
-                                            onChanged: (value) {
-                                              FocusScope.of(context)
-                                                  .requestFocus();
-                                              new TextEditingController()
-                                                  .clear();
+                                            onPressed: (int select) {
                                               if (assessor == therapist &&
                                                   role == "therapist") {
-                                                widget.wholelist[11][widget
+                                                setState(() {
+                                                  for (int i = 0;
+                                                      i <
+                                                          widget
+                                                              .wholelist[11][
+                                                                  widget
+                                                                      .accessname]
+                                                                  ['question']
+                                                                  ['1']
+                                                                  ['toggle1']
+                                                              .length;
+                                                      i++) {
+                                                    widget.wholelist[11][widget
+                                                                    .accessname]
+                                                                ['question']
+                                                            ['1']['toggle1']
+                                                        [i] = i == select;
+                                                  }
+                                                 widget.wholelist[11][widget
                                                                     .accessname]
                                                                 ['question']["1"]
                                                             ['inGround'][
-                                                        'adaptationAvailable'] =
-                                                    value;
-                                              } else if (role != "therapist" &&
-                                                  (role == "patient" ||
-                                                      role ==
-                                                          "nurse/case manager")) {
-                                                widget.wholelist[11][widget
+                                                        'adaptationAvailable'] = widget
+                                                                      .wholelist[11]
+                                                                  [widget.accessname]
+                                                              ['question']['1']
+                                                          ['toggle1'][0]
+                                                      ? 'Yes'
+                                                      : 'No';
+                                                });
+                                              } else if (role != "therapist") {
+                                                setState(() {
+                                                  for (int i = 0;
+                                                      i <
+                                                          widget
+                                                              .wholelist[11][
+                                                                  widget
+                                                                      .accessname]
+                                                                  ['question']
+                                                                  ['1']
+                                                                  ['toggle1']
+                                                              .length;
+                                                      i++) {
+                                                    widget.wholelist[11][widget
+                                                                    .accessname]
+                                                                ['question']
+                                                            ['1']['toggle1'][i] =
+                                                        i == select;
+                                                  }
+                                                 widget.wholelist[11][widget
                                                                     .accessname]
                                                                 ['question']["1"]
                                                             ['inGround'][
-                                                        'adaptationAvailable'] =
-                                                    value;
+                                                        'adaptationAvailable']  = widget
+                                                                      .wholelist[11]
+                                                                  [widget.accessname]
+                                                              ['question']['1']
+                                                          ['toggle1'][0]
+                                                      ? 'Yes'
+                                                      : 'No';
+                                                });
                                               } else {
                                                 _showSnackBar(
                                                     "You can't change the other fields",
                                                     context);
                                               }
                                             },
-                                            value: widget.wholelist[11]
-                                                            [widget.accessname]
-                                                        ['question']["1"]
-                                                    ['inGround']
-                                                ['adaptationAvailable'],
+                                            isSelected: widget.wholelist[11]
+                                                    [widget.accessname]
+                                                    ['question']['1']['toggle1']
+                                                .cast<bool>(),
                                           ),
-                                        )
+                                        ),
                                       ],
                                     ),
                                     SizedBox(
                                       height: 15,
                                     ),
-                                    (widget.wholelist[11][widget.accessname]
-                                                        ['question']["1"]
-                                                    ['aboveGround']
-                                                ['adaptationAvailable'] ==
+                                    (widget.wholelist[11][widget
+                                                                    .accessname]
+                                                                ['question']["1"]
+                                                            ['inGround'][
+                                                        'adaptationAvailable'] ==
                                             'Yes')
                                         ? Container(
                                             child: Column(
@@ -1325,7 +1729,7 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
                                                           MediaQuery.of(context)
                                                                   .size
                                                                   .width *
-                                                              .5,
+                                                              .58,
                                                       child: Text(
                                                           'Can the Client Safely use the adaptations?',
                                                           style: TextStyle(
@@ -1338,73 +1742,181 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
                                                             fontSize: 20,
                                                           )),
                                                     ),
+                                                    // Container(
+                                                    //   child: DropdownButton(
+                                                    //     items: [
+                                                    //       DropdownMenuItem(
+                                                    //         child: Text('--'),
+                                                    //         value: '',
+                                                    //       ),
+                                                    //       DropdownMenuItem(
+                                                    //         child: Text('Yes'),
+                                                    //         value: 'Yes',
+                                                    //       ),
+                                                    //       DropdownMenuItem(
+                                                    //         child: Text('No'),
+                                                    //         value: 'No',
+                                                    //       ),
+                                                    //     ],
+                                                    //     onChanged: (value) {
+                                                    //       FocusScope.of(context)
+                                                    //           .requestFocus();
+                                                    //       new TextEditingController()
+                                                    //           .clear();
+                                                    //       if (assessor ==
+                                                    //               therapist &&
+                                                    //           role ==
+                                                    //               "therapist") {
+                                                    //         widget.wholelist[11]
+                                                    //                         [
+                                                    //                         widget
+                                                    //                             .accessname]
+                                                    //                     [
+                                                    //                     'question']
+                                                    //                 [
+                                                    //                 "1"]['inGround']
+                                                    //             [
+                                                    //             'isClientSafe'] = value;
+                                                    //       } else if (role !=
+                                                    //               "therapist" &&
+                                                    //           (role ==
+                                                    //                   "patient" ||
+                                                    //               role ==
+                                                    //                   "nurse/case manager")) {
+                                                    //         widget.wholelist[11]
+                                                    //                         [
+                                                    //                         widget
+                                                    //                             .accessname]
+                                                    //                     [
+                                                    //                     'question']
+                                                    //                 [
+                                                    //                 "1"]['inGround']
+                                                    //             [
+                                                    //             'isClientSafe'] = value;
+                                                    //       } else {
+                                                    //         _showSnackBar(
+                                                    //             "You can't change the other fields",
+                                                    //             context);
+                                                    //       }
+                                                    //     },
+                                                    //     value: widget.wholelist[
+                                                    //                         11][
+                                                    //                     widget
+                                                    //                         .accessname]
+                                                    //                 ['question']
+                                                    //             [
+                                                    //             "1"]['inGround']
+                                                    //         ['isClientSafe'],
+                                                    //   ),
+                                                    // ),
                                                     Container(
-                                                      child: DropdownButton(
-                                                        items: [
-                                                          DropdownMenuItem(
-                                                            child: Text('--'),
-                                                            value: '',
-                                                          ),
-                                                          DropdownMenuItem(
-                                                            child: Text('Yes'),
-                                                            value: 'Yes',
-                                                          ),
-                                                          DropdownMenuItem(
-                                                            child: Text('No'),
-                                                            value: 'No',
-                                                          ),
-                                                        ],
-                                                        onChanged: (value) {
-                                                          FocusScope.of(context)
-                                                              .requestFocus();
-                                                          new TextEditingController()
-                                                              .clear();
-                                                          if (assessor ==
-                                                                  therapist &&
-                                                              role ==
-                                                                  "therapist") {
-                                                            widget.wholelist[11]
-                                                                            [
-                                                                            widget
-                                                                                .accessname]
-                                                                        [
-                                                                        'question']
-                                                                    [
-                                                                    "1"]['inGround']
-                                                                [
-                                                                'isClientSafe'] = value;
-                                                          } else if (role !=
-                                                                  "therapist" &&
-                                                              (role ==
-                                                                      "patient" ||
-                                                                  role ==
-                                                                      "nurse/case manager")) {
-                                                            widget.wholelist[11]
-                                                                            [
-                                                                            widget
-                                                                                .accessname]
-                                                                        [
-                                                                        'question']
-                                                                    [
-                                                                    "1"]['inGround']
-                                                                [
-                                                                'isClientSafe'] = value;
-                                                          } else {
-                                                            _showSnackBar(
-                                                                "You can't change the other fields",
-                                                                context);
-                                                          }
-                                                        },
-                                                        value: widget.wholelist[
-                                                                            11][
-                                                                        widget
-                                                                            .accessname]
+                                          height: 35,
+                                          child: ToggleButtons(
+                                            borderColor: Colors.black,
+                                            fillColor: Colors.green,
+                                            borderWidth: 0,
+                                            selectedBorderColor: Colors.black,
+                                            selectedColor: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                            children: <Widget>[
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  'Yes',
+                                                  style:
+                                                      TextStyle(fontSize: 16),
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  'No',
+                                                  style:
+                                                      TextStyle(fontSize: 16),
+                                                ),
+                                              ),
+                                            ],
+                                            onPressed: (int select) {
+                                              if (assessor == therapist &&
+                                                  role == "therapist") {
+                                                setState(() {
+                                                  for (int i = 0;
+                                                      i <
+                                                          widget
+                                                              .wholelist[11][
+                                                                  widget
+                                                                      .accessname]
+                                                                  ['question']
+                                                                  ['1']
+                                                                  ['toggle2']
+                                                              .length;
+                                                      i++) {
+                                                    widget.wholelist[11][widget
+                                                                    .accessname]
+                                                                ['question']
+                                                            ['1']['toggle2']
+                                                        [i] = i == select;
+                                                  }
+                                                  widget.wholelist[11][widget
+                                                                        .accessname]
                                                                     ['question']
                                                                 [
                                                                 "1"]['inGround']
-                                                            ['isClientSafe'],
-                                                      ),
-                                                    )
+                                                            ['isClientSafe'] = widget
+                                                                      .wholelist[11]
+                                                                  [widget.accessname]
+                                                              ['question']['1']
+                                                          ['toggle2'][0]
+                                                      ? 'Yes'
+                                                      : 'No';
+                                                });
+                                              } else if (role != "therapist") {
+                                                setState(() {
+                                                  for (int i = 0;
+                                                      i <
+                                                          widget
+                                                              .wholelist[11][
+                                                                  widget
+                                                                      .accessname]
+                                                                  ['question']
+                                                                  ['1']
+                                                                  ['toggle2']
+                                                              .length;
+                                                      i++) {
+                                                    widget.wholelist[11][widget
+                                                                    .accessname]
+                                                                ['question']
+                                                            ['1']['toggle2'][i] =
+                                                        i == select;
+                                                  }
+                                                  widget.wholelist[11][widget
+                                                                        .accessname]
+                                                                    ['question']
+                                                                [
+                                                                "1"]['inGround']
+                                                            ['isClientSafe'] = widget
+                                                                      .wholelist[11]
+                                                                  [widget.accessname]
+                                                              ['question']['1']
+                                                          ['toggle2'][0]
+                                                      ? 'Yes'
+                                                      : 'No';
+                                                });
+                                              } else {
+                                                _showSnackBar(
+                                                    "You can't change the other fields",
+                                                    context);
+                                              }
+                                            },
+                                            isSelected: widget.wholelist[11]
+                                                    [widget.accessname]
+                                                    ['question']['1']['toggle2']
+                                                .cast<bool>(),
+                                          ),
+                                        ),
                                                   ],
                                                 ),
                                                 SizedBox(height: 5),
@@ -1430,49 +1942,50 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .5,
+                              width: MediaQuery.of(context).size.width * .58,
                               child: Text('Pool Accessible',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
                                   )),
                             ),
-                            Container(
-                              child: DropdownButton(
-                                items: [
-                                  DropdownMenuItem(
-                                    child: Text('--'),
-                                    value: '',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Yes'),
-                                    value: 'Yes',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('No'),
-                                    value: 'No',
-                                  ),
-                                ],
-                                onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  if (assessor == therapist &&
-                                      role == "therapist") {
-                                    assesspro.setdata(
-                                        2, value, 'Pool Accessible');
-                                  } else if (role != "therapist") {
-                                    assesspro.setdata(
-                                        2, value, 'Pool Accessible');
-                                  } else {
-                                    _showSnackBar(
-                                        "You can't change the other fields",
-                                        context);
-                                  }
-                                },
-                                value: getvalue(2),
-                              ),
-                            )
+                            // Container(
+                            //   child: DropdownButton(
+                            //     items: [
+                            //       DropdownMenuItem(
+                            //         child: Text('--'),
+                            //         value: '',
+                            //       ),
+                            //       DropdownMenuItem(
+                            //         child: Text('Yes'),
+                            //         value: 'Yes',
+                            //       ),
+                            //       DropdownMenuItem(
+                            //         child: Text('No'),
+                            //         value: 'No',
+                            //       ),
+                            //     ],
+                            //     onChanged: (value) {
+                            //       FocusScope.of(context).requestFocus();
+                            //       new TextEditingController().clear();
+                            //       // print(widget.accessname);
+                            //       if (assessor == therapist &&
+                            //           role == "therapist") {
+                            //         assesspro.setdata(
+                            //             2, value, 'Pool Accessible');
+                            //       } else if (role != "therapist") {
+                            //         assesspro.setdata(
+                            //             2, value, 'Pool Accessible');
+                            //       } else {
+                            //         _showSnackBar(
+                            //             "You can't change the other fields",
+                            //             context);
+                            //       }
+                            //     },
+                            //     value: getvalue(2),
+                            //   ),
+                            // )
+                            toggleButton(context, assesspro, 2, 'Pool Accessible')
                           ],
                         ),
                         (getvalue(2) != '')
@@ -1540,49 +2053,50 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .5,
+                              width: MediaQuery.of(context).size.width * .58,
                               child: Text('Pool Deck Clutter?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
                                   )),
                             ),
-                            Container(
-                              child: DropdownButton(
-                                items: [
-                                  DropdownMenuItem(
-                                    child: Text('--'),
-                                    value: '',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Yes'),
-                                    value: 'Yes',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('No'),
-                                    value: 'No',
-                                  ),
-                                ],
-                                onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  if (assessor == therapist &&
-                                      role == "therapist") {
-                                    assesspro.setdata(
-                                        4, value, 'Pool Deck Clutter?');
-                                  } else if (role != "therapist") {
-                                    assesspro.setdata(
-                                        4, value, 'Pool Deck Clutter?');
-                                  } else {
-                                    _showSnackBar(
-                                        "You can't change the other fields",
-                                        context);
-                                  }
-                                },
-                                value: getvalue(4),
-                              ),
-                            )
+                            // Container(
+                            //   child: DropdownButton(
+                            //     items: [
+                            //       DropdownMenuItem(
+                            //         child: Text('--'),
+                            //         value: '',
+                            //       ),
+                            //       DropdownMenuItem(
+                            //         child: Text('Yes'),
+                            //         value: 'Yes',
+                            //       ),
+                            //       DropdownMenuItem(
+                            //         child: Text('No'),
+                            //         value: 'No',
+                            //       ),
+                            //     ],
+                            //     onChanged: (value) {
+                            //       FocusScope.of(context).requestFocus();
+                            //       new TextEditingController().clear();
+                            //       // print(widget.accessname);
+                            //       if (assessor == therapist &&
+                            //           role == "therapist") {
+                            //         assesspro.setdata(
+                            //             4, value, 'Pool Deck Clutter?');
+                            //       } else if (role != "therapist") {
+                            //         assesspro.setdata(
+                            //             4, value, 'Pool Deck Clutter?');
+                            //       } else {
+                            //         _showSnackBar(
+                            //             "You can't change the other fields",
+                            //             context);
+                            //       }
+                            //     },
+                            //     value: getvalue(4),
+                            //   ),
+                            // )
+                            toggleButton(context, assesspro, 4, 'Pool Deck Clutter?')
                           ],
                         ),
                         SizedBox(height: 5),

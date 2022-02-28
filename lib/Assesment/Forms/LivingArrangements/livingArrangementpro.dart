@@ -142,6 +142,11 @@ class LivingArrangementsProvider extends ChangeNotifier {
       notifyListeners();
     }
 
+    if (wholelist[1][accessname]['question']['5'].containsKey('toggle')) {
+    } else {
+      wholelist[1][accessname]['question']['5']['toggle'] = <bool>[true, false];
+    }
+
     if (wholelist[1][accessname]['question']["5"].containsKey('Roomate')) {
       if (wholelist[1][accessname]['question']["5"]['Roomate']
           .containsKey('count')) {
@@ -156,6 +161,11 @@ class LivingArrangementsProvider extends ChangeNotifier {
       notifyListeners();
     }
 
+    if (wholelist[1][accessname]['question']['7'].containsKey('toggle')) {
+    } else {
+      wholelist[1][accessname]['question']['7']['toggle'] = <bool>[true, false];
+    }
+
     if (wholelist[1][accessname]['question']["11"].containsKey('Flights')) {
       flightcount =
           wholelist[1][accessname]['question']["11"]['Flights']['count'];
@@ -166,6 +176,12 @@ class LivingArrangementsProvider extends ChangeNotifier {
       wholelist[1][accessname]['question']["11"]['Flights'] = {};
       wholelist[1][accessname]['question']["11"]['Answer'] = 0;
       notifyListeners();
+    }
+
+    if (wholelist[1][accessname]['question']['12'].containsKey('toggle')) {
+    } else {
+      wholelist[1][accessname]['question']['12']
+          ['toggle'] = <bool>[true, false];
     }
   }
 

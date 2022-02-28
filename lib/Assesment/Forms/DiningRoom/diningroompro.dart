@@ -76,10 +76,35 @@ class DiningPro extends ChangeNotifier {
       wholelist[4][accessname]["videos"] = {'name': '', 'url': ''};
     }
 
+    if (wholelist[4][accessname]['question']["5"].containsKey('toggle')) {
+    } else {
+      print('getting created');
+      wholelist[4][accessname]['question']["5"]['toggle'] = <bool>[true, false];
+    }
+
     if (wholelist[4][accessname]['question']["7"].containsKey('doorwidth')) {
     } else {
       print('getting created');
       wholelist[4][accessname]['question']["7"]['doorwidth'] = 0;
+    }
+
+    if (wholelist[4][accessname]['question']["8"].containsKey('toggle')) {
+    } else {
+      print('getting created');
+      wholelist[4][accessname]['question']["8"]['toggle'] = <bool>[true, false];
+    }
+
+    if (wholelist[4][accessname]['question']["9"].containsKey('toggle')) {
+    } else {
+      print('getting created');
+      wholelist[4][accessname]['question']["9"]['toggle'] = <bool>[true, false];
+    }
+
+    if (wholelist[4][accessname]['question']["12"].containsKey('toggle')) {
+    } else {
+      print('getting created');
+      wholelist[4][accessname]['question']["12"]
+          ['toggle'] = <bool>[true, false];
     }
 
     // if (wholelist[4][accessname]['question']["15"].containsKey('ManageInOut')) {

@@ -1508,53 +1508,138 @@ class _PathwayUIState extends State<PathwayUI> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                width: MediaQuery.of(context).size.width * .6,
+                                width: MediaQuery.of(context).size.width * .58,
                                 child: Text('Obstacle/Clutter Present?',
                                     style: TextStyle(
                                       color: Color.fromRGBO(10, 80, 106, 1),
                                       fontSize: 20,
                                     )),
                               ),
-                              DropdownButton(
-                                items: [
-                                  DropdownMenuItem(
-                                    child: Text('--'),
-                                    value: '',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Yes'),
-                                    value: 'Yes',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('No'),
-                                    value: 'No',
-                                  )
-                                ],
-                                onChanged: (value) {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  if (assessor == therapist &&
-                                      role == "therapist") {
-                                    setdata(
-                                        1, value, 'Obstacle/Clutter Present?');
-                                  } else if (role != "therapist") {
-                                    setdata(
-                                        1, value, 'Obstacle/Clutter Present?');
-                                  } else {
-                                    _showSnackBar(
-                                        "You can't change the other fields",
-                                        context);
-                                  }
-                                },
-                                value: getvalue(1),
-                              )
+                              // DropdownButton(
+                              //   items: [
+                              //     DropdownMenuItem(
+                              //       child: Text('--'),
+                              //       value: '',
+                              //     ),
+                              //     DropdownMenuItem(
+                              //       child: Text('Yes'),
+                              //       value: 'Yes',
+                              //     ),
+                              //     DropdownMenuItem(
+                              //       child: Text('No'),
+                              //       value: 'No',
+                              //     )
+                              //   ],
+                              //   onChanged: (value) {
+                              //     FocusScope.of(context).requestFocus();
+                              //     new TextEditingController().clear();
+                              //     // print(widget.accessname);
+                              //     if (assessor == therapist &&
+                              //         role == "therapist") {
+                              //       setdata(
+                              //           1, value, 'Obstacle/Clutter Present?');
+                              //     } else if (role != "therapist") {
+                              //       setdata(
+                              //           1, value, 'Obstacle/Clutter Present?');
+                              //     } else {
+                              //       _showSnackBar(
+                              //           "You can't change the other fields",
+                              //           context);
+                              //     }
+                              //   },
+                              //   value: getvalue(1),
+                              // ),
+                              Container(
+                                height: 35,
+                                child: ToggleButtons(
+                                  borderColor: Colors.black,
+                                  fillColor: Colors.green,
+                                  borderWidth: 0,
+                                  selectedBorderColor: Colors.black,
+                                  selectedColor: Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        'Yes',
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        'No',
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ),
+                                  ],
+                                  onPressed: (int select) {
+                                    if (assessor == therapist &&
+                                        role == "therapist") {
+                                      setState(() {
+                                        for (int i = 0;
+                                            i <
+                                                widget
+                                                    .wholelist[0]
+                                                        [widget.accessname]
+                                                        ['question']['1']
+                                                        ['toggle']
+                                                    .length;
+                                            i++) {
+                                          widget.wholelist[0][widget.accessname]
+                                                  ['question']['1']['toggle']
+                                              [i] = i == select;
+                                        }
+                                      });
+                                      setdata(
+                                          1,
+                                          widget.wholelist[0][widget.accessname]
+                                                  ['question']['1']['toggle'][0]
+                                              ? 'Yes'
+                                              : 'No',
+                                          'Obstacle/Clutter Present?');
+                                    } else if (role != "therapist") {
+                                      setState(() {
+                                        for (int i = 0;
+                                            i <
+                                                widget
+                                                    .wholelist[0]
+                                                        [widget.accessname]
+                                                        ['question']['1']
+                                                        ['toggle']
+                                                    .length;
+                                            i++) {
+                                          widget.wholelist[0][widget.accessname]
+                                                  ['question']['1']['toggle']
+                                              [i] = i == select;
+                                        }
+                                      });
+                                      setdata(
+                                          1,
+                                          widget.wholelist[0][widget.accessname]
+                                                  ['question']['1']['toggle'][0]
+                                              ? 'Yes'
+                                              : 'No',
+                                          'Obstacle/Clutter Present?');
+                                    } else {
+                                      _showSnackBar(
+                                          "You can't change the other fields",
+                                          context);
+                                    }
+                                  },
+                                  isSelected: widget.wholelist[0]
+                                          [widget.accessname]['question']['1']
+                                          ['toggle']
+                                      .cast<bool>(),
+                                ),
+                              ),
                             ],
                           ),
+                          SizedBox(height: 15),
                           (getvalue(1) == 'Yes')
                               ? getrecomain(1, true, context)
-                              : SizedBox(),
-                          SizedBox(height: 15),
+                              : SizedBox(height: 15),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -1684,42 +1769,130 @@ class _PathwayUIState extends State<PathwayUI> {
                                       fontSize: 20,
                                     )),
                               ),
-                              DropdownButton(
-                                items: [
-                                  DropdownMenuItem(
-                                    child: Text('--'),
-                                    value: '',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Yes'),
-                                    value: 'Yes',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('No'),
-                                    value: 'No',
-                                  )
-                                ],
-                                onChanged: (value) {
-                                  if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
-                                    new TextEditingController().clear();
-                                    // print(widget.accessname);
-                                    setdata(4, value, 'Entrance Has Lights?');
-                                  } else if (assessor == therapist &&
-                                      role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
-                                    new TextEditingController().clear();
-                                    // print(widget.accessname);
-                                    setdata(4, value, 'Entrance Has Lights?');
-                                  } else {
-                                    _showSnackBar(
-                                        "You can't change the other fields",
-                                        context);
-                                  }
-                                },
-                                value: getvalue(4),
-                              )
+                              // DropdownButton(
+                              //   items: [
+                              //     DropdownMenuItem(
+                              //       child: Text('--'),
+                              //       value: '',
+                              //     ),
+                              //     DropdownMenuItem(
+                              //       child: Text('Yes'),
+                              //       value: 'Yes',
+                              //     ),
+                              //     DropdownMenuItem(
+                              //       child: Text('No'),
+                              //       value: 'No',
+                              //     )
+                              //   ],
+                              //   onChanged: (value) {
+                              //     if (role != "therapist") {
+                              //       FocusScope.of(context).requestFocus();
+                              //       new TextEditingController().clear();
+                              //       // print(widget.accessname);
+                              //       setdata(4, value, 'Entrance Has Lights?');
+                              //     } else if (assessor == therapist &&
+                              //         role == "therapist") {
+                              //       FocusScope.of(context).requestFocus();
+                              //       new TextEditingController().clear();
+                              //       // print(widget.accessname);
+                              //       setdata(4, value, 'Entrance Has Lights?');
+                              //     } else {
+                              //       _showSnackBar(
+                              //           "You can't change the other fields",
+                              //           context);
+                              //     }
+                              //   },
+                              //   value: getvalue(4),
+                              // ),
+                              Container(
+                                height: 35,
+                                child: ToggleButtons(
+                                  borderColor: Colors.black,
+                                  fillColor: Colors.green,
+                                  borderWidth: 0,
+                                  selectedBorderColor: Colors.black,
+                                  selectedColor: Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        'Yes',
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        'No',
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ),
+                                  ],
+                                  onPressed: (int select) {
+                                    if (assessor == therapist &&
+                                        role == "therapist") {
+                                      setState(() {
+                                        for (int i = 0;
+                                            i <
+                                                widget
+                                                    .wholelist[0]
+                                                        [widget.accessname]
+                                                        ['question']['4']
+                                                        ['toggle']
+                                                    .length;
+                                            i++) {
+                                          widget.wholelist[0][widget.accessname]
+                                                  ['question']['4']['toggle']
+                                              [i] = i == select;
+                                        }
+                                      });
+                                      setdata(
+                                          4,
+                                          widget.wholelist[0][widget.accessname]
+                                                  ['question']['4']['toggle'][0]
+                                              ? 'Yes'
+                                              : 'No',
+                                          'Entrance Has Lights?');
+                                    } else if (role != "therapist") {
+                                      setState(() {
+                                        for (int i = 0;
+                                            i <
+                                                widget
+                                                    .wholelist[0]
+                                                        [widget.accessname]
+                                                        ['question']['4']
+                                                        ['toggle']
+                                                    .length;
+                                            i++) {
+                                          widget.wholelist[0][widget.accessname]
+                                                  ['question']['4']['toggle']
+                                              [i] = i == select;
+                                        }
+                                      });
+                                      setdata(
+                                          4,
+                                          widget.wholelist[0][widget.accessname]
+                                                  ['question']['4']['toggle'][0]
+                                              ? 'Yes'
+                                              : 'No',
+                                          'Entrance Has Lights?');
+                                    } else {
+                                      _showSnackBar(
+                                          "You can't change the other fields",
+                                          context);
+                                    }
+                                  },
+                                  isSelected: widget.wholelist[0]
+                                          [widget.accessname]['question']['4']
+                                          ['toggle']
+                                      .cast<bool>(),
+                                ),
+                              ),
                             ],
+                          ),
+                          SizedBox(
+                            height: 10,
                           ),
                           (getvalue(4) == 'No')
                               ? getrecomain(4, true, context)
@@ -1795,7 +1968,7 @@ class _PathwayUIState extends State<PathwayUI> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                width: MediaQuery.of(context).size.width * .6,
+                                width: MediaQuery.of(context).size.width * .58,
                                 child: Text('Smoke Detector Present?',
                                     style: TextStyle(
                                       color: Color.fromRGBO(10, 80, 106, 1),
@@ -1819,54 +1992,139 @@ class _PathwayUIState extends State<PathwayUI> {
                               //     padding:
                               //         const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
                               // child:
-                              DropdownButton(
-                                items: [
-                                  DropdownMenuItem(
-                                    child: Text('--'),
-                                    value: '',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('Yes'),
-                                    value: 'Yes',
-                                  ),
-                                  DropdownMenuItem(
-                                    child: Text('No'),
-                                    value: 'No',
-                                  ),
-                                ],
-                                onChanged: (value) {
-                                  if (assessor == therapist &&
-                                      role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
-                                    new TextEditingController().clear();
-                                    // print(widget.accessname);
-                                    setdata(
-                                        6, value, 'Smoke Detector Present?');
-                                  } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
-                                    new TextEditingController().clear();
-                                    // print(widget.accessname);
-                                    setdata(
-                                        6, value, 'Smoke Detector Present?');
-                                  } else {
-                                    _showSnackBar(
-                                        "You can't change the other fields",
-                                        context);
-                                  }
-                                },
-                                value: getvalue(6),
+                              // DropdownButton(
+                              //   items: [
+                              //     DropdownMenuItem(
+                              //       child: Text('--'),
+                              //       value: '',
+                              //     ),
+                              //     DropdownMenuItem(
+                              //       child: Text('Yes'),
+                              //       value: 'Yes',
+                              //     ),
+                              //     DropdownMenuItem(
+                              //       child: Text('No'),
+                              //       value: 'No',
+                              //     ),
+                              //   ],
+                              //   onChanged: (value) {
+                              //     if (assessor == therapist &&
+                              //         role == "therapist") {
+                              //       FocusScope.of(context).requestFocus();
+                              //       new TextEditingController().clear();
+                              //       // print(widget.accessname);
+                              //       setdata(
+                              //           6, value, 'Smoke Detector Present?');
+                              //     } else if (role != "therapist") {
+                              //       FocusScope.of(context).requestFocus();
+                              //       new TextEditingController().clear();
+                              //       // print(widget.accessname);
+                              //       setdata(
+                              //           6, value, 'Smoke Detector Present?');
+                              //     } else {
+                              //       _showSnackBar(
+                              //           "You can't change the other fields",
+                              //           context);
+                              //     }
+                              //   },
+                              //   value: getvalue(6),
+                              // ),
+                              Container(
+                                height: 35,
+                                child: ToggleButtons(
+                                  borderColor: Colors.black,
+                                  fillColor: Colors.green,
+                                  borderWidth: 0,
+                                  selectedBorderColor: Colors.black,
+                                  selectedColor: Colors.white,
+                                  borderRadius: BorderRadius.circular(20),
+                                  children: <Widget>[
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        'Yes',
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        'No',
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ),
+                                  ],
+                                  onPressed: (int select) {
+                                    if (assessor == therapist &&
+                                        role == "therapist") {
+                                      setState(() {
+                                        for (int i = 0;
+                                            i <
+                                                widget
+                                                    .wholelist[0]
+                                                        [widget.accessname]
+                                                        ['question']['6']
+                                                        ['toggle']
+                                                    .length;
+                                            i++) {
+                                          widget.wholelist[0][widget.accessname]
+                                                  ['question']['6']['toggle']
+                                              [i] = i == select;
+                                        }
+                                      });
+                                      setdata(
+                                          6,
+                                          widget.wholelist[0][widget.accessname]
+                                                  ['question']['6']['toggle'][0]
+                                              ? 'Yes'
+                                              : 'No',
+                                          'Smoke Detector Present?');
+                                    } else if (role != "therapist") {
+                                      setState(() {
+                                        for (int i = 0;
+                                            i <
+                                                widget
+                                                    .wholelist[0]
+                                                        [widget.accessname]
+                                                        ['question']['6']
+                                                        ['toggle']
+                                                    .length;
+                                            i++) {
+                                          widget.wholelist[0][widget.accessname]
+                                                  ['question']['6']['toggle']
+                                              [i] = i == select;
+                                        }
+                                      });
+                                      setdata(
+                                          6,
+                                          widget.wholelist[0][widget.accessname]
+                                                  ['question']['6']['toggle'][0]
+                                              ? 'Yes'
+                                              : 'No',
+                                          'Smoke Detector Present?');
+                                    } else {
+                                      _showSnackBar(
+                                          "You can't change the other fields",
+                                          context);
+                                    }
+                                  },
+                                  isSelected: widget.wholelist[0]
+                                          [widget.accessname]['question']['6']
+                                          ['toggle']
+                                      .cast<bool>(),
+                                ),
                               ),
                               //   ),
                               // )
                             ],
                           ),
+                          SizedBox(
+                            height: 10,
+                          ),
                           (getvalue(6) == 'No')
                               ? getrecomain(6, true, context)
                               : SizedBox(),
-
-                          SizedBox(
-                            height: 15,
-                          ),
+                          SizedBox(height: 15),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -2599,74 +2857,350 @@ class _PathwayUIState extends State<PathwayUI> {
                                                             ['question']["8"]
                                                         ['Railling']['OneSided']
                                                     ['GoingUp'],
-                                              )
+                                              ),
+                                              // Container(
+                                              //   height: 35,
+                                              //   child: ToggleButtons(
+                                              //     borderColor: Colors.black,
+                                              //     fillColor: Colors.green,
+                                              //     borderWidth: 0,
+                                              //     selectedBorderColor:
+                                              //         Colors.black,
+                                              //     selectedColor: Colors.white,
+                                              //     borderRadius:
+                                              //         BorderRadius.circular(20),
+                                              //     children: <Widget>[
+                                              //       Padding(
+                                              //         padding:
+                                              //             const EdgeInsets.all(
+                                              //                 8.0),
+                                              //         child: Text(
+                                              //           'Left',
+                                              //           style: TextStyle(
+                                              //               fontSize: 16),
+                                              //         ),
+                                              //       ),
+                                              //       Padding(
+                                              //         padding:
+                                              //             const EdgeInsets.all(
+                                              //                 8.0),
+                                              //         child: Text(
+                                              //           'Right',
+                                              //           style: TextStyle(
+                                              //               fontSize: 16),
+                                              //         ),
+                                              //       ),
+                                              //     ],
+                                              //     onPressed: (int select) {
+                                              //       if (assessor == therapist &&
+                                              //           role == "therapist") {
+                                              //         setState(() {
+                                              //           for (int i = 0;
+                                              //               i < 2;
+                                              //               // widget
+                                              //               //     .wholelist[
+                                              //               //         0][
+                                              //               //         widget
+                                              //               //             .accessname]
+                                              //               //         [
+                                              //               //         'question']
+                                              //               //         ["8"][
+                                              //               //         'Railling']
+                                              //               //         [
+                                              //               //         'OneSided']
+                                              //               //         [
+                                              //               //         'toggel1'].length;
+                                              //               i++) {
+                                              //             widget.wholelist[0][widget.accessname]
+                                              //                                 [
+                                              //                                 'question']
+                                              //                             ["8"][
+                                              //                         'Railling']
+                                              //                     [
+                                              //                     'OneSided']['toggle1']
+                                              //                 [i] = i == select;
+                                              //           }
+                                              //         });
+
+                                              //         widget.wholelist[0][widget.accessname]
+                                              //                     ['question']["8"]
+                                              //                     ['Railling']['OneSided']
+                                              //                     ['toggle1'][0]
+                                              //                 .cast<bool>()
+                                              //             ? widget.wholelist[0][widget.accessname]['question']
+                                              //                     ["8"]['Railling']['OneSided']['GoingUp'] =
+                                              //                 'Left'
+                                              //             : widget.wholelist[0][widget.accessname]
+                                              //                         ['question']["8"]
+                                              //                     ['Railling']['OneSided']
+                                              //                 ['GoingUp'] = 'Right';
+                                              //       } else if (role !=
+                                              //           "therapist") {
+                                              //         setState(() {
+                                              //           for (int i = 0;
+                                              //               i < 2;
+                                              //               // widget
+                                              //               //     .wholelist[
+                                              //               //         0][
+                                              //               //         widget
+                                              //               //             .accessname]
+                                              //               //         [
+                                              //               //         'question']
+                                              //               //         ["8"][
+                                              //               //         'Railling']
+                                              //               //         [
+                                              //               //         'OneSided']
+                                              //               //         [
+                                              //               //         'toggel1'].length;
+                                              //               i++) {
+                                              //             widget.wholelist[0][widget.accessname]
+                                              //                                 [
+                                              //                                 'question']
+                                              //                             ["8"][
+                                              //                         'Railling']
+                                              //                     [
+                                              //                     'OneSided']['toggle1']
+                                              //                 [i] = i == select;
+                                              //           }
+                                              //         });
+
+                                              //         widget.wholelist[0][widget.accessname]
+                                              //                     ['question']["8"]
+                                              //                     ['Railling']['OneSided']
+                                              //                     ['toggle1'][0]
+                                              //                 .cast<bool>()
+                                              //             ? widget.wholelist[0][widget.accessname]['question']
+                                              //                     ["8"]['Railling']['OneSided']['GoingUp'] =
+                                              //                 'Left'
+                                              //             : widget.wholelist[0][widget.accessname]
+                                              //                         ['question']["8"]
+                                              //                     ['Railling']['OneSided']
+                                              //                 ['GoingUp'] = 'Right';
+                                              //       } else {
+                                              //         _showSnackBar(
+                                              //             "You can't change the other fields",
+                                              //             context);
+                                              //       }
+                                              //     },
+                                              //     isSelected: widget
+                                              //         .wholelist[0]
+                                              //             [widget.accessname]
+                                              //             ['question']["8"]
+                                              //             ['Railling']
+                                              //             ['OneSided']
+                                              //             ['toggle1']
+                                              //         .cast<bool>(),
+                                              //   ),
+                                              // ),
                                             ],
                                           ),
                                         ),
+                                        SizedBox(height: 10),
                                         Container(
                                           child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Container(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    .5,
-                                                child: Text('Going Down',
-                                                    style: TextStyle(
-                                                      color: Color.fromRGBO(
-                                                          10, 80, 106, 1),
-                                                      fontSize: 20,
-                                                    )),
-                                              ),
-                                              DropdownButton(
-                                                items: [
-                                                  DropdownMenuItem(
-                                                    child: Text('--'),
-                                                    value: '',
-                                                  ),
-                                                  DropdownMenuItem(
-                                                    child: Text('Left'),
-                                                    value: 'Left',
-                                                  ),
-                                                  DropdownMenuItem(
-                                                    child: Text('Right'),
-                                                    value: 'Right',
-                                                  ),
-                                                ],
-                                                onChanged: (value) {
-                                                  if (assessor == therapist &&
-                                                      role == "therapist") {
-                                                    widget.wholelist[0][widget
-                                                                    .accessname]
-                                                                ['question']["8"]
-                                                            [
-                                                            'Railling']['OneSided']
-                                                        ['GoingDown'] = value;
-                                                  } else if (role !=
-                                                      "therapist") {
-                                                    widget.wholelist[0][widget
-                                                                    .accessname]
-                                                                ['question']["8"]
-                                                            [
-                                                            'Railling']['OneSided']
-                                                        ['GoingDown'] = value;
-                                                  } else {
-                                                    _showSnackBar(
-                                                        "You can't change the other fields",
-                                                        context);
-                                                  }
-                                                },
-                                                value: widget.wholelist[0][
-                                                                widget
-                                                                    .accessname]
-                                                            ['question']["8"]
-                                                        ['Railling']['OneSided']
-                                                    ['GoingDown'],
-                                              )
-                                            ],
-                                          ),
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      .5,
+                                                  child: Text('Going Down',
+                                                      style: TextStyle(
+                                                        color: Color.fromRGBO(
+                                                            10, 80, 106, 1),
+                                                        fontSize: 20,
+                                                      )),
+                                                ),
+                                                DropdownButton(
+                                                  items: [
+                                                    DropdownMenuItem(
+                                                      child: Text('--'),
+                                                      value: '',
+                                                    ),
+                                                    DropdownMenuItem(
+                                                      child: Text('Left'),
+                                                      value: 'Left',
+                                                    ),
+                                                    DropdownMenuItem(
+                                                      child: Text('Right'),
+                                                      value: 'Right',
+                                                    ),
+                                                  ],
+                                                  onChanged: (value) {
+                                                    if (assessor == therapist &&
+                                                        role == "therapist") {
+                                                      widget.wholelist[0][widget
+                                                                      .accessname]
+                                                                  [
+                                                                  'question']["8"]
+                                                              [
+                                                              'Railling']['OneSided']
+                                                          ['GoingDown'] = value;
+                                                    } else if (role !=
+                                                        "therapist") {
+                                                      widget.wholelist[0][widget
+                                                                      .accessname]
+                                                                  [
+                                                                  'question']["8"]
+                                                              [
+                                                              'Railling']['OneSided']
+                                                          ['GoingDown'] = value;
+                                                    } else {
+                                                      _showSnackBar(
+                                                          "You can't change the other fields",
+                                                          context);
+                                                    }
+                                                  },
+                                                  value: widget.wholelist[0][
+                                                                  widget
+                                                                      .accessname]
+                                                              ['question']["8"]
+                                                          ['Railling']
+                                                      ['OneSided']['GoingDown'],
+                                                )
+                                                //       Container(
+                                                //         height: 35,
+                                                //         child: ToggleButtons(
+                                                //           borderColor: Colors.black,
+                                                //           fillColor: Colors.green,
+                                                //           borderWidth: 0,
+                                                //           selectedBorderColor:
+                                                //               Colors.black,
+                                                //           selectedColor: Colors.white,
+                                                //           borderRadius:
+                                                //               BorderRadius.circular(20),
+                                                //           children: <Widget>[
+                                                //             Padding(
+                                                //               padding:
+                                                //                   const EdgeInsets.all(
+                                                //                       8.0),
+                                                //               child: Text(
+                                                //                 'Left',
+                                                //                 style: TextStyle(
+                                                //                     fontSize: 16),
+                                                //               ),
+                                                //             ),
+                                                //             Padding(
+                                                //               padding:
+                                                //                   const EdgeInsets.all(
+                                                //                       8.0),
+                                                //               child: Text(
+                                                //                 'Right',
+                                                //                 style: TextStyle(
+                                                //                     fontSize: 16),
+                                                //               ),
+                                                //             ),
+                                                //           ],
+                                                //           onPressed: (int select) {
+                                                //             if (assessor == therapist &&
+                                                //                 role == "therapist") {
+                                                //               setState(() {
+                                                //                 for (int i = 0;
+                                                //                     i < 2;
+                                                //                     // widget
+                                                //                     //     .wholelist[
+                                                //                     //         0][
+                                                //                     //         widget
+                                                //                     //             .accessname]
+                                                //                     //         [
+                                                //                     //         'question']
+                                                //                     //         ["8"][
+                                                //                     //         'Railling']
+                                                //                     //         [
+                                                //                     //         'OneSided']
+                                                //                     //         [
+                                                //                     //         'toggel2']
+                                                //                     //     .length;
+                                                //                     i++) {
+                                                //                   widget.wholelist[0][widget.accessname]
+                                                //                                       [
+                                                //                                       'question']
+                                                //                                   ["8"][
+                                                //                               'Railling']
+                                                //                           [
+                                                //                           'OneSided']['toggle2']
+                                                //                       [i] = i == select;
+                                                //                 }
+                                                //               });
+
+                                                //               widget.wholelist[0][widget.accessname]
+                                                //                           ['question']["8"]
+                                                //                           ['Railling']['OneSided']
+                                                //                           ['toggle2'][0]
+                                                //                       .cast<bool>()
+                                                //                   ? widget.wholelist[0][widget.accessname]['question']
+                                                //                           ["8"]['Railling']['OneSided']['GoingDown'] =
+                                                //                       'Left'
+                                                //                   : widget.wholelist[0][widget.accessname]
+                                                //                               ['question']["8"]
+                                                //                           ['Railling']['OneSided']
+                                                //                       ['GoingDown'] = 'Right';
+                                                //             } else if (role !=
+                                                //                 "therapist") {
+                                                //               setState(() {
+                                                //                 for (int i = 0;
+                                                //                     i < 2;
+                                                //                     // widget
+                                                //                     //     .wholelist[
+                                                //                     //         0][
+                                                //                     //         widget
+                                                //                     //             .accessname]
+                                                //                     //         [
+                                                //                     //         'question']
+                                                //                     //         ["8"][
+                                                //                     //         'Railling']
+                                                //                     //         [
+                                                //                     //         'OneSided']
+                                                //                     //         [
+                                                //                     //         'toggel2']
+                                                //                     //     .length;
+                                                //                     i++) {
+                                                //                   widget.wholelist[0][widget.accessname]
+                                                //                                       [
+                                                //                                       'question']
+                                                //                                   ["8"][
+                                                //                               'Railling']
+                                                //                           [
+                                                //                           'OneSided']['toggle2']
+                                                //                       [i] = i == select;
+                                                //                 }
+                                                //               });
+
+                                                //               widget.wholelist[0][widget.accessname]
+                                                //                           ['question']["8"]
+                                                //                           ['Railling']['OneSided']
+                                                //                           ['toggle2'][0]
+                                                //                       .cast<bool>()
+                                                //                   ? widget.wholelist[0][widget.accessname]['question']
+                                                //                           ["8"]['Railling']['OneSided']['GoingDown'] =
+                                                //                       'Left'
+                                                //                   : widget.wholelist[0][widget.accessname]
+                                                //                               ['question']["8"]
+                                                //                           ['Railling']['OneSided']
+                                                //                       ['GoingDown'] = 'Right';
+                                                //             } else {
+                                                //               _showSnackBar(
+                                                //                   "You can't change the other fields",
+                                                //                   context);
+                                                //             }
+                                                //           },
+                                                //           isSelected: widget
+                                                //               .wholelist[0]
+                                                //                   [widget.accessname]
+                                                //                   ['question']["8"]
+                                                //                   ['Railling']
+                                                //                   ['OneSided']
+                                                //                   ['toggle2']
+                                                //               .cast<bool>(),
+                                                //         ),
+                                                //       ),
+                                                //     ],
+                                                //   ),
+                                                // ),
+                                              ]),
                                         ),
                                         (role == 'therapist')
                                             ? getrecomain(8, true, context)
@@ -2741,7 +3275,7 @@ class _PathwayUIState extends State<PathwayUI> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                width: MediaQuery.of(context).size.width * .5,
+                                width: MediaQuery.of(context).size.width * .35,
                                 child: Text(
                                     'Able to Manage Through Doors/Thresholds/ Door Sills?',
                                     style: TextStyle(
@@ -2796,7 +3330,8 @@ class _PathwayUIState extends State<PathwayUI> {
                                           value: 'Max(A) x2',
                                         )
                                       : DropdownMenuItem(
-                                          child: Text('100% Assistance'),
+                                          child:
+                                              Text('75% Assistance (2 People)'),
                                           value: 'Max(A) x2',
                                         ),
                                 ],
@@ -2834,7 +3369,7 @@ class _PathwayUIState extends State<PathwayUI> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                width: MediaQuery.of(context).size.width * .5,
+                                width: MediaQuery.of(context).size.width * .35,
                                 child: Text('Able to Lock/Unlock Doors?',
                                     style: TextStyle(
                                       color: Color.fromRGBO(10, 80, 106, 1),
@@ -2888,7 +3423,8 @@ class _PathwayUIState extends State<PathwayUI> {
                                           value: 'Max(A) x2',
                                         )
                                       : DropdownMenuItem(
-                                          child: Text('100% Assistance'),
+                                          child:
+                                              Text('75% Assistance (2 People)'),
                                           value: 'Max(A) x2',
                                         ),
                                 ],

@@ -79,6 +79,40 @@ class PathwayPro extends ChangeNotifier {
       wholelist[0][accessname]["videos"] = {'name': '', 'url': ''};
     }
 
+    if (wholelist[0][accessname]['question']['1'].containsKey('toggle')) {
+    } else {
+      wholelist[0][accessname]['question']['1']['toggle'] = <bool>[true, false];
+    }
+    if (wholelist[0][accessname]['question']['4'].containsKey('toggle')) {
+    } else {
+      wholelist[0][accessname]['question']['4']['toggle'] = <bool>[true, false];
+    }
+    if (wholelist[0][accessname]['question']['6'].containsKey('toggle')) {
+    } else {
+      wholelist[0][accessname]['question']['6']['toggle'] = <bool>[true, false];
+    }
+
+    // if (wholelist[0][accessname]['question']["8"].containsKey('Railling')) {
+    //   if (wholelist[0][accessname]['question']["8"]['Railling']['OneSided']
+    //           .containsKey('toggle1') &&
+    //       wholelist[0][accessname]['question']["8"]['Railling']['OneSided']
+    //           .containsKey('toggle2')) {
+    //   } else {
+    //     wholelist[0][accessname]['question']["8"]['Railling'] = {
+    //       'OneSided': {
+    //         'toggle1': <bool>[true, false],
+    //         'toggle2': <bool>[true, false]
+    //       },
+    //     };
+    //   }
+    // } else {
+    //   wholelist[0][accessname]['question']["8"]['Railling'] = {
+    //     'OneSided': {
+    //       'toggle1': <bool>[true, false],
+    //       'toggle2': <bool>[true, false]
+    //     },
+    //   };
+    // }
     if (wholelist[0][accessname]['question']["8"].containsKey('Railling')) {
     } else {
       wholelist[0][accessname]['question']["8"]['Railling'] = {
