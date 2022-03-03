@@ -647,7 +647,7 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
     } else if (classname == 'Basement') {
       return 5;
     } else if (classname == 'Swimming Pool') {
-      return 7;
+      return 5;
     }
   }
 

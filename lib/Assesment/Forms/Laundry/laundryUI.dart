@@ -1619,43 +1619,129 @@ class _LaundryUIState extends State<LaundryUI> {
                         SizedBox(
                           height: 5,
                         ),
+                        // Container(
+                        //     // height: 10000,
+                        //     child: TextFormField(
+                        //   initialValue: widget.wholelist[7][widget.accessname]
+                        //       ['question']['14']['Answer'],
+                        //   maxLines: 6,
+                        //   decoration: InputDecoration(
+                        //     focusedBorder: OutlineInputBorder(
+                        //       borderSide: BorderSide(
+                        //           color: Color.fromRGBO(10, 80, 106, 1),
+                        //           width: 1),
+                        //     ),
+                        //     enabledBorder: OutlineInputBorder(
+                        //       borderSide: BorderSide(width: 1),
+                        //     ),
+                        //     // isDense: true,
+                        //     // suffix: Icon(Icons.mic),
+                        //   ),
+                        //   onChanged: (value) {
+                        //     if (assessor == therapist && role == "therapist") {
+                        //       FocusScope.of(context).requestFocus();
+                        //       new TextEditingController().clear();
+                        //       // print(widget.accessname);
+                        //       assesmentprovider.setdata(
+                        //           14, value, 'Observations');
+                        //     } else if (role != "therapist") {
+                        //       FocusScope.of(context).requestFocus();
+                        //       new TextEditingController().clear();
+                        //       // print(widget.accessname);
+                        //       assesmentprovider.setdata(
+                        //           14, value, 'Observations');
+                        //     } else {
+                        //       _showSnackBar(
+                        //           "You can't change the other fields", context);
+                        //     }
+                        //   },
+                        // ))
                         Container(
-                            // height: 10000,
-                            child: TextFormField(
-                          initialValue: widget.wholelist[7][widget.accessname]
-                              ['question']['14']['Answer'],
-                          maxLines: 6,
-                          decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Color.fromRGBO(10, 80, 106, 1),
-                                  width: 1),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(width: 1),
-                            ),
-                            // isDense: true,
-                            // suffix: Icon(Icons.mic),
+                          padding: EdgeInsets.fromLTRB(10, 8, 8, 0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  // initialValue: getvalue(14),
+                                  maxLines: 6,
+                                  showCursor: cur,
+                                  controller:
+                                      assesmentprovider.controllers["field14"],
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                  ),
+
+                                  onChanged: (value) {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    if (assessor == therapist &&
+                                        role == "therapist") {
+                                      assesmentprovider.setreco(14, value);
+                                      assesmentprovider.setdata(
+                                          14, value, 'Oberservations');
+                                    } else if (role != "therapist") {
+                                      assesmentprovider.setreco(14, value);
+                                      assesmentprovider.setdata(
+                                          14, value, 'Oberservations');
+                                    } else {
+                                      _showSnackBar(
+                                          "You can't change the other fields",
+                                          context);
+                                    }
+                                  },
+                                ),
+                              ),
+                              AvatarGlow(
+                                animate:
+                                    assesmentprovider.isListening['field14'],
+                                showTwoGlows: true,
+                                glowColor: Colors.blue,
+                                endRadius: 35.0,
+                                duration: const Duration(milliseconds: 2000),
+                                repeatPauseDuration:
+                                    const Duration(milliseconds: 300),
+                                repeat: true,
+                                child: Container(
+                                  width: 40,
+                                  height: 30,
+                                  padding: EdgeInsets.all(0),
+                                  alignment: Alignment.center,
+                                  margin: EdgeInsets.all(0),
+                                  child: FloatingActionButton(
+                                    heroTag: "btn14",
+                                    child: Icon(
+                                      Icons.mic,
+                                      size: 20,
+                                    ),
+                                    onPressed: () {
+                                      if (assessor == therapist &&
+                                          role == "therapist") {
+                                        assesmentprovider.listen(14);
+                                        assesmentprovider.setdatalisten(14);
+                                      } else if (role != "therapist") {
+                                        assesmentprovider.listen(14);
+                                        assesmentprovider.setdatalisten(14);
+                                      } else {
+                                        _showSnackBar(
+                                            "You can't change the other fields",
+                                            context);
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          onChanged: (value) {
-                            if (assessor == therapist && role == "therapist") {
-                              FocusScope.of(context).requestFocus();
-                              new TextEditingController().clear();
-                              // print(widget.accessname);
-                              assesmentprovider.setdata(
-                                  14, value, 'Observations');
-                            } else if (role != "therapist") {
-                              FocusScope.of(context).requestFocus();
-                              new TextEditingController().clear();
-                              // print(widget.accessname);
-                              assesmentprovider.setdata(
-                                  14, value, 'Observations');
-                            } else {
-                              _showSnackBar(
-                                  "You can't change the other fields", context);
-                            }
-                          },
-                        ))
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: assesmentprovider.colorsset["field${14}"],
+                              width: 1,
+                            ), //Border.all
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
                       ],
                     ),
                   ),

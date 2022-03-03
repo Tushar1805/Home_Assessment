@@ -2050,77 +2050,163 @@ class _BedroomUIState extends State<BedroomUI> {
                         SizedBox(
                           height: 5,
                         ),
+                        // Container(
+                        //     // height: 10000,
+                        //     child: TextFormField(
+                        //   initialValue: widget.wholelist[6][widget.accessname]
+                        //       ['question']["18"]['Answer'],
+                        //   maxLines: 6,
+                        //   decoration: InputDecoration(
+                        //     focusedBorder: OutlineInputBorder(
+                        //       borderSide: BorderSide(
+                        //           color: Color.fromRGBO(10, 80, 106, 1),
+                        //           width: 1),
+                        //     ),
+                        //     enabledBorder: OutlineInputBorder(
+                        //       borderSide: BorderSide(width: 1),
+                        //     ),
+                        //     // isDense: true,
+                        //     // suffix: Icon(Icons.mic),
+                        //   ),
+                        //   onChanged: (value) {
+                        //     if (assessor == therapist && role == "therapist") {
+                        //       FocusScope.of(context).requestFocus();
+                        //       new TextEditingController().clear();
+                        //       // print(widget.accessname);
+                        //       assesmentprovider.setdata(
+                        //           18, value, 'Observations');
+                        //     } else if (role != "therapist") {
+                        //       FocusScope.of(context).requestFocus();
+                        //       new TextEditingController().clear();
+                        //       // print(widget.accessname);
+                        //       assesmentprovider.setdata(
+                        //           18, value, 'Observations');
+                        //     } else {
+                        //       _showSnackBar(
+                        //           "You can't change the other fields", context);
+                        //     }
+
+                        //     // widget.wholelist[6][widget.accessname]['question']
+                        //     //     ["18"]['Question'] = 'Observations';
+
+                        //     // if (value.length == 0) {
+                        //     //   if (widget
+                        //     //           .wholelist[6][widget.accessname]
+                        //     //               ['question']["18"]['Answer']
+                        //     //           .length ==
+                        //     //       0) {
+                        //     //   } else {
+                        //     //     setState(() {
+                        //     //       widget.wholelist[6][widget.accessname]
+                        //     //           ['complete'] -= 1;
+                        //     //       widget.wholelist[6][widget.accessname]
+                        //     //           ['question']["18"]['Answer'] = value;
+                        //     //     });
+                        //     //   }
+                        //     // } else {
+                        //     //   if (widget
+                        //     //           .wholelist[6][widget.accessname]
+                        //     //               ['question']["18"]['Answer']
+                        //     //           .length ==
+                        //     //       0) {
+                        //     //     setState(() {
+                        //     //       widget.wholelist[6][widget.accessname]
+                        //     //           ['complete'] += 1;
+                        //     //     });
+                        //     //   }
+                        //     //   setState(() {
+                        //     //     widget.wholelist[6][widget.accessname]
+                        //     //         ['question']["18"]['Answer'] = value;
+                        //     //   });
+                        //     // }
+                        //   },
+                        // ))
                         Container(
-                            // height: 10000,
-                            child: TextFormField(
-                          initialValue: widget.wholelist[6][widget.accessname]
-                              ['question']["18"]['Answer'],
-                          maxLines: 6,
-                          decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Color.fromRGBO(10, 80, 106, 1),
-                                  width: 1),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(width: 1),
-                            ),
-                            // isDense: true,
-                            // suffix: Icon(Icons.mic),
+                          padding: EdgeInsets.fromLTRB(10, 8, 8, 0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  // initialValue: getvalue(14),
+                                  maxLines: 6,
+                                  showCursor: cur,
+                                  controller:
+                                      assesmentprovider.controllers["field18"],
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                  ),
+
+                                  onChanged: (value) {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    if (assessor == therapist &&
+                                        role == "therapist") {
+                                      assesmentprovider.setreco(18, value);
+                                      assesmentprovider.setdata(
+                                          18, value, 'Oberservations');
+                                    } else if (role != "therapist") {
+                                      assesmentprovider.setreco(18, value);
+                                      assesmentprovider.setdata(
+                                          18, value, 'Oberservations');
+                                    } else {
+                                      _showSnackBar(
+                                          "You can't change the other fields",
+                                          context);
+                                    }
+                                  },
+                                ),
+                              ),
+                              AvatarGlow(
+                                animate:
+                                    assesmentprovider.isListening['field18'],
+                                showTwoGlows: true,
+                                glowColor: Colors.blue,
+                                endRadius: 35.0,
+                                duration: const Duration(milliseconds: 2000),
+                                repeatPauseDuration:
+                                    const Duration(milliseconds: 300),
+                                repeat: true,
+                                child: Container(
+                                  width: 40,
+                                  height: 30,
+                                  padding: EdgeInsets.all(0),
+                                  alignment: Alignment.center,
+                                  margin: EdgeInsets.all(0),
+                                  child: FloatingActionButton(
+                                    heroTag: "btn18",
+                                    child: Icon(
+                                      Icons.mic,
+                                      size: 20,
+                                    ),
+                                    onPressed: () {
+                                      if (assessor == therapist &&
+                                          role == "therapist") {
+                                        assesmentprovider.listen(18);
+                                        assesmentprovider.setdatalisten(18);
+                                      } else if (role != "therapist") {
+                                        assesmentprovider.listen(18);
+                                        assesmentprovider.setdatalisten(18);
+                                      } else {
+                                        _showSnackBar(
+                                            "You can't change the other fields",
+                                            context);
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          onChanged: (value) {
-                            if (assessor == therapist && role == "therapist") {
-                              FocusScope.of(context).requestFocus();
-                              new TextEditingController().clear();
-                              // print(widget.accessname);
-                              assesmentprovider.setdata(
-                                  18, value, 'Observations');
-                            } else if (role != "therapist") {
-                              FocusScope.of(context).requestFocus();
-                              new TextEditingController().clear();
-                              // print(widget.accessname);
-                              assesmentprovider.setdata(
-                                  18, value, 'Observations');
-                            } else {
-                              _showSnackBar(
-                                  "You can't change the other fields", context);
-                            }
-
-                            // widget.wholelist[6][widget.accessname]['question']
-                            //     ["18"]['Question'] = 'Observations';
-
-                            // if (value.length == 0) {
-                            //   if (widget
-                            //           .wholelist[6][widget.accessname]
-                            //               ['question']["18"]['Answer']
-                            //           .length ==
-                            //       0) {
-                            //   } else {
-                            //     setState(() {
-                            //       widget.wholelist[6][widget.accessname]
-                            //           ['complete'] -= 1;
-                            //       widget.wholelist[6][widget.accessname]
-                            //           ['question']["18"]['Answer'] = value;
-                            //     });
-                            //   }
-                            // } else {
-                            //   if (widget
-                            //           .wholelist[6][widget.accessname]
-                            //               ['question']["18"]['Answer']
-                            //           .length ==
-                            //       0) {
-                            //     setState(() {
-                            //       widget.wholelist[6][widget.accessname]
-                            //           ['complete'] += 1;
-                            //     });
-                            //   }
-                            //   setState(() {
-                            //     widget.wholelist[6][widget.accessname]
-                            //         ['question']["18"]['Answer'] = value;
-                            //   });
-                            // }
-                          },
-                        ))
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: assesmentprovider.colorsset["field${18}"],
+                              width: 1,
+                            ), //Border.all
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
                       ],
                     ),
                   ),

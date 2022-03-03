@@ -1814,74 +1814,161 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                         SizedBox(
                           height: 5,
                         ),
-                        Container(
-                            // height: 10000,
-                            child: TextFormField(
-                          initialValue: widget.wholelist[2][widget.accessname]
-                              ['question']['11']['Answer'],
-                          maxLines: 6,
-                          decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Color.fromRGBO(10, 80, 106, 1),
-                                  width: 1),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(width: 1),
-                            ),
-                            // isDense: true,
-                          ),
-                          onChanged: (value) {
-                            if (assessor == therapist && role == "therapist") {
-                              FocusScope.of(context).requestFocus();
-                              new TextEditingController().clear();
-                              provider.setdata(11, value, "Observations");
-                            } else if (role != "therapist") {
-                              FocusScope.of(context).requestFocus();
-                              new TextEditingController().clear();
-                              provider.setdata(11, value, "Observations");
-                            } else {
-                              provider.showSnackBar(
-                                  "You can't change the other fields", context);
-                            }
-                            //   FocusScope.of(context).requestFocus();
-                            //   new TextEditingController().clear();
-                            //   // print(widget.accessname);
-                            //   widget.wholelist[2][widget.accessname]['question']
-                            //       ["11"]['Question'] = 'Observations';
+                        // Container(
+                        //     // height: 10000,
+                        //     child: TextFormField(
+                        //   initialValue: widget.wholelist[2][widget.accessname]
+                        //       ['question']['11']['Answer'],
+                        //   maxLines: 6,
+                        //   decoration: InputDecoration(
+                        //     focusedBorder: OutlineInputBorder(
+                        //       borderSide: BorderSide(
+                        //           color: Color.fromRGBO(10, 80, 106, 1),
+                        //           width: 1),
+                        //     ),
+                        //     enabledBorder: OutlineInputBorder(
+                        //       borderSide: BorderSide(width: 1),
+                        //     ),
+                        //     // isDense: true,
+                        //   ),
+                        //   onChanged: (value) {
+                        //     if (assessor == therapist && role == "therapist") {
+                        //       FocusScope.of(context).requestFocus();
+                        //       new TextEditingController().clear();
+                        //       provider.setdata(11, value, "Observations");
+                        //     } else if (role != "therapist") {
+                        //       FocusScope.of(context).requestFocus();
+                        //       new TextEditingController().clear();
+                        //       provider.setdata(11, value, "Observations");
+                        //     } else {
+                        //       provider.showSnackBar(
+                        //           "You can't change the other fields", context);
+                        //     }
+                        //     //   FocusScope.of(context).requestFocus();
+                        //     //   new TextEditingController().clear();
+                        //     //   // print(widget.accessname);
+                        //     //   widget.wholelist[2][widget.accessname]['question']
+                        //     //       ["11"]['Question'] = 'Observations';
 
-                            //   if (value.length == 0) {
-                            //     if (widget
-                            //             .wholelist[2][widget.accessname]
-                            //                 ['question']['11']['Answer']
-                            //             .length ==
-                            //         0) {
-                            //     } else {
-                            //       setState(() {
-                            //         widget.wholelist[2][widget.accessname]
-                            //             ['complete'] -= 1;
-                            //         widget.wholelist[2][widget.accessname]
-                            //             ['question']["11"]['Answer'] = value;
-                            //       });
-                            //     }
-                            //   } else {
-                            //     if (widget
-                            //             .wholelist[2][widget.accessname]
-                            //                 ['question']["11"]['Answer']
-                            //             .length ==
-                            //         0) {
-                            //       setState(() {
-                            //         widget.wholelist[2][widget.accessname]
-                            //             ['complete'] += 1;
-                            //       });
-                            //     }
-                            //     setState(() {
-                            //       widget.wholelist[2][widget.accessname]
-                            //           ['question']["11"]['Answer'] = value;
-                            //     });
-                            //   }
-                          },
-                        ))
+                        //     //   if (value.length == 0) {
+                        //     //     if (widget
+                        //     //             .wholelist[2][widget.accessname]
+                        //     //                 ['question']['11']['Answer']
+                        //     //             .length ==
+                        //     //         0) {
+                        //     //     } else {
+                        //     //       setState(() {
+                        //     //         widget.wholelist[2][widget.accessname]
+                        //     //             ['complete'] -= 1;
+                        //     //         widget.wholelist[2][widget.accessname]
+                        //     //             ['question']["11"]['Answer'] = value;
+                        //     //       });
+                        //     //     }
+                        //     //   } else {
+                        //     //     if (widget
+                        //     //             .wholelist[2][widget.accessname]
+                        //     //                 ['question']["11"]['Answer']
+                        //     //             .length ==
+                        //     //         0) {
+                        //     //       setState(() {
+                        //     //         widget.wholelist[2][widget.accessname]
+                        //     //             ['complete'] += 1;
+                        //     //       });
+                        //     //     }
+                        //     //     setState(() {
+                        //     //       widget.wholelist[2][widget.accessname]
+                        //     //           ['question']["11"]['Answer'] = value;
+                        //     //     });
+                        //     //   }
+                        //   },
+                        // ))
+                        Container(
+                          padding: EdgeInsets.fromLTRB(10, 8, 8, 0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  // initialValue: getvalue(14),
+                                  maxLines: 6,
+                                  showCursor: cur,
+                                  controller: _controllers["field11"],
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                  ),
+
+                                  onChanged: (value) {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    if (assessor == therapist &&
+                                        role == "therapist") {
+                                      provider.setreco(11, value);
+                                      provider.setdata(
+                                          11, value, 'Oberservations');
+                                    } else if (role != "therapist") {
+                                      provider.setreco(11, value);
+                                      provider.setdata(
+                                          11, value, 'Oberservations');
+                                    } else {
+                                      _showSnackBar(
+                                          "You can't change the other fields",
+                                          context);
+                                    }
+                                  },
+                                ),
+                              ),
+                              AvatarGlow(
+                                animate: isListening["field11"],
+                                glowColor: Colors.blue,
+                                endRadius: 35.0,
+                                duration: const Duration(milliseconds: 2000),
+                                repeatPauseDuration:
+                                    const Duration(milliseconds: 300),
+                                repeat: true,
+                                child: Container(
+                                  width: 40,
+                                  height: 30,
+                                  padding: EdgeInsets.all(0),
+                                  alignment: Alignment.center,
+                                  margin: EdgeInsets.all(0),
+                                  child: FloatingActionButton(
+                                    heroTag: "btn11",
+                                    child: Icon(
+                                      Icons.mic,
+                                      size: 20,
+                                    ),
+                                    onPressed: () {
+                                      if (assessor == therapist &&
+                                          role == "therapist") {
+                                        _listen(11);
+                                        setdatalisten(11);
+                                      } else if (role != "therapist") {
+                                        _listen(11);
+                                        setdatalisten(11);
+                                      } else {
+                                        _showSnackBar(
+                                            "You can't change the other fields",
+                                            context);
+                                      }
+                                      // print("1: ${isListening['field12']}");
+                                      // ticklisten(12);
+                                      // print("2: ${isListening['field12']}");
+                                      print(isListening);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: colorsset["field${11}"],
+                              width: 1,
+                            ), //Border.all
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -2141,6 +2228,16 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                   value: '1',
                   onChanged: (value) {
                     provider.setprio(index, value);
+                    setState(() {
+                      if (index == 10) {
+                        setState(() {
+                          _controllerstreco['field10'].text =
+                              'Please install a well functioning Smoke detector Immediately. Most states have free Smoke Detectors available for FREE. Please contact your local Fire Department';
+                          provider.setrecothera(10,
+                              'Please install a well functioning Smoke detector Immediately. Most states have free Smoke Detectors available for FREE. Please contact your local Fire Department');
+                        });
+                      }
+                    });
                   },
                   groupValue: provider.getprio(index),
                 ),
@@ -2151,6 +2248,12 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                     setState(() {
                       provider.setprio(index, value);
                     });
+                    if (index == 10) {
+                      setState(() {
+                        _controllerstreco['field10'].text = '';
+                        provider.setrecothera(10, '');
+                      });
+                    }
                   },
                   groupValue: provider.getprio(index),
                 ),
@@ -2161,6 +2264,12 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                     setState(() {
                       provider.setprio(index, value);
                     });
+                    if (index == 10) {
+                      setState(() {
+                        _controllerstreco['field10'].text = '';
+                        provider.setrecothera(10, '');
+                      });
+                    }
                   },
                   groupValue: provider.getprio(index),
                 ),

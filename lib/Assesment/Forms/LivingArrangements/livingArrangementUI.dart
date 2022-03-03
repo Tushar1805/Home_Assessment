@@ -672,17 +672,19 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
         bool available = await _speech.initialize(
           onStatus: (val) {
             print('onStatus: $val');
-            setState(() {
-              // _isListening = false;
-              //
-            });
+
+            // setState(() {
+
+            //   // _isListening = false;
+            //   //
+            // });
           },
           onError: (val) => print('onError: $val'),
         );
         if (available) {
           setState(() {
             _isListening = true;
-            //colorsset["field$index"] = Colors.red;
+            // colorsset["field$index"] = Colors.red;
             isListening['field$index'] = true;
           });
           _speech.listen(
@@ -703,6 +705,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
         });
         _speech.stop();
       }
+      print(isListening);
     }
 
     setdatalisten(index) {
@@ -2717,7 +2720,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Container(
-                          width: MediaQuery.of(context).size.width * .5,
+                          width: MediaQuery.of(context).size.width * .45,
                           child: Text('Access to Curbside',
                               style: TextStyle(
                                 color: Color.fromRGBO(10, 80, 106, 1),
@@ -2725,7 +2728,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                               )),
                         ),
                         Container(
-                          width: MediaQuery.of(context).size.width * .35,
+                          width: MediaQuery.of(context).size.width * .45,
                           child: DropdownButton(
                             isExpanded: true,
                             items: [
@@ -2824,7 +2827,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 endRadius: 300.0,
                                 duration: const Duration(milliseconds: 2000),
                                 repeatPauseDuration:
-                                    const Duration(milliseconds: 100),
+                                    const Duration(milliseconds: 50),
                                 repeat: true,
                                 child: FlatButton(
                                   child: Icon(isListening['field${10}']
@@ -3141,10 +3144,10 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                         //     // print(widget.accessname);
                         //     if (assessor == therapist && role == "therapist") {
                         //       assesspro.setdata(12, value,
-                        //           'Smoke setector batteries checked annually/replaced?');
+                        //           'Smoke detector batteries checked annually/replaced?');
                         //     } else if (role != "therapist") {
                         //       assesspro.setdata(12, value,
-                        //           'Smoke setector batteries checked annually/replaced?');
+                        //           'Smoke detector batteries checked annually/replaced?');
                         //     } else {
                         //       _showSnackBar(
                         //           "You can't change the other fields", context);
@@ -3199,7 +3202,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                             ['question']['12']['toggle'][0]
                                         ? 'Yes'
                                         : 'No',
-                                    'Smoke setector batteries checked annually/replaced?');
+                                    'Smoke detector batteries checked annually/replaced?');
                               } else if (role != "therapist") {
                                 setState(() {
                                   for (int i = 0;
@@ -3220,7 +3223,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                             ['question']['12']['toggle'][0]
                                         ? 'Yes'
                                         : 'No',
-                                    'Smoke setector batteries checked annually/replaced?');
+                                    'Smoke detector batteries checked annually/replaced?');
                               } else {
                                 _showSnackBar(
                                     "You can't change the other fields",
@@ -3307,35 +3310,120 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                     SizedBox(
                       height: 10,
                     ),
+                    // Container(
+                    //     // height: 10000,
+                    //     child: TextFormField(
+                    //   initialValue: getvalue(14),
+                    //   maxLines: 6,
+                    //   decoration: InputDecoration(
+                    //     focusedBorder: OutlineInputBorder(
+                    //       borderSide: BorderSide(
+                    //           color: Color.fromRGBO(10, 80, 106, 1), width: 1),
+                    //     ),
+                    //     enabledBorder: OutlineInputBorder(
+                    //       borderSide: BorderSide(width: 1),
+                    //     ),
+                    //     // isDense: true,
+                    //   ),
+                    //   onChanged: (value) {
+                    //     FocusScope.of(context).requestFocus();
+                    //     new TextEditingController().clear();
+                    //     // print(widget.accessname);
+                    //     if (assessor == therapist && role == "therapist") {
+                    //       assesspro.setdata(14, value, 'Observations');
+                    //     } else if (role != "therapist") {
+                    //       assesspro.setdata(14, value, 'Observations');
+                    //     } else {
+                    //       _showSnackBar(
+                    //           "You can't change the other fields", context);
+                    //     }
+                    //   },
+                    // )),
                     Container(
-                        // height: 10000,
-                        child: TextFormField(
-                      initialValue: getvalue(14),
-                      maxLines: 6,
-                      decoration: InputDecoration(
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(
-                              color: Color.fromRGBO(10, 80, 106, 1), width: 1),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(width: 1),
-                        ),
-                        // isDense: true,
+                      padding: EdgeInsets.fromLTRB(10, 8, 8, 0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              // initialValue: getvalue(14),
+                              maxLines: 6,
+                              showCursor: cur,
+                              controller: _controllers["field14"],
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                              ),
+
+                              onChanged: (value) {
+                                FocusScope.of(context).requestFocus();
+                                new TextEditingController().clear();
+                                // print(widget.accessname);
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  setreco(14, value);
+                                  setdata(14, value, 'Oberservations');
+                                } else if (role != "therapist") {
+                                  setreco(14, value);
+                                  setdata(14, value, 'Oberservations');
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
+                              },
+                            ),
+                          ),
+                          AvatarGlow(
+                            animate: isListening["field14"],
+                            glowColor: Colors.blue,
+                            endRadius: 35.0,
+                            duration: const Duration(milliseconds: 2000),
+                            repeatPauseDuration:
+                                const Duration(milliseconds: 300),
+                            repeat: true,
+                            child: Container(
+                              width: 40,
+                              height: 30,
+                              padding: EdgeInsets.all(0),
+                              alignment: Alignment.center,
+                              margin: EdgeInsets.all(0),
+                              child: FloatingActionButton(
+                                heroTag: "btn14",
+                                child: Icon(
+                                  Icons.mic,
+                                  size: 20,
+                                ),
+                                onPressed: () {
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    _listen(14);
+                                    setdatalisten(14);
+                                  } else if (role != "therapist") {
+                                    _listen(14);
+                                    setdatalisten(14);
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
+                                  // print("1: ${isListening['field12']}");
+                                  // ticklisten(12);
+                                  // print("2: ${isListening['field12']}");
+                                  print(isListening);
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                      onChanged: (value) {
-                        FocusScope.of(context).requestFocus();
-                        new TextEditingController().clear();
-                        // print(widget.accessname);
-                        if (assessor == therapist && role == "therapist") {
-                          assesspro.setdata(14, value, 'Observations');
-                        } else if (role != "therapist") {
-                          assesspro.setdata(14, value, 'Observations');
-                        } else {
-                          _showSnackBar(
-                              "You can't change the other fields", context);
-                        }
-                      },
-                    )),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: colorsset["field${14}"],
+                          width: 1,
+                        ), //Border.all
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -5455,10 +5543,10 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
     //                               if (assessor == therapist &&
     //                                   role == "therapist") {
     //                                 assesspro.setdata(12, value,
-    //                                     'Smoke setector batteries checked annually/replaced?');
+    //                                     'Smoke detector batteries checked annually/replaced?');
     //                               } else if (role != "therapist") {
     //                                 assesspro.setdata(12, value,
-    //                                     'Smoke setector batteries checked annually/replaced?');
+    //                                     'Smoke detector batteries checked annually/replaced?');
     //                               } else {
     //                                 _showSnackBar(
     //                                     "You can't change the other fields",

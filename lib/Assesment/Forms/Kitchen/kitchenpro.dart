@@ -455,6 +455,13 @@ class KitchenPro extends ChangeNotifier {
                   value: '1',
                   onChanged: (value) {
                     assesmentprovider.setprio(index, value);
+                    if (index == 17) {
+                      controllerstreco['field17'].text =
+                          'Please install a well functioning Smoke detector Immediately. Most states have free Smoke Detectors available for FREE. Please contact your local Fire Department';
+                      assesmentprovider.setrecothera(17,
+                          'Please install a well functioning Smoke detector Immediately. Most states have free Smoke Detectors available for FREE. Please contact your local Fire Department');
+                    }
+                    notifyListeners();
                   },
                   groupValue: assesmentprovider.getprio(index),
                 ),
@@ -463,6 +470,10 @@ class KitchenPro extends ChangeNotifier {
                   value: '2',
                   onChanged: (value) {
                     assesmentprovider.setprio(index, value);
+                    if (index == 17) {
+                      controllerstreco['field17'].text = '';
+                      assesmentprovider.setrecothera(17, '');
+                    }
                     notifyListeners();
                   },
                   groupValue: assesmentprovider.getprio(index),
@@ -472,6 +483,10 @@ class KitchenPro extends ChangeNotifier {
                   value: '3',
                   onChanged: (value) {
                     assesmentprovider.setprio(index, value);
+                    if (index == 17) {
+                      controllerstreco['field17'].text = '';
+                      assesmentprovider.setrecothera(17, '');
+                    }
                     notifyListeners();
                   },
                   groupValue: assesmentprovider.getprio(index),

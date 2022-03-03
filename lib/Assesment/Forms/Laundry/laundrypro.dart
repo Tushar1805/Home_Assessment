@@ -420,8 +420,16 @@ class LaundryPro extends ChangeNotifier {
               labelText: 'Recommendation'),
           onChanged: (value) {
             // print(accessname);
+            // if (index == 13) {
+            //   if (getprio(13) == '1') {
+            //     controllerstreco['field13'].text =
+            //         'Please install a well functioning Smoke detector Immediately. Most states have free Smoke Detectors available for FREE. Please contact your local Fire Department.';
+            //     assesmentprovider.setrecothera(13,
+            //         'Please install a well functioning Smoke detector Immediately. Most states have free Smoke Detectors available for FREE. Please contact your local Fire Department.');
+            //   }
+            // } else {
             assesmentprovider.setrecothera(index, value);
-            print('hejdfdf');
+            // }
           },
         ),
         Row(
@@ -434,6 +442,13 @@ class LaundryPro extends ChangeNotifier {
                   value: '1',
                   onChanged: (value) {
                     assesmentprovider.setprio(index, value);
+                    if (index == 13) {
+                      controllerstreco['field13'].text =
+                          'Please install a well functioning Smoke detector Immediately. Most states have free Smoke Detectors available for FREE. Please contact your local Fire Department.';
+                      assesmentprovider.setrecothera(13,
+                          'Please install a well functioning Smoke detector Immediately. Most states have free Smoke Detectors available for FREE. Please contact your local Fire Department.');
+                    }
+                    notifyListeners();
                   },
                   groupValue: assesmentprovider.getprio(index),
                 ),
@@ -442,6 +457,10 @@ class LaundryPro extends ChangeNotifier {
                   value: '2',
                   onChanged: (value) {
                     assesmentprovider.setprio(index, value);
+                    if (index == 13) {
+                      controllerstreco['field13'].text = '';
+                      assesmentprovider.setrecothera(13, '');
+                    }
                     notifyListeners();
                   },
                   groupValue: assesmentprovider.getprio(index),

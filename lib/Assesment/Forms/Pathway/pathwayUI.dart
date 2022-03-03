@@ -82,7 +82,10 @@ class _PathwayUIState extends State<PathwayUI> {
         i < widget.wholelist[0][widget.accessname]['question'].length;
         i++) {
       _controllers["field${i + 1}"] = TextEditingController();
-      _controllerstreco["field${i + 1}"] = TextEditingController();
+      _controllerstreco["field${i + 1}"] = TextEditingController(
+          text: getprio(6) == '1'
+              ? 'Please install a well functioning Smoke detector Immediately. Most states have free Smoke Detectors available for FREE. Please contact your local Fire Department'
+              : 'Recommendation');
       isListening["field${i + 1}"] = false;
       _controllers["field${i + 1}"].text = widget.wholelist[0]
           [widget.accessname]['question']["${i + 1}"]['Recommendation'];
@@ -861,7 +864,7 @@ class _PathwayUIState extends State<PathwayUI> {
       print('clicked');
       setState(() {
         // _isListening = false;
-        // isListening['field$index'] = false;
+        isListening['field$index'] = false;
         colorsset["field$index"] = Color.fromRGBO(10, 80, 106, 1);
       });
       _speech.stop();
@@ -876,6 +879,14 @@ class _PathwayUIState extends State<PathwayUI> {
     }
 
     Widget getrecowid(index, BuildContext context) {
+      // if (index == 6) {
+      //   getprio(index) == '1'
+      //       ? widget.wholelist[0][widget.accessname]['question']["$index"]
+      //               ['Recommendationthera'] =
+      //           'Please install a well functioning Smoke detector Immediately. Most states have free Smoke Detectors available for FREE. Please contact your local Fire Department'
+      //       : widget.wholelist[0][widget.accessname]['question']["$index"]
+      //           ['Recommendationthera'] = '';
+      // }
       if (widget.wholelist[0][widget.accessname]["question"]["$index"]
               ["Recommendationthera"] !=
           "") {
@@ -923,6 +934,7 @@ class _PathwayUIState extends State<PathwayUI> {
           }
         }
       }
+
       return Column(
         children: [
           SizedBox(height: 8),
@@ -935,51 +947,57 @@ class _PathwayUIState extends State<PathwayUI> {
             },
             controller: _controllerstreco["field$index"],
             decoration: InputDecoration(
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                      color: (isColor) ? Colors.green : Colors.red, width: 1),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(
-                      width: 1, color: (isColor) ? Colors.green : Colors.red),
-                ),
-                suffix: Container(
-                  // color: Colors.red,
-                  width: 40,
-                  height: 30,
-                  padding: EdgeInsets.all(0),
-                  child: Row(children: [
-                    Container(
-                      // color: Colors.green,
-                      alignment: Alignment.center,
-                      width: 40,
-                      height: 60,
-                      margin: EdgeInsets.all(0),
-                      child: AvatarGlow(
-                        animate: isListening['field$index'],
-                        glowColor: Theme.of(context).primaryColor,
-                        endRadius: 500.0,
-                        duration: const Duration(milliseconds: 2000),
-                        repeatPauseDuration: const Duration(milliseconds: 100),
-                        repeat: true,
-                        child: FloatingActionButton(
-                          heroTag: "btn$index",
-                          child: Icon(
-                            Icons.mic,
-                            size: 20,
-                          ),
-                          onPressed: () {
-                            _listen(index, true);
-                            setdatalistenThera(index);
-                          },
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: (isColor) ? Colors.green : Colors.red, width: 1),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    width: 1, color: (isColor) ? Colors.green : Colors.red),
+              ),
+              suffix: Container(
+                // color: Colors.red,
+                width: 40,
+                height: 30,
+                padding: EdgeInsets.all(0),
+                child: Row(children: [
+                  Container(
+                    // color: Colors.green,
+                    alignment: Alignment.center,
+                    width: 40,
+                    height: 60,
+                    margin: EdgeInsets.all(0),
+                    child: AvatarGlow(
+                      animate: isListening['field$index'],
+                      glowColor: Theme.of(context).primaryColor,
+                      endRadius: 500.0,
+                      duration: const Duration(milliseconds: 2000),
+                      repeatPauseDuration: const Duration(milliseconds: 100),
+                      repeat: true,
+                      child: FloatingActionButton(
+                        heroTag: "btn${index + 100}",
+                        child: Icon(
+                          Icons.mic,
+                          size: 20,
                         ),
+                        onPressed: () {
+                          _listen(index, true);
+                          setdatalistenThera(index);
+                        },
                       ),
                     ),
-                  ]),
-                ),
-                labelStyle:
-                    TextStyle(color: (isColor) ? Colors.green : Colors.red),
-                labelText: 'Recommendation'),
+                  ),
+                ]),
+              ),
+              labelStyle:
+                  TextStyle(color: (isColor) ? Colors.green : Colors.red),
+              labelText: 'Recommendation',
+            ),
+            // initialValue: (index == 6)
+            // ? getprio(index) == '1'
+            //     ? 'Please install a well functioning Smoke detector Immediately. Most states have free Smoke Detectors available for FREE. Please contact your local Fire Department'
+            //     : ''
+            // : ""
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -991,6 +1009,14 @@ class _PathwayUIState extends State<PathwayUI> {
                     value: '1',
                     onChanged: (value) {
                       setprio(index, value);
+                      if (index == 6) {
+                        setState(() {
+                          _controllerstreco['field6'].text =
+                              'Please install a well functioning Smoke detector Immediately. Most states have free Smoke Detectors available for FREE. Please contact your local Fire Department';
+                          setrecothera(6,
+                              'Please install a well functioning Smoke detector Immediately. Most states have free Smoke Detectors available for FREE. Please contact your local Fire Department');
+                        });
+                      }
                     },
                     groupValue: getprio(index),
                   ),
@@ -1000,6 +1026,10 @@ class _PathwayUIState extends State<PathwayUI> {
                     onChanged: (value) {
                       setState(() {
                         setprio(index, value);
+                        if (index == 6) {
+                          _controllerstreco['field6'].text = '';
+                          setrecothera(6, _controllerstreco['field6'].text);
+                        }
                       });
                     },
                     groupValue: getprio(index),
@@ -1010,6 +1040,10 @@ class _PathwayUIState extends State<PathwayUI> {
                     onChanged: (value) {
                       setState(() {
                         setprio(index, value);
+                        if (index == 6) {
+                          _controllerstreco['field6'].text = '';
+                          setrecothera(6, _controllerstreco['field6'].text);
+                        }
                       });
                     },
                     groupValue: getprio(index),
@@ -1032,82 +1066,159 @@ class _PathwayUIState extends State<PathwayUI> {
           // color: Colors.yellow,
           child: Column(
             children: [
+              // Container(
+              //   child: TextFormField(
+              //     maxLines: 1,
+              //     showCursor: cur,
+              //     controller: _controllers["field$index"],
+              //     decoration: InputDecoration(
+              //         focusedBorder: OutlineInputBorder(
+              //           borderSide: BorderSide(
+              //               color: colorsset["field$index"], width: 1),
+              //         ),
+              //         enabledBorder: OutlineInputBorder(
+              //           borderSide: BorderSide(
+              //               width: 1, color: colorsset["field$index"]),
+              //         ),
+              //         suffix: Container(
+              //           // color: Colors.red,
+              //           width: 40,
+              //           height: 30,
+              //           padding: EdgeInsets.all(0),
+              //           child: Row(children: [
+              //             Container(
+              //               // color: Colors.green,
+              //               alignment: Alignment.center,
+              //               width: 40,
+              //               height: 60,
+              //               margin: EdgeInsets.all(0),
+              //               child: AvatarGlow(
+              //                 animate: isListening['field$index'],
+              //                 glowColor: Theme.of(context).primaryColor,
+              //                 endRadius: 35.0,
+              //                 duration: const Duration(milliseconds: 2000),
+              //                 repeatPauseDuration:
+              //                     const Duration(milliseconds: 100),
+              //                 repeat: true,
+              //                 child: FloatingActionButton(
+              //                   heroTag: "btn${index + 100}",
+              //                   child: Icon(
+              //                     Icons.mic,
+              //                     size: 20,
+              //                   ),
+              //                   onPressed: () {
+              //                     if (assessor == therapist &&
+              //                         role == "therapist") {
+              //                       _listen(index, false);
+              //                       setdatalisten(index);
+              //                     } else if (role != "therapist") {
+              //                       _listen(index, false);
+              //                       setdatalisten(index);
+              //                     } else {
+              //                       _showSnackBar(
+              //                           "You can't change the other fields",
+              //                           context);
+              //                     }
+              //                   },
+              //                 ),
+              //               ),
+              //             ),
+              //           ]),
+              //         ),
+              //         labelText: 'Comments'
+              //         ),
+              //     onChanged: (value) {
+              //       if (assessor == therapist && role == "therapist") {
+              //         FocusScope.of(context).requestFocus();
+              //         new TextEditingController().clear();
+              //         // print(widget.accessname);
+              //         setreco(index, value);
+              //       } else if (role != "therapist") {
+              //         FocusScope.of(context).requestFocus();
+              //         new TextEditingController().clear();
+              //         // print(widget.accessname);
+              //         setreco(index, value);
+              //       } else {
+              //         _showSnackBar(
+              //             "You can't change the other fields", context);
+              //       }
+              //     },
+              //   ),
+              // ),
               Container(
-                child: TextFormField(
-                  maxLines: 1,
-                  showCursor: cur,
-                  controller: _controllers["field$index"],
-                  decoration: InputDecoration(
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            color: colorsset["field$index"], width: 1),
+                padding: EdgeInsets.fromLTRB(10, 8, 8, 0),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        // initialValue: getvalue(14),
+                        maxLines: 1,
+                        showCursor: cur,
+                        controller: _controllers["field$index"],
+                        decoration: InputDecoration(
+                            border: InputBorder.none, labelText: 'comment'),
+
+                        onChanged: (value) {
+                          if (assessor == therapist && role == "therapist") {
+                            FocusScope.of(context).requestFocus();
+                            new TextEditingController().clear();
+                            // print(widget.accessname);
+                            setreco(index, value);
+                          } else if (role != "therapist") {
+                            FocusScope.of(context).requestFocus();
+                            new TextEditingController().clear();
+                            // print(widget.accessname);
+                            setreco(index, value);
+                          } else {
+                            _showSnackBar(
+                                "You can't change the other fields", context);
+                          }
+                        },
                       ),
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                            width: 1, color: colorsset["field$index"]),
-                      ),
-                      suffix: Container(
-                        // color: Colors.red,
+                    ),
+                    AvatarGlow(
+                      animate: isListening['field$index'],
+                      glowColor: Theme.of(context).primaryColor,
+                      endRadius: 35.0,
+                      duration: const Duration(milliseconds: 2000),
+                      repeatPauseDuration: const Duration(milliseconds: 100),
+                      repeat: true,
+                      child: Container(
                         width: 40,
                         height: 30,
                         padding: EdgeInsets.all(0),
-                        child: Row(children: [
-                          Container(
-                            // color: Colors.green,
-                            alignment: Alignment.center,
-                            width: 40,
-                            height: 60,
-                            margin: EdgeInsets.all(0),
-                            child: AvatarGlow(
-                              animate: isListening['field$index'],
-                              glowColor: Theme.of(context).primaryColor,
-                              endRadius: 500.0,
-                              duration: const Duration(milliseconds: 2000),
-                              repeatPauseDuration:
-                                  const Duration(milliseconds: 100),
-                              repeat: true,
-                              child: FloatingActionButton(
-                                heroTag: "btn${index + 100}",
-                                child: Icon(
-                                  Icons.mic,
-                                  size: 20,
-                                ),
-                                onPressed: () {
-                                  if (assessor == therapist &&
-                                      role == "therapist") {
-                                    _listen(index, false);
-                                    setdatalisten(index);
-                                  } else if (role != "therapist") {
-                                    _listen(index, false);
-                                    setdatalisten(index);
-                                  } else {
-                                    _showSnackBar(
-                                        "You can't change the other fields",
-                                        context);
-                                  }
-                                },
-                              ),
-                            ),
+                        alignment: Alignment.center,
+                        margin: EdgeInsets.all(0),
+                        child: FloatingActionButton(
+                          heroTag: "btn$index",
+                          child: Icon(
+                            Icons.mic,
+                            size: 20,
                           ),
-                        ]),
+                          onPressed: () {
+                            if (assessor == therapist && role == "therapist") {
+                              _listen(index, isthera);
+                              setdatalisten(index);
+                            } else if (role != "therapist") {
+                              _listen(index, isthera);
+                              setdatalisten(index);
+                            } else {
+                              _showSnackBar(
+                                  "You can't change the other fields", context);
+                            }
+                          },
+                        ),
                       ),
-                      labelText: 'Comments'),
-                  onChanged: (value) {
-                    if (assessor == therapist && role == "therapist") {
-                      FocusScope.of(context).requestFocus();
-                      new TextEditingController().clear();
-                      // print(widget.accessname);
-                      setreco(index, value);
-                    } else if (role != "therapist") {
-                      FocusScope.of(context).requestFocus();
-                      new TextEditingController().clear();
-                      // print(widget.accessname);
-                      setreco(index, value);
-                    } else {
-                      _showSnackBar(
-                          "You can't change the other fields", context);
-                    }
-                  },
+                    ),
+                  ],
+                ),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: colorsset["field$index"],
+                    width: 1,
+                  ), //Border.all
+                  borderRadius: BorderRadius.circular(8),
                 ),
               ),
               (role == 'therapist' && isthera)
@@ -1147,7 +1258,7 @@ class _PathwayUIState extends State<PathwayUI> {
                             borderSide: BorderSide(
                                 width: 1, color: colorsset["field${7}"]),
                           ),
-                          labelText: 'Step Width$index:'),
+                          labelText: 'Step Width$index (Inches)'),
                       onChanged: (value) {
                         if (assessor == therapist && role == "therapist") {
                           setState(() {
@@ -1187,7 +1298,7 @@ class _PathwayUIState extends State<PathwayUI> {
                             borderSide: BorderSide(
                                 width: 1, color: colorsset["field${7}"]),
                           ),
-                          labelText: 'Step Height$index:'),
+                          labelText: 'Step Height$index (Inches)'),
                       onChanged: (value) {
                         if (assessor == therapist && role == "therapist") {
                           setState(() {
@@ -2295,178 +2406,181 @@ class _PathwayUIState extends State<PathwayUI> {
                                                 ],
                                               ),
                                             ),
-                                            Container(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    0, 10, 0, 5),
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Container(
-                                                      width:
-                                                          MediaQuery.of(context)
+                                            widget.wholelist[0][widget.accessname]
+                                                                    ['question']
+                                                                ["7"]['stepCount']
+                                                            ["count"] !=
+                                                        '0' &&
+                                                    widget.wholelist[0][widget.accessname]
+                                                                    ['question']
+                                                                ["7"]['stepCount']
+                                                            ["count"] !=
+                                                        ""
+                                                ? Container(
+                                                    padding: EdgeInsets.fromLTRB(
+                                                        0, 10, 0, 5),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
+                                                      children: [
+                                                        Container(
+                                                          width: MediaQuery.of(
+                                                                      context)
                                                                   .size
                                                                   .width *
                                                               .4,
-                                                      child: TextFormField(
-                                                        initialValue: widget
-                                                                        .wholelist[0]
+                                                          child: TextFormField(
+                                                            initialValue: widget
+                                                                            .wholelist[0]
+                                                                        [widget
+                                                                            .accessname]
                                                                     [
-                                                                    widget
-                                                                        .accessname]
+                                                                    'question']["7"]
                                                                 [
-                                                                'question']["7"]
-                                                            [
-                                                            'Single Step Width'],
-                                                        keyboardType:
-                                                            TextInputType.phone,
-                                                        decoration:
-                                                            InputDecoration(
-                                                                focusedBorder:
-                                                                    OutlineInputBorder(
-                                                                  borderSide: BorderSide(
-                                                                      color: colorsset[
-                                                                          "field${7}"],
-                                                                      width: 1),
-                                                                ),
-                                                                enabledBorder:
-                                                                    OutlineInputBorder(
-                                                                  borderSide:
-                                                                      BorderSide(
+                                                                'Single Step Width'],
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .phone,
+                                                            decoration:
+                                                                InputDecoration(
+                                                                    focusedBorder:
+                                                                        OutlineInputBorder(
+                                                                      borderSide: BorderSide(
+                                                                          color: colorsset[
+                                                                              "field${7}"],
+                                                                          width:
+                                                                              1),
+                                                                    ),
+                                                                    enabledBorder:
+                                                                        OutlineInputBorder(
+                                                                      borderSide: BorderSide(
                                                                           width:
                                                                               1,
                                                                           color:
                                                                               colorsset["field${7}"]),
-                                                                ),
-                                                                labelText:
-                                                                    'Step Width:'),
-                                                        onChanged: (value) {
-                                                          if (assessor ==
-                                                                  therapist &&
-                                                              role ==
+                                                                    ),
+                                                                    labelText:
+                                                                        'Step Width in inches'),
+                                                            onChanged: (value) {
+                                                              if (assessor ==
+                                                                      therapist &&
+                                                                  role ==
+                                                                      "therapist") {
+                                                                setState(() {
+                                                                  widget.wholelist[
+                                                                              0]
+                                                                          [
+                                                                          widget
+                                                                              .accessname]['question']["7"]
+                                                                      [
+                                                                      'Single Step Width'] = value;
+                                                                });
+                                                              } else if (role !=
                                                                   "therapist") {
-                                                            setState(() {
-                                                              widget.wholelist[
+                                                                setState(() {
+                                                                  widget.wholelist[
                                                                               0]
                                                                           [
                                                                           widget
-                                                                              .accessname]
+                                                                              .accessname]['question']["7"]
                                                                       [
-                                                                      'question']["7"]
-                                                                  [
-                                                                  'Single Step Width'] = value;
-                                                            });
-                                                          } else if (role !=
-                                                              "therapist") {
-                                                            setState(() {
-                                                              widget.wholelist[
-                                                                              0]
-                                                                          [
-                                                                          widget
-                                                                              .accessname]
-                                                                      [
-                                                                      'question']["7"]
-                                                                  [
-                                                                  'Single Step Width'] = value;
-                                                            });
-                                                          } else {
-                                                            _showSnackBar(
-                                                                "You can't change the other fields",
-                                                                context);
-                                                          }
+                                                                      'Single Step Width'] = value;
+                                                                });
+                                                              } else {
+                                                                _showSnackBar(
+                                                                    "You can't change the other fields",
+                                                                    context);
+                                                              }
 
-                                                          // print(widget.wholelist[
-                                                          //             0][
-                                                          //         widget
-                                                          //             .accessname]
-                                                          //     ['question']["7"]);
-                                                        },
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      width:
-                                                          MediaQuery.of(context)
+                                                              // print(widget.wholelist[
+                                                              //             0][
+                                                              //         widget
+                                                              //             .accessname]
+                                                              //     ['question']["7"]);
+                                                            },
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          width: MediaQuery.of(
+                                                                      context)
                                                                   .size
                                                                   .width *
                                                               .4,
-                                                      child: TextFormField(
-                                                        initialValue: widget
-                                                                        .wholelist[0]
+                                                          child: TextFormField(
+                                                            initialValue: widget
+                                                                            .wholelist[0]
+                                                                        [widget
+                                                                            .accessname]
                                                                     [
-                                                                    widget
-                                                                        .accessname]
+                                                                    'question']["7"]
                                                                 [
-                                                                'question']["7"]
-                                                            [
-                                                            'Single Step Height'],
-                                                        keyboardType:
-                                                            TextInputType.phone,
-                                                        decoration:
-                                                            InputDecoration(
-                                                                focusedBorder:
-                                                                    OutlineInputBorder(
-                                                                  borderSide: BorderSide(
-                                                                      color: colorsset[
-                                                                          "field${7}"],
-                                                                      width: 1),
-                                                                ),
-                                                                enabledBorder:
-                                                                    OutlineInputBorder(
-                                                                  borderSide:
-                                                                      BorderSide(
+                                                                'Single Step Height'],
+                                                            keyboardType:
+                                                                TextInputType
+                                                                    .phone,
+                                                            decoration:
+                                                                InputDecoration(
+                                                                    focusedBorder:
+                                                                        OutlineInputBorder(
+                                                                      borderSide: BorderSide(
+                                                                          color: colorsset[
+                                                                              "field${7}"],
+                                                                          width:
+                                                                              1),
+                                                                    ),
+                                                                    enabledBorder:
+                                                                        OutlineInputBorder(
+                                                                      borderSide: BorderSide(
                                                                           width:
                                                                               1,
                                                                           color:
                                                                               colorsset["field${7}"]),
-                                                                ),
-                                                                labelText:
-                                                                    'Step Height:'),
-                                                        onChanged: (value) {
-                                                          if (assessor ==
-                                                                  therapist &&
-                                                              role ==
+                                                                    ),
+                                                                    labelText:
+                                                                        'Step height in inches'),
+                                                            onChanged: (value) {
+                                                              if (assessor ==
+                                                                      therapist &&
+                                                                  role ==
+                                                                      "therapist") {
+                                                                setState(() {
+                                                                  widget.wholelist[
+                                                                              0]
+                                                                          [
+                                                                          widget
+                                                                              .accessname]['question']["7"]
+                                                                      [
+                                                                      'Single Step Height'] = value;
+                                                                });
+                                                              } else if (role !=
                                                                   "therapist") {
-                                                            setState(() {
-                                                              widget.wholelist[
+                                                                setState(() {
+                                                                  widget.wholelist[
                                                                               0]
                                                                           [
                                                                           widget
-                                                                              .accessname]
+                                                                              .accessname]['question']["7"]
                                                                       [
-                                                                      'question']["7"]
-                                                                  [
-                                                                  'Single Step Height'] = value;
-                                                            });
-                                                          } else if (role !=
-                                                              "therapist") {
-                                                            setState(() {
-                                                              widget.wholelist[
-                                                                              0]
-                                                                          [
-                                                                          widget
-                                                                              .accessname]
-                                                                      [
-                                                                      'question']["7"]
-                                                                  [
-                                                                  'Single Step Height'] = value;
-                                                            });
-                                                          } else {
-                                                            _showSnackBar(
-                                                                "You can't change the other fields",
-                                                                context);
-                                                          }
+                                                                      'Single Step Height'] = value;
+                                                                });
+                                                              } else {
+                                                                _showSnackBar(
+                                                                    "You can't change the other fields",
+                                                                    context);
+                                                              }
 
-                                                          // print(widget.wholelist[
-                                                          //             0][
-                                                          //         widget
-                                                          //             .accessname]
-                                                          //     ['question']["7"]);
-                                                        },
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ))
+                                                              // print(widget.wholelist[
+                                                              //             0][
+                                                              //         widget
+                                                              //             .accessname]
+                                                              //     ['question']["7"]);
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ))
+                                                : SizedBox(),
                                           ],
                                         ),
                                       ),
@@ -3471,51 +3585,152 @@ class _PathwayUIState extends State<PathwayUI> {
                               ),
                             ],
                           ),
-
-                          // Divider(
-                          //   height: dividerheight,
-                          //   color: Color.fromRGBO(10, 80, 106, 1),
-                          // ),
                           SizedBox(height: 15),
+                          // Container(
+                          //     // height: 10000,
+                          //     child: TextFormField(
+                          //   initialValue: widget.wholelist[0][widget.accessname]
+                          //       ["question"]["12"]["Answer"],
+                          //   maxLines: 6,
+                          //   decoration: InputDecoration(
+                          //     focusedBorder: OutlineInputBorder(
+                          //       borderSide: BorderSide(
+                          //           color: Color.fromRGBO(10, 80, 106, 1),
+                          //           width: 1),
+                          //     ),
+                          //     enabledBorder: OutlineInputBorder(
+                          //       borderSide: BorderSide(width: 1),
+                          //     ),
+                          //     // isDense: true,
+                          //     // suffix: Icon(Icons.mic),
+                          //   ),
+                          //   onChanged: (value) {
+                          //     if (assessor == therapist &&
+                          //         role == "therapist") {
+                          //       FocusScope.of(context).requestFocus();
+                          //       new TextEditingController().clear();
+                          //       // print(widget.accessname);
+                          //       setreco(12, value);
+                          //       setdata(12, value, 'Oberservations');
+                          //     } else if (role != "therapist") {
+                          //       FocusScope.of(context).requestFocus();
+                          //       new TextEditingController().clear();
+                          //       // print(widget.accessname);
+                          //       setreco(12, value);
+                          //       setdata(12, value, 'Oberservations');
+                          //     } else {
+                          //       _showSnackBar(
+                          //           "You can't change the other fields",
+                          //           context);
+                          //     }
+                          //   },
+                          // )),
+                          // AvatarGlow(
+                          //   glowColor: Colors.blue,
+                          //   endRadius: 90.0,
+                          //   duration: Duration(milliseconds: 2000),
+                          //   repeat: true,
+                          //   showTwoGlows: true,
+                          //   repeatPauseDuration: Duration(milliseconds: 100),
+                          //   child: Material(
+                          //     // Replace this child with your own
+                          //     elevation: 8.0,
+                          //     shape: CircleBorder(),
+                          //     child: CircleAvatar(
+                          //       backgroundColor: Colors.grey[100],
+                          //       child: Image.asset(
+                          //         'assets/images/flutter.png',
+                          //         height: 60,
+                          //       ),
+                          //       radius: 40.0,
+                          //     ),
+                          //   ),
+                          // ),
                           Container(
-                              // height: 10000,
-                              child: TextFormField(
-                            initialValue: widget.wholelist[0][widget.accessname]
-                                ["question"]["12"]["Answer"],
-                            maxLines: 6,
-                            decoration: InputDecoration(
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Color.fromRGBO(10, 80, 106, 1),
-                                    width: 1),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(width: 1),
-                              ),
-                              // isDense: true,
-                              // suffix: Icon(Icons.mic),
+                            padding: EdgeInsets.fromLTRB(10, 8, 8, 0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                    // initialValue: getvalue(14),
+                                    maxLines: 6,
+                                    showCursor: cur,
+                                    controller: _controllers["field12"],
+                                    decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                    ),
+
+                                    onChanged: (value) {
+                                      FocusScope.of(context).requestFocus();
+                                      new TextEditingController().clear();
+                                      // print(widget.accessname);
+                                      if (assessor == therapist &&
+                                          role == "therapist") {
+                                        setreco(12, value);
+                                        setdata(12, value, 'Oberservations');
+                                      } else if (role != "therapist") {
+                                        setreco(12, value);
+                                        setdata(12, value, 'Oberservations');
+                                      } else {
+                                        _showSnackBar(
+                                            "You can't change the other fields",
+                                            context);
+                                      }
+                                    },
+                                  ),
+                                ),
+                                AvatarGlow(
+                                  animate: isListening["field12"],
+                                  glowColor: Colors.blue,
+                                  endRadius: 35.0,
+                                  duration: const Duration(milliseconds: 2000),
+                                  repeatPauseDuration:
+                                      const Duration(milliseconds: 300),
+                                  repeat: true,
+                                  child: Container(
+                                    width: 40,
+                                    height: 30,
+                                    padding: EdgeInsets.all(0),
+                                    alignment: Alignment.center,
+                                    margin: EdgeInsets.all(0),
+                                    child: FloatingActionButton(
+                                      heroTag: "btn12",
+                                      child: Icon(
+                                        Icons.mic,
+                                        size: 20,
+                                      ),
+                                      onPressed: () {
+                                        if (assessor == therapist &&
+                                            role == "therapist") {
+                                          _listen(12, false);
+                                          setdatalisten(12);
+                                        } else if (role != "therapist") {
+                                          _listen(12, false);
+                                          setdatalisten(12);
+                                        } else {
+                                          _showSnackBar(
+                                              "You can't change the other fields",
+                                              context);
+                                        }
+                                        // print("1: ${isListening['field12']}");
+                                        // ticklisten(12);
+                                        // print("2: ${isListening['field12']}");
+                                        print(isListening);
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                            onChanged: (value) {
-                              if (assessor == therapist &&
-                                  role == "therapist") {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                setreco(12, value);
-                                setdata(12, value, 'Oberservations');
-                              } else if (role != "therapist") {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                setreco(12, value);
-                                setdata(12, value, 'Oberservations');
-                              } else {
-                                _showSnackBar(
-                                    "You can't change the other fields",
-                                    context);
-                              }
-                            },
-                          ))
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: colorsset["field${12}"],
+                                width: 1,
+                              ), //Border.all
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
                         ],
                       ),
                     ),
@@ -3531,9 +3746,6 @@ class _PathwayUIState extends State<PathwayUI> {
                       ),
                       onPressed: () async {
                         listenbutton(context);
-
-                        // _showSnackBar(
-                        //     "You Must Have to Fill the Details First", context);
                       },
                     ))
                   ],

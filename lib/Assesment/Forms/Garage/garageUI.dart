@@ -1474,153 +1474,175 @@ class _GarageUIState extends State<GarageUI> {
                                           SizedBox(
                                             height: 10,
                                           ),
-                                          Container(
-                                              padding: EdgeInsets.all(5),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Container(
-                                                    width:
-                                                        MediaQuery.of(context)
+                                          widget.wholelist[9][widget.accessname]
+                                                                  ["question"]
+                                                              ["9"]['additional']
+                                                          ["count"] !=
+                                                      '0' &&
+                                                  widget.wholelist[9][widget
+                                                                      .accessname]
+                                                                  ["question"]
+                                                              ["9"]['additional']
+                                                          ["count"] !=
+                                                      ""
+                                              ? Container(
+                                                  padding: EdgeInsets.all(5),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Container(
+                                                        width: MediaQuery.of(
+                                                                    context)
                                                                 .size
                                                                 .width *
                                                             .4,
-                                                    child: TextFormField(
-                                                      initialValue: widget
-                                                                      .wholelist[9]
+                                                        child: TextFormField(
+                                                          initialValue: widget
+                                                                          .wholelist[9]
+                                                                      [
+                                                                      widget
+                                                                          .accessname]
                                                                   [
-                                                                  widget
-                                                                      .accessname]
-                                                              ['question']["9"]
-                                                          ['Single Step Width'],
-                                                      keyboardType:
-                                                          TextInputType.phone,
-                                                      decoration:
-                                                          InputDecoration(
-                                                              focusedBorder:
-                                                                  OutlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                    // color: colorsset[
-                                                                    //     "field${9}"],
-                                                                    width: 1),
-                                                              ),
-                                                              enabledBorder:
-                                                                  OutlineInputBorder(
-                                                                borderSide:
-                                                                    BorderSide(
-                                                                  width: 1,
-                                                                  // color: colorsset[
-                                                                  //     "field${9}"]
-                                                                ),
-                                                              ),
-                                                              labelText:
-                                                                  'Step Width in inches:'),
-                                                      onChanged: (value) {
-                                                        if (assessor ==
-                                                                therapist &&
-                                                            role ==
+                                                                  'question']["9"]
+                                                              [
+                                                              'Single Step Width'],
+                                                          keyboardType:
+                                                              TextInputType
+                                                                  .phone,
+                                                          decoration:
+                                                              InputDecoration(
+                                                                  focusedBorder:
+                                                                      OutlineInputBorder(
+                                                                    borderSide: BorderSide(
+                                                                        // color: colorsset[
+                                                                        //     "field${9}"],
+                                                                        width: 1),
+                                                                  ),
+                                                                  enabledBorder:
+                                                                      OutlineInputBorder(
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                      width: 1,
+                                                                      // color: colorsset[
+                                                                      //     "field${9}"]
+                                                                    ),
+                                                                  ),
+                                                                  labelText:
+                                                                      'Step Width in inches:'),
+                                                          onChanged: (value) {
+                                                            if (assessor ==
+                                                                    therapist &&
+                                                                role ==
+                                                                    "therapist") {
+                                                              setState(() {
+                                                                widget.wholelist[9]
+                                                                            [
+                                                                            widget
+                                                                                .accessname]
+                                                                        [
+                                                                        'question']["9"]
+                                                                    [
+                                                                    'Single Step Width'] = value;
+                                                              });
+                                                            } else if (role !=
                                                                 "therapist") {
-                                                          setState(() {
-                                                            widget.wholelist[9][
-                                                                        widget
-                                                                            .accessname]
+                                                              setState(() {
+                                                                widget.wholelist[9]
+                                                                            [
+                                                                            widget
+                                                                                .accessname]
+                                                                        [
+                                                                        'question']["9"]
                                                                     [
-                                                                    'question']["9"]
-                                                                [
-                                                                'Single Step Width'] = value;
-                                                          });
-                                                        } else if (role !=
-                                                            "therapist") {
-                                                          setState(() {
-                                                            widget.wholelist[9][
-                                                                        widget
-                                                                            .accessname]
-                                                                    [
-                                                                    'question']["9"]
-                                                                [
-                                                                'Single Step Width'] = value;
-                                                          });
-                                                        } else {
-                                                          _showSnackBar(
-                                                              "You can't change the other fields",
-                                                              context);
-                                                        }
-                                                      },
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    width:
-                                                        MediaQuery.of(context)
+                                                                    'Single Step Width'] = value;
+                                                              });
+                                                            } else {
+                                                              _showSnackBar(
+                                                                  "You can't change the other fields",
+                                                                  context);
+                                                            }
+                                                          },
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        width: MediaQuery.of(
+                                                                    context)
                                                                 .size
                                                                 .width *
                                                             .4,
-                                                    child: TextFormField(
-                                                      initialValue: widget
-                                                                      .wholelist[9]
+                                                        child: TextFormField(
+                                                          initialValue: widget
+                                                                          .wholelist[9]
+                                                                      [
+                                                                      widget
+                                                                          .accessname]
                                                                   [
-                                                                  widget
-                                                                      .accessname]
-                                                              ['question']["9"][
-                                                          'Single Step Height'],
-                                                      keyboardType:
-                                                          TextInputType.phone,
-                                                      decoration:
-                                                          InputDecoration(
-                                                              focusedBorder:
-                                                                  OutlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                    // color: colorsset[
-                                                                    //     "field${9}"],
-                                                                    width: 1),
-                                                              ),
-                                                              enabledBorder:
-                                                                  OutlineInputBorder(
-                                                                borderSide:
-                                                                    BorderSide(
-                                                                  width: 1,
-                                                                  // color: colorsset[
-                                                                  //     "field${9}"]
-                                                                ),
-                                                              ),
-                                                              labelText:
-                                                                  'Step Height in inches:'),
-                                                      onChanged: (value) {
-                                                        if (assessor ==
-                                                                therapist &&
-                                                            role ==
+                                                                  'question']["9"]
+                                                              [
+                                                              'Single Step Height'],
+                                                          keyboardType:
+                                                              TextInputType
+                                                                  .phone,
+                                                          decoration:
+                                                              InputDecoration(
+                                                                  focusedBorder:
+                                                                      OutlineInputBorder(
+                                                                    borderSide: BorderSide(
+                                                                        // color: colorsset[
+                                                                        //     "field${9}"],
+                                                                        width: 1),
+                                                                  ),
+                                                                  enabledBorder:
+                                                                      OutlineInputBorder(
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                      width: 1,
+                                                                      // color: colorsset[
+                                                                      //     "field${9}"]
+                                                                    ),
+                                                                  ),
+                                                                  labelText:
+                                                                      'Step Height in inches:'),
+                                                          onChanged: (value) {
+                                                            if (assessor ==
+                                                                    therapist &&
+                                                                role ==
+                                                                    "therapist") {
+                                                              setState(() {
+                                                                widget.wholelist[9]
+                                                                            [
+                                                                            widget
+                                                                                .accessname]
+                                                                        [
+                                                                        'question']["9"]
+                                                                    [
+                                                                    'Single Step Height'] = value;
+                                                              });
+                                                            } else if (role !=
                                                                 "therapist") {
-                                                          setState(() {
-                                                            widget.wholelist[9][
-                                                                        widget
-                                                                            .accessname]
+                                                              setState(() {
+                                                                widget.wholelist[9]
+                                                                            [
+                                                                            widget
+                                                                                .accessname]
+                                                                        [
+                                                                        'question']["9"]
                                                                     [
-                                                                    'question']["9"]
-                                                                [
-                                                                'Single Step Height'] = value;
-                                                          });
-                                                        } else if (role !=
-                                                            "therapist") {
-                                                          setState(() {
-                                                            widget.wholelist[9][
-                                                                        widget
-                                                                            .accessname]
-                                                                    [
-                                                                    'question']["9"]
-                                                                [
-                                                                'Single Step Height'] = value;
-                                                          });
-                                                        } else {
-                                                          _showSnackBar(
-                                                              "You can't change the other fields",
-                                                              context);
-                                                        }
-                                                      },
-                                                    ),
-                                                  ),
-                                                ],
-                                              ))
+                                                                    'Single Step Height'] = value;
+                                                              });
+                                                            } else {
+                                                              _showSnackBar(
+                                                                  "You can't change the other fields",
+                                                                  context);
+                                                            }
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ))
+                                              : SizedBox(),
                                         ],
                                       ),
                                     ),
@@ -2154,43 +2176,132 @@ class _GarageUIState extends State<GarageUI> {
                         SizedBox(
                           height: 15,
                         ),
+                        // Container(
+                        //     // height: 10000,
+                        //     child: TextFormField(
+                        //   initialValue: widget.wholelist[9][widget.accessname]
+                        //       ['question']["12"]['Answer'],
+                        //   maxLines: 6,
+                        //   decoration: InputDecoration(
+                        //     focusedBorder: OutlineInputBorder(
+                        //       borderSide: BorderSide(
+                        //           color: Color.fromRGBO(10, 80, 106, 1),
+                        //           width: 1),
+                        //     ),
+                        //     enabledBorder: OutlineInputBorder(
+                        //       borderSide: BorderSide(width: 1),
+                        //     ),
+                        //     // isDense: true,
+                        //     suffix: Icon(Icons.mic),
+                        //   ),
+                        //   onChanged: (value) {
+                        //     if (assessor == therapist && role == "therapist") {
+                        //       FocusScope.of(context).requestFocus();
+                        //       new TextEditingController().clear();
+                        //       // print(widget.accessname);
+                        //       assesmentprovider.setdata(
+                        //           12, value, 'Observations');
+                        //     } else if (role != "therapist") {
+                        //       FocusScope.of(context).requestFocus();
+                        //       new TextEditingController().clear();
+                        //       // print(widget.accessname);
+                        //       assesmentprovider.setdata(
+                        //           12, value, 'Observations');
+                        //     } else {
+                        //       _showSnackBar(
+                        //           "You can't change the other fields", context);
+                        //     }
+                        //   },
+                        // )),
                         Container(
-                            // height: 10000,
-                            child: TextFormField(
-                          initialValue: widget.wholelist[9][widget.accessname]
-                              ['question']["12"]['Answer'],
-                          maxLines: 6,
-                          decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Color.fromRGBO(10, 80, 106, 1),
-                                  width: 1),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(width: 1),
-                            ),
-                            // isDense: true,
-                            suffix: Icon(Icons.mic),
+                          padding: EdgeInsets.fromLTRB(10, 8, 8, 0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  // initialValue: getvalue(14),
+                                  maxLines: 6,
+                                  showCursor: cur,
+                                  controller:
+                                      assesmentprovider.controllers["field12"],
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                  ),
+
+                                  onChanged: (value) {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    if (assessor == therapist &&
+                                        role == "therapist") {
+                                      assesmentprovider.setreco(12, value);
+                                      assesmentprovider.setdata(
+                                          12, value, 'Oberservations');
+                                    } else if (role != "therapist") {
+                                      assesmentprovider.setreco(12, value);
+                                      assesmentprovider.setdata(
+                                          12, value, 'Oberservations');
+                                    } else {
+                                      _showSnackBar(
+                                          "You can't change the other fields",
+                                          context);
+                                    }
+                                  },
+                                ),
+                              ),
+                              AvatarGlow(
+                                animate:
+                                    assesmentprovider.isListening["field12"],
+                                glowColor: Colors.blue,
+                                endRadius: 35.0,
+                                duration: const Duration(milliseconds: 2000),
+                                repeatPauseDuration:
+                                    const Duration(milliseconds: 300),
+                                repeat: true,
+                                child: Container(
+                                  width: 40,
+                                  height: 30,
+                                  padding: EdgeInsets.all(0),
+                                  alignment: Alignment.center,
+                                  margin: EdgeInsets.all(0),
+                                  child: FloatingActionButton(
+                                    heroTag: "btn12",
+                                    child: Icon(
+                                      Icons.mic,
+                                      size: 20,
+                                    ),
+                                    onPressed: () {
+                                      if (assessor == therapist &&
+                                          role == "therapist") {
+                                        assesmentprovider.listen(12);
+                                        assesmentprovider.setdatalisten(12);
+                                      } else if (role != "therapist") {
+                                        assesmentprovider.listen(12);
+                                        assesmentprovider.setdatalisten(12);
+                                      } else {
+                                        _showSnackBar(
+                                            "You can't change the other fields",
+                                            context);
+                                      }
+                                      // print("1: ${isListening['field12']}");
+                                      // ticklisten(12);
+                                      // print("2: ${isListening['field12']}");
+                                      print(isListening);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          onChanged: (value) {
-                            if (assessor == therapist && role == "therapist") {
-                              FocusScope.of(context).requestFocus();
-                              new TextEditingController().clear();
-                              // print(widget.accessname);
-                              assesmentprovider.setdata(
-                                  12, value, 'Observations');
-                            } else if (role != "therapist") {
-                              FocusScope.of(context).requestFocus();
-                              new TextEditingController().clear();
-                              // print(widget.accessname);
-                              assesmentprovider.setdata(
-                                  12, value, 'Observations');
-                            } else {
-                              _showSnackBar(
-                                  "You can't change the other fields", context);
-                            }
-                          },
-                        )),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: assesmentprovider.colorsset["field${12}"],
+                              width: 1,
+                            ), //Border.all
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
                         SizedBox(
                           height: 15,
                         ),
@@ -2320,7 +2431,7 @@ class _GarageUIState extends State<GarageUI> {
                           borderSide: BorderSide(
                               width: 1, color: Color.fromRGBO(10, 80, 106, 1)),
                         ),
-                        labelText: 'Step Width$index'),
+                        labelText: 'Step Width$index (Inches)'),
                     onChanged: (value) {
                       if (assessor == therapist && role == "therapist") {
                         setState(() {
@@ -2360,7 +2471,7 @@ class _GarageUIState extends State<GarageUI> {
                           borderSide: BorderSide(
                               width: 1, color: Color.fromRGBO(10, 80, 106, 1)),
                         ),
-                        labelText: 'Step Height$index'),
+                        labelText: 'Step Height$index (Inches)'),
                     onChanged: (value) {
                       if (assessor == therapist && role == "therapist") {
                         setState(() {

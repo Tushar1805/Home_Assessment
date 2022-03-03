@@ -2125,36 +2125,121 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
                         SizedBox(
                           height: 10,
                         ),
+                        // Container(
+                        //     // height: 10000,
+                        //     child: TextFormField(
+                        //   initialValue: getvalue(5),
+                        //   maxLines: 6,
+                        //   decoration: InputDecoration(
+                        //     focusedBorder: OutlineInputBorder(
+                        //       borderSide: BorderSide(
+                        //           color: Color.fromRGBO(10, 80, 106, 1),
+                        //           width: 1),
+                        //     ),
+                        //     enabledBorder: OutlineInputBorder(
+                        //       borderSide: BorderSide(width: 1),
+                        //     ),
+                        //     // isDense: true,
+                        //   ),
+                        //   onChanged: (value) {
+                        //     FocusScope.of(context).requestFocus();
+                        //     new TextEditingController().clear();
+                        //     // print(widget.accessname);
+                        //     if (assessor == therapist && role == "therapist") {
+                        //       assesspro.setdata(5, value, 'Observations');
+                        //     } else if (role != "therapist") {
+                        //       assesspro.setdata(5, value, 'Observations');
+                        //     } else {
+                        //       _showSnackBar(
+                        //           "You can't change the other fields", context);
+                        //     }
+                        //   },
+                        // )),
                         Container(
-                            // height: 10000,
+                      padding: EdgeInsets.fromLTRB(10, 8, 8, 0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
                             child: TextFormField(
-                          initialValue: getvalue(5),
-                          maxLines: 6,
-                          decoration: InputDecoration(
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Color.fromRGBO(10, 80, 106, 1),
-                                  width: 1),
+                              // initialValue: getvalue(14),
+                              maxLines: 6,
+                              showCursor: cur,
+                              controller: _controllers["field5"],
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                              ),
+
+                              onChanged: (value) {
+                                FocusScope.of(context).requestFocus();
+                                new TextEditingController().clear();
+                                // print(widget.accessname);
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  setreco(5, value);
+                                  setdata(5, value, 'Oberservations');
+                                } else if (role != "therapist") {
+                                  setreco(5, value);
+                                  setdata(5, value, 'Oberservations');
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
+                              },
                             ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(width: 1),
-                            ),
-                            // isDense: true,
                           ),
-                          onChanged: (value) {
-                            FocusScope.of(context).requestFocus();
-                            new TextEditingController().clear();
-                            // print(widget.accessname);
-                            if (assessor == therapist && role == "therapist") {
-                              assesspro.setdata(5, value, 'Observations');
-                            } else if (role != "therapist") {
-                              assesspro.setdata(5, value, 'Observations');
-                            } else {
-                              _showSnackBar(
-                                  "You can't change the other fields", context);
-                            }
-                          },
-                        )),
+                          AvatarGlow(
+                            animate: isListening["field5"],
+                            glowColor: Colors.blue,
+                            endRadius: 35.0,
+                            duration: const Duration(milliseconds: 2000),
+                            repeatPauseDuration:
+                                const Duration(milliseconds: 300),
+                            repeat: true,
+                            child: Container(
+                              width: 40,
+                              height: 30,
+                              padding: EdgeInsets.all(0),
+                              alignment: Alignment.center,
+                              margin: EdgeInsets.all(0),
+                              child: FloatingActionButton(
+                                heroTag: "btn5",
+                                child: Icon(
+                                  Icons.mic,
+                                  size: 20,
+                                ),
+                                onPressed: () {
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    _listen(5);
+                                    setdatalisten(5);
+                                  } else if (role != "therapist") {
+                                    _listen(5);
+                                    setdatalisten(5);
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
+                                  // print("1: ${isListening['field12']}");
+                                  // ticklisten(12);
+                                  // print("2: ${isListening['field12']}");
+                                  print(isListening);
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: colorsset["field${5}"],
+                          width: 1,
+                        ), //Border.all
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
                       ],
                     ),
                   ),
