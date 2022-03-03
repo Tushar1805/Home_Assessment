@@ -548,7 +548,9 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
       onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.roomname),
+          title: (widget.roomname != null)
+              ? Text("${widget.roomname}")
+              : Text('Swimming Pool'),
           automaticallyImplyLeading: false,
           backgroundColor: _colorgreen,
           actions: [
@@ -593,63 +595,97 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  // Container(
+                  //   width: double.infinity,
+                  //   child: Card(
+                  //     elevation: 8,
+                  //     child: Container(
+                  //       // width: MediaQuery.of(context).size.width / 10,
+                  //       padding: EdgeInsets.all(25),
+                  //       child: Row(
+                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //         children: [
+                  //           Container(
+                  //             width: MediaQuery.of(context).size.width / 1.6,
+                  //             child: Text(
+                  //               '${widget.roomname} Details',
+                  //               style: TextStyle(
+                  //                 fontSize: 25,
+                  //                 fontWeight: FontWeight.bold,
+                  //                 color: Color.fromRGBO(10, 80, 106, 1),
+                  //               ),
+                  //             ),
+                  //           ),
+                  //           Container(
+                  //             alignment: Alignment.topRight,
+                  //             width: 45,
+                  //             decoration: BoxDecoration(
+                  //                 color: _colorgreen,
+                  //                 // border: Border.all(
+                  //                 //   color: Colors.red[500],
+                  //                 // ),
+                  //                 borderRadius:
+                  //                     BorderRadius.all(Radius.circular(50))),
+                  //             // color: Colors.red,
+                  //             child: RawMaterialButton(
+                  //               onPressed: () {
+                  //                 if (videoUrl == "" && videoName == "") {
+                  //                   if (curUid == assessor) {
+                  //                     uploadVideo(context);
+                  //                   } else {
+                  //                     _showSnackBar(
+                  //                         "You are not allowed to upload video",
+                  //                         context);
+                  //                   }
+                  //                 } else {
+                  //                   _showSnackBar(
+                  //                       "You can add only one video", context);
+                  //                 }
+                  //               },
+                  //               child: Icon(
+                  //                 Icons.camera_alt,
+                  //                 color: Colors.white,
+                  //               ),
+                  //             ),
+                  //           )
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                   Container(
-                    width: double.infinity,
-                    child: Card(
-                      elevation: 8,
-                      child: Container(
-                        // width: MediaQuery.of(context).size.width / 10,
-                        padding: EdgeInsets.all(25),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width / 1.6,
-                              child: Text(
-                                '${widget.roomname} Details',
-                                style: TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color.fromRGBO(10, 80, 106, 1),
-                                ),
-                              ),
+                    padding: EdgeInsets.fromLTRB(15, 10, 10, 0),
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            "If you want to upload a video",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          FlatButton(
+                            child: Text(
+                              'Click Here',
+                              style: TextStyle(
+                                  fontSize: 20.0,
+                                  color: Color.fromRGBO(10, 80, 106, 1)),
                             ),
-                            Container(
-                              alignment: Alignment.topRight,
-                              width: 45,
-                              decoration: BoxDecoration(
-                                  color: _colorgreen,
-                                  // border: Border.all(
-                                  //   color: Colors.red[500],
-                                  // ),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(50))),
-                              // color: Colors.red,
-                              child: RawMaterialButton(
-                                onPressed: () {
-                                  if (videoUrl == "" && videoName == "") {
-                                    if (curUid == assessor) {
-                                      uploadVideo(context);
-                                    } else {
-                                      _showSnackBar(
-                                          "You are not allowed to upload video",
-                                          context);
-                                    }
-                                  } else {
-                                    _showSnackBar(
-                                        "You can add only one video", context);
-                                  }
-                                },
-                                child: Icon(
-                                  Icons.camera_alt,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+                            onPressed: () {
+                              if (videoUrl == "" && videoName == "") {
+                                if (curUid == assessor) {
+                                  uploadVideo(context);
+                                } else {
+                                  _showSnackBar(
+                                      "You are not allowed to upload video",
+                                      context);
+                                }
+                              } else {
+                                _showSnackBar(
+                                    "You can add only one video", context);
+                              }
+                            },
+                          ),
+                        ]),
                   ),
                   SizedBox(height: 10),
                   (uploading)
@@ -777,9 +813,9 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
                     padding: EdgeInsets.all(15),
                     child: Column(
                       children: [
-                        SizedBox(
-                          height: 15,
-                        ),
+                        // SizedBox(
+                        //   height: 15,
+                        // ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -983,8 +1019,8 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
                                                     widget.wholelist[11][widget
                                                                     .accessname]
                                                                 ['question']
-                                                            ['1']['toggle1'][i] =
-                                                        i == select;
+                                                            ['1']['toggle1']
+                                                        [i] = i == select;
                                                   }
                                                   widget.wholelist[11]
                                                                   [widget.accessname]
@@ -1396,117 +1432,134 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
                                                     //   ),
                                                     // ),
                                                     Container(
-                                          height: 35,
-                                          child: ToggleButtons(
-                                            borderColor: Colors.black,
-                                            fillColor: Colors.green,
-                                            borderWidth: 0,
-                                            selectedBorderColor: Colors.black,
-                                            selectedColor: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            children: <Widget>[
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Text(
-                                                  'Yes',
-                                                  style:
-                                                      TextStyle(fontSize: 16),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Text(
-                                                  'No',
-                                                  style:
-                                                      TextStyle(fontSize: 16),
-                                                ),
-                                              ),
-                                            ],
-                                            onPressed: (int select) {
-                                              if (assessor == therapist &&
-                                                  role == "therapist") {
-                                                setState(() {
-                                                  for (int i = 0;
-                                                      i <
-                                                          widget
-                                                              .wholelist[11][
-                                                                  widget
-                                                                      .accessname]
-                                                                  ['question']
-                                                                  ['1']
-                                                                  ['toggle2']
-                                                              .length;
-                                                      i++) {
-                                                    widget.wholelist[11][widget
+                                                      height: 35,
+                                                      child: ToggleButtons(
+                                                        borderColor:
+                                                            Colors.black,
+                                                        fillColor: Colors.green,
+                                                        borderWidth: 0,
+                                                        selectedBorderColor:
+                                                            Colors.black,
+                                                        selectedColor:
+                                                            Colors.white,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20),
+                                                        children: <Widget>[
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(8.0),
+                                                            child: Text(
+                                                              'Yes',
+                                                              style: TextStyle(
+                                                                  fontSize: 16),
+                                                            ),
+                                                          ),
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(8.0),
+                                                            child: Text(
+                                                              'No',
+                                                              style: TextStyle(
+                                                                  fontSize: 16),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                        onPressed:
+                                                            (int select) {
+                                                          if (assessor ==
+                                                                  therapist &&
+                                                              role ==
+                                                                  "therapist") {
+                                                            setState(() {
+                                                              for (int i = 0;
+                                                                  i <
+                                                                      widget
+                                                                          .wholelist[
+                                                                              11]
+                                                                              [
+                                                                              widget.accessname]
+                                                                              [
+                                                                              'question']
+                                                                              [
+                                                                              '1']
+                                                                              [
+                                                                              'toggle2']
+                                                                          .length;
+                                                                  i++) {
+                                                                widget.wholelist[11][widget.accessname]['question']
+                                                                            [
+                                                                            '1']
+                                                                        [
+                                                                        'toggle2'][i] =
+                                                                    i == select;
+                                                              }
+                                                              widget.wholelist[11]
+                                                                              [widget.accessname]
+                                                                          ['question']["1"]
+                                                                      ['aboveGround']
+                                                                  ['isClientSafe'] = widget
+                                                                              .wholelist[11]
+                                                                          [widget
+                                                                              .accessname]['question']['1']
+                                                                      ['toggle2'][0]
+                                                                  ? 'Yes'
+                                                                  : 'No';
+                                                            });
+                                                          } else if (role !=
+                                                              "therapist") {
+                                                            setState(() {
+                                                              for (int i = 0;
+                                                                  i <
+                                                                      widget
+                                                                          .wholelist[
+                                                                              11]
+                                                                              [
+                                                                              widget.accessname]
+                                                                              [
+                                                                              'question']
+                                                                              [
+                                                                              '1']
+                                                                              [
+                                                                              'toggle2']
+                                                                          .length;
+                                                                  i++) {
+                                                                widget.wholelist[11][widget.accessname]['question']
+                                                                            [
+                                                                            '1']
+                                                                        [
+                                                                        'toggle2'][i] =
+                                                                    i == select;
+                                                              }
+                                                              widget.wholelist[11]
+                                                                              [widget.accessname]
+                                                                          ['question']["1"]
+                                                                      ['aboveGround']
+                                                                  ['isClientSafe'] = widget
+                                                                              .wholelist[11]
+                                                                          [widget
+                                                                              .accessname]['question']['1']
+                                                                      ['toggle2'][0]
+                                                                  ? 'Yes'
+                                                                  : 'No';
+                                                            });
+                                                          } else {
+                                                            _showSnackBar(
+                                                                "You can't change the other fields",
+                                                                context);
+                                                          }
+                                                        },
+                                                        isSelected: widget
+                                                            .wholelist[11][
+                                                                widget
                                                                     .accessname]
                                                                 ['question']
-                                                            ['1']['toggle2']
-                                                        [i] = i == select;
-                                                  }
-                                                  widget.wholelist[
-                                                                            11][
-                                                                        widget
-                                                                            .accessname]
-                                                                    ['question']
-                                                                [
-                                                                "1"]['aboveGround']
-                                                            ['isClientSafe'] = widget
-                                                                      .wholelist[11]
-                                                                  [widget.accessname]
-                                                              ['question']['1']
-                                                          ['toggle2'][0]
-                                                      ? 'Yes'
-                                                      : 'No';
-                                                });
-                                              } else if (role != "therapist") {
-                                                setState(() {
-                                                  for (int i = 0;
-                                                      i <
-                                                          widget
-                                                              .wholelist[11][
-                                                                  widget
-                                                                      .accessname]
-                                                                  ['question']
-                                                                  ['1']
-                                                                  ['toggle2']
-                                                              .length;
-                                                      i++) {
-                                                    widget.wholelist[11][widget
-                                                                    .accessname]
-                                                                ['question']
-                                                            ['1']['toggle2'][i] =
-                                                        i == select;
-                                                  }
-                                                  widget.wholelist[
-                                                                            11][
-                                                                        widget
-                                                                            .accessname]
-                                                                    ['question']
-                                                                [
-                                                                "1"]['aboveGround']
-                                                            ['isClientSafe'] = widget
-                                                                      .wholelist[11]
-                                                                  [widget.accessname]
-                                                              ['question']['1']
-                                                          ['toggle2'][0]
-                                                      ? 'Yes'
-                                                      : 'No';
-                                                });
-                                              } else {
-                                                _showSnackBar(
-                                                    "You can't change the other fields",
-                                                    context);
-                                              }
-                                            },
-                                            isSelected: widget.wholelist[11]
-                                                    [widget.accessname]
-                                                    ['question']['1']['toggle2']
-                                                .cast<bool>(),
-                                          ),
-                                        ),
+                                                                ['1']['toggle2']
+                                                            .cast<bool>(),
+                                                      ),
+                                                    ),
                                                   ],
                                                 ),
                                                 SizedBox(height: 5),
@@ -1650,17 +1703,16 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
                                                             ['1']['toggle1']
                                                         [i] = i == select;
                                                   }
-                                                 widget.wholelist[11][widget
-                                                                    .accessname]
-                                                                ['question']["1"]
-                                                            ['inGround'][
-                                                        'adaptationAvailable'] = widget
-                                                                      .wholelist[11]
-                                                                  [widget.accessname]
-                                                              ['question']['1']
-                                                          ['toggle1'][0]
-                                                      ? 'Yes'
-                                                      : 'No';
+                                                  widget.wholelist[11][widget.accessname]
+                                                                  ['question']["1"]
+                                                              ['inGround']
+                                                          ['adaptationAvailable'] =
+                                                      widget.wholelist[11][widget
+                                                                      .accessname]
+                                                                  ['question']
+                                                              ['1']['toggle1'][0]
+                                                          ? 'Yes'
+                                                          : 'No';
                                                 });
                                               } else if (role != "therapist") {
                                                 setState(() {
@@ -1678,20 +1730,19 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
                                                     widget.wholelist[11][widget
                                                                     .accessname]
                                                                 ['question']
-                                                            ['1']['toggle1'][i] =
-                                                        i == select;
+                                                            ['1']['toggle1']
+                                                        [i] = i == select;
                                                   }
-                                                 widget.wholelist[11][widget
-                                                                    .accessname]
-                                                                ['question']["1"]
-                                                            ['inGround'][
-                                                        'adaptationAvailable']  = widget
-                                                                      .wholelist[11]
-                                                                  [widget.accessname]
-                                                              ['question']['1']
-                                                          ['toggle1'][0]
-                                                      ? 'Yes'
-                                                      : 'No';
+                                                  widget.wholelist[11][widget.accessname]
+                                                                  ['question']["1"]
+                                                              ['inGround']
+                                                          ['adaptationAvailable'] =
+                                                      widget.wholelist[11][widget
+                                                                      .accessname]
+                                                                  ['question']
+                                                              ['1']['toggle1'][0]
+                                                          ? 'Yes'
+                                                          : 'No';
                                                 });
                                               } else {
                                                 _showSnackBar(
@@ -1710,11 +1761,10 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
                                     SizedBox(
                                       height: 15,
                                     ),
-                                    (widget.wholelist[11][widget
-                                                                    .accessname]
-                                                                ['question']["1"]
-                                                            ['inGround'][
-                                                        'adaptationAvailable'] ==
+                                    (widget.wholelist[11][widget.accessname]
+                                                        ['question']["1"]
+                                                    ['inGround']
+                                                ['adaptationAvailable'] ==
                                             'Yes')
                                         ? Container(
                                             child: Column(
@@ -1810,113 +1860,134 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
                                                     //   ),
                                                     // ),
                                                     Container(
-                                          height: 35,
-                                          child: ToggleButtons(
-                                            borderColor: Colors.black,
-                                            fillColor: Colors.green,
-                                            borderWidth: 0,
-                                            selectedBorderColor: Colors.black,
-                                            selectedColor: Colors.white,
-                                            borderRadius:
-                                                BorderRadius.circular(20),
-                                            children: <Widget>[
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Text(
-                                                  'Yes',
-                                                  style:
-                                                      TextStyle(fontSize: 16),
-                                                ),
-                                              ),
-                                              Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Text(
-                                                  'No',
-                                                  style:
-                                                      TextStyle(fontSize: 16),
-                                                ),
-                                              ),
-                                            ],
-                                            onPressed: (int select) {
-                                              if (assessor == therapist &&
-                                                  role == "therapist") {
-                                                setState(() {
-                                                  for (int i = 0;
-                                                      i <
-                                                          widget
-                                                              .wholelist[11][
-                                                                  widget
-                                                                      .accessname]
-                                                                  ['question']
-                                                                  ['1']
-                                                                  ['toggle2']
-                                                              .length;
-                                                      i++) {
-                                                    widget.wholelist[11][widget
+                                                      height: 35,
+                                                      child: ToggleButtons(
+                                                        borderColor:
+                                                            Colors.black,
+                                                        fillColor: Colors.green,
+                                                        borderWidth: 0,
+                                                        selectedBorderColor:
+                                                            Colors.black,
+                                                        selectedColor:
+                                                            Colors.white,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20),
+                                                        children: <Widget>[
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(8.0),
+                                                            child: Text(
+                                                              'Yes',
+                                                              style: TextStyle(
+                                                                  fontSize: 16),
+                                                            ),
+                                                          ),
+                                                          Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .all(8.0),
+                                                            child: Text(
+                                                              'No',
+                                                              style: TextStyle(
+                                                                  fontSize: 16),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                        onPressed:
+                                                            (int select) {
+                                                          if (assessor ==
+                                                                  therapist &&
+                                                              role ==
+                                                                  "therapist") {
+                                                            setState(() {
+                                                              for (int i = 0;
+                                                                  i <
+                                                                      widget
+                                                                          .wholelist[
+                                                                              11]
+                                                                              [
+                                                                              widget.accessname]
+                                                                              [
+                                                                              'question']
+                                                                              [
+                                                                              '1']
+                                                                              [
+                                                                              'toggle2']
+                                                                          .length;
+                                                                  i++) {
+                                                                widget.wholelist[11][widget.accessname]['question']
+                                                                            [
+                                                                            '1']
+                                                                        [
+                                                                        'toggle2'][i] =
+                                                                    i == select;
+                                                              }
+                                                              widget.wholelist[11]
+                                                                              [widget.accessname]
+                                                                          ['question']["1"]
+                                                                      ['inGround']
+                                                                  ['isClientSafe'] = widget
+                                                                              .wholelist[11]
+                                                                          [widget
+                                                                              .accessname]['question']['1']
+                                                                      ['toggle2'][0]
+                                                                  ? 'Yes'
+                                                                  : 'No';
+                                                            });
+                                                          } else if (role !=
+                                                              "therapist") {
+                                                            setState(() {
+                                                              for (int i = 0;
+                                                                  i <
+                                                                      widget
+                                                                          .wholelist[
+                                                                              11]
+                                                                              [
+                                                                              widget.accessname]
+                                                                              [
+                                                                              'question']
+                                                                              [
+                                                                              '1']
+                                                                              [
+                                                                              'toggle2']
+                                                                          .length;
+                                                                  i++) {
+                                                                widget.wholelist[11][widget.accessname]['question']
+                                                                            [
+                                                                            '1']
+                                                                        [
+                                                                        'toggle2'][i] =
+                                                                    i == select;
+                                                              }
+                                                              widget.wholelist[11]
+                                                                              [widget.accessname]
+                                                                          ['question']["1"]
+                                                                      ['inGround']
+                                                                  ['isClientSafe'] = widget
+                                                                              .wholelist[11]
+                                                                          [widget
+                                                                              .accessname]['question']['1']
+                                                                      ['toggle2'][0]
+                                                                  ? 'Yes'
+                                                                  : 'No';
+                                                            });
+                                                          } else {
+                                                            _showSnackBar(
+                                                                "You can't change the other fields",
+                                                                context);
+                                                          }
+                                                        },
+                                                        isSelected: widget
+                                                            .wholelist[11][
+                                                                widget
                                                                     .accessname]
                                                                 ['question']
-                                                            ['1']['toggle2']
-                                                        [i] = i == select;
-                                                  }
-                                                  widget.wholelist[11][widget
-                                                                        .accessname]
-                                                                    ['question']
-                                                                [
-                                                                "1"]['inGround']
-                                                            ['isClientSafe'] = widget
-                                                                      .wholelist[11]
-                                                                  [widget.accessname]
-                                                              ['question']['1']
-                                                          ['toggle2'][0]
-                                                      ? 'Yes'
-                                                      : 'No';
-                                                });
-                                              } else if (role != "therapist") {
-                                                setState(() {
-                                                  for (int i = 0;
-                                                      i <
-                                                          widget
-                                                              .wholelist[11][
-                                                                  widget
-                                                                      .accessname]
-                                                                  ['question']
-                                                                  ['1']
-                                                                  ['toggle2']
-                                                              .length;
-                                                      i++) {
-                                                    widget.wholelist[11][widget
-                                                                    .accessname]
-                                                                ['question']
-                                                            ['1']['toggle2'][i] =
-                                                        i == select;
-                                                  }
-                                                  widget.wholelist[11][widget
-                                                                        .accessname]
-                                                                    ['question']
-                                                                [
-                                                                "1"]['inGround']
-                                                            ['isClientSafe'] = widget
-                                                                      .wholelist[11]
-                                                                  [widget.accessname]
-                                                              ['question']['1']
-                                                          ['toggle2'][0]
-                                                      ? 'Yes'
-                                                      : 'No';
-                                                });
-                                              } else {
-                                                _showSnackBar(
-                                                    "You can't change the other fields",
-                                                    context);
-                                              }
-                                            },
-                                            isSelected: widget.wholelist[11]
-                                                    [widget.accessname]
-                                                    ['question']['1']['toggle2']
-                                                .cast<bool>(),
-                                          ),
-                                        ),
+                                                                ['1']['toggle2']
+                                                            .cast<bool>(),
+                                                      ),
+                                                    ),
                                                   ],
                                                 ),
                                                 SizedBox(height: 5),
@@ -1985,7 +2056,8 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
                             //     value: getvalue(2),
                             //   ),
                             // )
-                            toggleButton(context, assesspro, 2, 'Pool Accessible')
+                            toggleButton(
+                                context, assesspro, 2, 'Pool Accessible')
                           ],
                         ),
                         (getvalue(2) != '')
@@ -2096,7 +2168,8 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
                             //     value: getvalue(4),
                             //   ),
                             // )
-                            toggleButton(context, assesspro, 4, 'Pool Deck Clutter?')
+                            toggleButton(
+                                context, assesspro, 4, 'Pool Deck Clutter?')
                           ],
                         ),
                         SizedBox(height: 5),
@@ -2156,90 +2229,90 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
                         //   },
                         // )),
                         Container(
-                      padding: EdgeInsets.fromLTRB(10, 8, 8, 0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: TextFormField(
-                              // initialValue: getvalue(14),
-                              maxLines: 6,
-                              showCursor: cur,
-                              controller: _controllers["field5"],
-                              decoration: InputDecoration(
-                                border: InputBorder.none,
-                              ),
+                          padding: EdgeInsets.fromLTRB(10, 8, 8, 0),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: TextFormField(
+                                  // initialValue: getvalue(14),
+                                  maxLines: 6,
+                                  showCursor: cur,
+                                  controller: _controllers["field5"],
+                                  decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                  ),
 
-                              onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                if (assessor == therapist &&
-                                    role == "therapist") {
-                                  setreco(5, value);
-                                  setdata(5, value, 'Oberservations');
-                                } else if (role != "therapist") {
-                                  setreco(5, value);
-                                  setdata(5, value, 'Oberservations');
-                                } else {
-                                  _showSnackBar(
-                                      "You can't change the other fields",
-                                      context);
-                                }
-                              },
-                            ),
-                          ),
-                          AvatarGlow(
-                            animate: isListening["field5"],
-                            glowColor: Colors.blue,
-                            endRadius: 35.0,
-                            duration: const Duration(milliseconds: 2000),
-                            repeatPauseDuration:
-                                const Duration(milliseconds: 300),
-                            repeat: true,
-                            child: Container(
-                              width: 40,
-                              height: 30,
-                              padding: EdgeInsets.all(0),
-                              alignment: Alignment.center,
-                              margin: EdgeInsets.all(0),
-                              child: FloatingActionButton(
-                                heroTag: "btn5",
-                                child: Icon(
-                                  Icons.mic,
-                                  size: 20,
+                                  onChanged: (value) {
+                                    FocusScope.of(context).requestFocus();
+                                    new TextEditingController().clear();
+                                    // print(widget.accessname);
+                                    if (assessor == therapist &&
+                                        role == "therapist") {
+                                      setreco(5, value);
+                                      setdata(5, value, 'Oberservations');
+                                    } else if (role != "therapist") {
+                                      setreco(5, value);
+                                      setdata(5, value, 'Oberservations');
+                                    } else {
+                                      _showSnackBar(
+                                          "You can't change the other fields",
+                                          context);
+                                    }
+                                  },
                                 ),
-                                onPressed: () {
-                                  if (assessor == therapist &&
-                                      role == "therapist") {
-                                    _listen(5);
-                                    setdatalisten(5);
-                                  } else if (role != "therapist") {
-                                    _listen(5);
-                                    setdatalisten(5);
-                                  } else {
-                                    _showSnackBar(
-                                        "You can't change the other fields",
-                                        context);
-                                  }
-                                  // print("1: ${isListening['field12']}");
-                                  // ticklisten(12);
-                                  // print("2: ${isListening['field12']}");
-                                  print(isListening);
-                                },
                               ),
-                            ),
+                              AvatarGlow(
+                                animate: isListening["field5"],
+                                glowColor: Colors.blue,
+                                endRadius: 35.0,
+                                duration: const Duration(milliseconds: 2000),
+                                repeatPauseDuration:
+                                    const Duration(milliseconds: 300),
+                                repeat: true,
+                                child: Container(
+                                  width: 40,
+                                  height: 30,
+                                  padding: EdgeInsets.all(0),
+                                  alignment: Alignment.center,
+                                  margin: EdgeInsets.all(0),
+                                  child: FloatingActionButton(
+                                    heroTag: "btn5",
+                                    child: Icon(
+                                      Icons.mic,
+                                      size: 20,
+                                    ),
+                                    onPressed: () {
+                                      if (assessor == therapist &&
+                                          role == "therapist") {
+                                        _listen(5);
+                                        setdatalisten(5);
+                                      } else if (role != "therapist") {
+                                        _listen(5);
+                                        setdatalisten(5);
+                                      } else {
+                                        _showSnackBar(
+                                            "You can't change the other fields",
+                                            context);
+                                      }
+                                      // print("1: ${isListening['field12']}");
+                                      // ticklisten(12);
+                                      // print("2: ${isListening['field12']}");
+                                      print(isListening);
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: colorsset["field${5}"],
-                          width: 1,
-                        ), //Border.all
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: colorsset["field${5}"],
+                              width: 1,
+                            ), //Border.all
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
                       ],
                     ),
                   ),

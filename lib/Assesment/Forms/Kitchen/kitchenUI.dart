@@ -402,7 +402,9 @@ class _KitchenUIState extends State<KitchenUI> {
       onWillPop: () async => false,
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.roomname),
+          title: (widget.roomname != null)
+              ? Text("${widget.roomname}")
+              : Text('Kitchen'),
           automaticallyImplyLeading: false,
           backgroundColor: _colorgreen,
           actions: [
@@ -424,62 +426,96 @@ class _KitchenUIState extends State<KitchenUI> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
+                  // Container(
+                  //   width: double.infinity,
+                  //   child: Card(
+                  //     elevation: 8,
+                  //     child: Container(
+                  //       padding: EdgeInsets.all(25),
+                  //       child: Row(
+                  //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //         children: [
+                  //           Container(
+                  //             width: MediaQuery.of(context).size.width / 1.6,
+                  //             child: Text(
+                  //               '${widget.roomname}Details',
+                  //               style: TextStyle(
+                  //                 fontSize: 25,
+                  //                 fontWeight: FontWeight.bold,
+                  //                 color: Color.fromRGBO(10, 80, 106, 1),
+                  //               ),
+                  //             ),
+                  //           ),
+                  //           Container(
+                  //             alignment: Alignment.topRight,
+                  //             width: 50,
+                  //             decoration: BoxDecoration(
+                  //                 color: _colorgreen,
+                  //                 // border: Border.all(
+                  //                 //   color: Colors.red[500],
+                  //                 // ),
+                  //                 borderRadius:
+                  //                     BorderRadius.all(Radius.circular(50))),
+                  //             // color: Colors.red,
+                  //             child: RawMaterialButton(
+                  //               onPressed: () {
+                  //                 if (videoUrl == "" && videoName == "") {
+                  //                   if (curUid == assessor) {
+                  //                     uploadVideo(context);
+                  //                   } else {
+                  //                     _showSnackBar(
+                  //                         "You are not allowed to upload video",
+                  //                         context);
+                  //                   }
+                  //                 } else {
+                  //                   _showSnackBar(
+                  //                       "You can add only one video", context);
+                  //                 }
+                  //               },
+                  //               child: Icon(
+                  //                 Icons.camera_alt,
+                  //                 color: Colors.white,
+                  //               ),
+                  //             ),
+                  //           )
+                  //         ],
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
                   Container(
-                    width: double.infinity,
-                    child: Card(
-                      elevation: 8,
-                      child: Container(
-                        padding: EdgeInsets.all(25),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width / 1.6,
-                              child: Text(
-                                '${widget.roomname}Details',
-                                style: TextStyle(
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color.fromRGBO(10, 80, 106, 1),
-                                ),
-                              ),
+                    padding: EdgeInsets.fromLTRB(15, 10, 10, 0),
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            "If you want to upload a video",
+                            style: TextStyle(fontSize: 18),
+                          ),
+                          FlatButton(
+                            child: Text(
+                              'Click Here',
+                              style: TextStyle(
+                                  fontSize: 20.0,
+                                  color: Color.fromRGBO(10, 80, 106, 1)),
                             ),
-                            Container(
-                              alignment: Alignment.topRight,
-                              width: 50,
-                              decoration: BoxDecoration(
-                                  color: _colorgreen,
-                                  // border: Border.all(
-                                  //   color: Colors.red[500],
-                                  // ),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(50))),
-                              // color: Colors.red,
-                              child: RawMaterialButton(
-                                onPressed: () {
-                                  if (videoUrl == "" && videoName == "") {
-                                    if (curUid == assessor) {
-                                      uploadVideo(context);
-                                    } else {
-                                      _showSnackBar(
-                                          "You are not allowed to upload video",
-                                          context);
-                                    }
-                                  } else {
-                                    _showSnackBar(
-                                        "You can add only one video", context);
-                                  }
-                                },
-                                child: Icon(
-                                  Icons.camera_alt,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
+                            onPressed: () {
+                              if (videoUrl == "" && videoName == "") {
+                                if (curUid == assessor) {
+                                  uploadVideo(context);
+                                } else {
+                                  _showSnackBar(
+                                      "You are not allowed to upload video",
+                                      context);
+                                }
+                              } else {
+                                _showSnackBar(
+                                    "You can add only one video", context);
+                              }
+                            },
+                          ),
+                        ]),
                   ),
                   SizedBox(height: 10),
                   (uploading)
@@ -607,7 +643,7 @@ class _KitchenUIState extends State<KitchenUI> {
                     padding: EdgeInsets.all(15),
                     child: Column(
                       children: [
-                        SizedBox(height: 15),
+                        // SizedBox(height: 15),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
