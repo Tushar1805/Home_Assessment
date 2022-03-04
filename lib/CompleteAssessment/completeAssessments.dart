@@ -94,6 +94,7 @@ class CompleteAssessmentUI extends StatefulWidget {
 class _CompleteAssessmentState extends State<CompleteAssessmentUI>
     with TickerProviderStateMixin {
   GlobalKey c1 = GlobalKey();
+  GlobalKey c2 = GlobalKey();
   double widthh = 1;
   AnimationController _animationController;
 
@@ -253,6 +254,21 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
     return bordertype;
   }
 
+  BorderRadius getborderradiusForUnused(innerlist, index) {
+    var bordertype = BorderRadius.only(
+      // topRight: Radius.circular(20),
+      topLeft: Radius.circular(20),
+    );
+    // if (innerlist['room$index']['complete'] ==
+    //     innerlist['room$index']['total']) {
+    bordertype = BorderRadius.only(
+      topRight: Radius.circular(20),
+      topLeft: Radius.circular(20),
+    );
+    // }
+    return bordertype;
+  }
+
   // This function used to get the WholeList map.
   List<Map<String, dynamic>> getList() {
     return widget.wholelist;
@@ -408,12 +424,73 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                                       'Living Arrangements') {
                                     return SizedBox();
                                   }
+                                  // for (int i = 1;
+                                  //     i <= widget.wholelist[index]['count'];
+                                  //     i++) {
+                                  //   if (widget.wholelist[index]['name'] !=
+                                  //       'Living Arrangements') {
+                                  //     if (widget.wholelist[index]['room$i']
+                                  //         ['isUsed'][0]) {
+                                  //       return cards(widget.wholelist[index],
+                                  //           index, widthh);
+                                  //     }
+                                  //   }
+                                  // }
                                   return cards(
                                       widget.wholelist[index], index, widthh);
                                 }),
                           ),
                         ),
-                        SizedBox(height: 30),
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Container(
+                            // height: MediaQuery.of(context).size.height / 8,
+                            width: double.infinity,
+                            child: Card(
+                              key: c2,
+                              elevation: 8,
+                              child: Container(
+                                padding: EdgeInsets.all(20),
+                                child: Text(
+                                  'ROOMS NOT USING :',
+                                  style: TextStyle(
+                                      fontSize: 23,
+                                      fontWeight: FontWeight.bold,
+                                      color: _colorgreen),
+                                  textAlign: TextAlign.left,
+                                ),
+                              ),
+                            )),
+                        Container(
+                          child: ConstrainedBox(
+                            constraints:
+                                BoxConstraints(maxHeight: 3000, minHeight: 0),
+                            child: ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: widget.wholelist.length,
+                                itemBuilder: (context, index) {
+                                  // for (int i = 1;
+                                  //     i <= widget.wholelist[index]['count'];
+                                  //     i++) {
+                                  //   if (widget.wholelist[index]['room$i']
+                                  //           ["isUsed"][0] ==
+                                  //       false) {
+                                  //     return cards(widget.wholelist[index],
+                                  //         index, widthh);
+                                  //   }
+                                  // }
+                                  if (widget.wholelist[index]['name'] ==
+                                      'Living Arrangements') {
+                                    return SizedBox();
+                                  }
+                                  return cardsNotUsing(
+                                      widget.wholelist[index], index, widthh);
+                                }),
+                          ),
+                        ),
+                        SizedBox(height: 50),
                       ],
                     )),
               ),
@@ -462,6 +539,7 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                       print("********Start*****");
                       await Future.delayed(const Duration(milliseconds: 1500),
                           () {
+                        // 1'st loop will check the number of areas in the form
                         outerloop:
                         for (int i = 0; i < widget.wholelist.length; i++) {
                           print("********1st loop*****");
@@ -469,23 +547,88 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                           int count = widget.wholelist[i]['count'] ?? 0;
                           print("count = $count");
                           if (count > 0) {
+                            // This loop checks the number of rooms in a single area
+                            // After that checks any question is remaining or unfilled.
                             for (int j = 1; j <= count; j++) {
                               print("********2nd loop*****");
-                              if (widget.wholelist[i]["room$j"]["complete"] ==
-                                  gettotal(widget.wholelist[i]["name"])) {
-                                // setState(() {
-                                //   save = true;
-                                // });
-                                if (widget.role == "therapist") {
-                                  if (widget.wholelist[i]["room$j"]["isSave"] !=
-                                          null &&
-                                      widget.wholelist[i]["room$j"]["isSave"] ==
-                                          true) {
+                              if (widget.wholelist[i]['name'] ==
+                                  'Living Arrangements') {
+                                if (widget.wholelist[i]["room$j"]["complete"] ==
+                                    gettotal(widget.wholelist[i]["name"])) {
+                                  // setState(() {
+                                  //   save = true;
+                                  // });
+                                  if (widget.role == "therapist") {
+                                    if (widget.wholelist[i]["room$j"]
+                                                ["isSave"] !=
+                                            null &&
+                                        widget.wholelist[i]["room$j"]
+                                                ["isSave"] ==
+                                            true) {
+                                      setState(() {
+                                        save = true;
+                                      });
+                                      print(
+                                          "***********true for $i with $j************");
+                                    } else {
+                                      setState(() {
+                                        save = false;
+                                      });
+                                      print(
+                                          "***********false for $i with $j************");
+                                      break outerloop;
+                                    }
+                                  } else {
                                     setState(() {
                                       save = true;
                                     });
                                     print(
                                         "***********true for $i with $j************");
+                                  }
+                                } else {
+                                  setState(() {
+                                    save = false;
+                                  });
+                                  print(
+                                      "***********false for $i with $j************");
+                                  break outerloop;
+                                }
+                              } else {
+                                if (widget.wholelist[i]["room$j"]["isUsed"]
+                                    [0]) {
+                                  if (widget.wholelist[i]["room$j"]
+                                          ["complete"] ==
+                                      gettotal(widget.wholelist[i]["name"])) {
+                                    // setState(() {
+                                    //   save = true;
+                                    // });
+                                    if (widget.role == "therapist") {
+                                      if (widget.wholelist[i]["room$j"]
+                                                  ["isSave"] !=
+                                              null &&
+                                          widget.wholelist[i]["room$j"]
+                                                  ["isSave"] ==
+                                              true) {
+                                        setState(() {
+                                          save = true;
+                                        });
+                                        print(
+                                            "***********true for $i with $j************");
+                                      } else {
+                                        setState(() {
+                                          save = false;
+                                        });
+                                        print(
+                                            "***********false for $i with $j************");
+                                        break outerloop;
+                                      }
+                                    } else {
+                                      setState(() {
+                                        save = true;
+                                      });
+                                      print(
+                                          "***********true for $i with $j************");
+                                    }
                                   } else {
                                     setState(() {
                                       save = false;
@@ -494,20 +637,7 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                                         "***********false for $i with $j************");
                                     break outerloop;
                                   }
-                                } else {
-                                  setState(() {
-                                    save = true;
-                                  });
-                                  print(
-                                      "***********true for $i with $j************");
                                 }
-                              } else {
-                                setState(() {
-                                  save = false;
-                                });
-                                print(
-                                    "***********false for $i with $j************");
-                                break outerloop;
                               }
                             }
                           }
@@ -660,103 +790,344 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
           shrinkWrap: true,
           itemCount: innerlist['count'],
           itemBuilder: (context, index1) {
-            return Container(
-                width: double.infinity,
-                padding: EdgeInsets.all(10),
-                child: GestureDetector(
-                  onTap: () {
-                    getRoute(innerlist, innerlist['room${index1 + 1}']['name'],
-                        'room${index1 + 1}', index);
-                  },
-                  child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      elevation: 8,
-                      child: Column(
-                        children: [
-                          Stack(
-                            children: [
-                              Container(
-                                height:
-                                    MediaQuery.of(context).size.height * 0.03,
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: getbordercolor(
-                                          innerlist, index1 + 1)),
-                                  borderRadius: BorderRadius.only(
-                                    topRight: Radius.circular(20),
-                                    topLeft: Radius.circular(20),
-                                  ),
-                                ),
-                              ),
-                              (innerlist['name'] == "Swimming Pool")
-                                  ? Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.03,
-                                      width: getwidth(
-                                          innerlist['room${index1 + 1}']
-                                              ['complete'],
-                                          innerlist['room${index1 + 1}']
-                                              ['total'],
-                                          true),
-                                      decoration: BoxDecoration(
-                                          color: getbordercolor(
-                                              innerlist, index1 + 1),
-                                          borderRadius: getborderradius(
-                                              innerlist, index1 + 1)),
-                                    )
-                                  : Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.03,
-                                      width: getwidth(
-                                          innerlist['room${index1 + 1}']
-                                              ['complete'],
-                                          innerlist['room${index1 + 1}']
-                                              ['total'],
-                                          false),
-                                      decoration: BoxDecoration(
-                                          color: getbordercolor(
-                                              innerlist, index1 + 1),
-                                          borderRadius: getborderradius(
-                                              innerlist, index1 + 1)),
-                                    ),
-                            ],
-                          ),
-                          Container(
-                            padding: EdgeInsets.all(10),
-                            width: double.infinity,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            if (innerlist['room${index1 + 1}']['name'] ==
+                'Living Arrangements') {
+              return Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(10),
+                  child: GestureDetector(
+                    onTap: () {
+                      getRoute(
+                          innerlist,
+                          innerlist['room${index1 + 1}']['name'],
+                          'room${index1 + 1}',
+                          index);
+                    },
+                    child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        elevation: 8,
+                        child: Column(
+                          children: [
+                            Stack(
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(13),
-                                  child: Text(
-                                    innerlist['room${index1 + 1}']['name'],
-                                    style: TextStyle(
-                                        color: Color.fromRGBO(10, 80, 106, 1),
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
+                                Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.03,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: getbordercolor(
+                                            innerlist, index1 + 1)),
+                                    borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(20),
+                                      topLeft: Radius.circular(20),
+                                    ),
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.all(13),
-                                  child: Text(
-                                    '${innerlist['room${index1 + 1}']['complete']}/${innerlist['room${index1 + 1}']['total']}',
-                                    style: TextStyle(
-                                        color: Color.fromRGBO(10, 80, 106, 1),
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                )
+                                (innerlist['name'] == "Swimming Pool")
+                                    ? Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.03,
+                                        width: getwidth(
+                                            innerlist['room${index1 + 1}']
+                                                ['complete'],
+                                            innerlist['room${index1 + 1}']
+                                                ['total'],
+                                            true),
+                                        decoration: BoxDecoration(
+                                            color: getbordercolor(
+                                                innerlist, index1 + 1),
+                                            borderRadius: getborderradius(
+                                                innerlist, index1 + 1)),
+                                      )
+                                    : Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.03,
+                                        width: getwidth(
+                                            innerlist['room${index1 + 1}']
+                                                ['complete'],
+                                            innerlist['room${index1 + 1}']
+                                                ['total'],
+                                            false),
+                                        decoration: BoxDecoration(
+                                            color: getbordercolor(
+                                                innerlist, index1 + 1),
+                                            borderRadius: getborderradius(
+                                                innerlist, index1 + 1)),
+                                      ),
                               ],
                             ),
-                          )
-                        ],
-                      )),
-                ));
+                            Container(
+                              padding: EdgeInsets.all(10),
+                              width: double.infinity,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(13),
+                                    child: Text(
+                                      innerlist['room${index1 + 1}']['name'],
+                                      style: TextStyle(
+                                          color: Color.fromRGBO(10, 80, 106, 1),
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(13),
+                                    child: Text(
+                                      '${innerlist['room${index1 + 1}']['complete']}/${innerlist['room${index1 + 1}']['total']}',
+                                      style: TextStyle(
+                                          color: Color.fromRGBO(10, 80, 106, 1),
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        )),
+                  ));
+            } else {
+              if (innerlist['room${index1 + 1}']['isUsed'][0]) {
+                return Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(10),
+                    child: GestureDetector(
+                      onTap: () {
+                        getRoute(
+                            innerlist,
+                            innerlist['room${index1 + 1}']['name'],
+                            'room${index1 + 1}',
+                            index);
+                      },
+                      child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          elevation: 8,
+                          child: Column(
+                            children: [
+                              Stack(
+                                children: [
+                                  Container(
+                                    height: MediaQuery.of(context).size.height *
+                                        0.03,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(
+                                          color: getbordercolor(
+                                              innerlist, index1 + 1)),
+                                      borderRadius: BorderRadius.only(
+                                        topRight: Radius.circular(20),
+                                        topLeft: Radius.circular(20),
+                                      ),
+                                    ),
+                                  ),
+                                  (innerlist['name'] == "Swimming Pool")
+                                      ? Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.03,
+                                          width: getwidth(
+                                              innerlist['room${index1 + 1}']
+                                                  ['complete'],
+                                              innerlist['room${index1 + 1}']
+                                                  ['total'],
+                                              true),
+                                          decoration: BoxDecoration(
+                                              color: getbordercolor(
+                                                  innerlist, index1 + 1),
+                                              borderRadius: getborderradius(
+                                                  innerlist, index1 + 1)),
+                                        )
+                                      : Container(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.03,
+                                          width: getwidth(
+                                              innerlist['room${index1 + 1}']
+                                                  ['complete'],
+                                              innerlist['room${index1 + 1}']
+                                                  ['total'],
+                                              false),
+                                          decoration: BoxDecoration(
+                                              color: getbordercolor(
+                                                  innerlist, index1 + 1),
+                                              borderRadius: getborderradius(
+                                                  innerlist, index1 + 1)),
+                                        ),
+                                ],
+                              ),
+                              Container(
+                                padding: EdgeInsets.all(10),
+                                width: double.infinity,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(13),
+                                      child: Text(
+                                        innerlist['room${index1 + 1}']['name'],
+                                        style: TextStyle(
+                                            color:
+                                                Color.fromRGBO(10, 80, 106, 1),
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.all(13),
+                                      child: Text(
+                                        '${innerlist['room${index1 + 1}']['complete']}/${innerlist['room${index1 + 1}']['total']}',
+                                        style: TextStyle(
+                                            color:
+                                                Color.fromRGBO(10, 80, 106, 1),
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          )),
+                    ));
+              }
+            }
+            return SizedBox();
+            // Text(innerlist['room${index1 + 1}']);
+          }),
+    );
+  }
+
+  /// This is the card function used to dispaly the card currently not used.
+  Widget cardsNotUsing(Map<String, dynamic> innerlist, int index, key) {
+    return Container(
+      // width: double.infinity,
+      child: ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: innerlist['count'],
+          itemBuilder: (context, index1) {
+            if (!innerlist['room${index1 + 1}']['isUsed'][0]) {
+              return Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(10),
+                  child: GestureDetector(
+                    onTap: () {
+                      // getRoute(
+                      //     innerlist,
+                      //     innerlist['room${index1 + 1}']['name'],
+                      //     'room${index1 + 1}',
+                      //     index);
+                      _showSnackBar("No need to fill this form", context);
+                    },
+                    child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        color: Colors.white.withOpacity(0.7),
+                        elevation: 8,
+                        child: Column(
+                          children: [
+                            Stack(
+                              children: [
+                                Container(
+                                  color: Colors.white.withOpacity(0.6),
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.03,
+                                  // decoration: BoxDecoration(
+                                  //   border: Border.all(
+                                  //       color: getbordercolor(
+                                  //           innerlist, index1 + 1)),
+                                  //   borderRadius: BorderRadius.only(
+                                  //     topRight: Radius.circular(20),
+                                  //     topLeft: Radius.circular(20),
+                                  //   ),
+                                  // ),
+                                ),
+                                (innerlist['name'] == "Swimming Pool")
+                                    ? Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.03,
+                                        // width: getwidth(
+                                        //     innerlist['room${index1 + 1}']
+                                        //         ['complete'],
+                                        //     innerlist['room${index1 + 1}']
+                                        //         ['total'],
+                                        //     true),
+                                        decoration: BoxDecoration(
+                                            // color: getbordercolor(
+                                            //     innerlist, index1 + 1),
+                                            color: Colors.grey,
+                                            borderRadius:
+                                                getborderradiusForUnused(
+                                                    innerlist, index1 + 1)),
+                                      )
+                                    : Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.03,
+                                        // width: getwidth(
+                                        //     innerlist['room${index1 + 1}']
+                                        //         ['complete'],
+                                        //     innerlist['room${index1 + 1}']
+                                        //         ['total'],
+                                        //     false),
+                                        decoration: BoxDecoration(
+                                            // color: getbordercolor(
+                                            //     innerlist, index1 + 1),
+                                            color: Colors.grey,
+                                            borderRadius:
+                                                getborderradiusForUnused(
+                                                    innerlist, index1 + 1)),
+                                      ),
+                              ],
+                            ),
+                            Container(
+                              padding: EdgeInsets.all(10),
+                              width: double.infinity,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(13),
+                                    child: Text(
+                                      innerlist['room${index1 + 1}']['name'],
+                                      style: TextStyle(
+                                          color: Color.fromRGBO(10, 80, 106, 1),
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(13),
+                                    child: Text(
+                                      '${innerlist['room${index1 + 1}']['complete']}/${innerlist['room${index1 + 1}']['total']}',
+                                      style: TextStyle(
+                                          color: Color.fromRGBO(10, 80, 106, 1),
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        )),
+                  ));
+            }
+            return SizedBox();
             // Text(innerlist['room${index1 + 1}']);
           }),
     );
