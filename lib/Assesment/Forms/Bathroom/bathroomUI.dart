@@ -413,8 +413,12 @@ class _BathroomUIState extends State<BathroomUI> {
         setState(() {
           videoUrl = url;
           print("************Url = $videoUrl**********");
+          var path = videos.path;
+          var lastSeparator = path.lastIndexOf(Platform.pathSeparator);
+          var newPath = path.substring(0, lastSeparator + 1) + widget.roomname;
+          videos = videos.renameSync(newPath);
           videoName = basename(videos.path);
-          print("************Url = $videoName**********");
+          print("************Name = $videoName**********");
           widget.wholelist[5][widget.accessname]["videos"]["url"] = videoUrl;
           widget.wholelist[5][widget.accessname]["videos"]["name"] = videoName;
           NewAssesmentRepository().setForm(widget.wholelist, widget.docID);
@@ -423,12 +427,12 @@ class _BathroomUIState extends State<BathroomUI> {
       } catch (e) {
         print(e.toString());
       }
-    }
+    } 
 
     Future<void> selectVideo(String source) async {
       if (video == null) {
         if (source == 'camera') {
-          final pickedVideo =
+          XFile pickedVideo =
               await ImagePicker().pickVideo(source: ImageSource.camera);
 
           if (pickedVideo != null) {
@@ -718,7 +722,7 @@ class _BathroomUIState extends State<BathroomUI> {
                   //     ),
                   //   ),
                   // ),
-                   Container(
+                  Container(
                     padding: EdgeInsets.fromLTRB(15, 10, 10, 0),
                     width: MediaQuery.of(context).size.width,
                     child: Row(
@@ -4416,8 +4420,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                   ),
                                   ((widget.wholelist[5][widget.accessname]
                                                   ['question']["20"]
-                                              ['ManageInOut'] !=
-                                          'Yes'))
+                                              ['ManageInOut'] ==
+                                          'No'))
                                       ? assesmentprovider.getrecomain(
                                           assesmentprovider,
                                           20,

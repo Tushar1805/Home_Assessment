@@ -183,8 +183,12 @@ class _GarageUIState extends State<GarageUI> {
         setState(() {
           videoUrl = url;
           print("************Url = $videoUrl**********");
+           var path = videos.path;
+          var lastSeparator = path.lastIndexOf(Platform.pathSeparator);
+          var newPath = path.substring(0, lastSeparator + 1) + widget.roomname;
+          videos = videos.renameSync(newPath);
           videoName = basename(videos.path);
-          print("************Url = $videoName**********");
+          print("************Name = $videoName**********");
           widget.wholelist[9][widget.accessname]["videos"]["url"] = videoUrl;
           widget.wholelist[9][widget.accessname]["videos"]["name"] = videoName;
           NewAssesmentRepository().setForm(widget.wholelist, widget.docID);

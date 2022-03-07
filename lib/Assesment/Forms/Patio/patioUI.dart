@@ -295,8 +295,12 @@ class _PatioUIState extends State<PatioUI> {
         setState(() {
           videoUrl = url;
           print("************Url = $videoUrl**********");
+          var path = videos.path;
+          var lastSeparator = path.lastIndexOf(Platform.pathSeparator);
+          var newPath = path.substring(0, lastSeparator + 1) + widget.roomname;
+          videos = videos.renameSync(newPath);
           videoName = basename(videos.path);
-          print("************Url = $videoName**********");
+          print("************Name = $videoName**********");
           widget.wholelist[8][widget.accessname]["videos"]["url"] = videoUrl;
           widget.wholelist[8][widget.accessname]["videos"]["name"] = videoName;
           NewAssesmentRepository().setForm(widget.wholelist, widget.docID);
@@ -713,7 +717,7 @@ class _PatioUIState extends State<PatioUI> {
                   //     ),
                   //   ),
                   // ),
-                   Container(
+                  Container(
                     padding: EdgeInsets.fromLTRB(15, 10, 10, 0),
                     width: MediaQuery.of(context).size.width,
                     child: Row(
