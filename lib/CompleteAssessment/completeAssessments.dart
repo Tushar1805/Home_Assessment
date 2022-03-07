@@ -111,6 +111,9 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
 
   FirebaseAuth _auth = FirebaseAuth.instance;
   String assessor;
+  int roomNumber;
+  int innerRoomNumber;
+  Map<String, dynamic> route = {};
 
   @override
   void initState() {
@@ -306,10 +309,28 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
     });
   }
 
+  // Widget showDialog(BuildContext context, String message,
+  //     Map<String, dynamic> innerlist, int i, int j) {
+  //   return AlertDialog(
+  //     title: Text("Form Incomplete"),
+  //     content: Text(message),
+  //     actions: [
+  //       FlatButton(
+  //         child: Text("OK"),
+  //         onPressed: () {
+  //           getRoute(innerlist, innerlist['room${j + 1}']['name'],
+  //               'room${j + 1}', i);
+  //         },
+  //       ),
+  //     ],
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
     //   final assessmentprovider = Provider.of<NewAssesmentProvider>(context);
     // String doc = assessmentprovider.getdocid().toString();
+
     return WillPopScope(
       // ignore: missing_return
       onWillPop: () {
@@ -573,6 +594,9 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                                     } else {
                                       setState(() {
                                         save = false;
+                                        roomNumber = i;
+                                        innerRoomNumber = j;
+                                        route = widget.wholelist[i];
                                       });
                                       print(
                                           "***********false for $i with $j************");
@@ -588,6 +612,9 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                                 } else {
                                   setState(() {
                                     save = false;
+                                    roomNumber = i;
+                                    innerRoomNumber = j;
+                                    route = widget.wholelist[i];
                                   });
                                   print(
                                       "***********false for $i with $j************");
@@ -617,6 +644,9 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                                       } else {
                                         setState(() {
                                           save = false;
+                                          roomNumber = i;
+                                          innerRoomNumber = j;
+                                          route = widget.wholelist[i];
                                         });
                                         print(
                                             "***********false for $i with $j************");
@@ -632,6 +662,9 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                                   } else {
                                     setState(() {
                                       save = false;
+                                      roomNumber = i;
+                                      innerRoomNumber = j;
+                                      route = widget.wholelist[i];
                                     });
                                     print(
                                         "***********false for $i with $j************");
@@ -656,8 +689,38 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                               MaterialPageRoute(
                                   builder: (context) => Therapist()));
                         } else {
-                          _showSnackBar(
-                              "You must give all the recommendations", context);
+                          // _showSnackBar(
+                          //     "You must give all the recommendations", context);
+                          // showDialog(
+                          //     context,
+                          //     "Oops, you have missed giving recommedation in ${widget.wholelist[roomNumber]['room$innerRoomNumber']['name']}. Please fill out and then continue.",
+                          //     route,
+                          //     roomNumber,
+                          //     innerRoomNumber);
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              // return object of type Dialog
+                              return AlertDialog(
+                                title: new Text("Form Incomplete"),
+                                content: new Text(
+                                    "Oops, you have missed giving recommendation in ${widget.wholelist[roomNumber]['room$innerRoomNumber']['name']}. Please fill out and then continue."),
+                                actions: <Widget>[
+                                  // usually buttons at the bottom of the dialog
+                                  new FlatButton(
+                                    child: new Text(
+                                      "Ok",
+                                      style: TextStyle(
+                                          fontSize: 20, color: Colors.blue),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         }
                       } else if (widget.role == 'nurse/case manager') {
                         print("#############");
@@ -668,7 +731,37 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                           Navigator.of(context).pushReplacement(
                               MaterialPageRoute(builder: (context) => Nurse()));
                         } else {
-                          _showSnackBar("Form is incomplete", context);
+                          // _showSnackBar("Form is incomplete", context);
+                          // showDialog(
+                          //     context,
+                          //     "Oops, you have missed a question in ${widget.wholelist[roomNumber]['room$innerRoomNumber']['name']}. Please fill out and then continue.",
+                          //     route,
+                          //     roomNumber,
+                          //     innerRoomNumber);
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              // return object of type Dialog
+                              return AlertDialog(
+                                title: new Text("Form Incomplete"),
+                                content: new Text(
+                                    "Oops, you have missed a question in ${widget.wholelist[roomNumber]['room$innerRoomNumber']['name']}. Please fill out and then continue."),
+                                actions: <Widget>[
+                                  // usually buttons at the bottom of the dialog
+                                  new FlatButton(
+                                    child: Text(
+                                      "Ok",
+                                      style: TextStyle(
+                                          fontSize: 20, color: Colors.blue),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         }
                       } else if (widget.role == "patient") {
                         if (save == true) {
@@ -678,7 +771,37 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                               MaterialPageRoute(
                                   builder: (context) => Patient()));
                         } else {
-                          _showSnackBar("form is incomplete", context);
+                          // _showSnackBar("form is incomplete", context);
+                          // showDialog(
+                          //     context,
+                          //     "Oops, you have missed a question in ${widget.wholelist[roomNumber]['room$innerRoomNumber']['name']}. Please fill out and then continue.",
+                          //     route,
+                          //     roomNumber,
+                          //     innerRoomNumber);
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              // return object of type Dialog
+                              return AlertDialog(
+                                title: new Text("Form Incomplete"),
+                                content: new Text(
+                                    "Oops, you have missed a question in ${widget.wholelist[roomNumber]['room$innerRoomNumber']['name']}. Please fill out and then continue."),
+                                actions: <Widget>[
+                                  // usually buttons at the bottom of the dialog
+                                  new FlatButton(
+                                    child: Text(
+                                      "Ok",
+                                      style: TextStyle(
+                                          fontSize: 20, color: Colors.blue),
+                                    ),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
                         }
                       }
                       // } else {
