@@ -118,30 +118,70 @@ class LaundryPro extends ChangeNotifier {
     }
 
     if (wholelist[7][accessname]['question']["5"].containsKey('toggle')) {
+      if (wholelist[7][accessname]['question']["5"]['Answer'].length == 0) {
+        setdata(5, 'Yes', 'Able to Operate Switches?');
+      }
+      notifyListeners();
     } else {
       wholelist[7][accessname]['question']["5"]['toggle'] = <bool>[true, false];
+      if (wholelist[7][accessname]['question']["5"]['Answer'].length == 0) {
+        setdata(5, 'Yes', 'Able to Operate Switches?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[7][accessname]['question']["8"].containsKey('toggle')) {
+      if (wholelist[7][accessname]['question']["8"]['Answer'].length == 0) {
+        setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+      }
+      notifyListeners();
     } else {
       wholelist[7][accessname]['question']["8"]['toggle'] = <bool>[true, false];
+      if (wholelist[7][accessname]['question']["8"]['Answer'].length == 0) {
+        setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[7][accessname]['question']["9"].containsKey('toggle')) {
+      if (wholelist[7][accessname]['question']["9"]['Answer'].length == 0) {
+        setdata(9, 'Yes', 'Able to access washer & dryer?');
+      }
+      notifyListeners();
     } else {
       wholelist[7][accessname]['question']["9"]['toggle'] = <bool>[true, false];
+      if (wholelist[7][accessname]['question']["9"]['Answer'].length == 0) {
+        setdata(9, 'Yes', 'Able to access washer & dryer?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[7][accessname]['question']["12"].containsKey('toggle')) {
+      if (wholelist[7][accessname]['question']["12"]['Answer'].length == 0) {
+        setdata(12, 'Yes', 'Able to access laundry cabinets?');
+      }
+      notifyListeners();
     } else {
       wholelist[7][accessname]['question']["12"]
           ['toggle'] = <bool>[true, false];
+      if (wholelist[7][accessname]['question']["12"]['Answer'].length == 0) {
+        setdata(12, 'Yes', 'Able to access laundry cabinets?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[7][accessname]['question']["13"].containsKey('toggle')) {
+      if (wholelist[7][accessname]['question']["13"]['Answer'].length == 0) {
+        setdata(13, 'Yes', 'Smoke Detector Present?');
+      }
+      notifyListeners();
     } else {
       wholelist[7][accessname]['question']["13"]
           ['toggle'] = <bool>[true, false];
+      if (wholelist[7][accessname]['question']["13"]['Answer'].length == 0) {
+        setdata(13, 'Yes', 'Smoke Detector Present?');
+      }
+      notifyListeners();
     }
   }
 

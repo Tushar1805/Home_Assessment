@@ -74,45 +74,48 @@ class PathwayPro extends ChangeNotifier {
         wholelist[0][accessname]['videos']['url'] = "";
       }
     } else {
-      // print('Yes,it is');
-
       wholelist[0][accessname]["videos"] = {'name': '', 'url': ''};
     }
 
     if (wholelist[0][accessname]['question']['1'].containsKey('toggle')) {
+      if (wholelist[0][accessname]['question']["1"]['Answer'].length == 0) {
+        setdata(1, 'Yes', 'Obstacle/Clutter Present?');
+      }
+      notifyListeners();
     } else {
       wholelist[0][accessname]['question']['1']['toggle'] = <bool>[true, false];
-    }
-    if (wholelist[0][accessname]['question']['4'].containsKey('toggle')) {
-    } else {
-      wholelist[0][accessname]['question']['4']['toggle'] = <bool>[true, false];
-    }
-    if (wholelist[0][accessname]['question']['6'].containsKey('toggle')) {
-    } else {
-      wholelist[0][accessname]['question']['6']['toggle'] = <bool>[true, false];
+      if (wholelist[0][accessname]['question']["1"]['Answer'].length == 0) {
+        setdata(1, 'Yes', 'Obstacle/Clutter Present?');
+      }
+      notifyListeners();
     }
 
-    // if (wholelist[0][accessname]['question']["8"].containsKey('Railling')) {
-    //   if (wholelist[0][accessname]['question']["8"]['Railling']['OneSided']
-    //           .containsKey('toggle1') &&
-    //       wholelist[0][accessname]['question']["8"]['Railling']['OneSided']
-    //           .containsKey('toggle2')) {
-    //   } else {
-    //     wholelist[0][accessname]['question']["8"]['Railling'] = {
-    //       'OneSided': {
-    //         'toggle1': <bool>[true, false],
-    //         'toggle2': <bool>[true, false]
-    //       },
-    //     };
-    //   }
-    // } else {
-    //   wholelist[0][accessname]['question']["8"]['Railling'] = {
-    //     'OneSided': {
-    //       'toggle1': <bool>[true, false],
-    //       'toggle2': <bool>[true, false]
-    //     },
-    //   };
-    // }
+    if (wholelist[0][accessname]['question']['4'].containsKey('toggle')) {
+      if (wholelist[0][accessname]['question']["4"]['Answer'].length == 0) {
+        setdata(4, 'Yes', 'Entrance Has Lights?');
+      }
+      notifyListeners();
+    } else {
+      wholelist[0][accessname]['question']['4']['toggle'] = <bool>[true, false];
+      if (wholelist[0][accessname]['question']["4"]['Answer'].length == 0) {
+        setdata(4, 'Yes', 'Entrance Has Lights?');
+      }
+      notifyListeners();
+    }
+
+    if (wholelist[0][accessname]['question']['6'].containsKey('toggle')) {
+      if (wholelist[0][accessname]['question']["6"]['Answer'].length == 0) {
+        setdata(6, 'Yes', 'Smoke Detector Present?');
+      }
+      notifyListeners();
+    } else {
+      wholelist[0][accessname]['question']['6']['toggle'] = <bool>[true, false];
+      if (wholelist[0][accessname]['question']["6"]['Answer'].length == 0) {
+        setdata(6, 'Yes', 'Smoke Detector Present?');
+      }
+      notifyListeners();
+    }
+
     if (wholelist[0][accessname]['question']["8"].containsKey('Railling')) {
     } else {
       wholelist[0][accessname]['question']["8"]['Railling'] = {
@@ -169,23 +172,22 @@ class PathwayPro extends ChangeNotifier {
     );
   }
 
-  setdata(index, value) {
+  setdata(index, value, que) {
+    wholelist[0][accessname]['question']["$index"]['Question'] = que;
     if (value.length == 0) {
       if (wholelist[0][accessname]['question']["$index"]['Answer'].length ==
           0) {
       } else {
         wholelist[0][accessname]['complete'] -= 1;
-        wholelist[0][accessname]['question']["$_speech"]['Answer'] = value;
-        notifyListeners();
+        wholelist[0][accessname]['question']["$index"]['Answer'] = value;
+        wholelist[0][accessname]['question']["$index"]['Question'] = que;
       }
     } else {
       if (wholelist[0][accessname]['question']["$index"]['Answer'].length ==
           0) {
         wholelist[0][accessname]['complete'] += 1;
-        notifyListeners();
       }
       wholelist[0][accessname]['question']["$index"]['Answer'] = value;
-      notifyListeners();
     }
   }
 

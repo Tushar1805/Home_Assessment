@@ -1163,8 +1163,7 @@ class _BedroomUIState extends State<BedroomUI> {
                                 'Able to Operate Switches?')
                           ],
                         ),
-                        (assesmentprovider.getvalue(5) != 'No' &&
-                                assesmentprovider.getvalue(5) != '')
+                        (assesmentprovider.getvalue(5) == 'Yes')
                             ? assesmentprovider.getrecomain(
                                 assesmentprovider,
                                 5,
@@ -1855,8 +1854,7 @@ class _BedroomUIState extends State<BedroomUI> {
                                 'Able to Access Telephone?')
                           ],
                         ),
-                        (assesmentprovider.getvalue(15) != 'Yes' &&
-                                assesmentprovider.getvalue(15) != '')
+                        (assesmentprovider.getvalue(15) == 'No')
                             ? assesmentprovider.getrecomain(
                                 assesmentprovider,
                                 15,

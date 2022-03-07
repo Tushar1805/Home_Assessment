@@ -143,8 +143,16 @@ class LivingArrangementsProvider extends ChangeNotifier {
     }
 
     if (wholelist[1][accessname]['question']['5'].containsKey('toggle')) {
+      if (wholelist[1][accessname]['question']["5"]['Answer'].length == 0) {
+        setdata(5, 'Yes', 'Has Room-mate?');
+      }
+      notifyListeners();
     } else {
       wholelist[1][accessname]['question']['5']['toggle'] = <bool>[true, false];
+      if (wholelist[1][accessname]['question']["5"]['Answer'].length == 0) {
+        setdata(5, 'Yes', 'Has Room-mate?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[1][accessname]['question']["5"].containsKey('Roomate')) {
@@ -162,26 +170,45 @@ class LivingArrangementsProvider extends ChangeNotifier {
     }
 
     if (wholelist[1][accessname]['question']['7'].containsKey('toggle')) {
+      if (wholelist[1][accessname]['question']["7"]['Answer'].length == 0) {
+        setdata(7, 'Yes', 'Using assistive device?');
+      }
+      notifyListeners();
     } else {
       wholelist[1][accessname]['question']['7']['toggle'] = <bool>[true, false];
+      if (wholelist[1][accessname]['question']["7"]['Answer'].length == 0) {
+        setdata(7, 'Yes', 'Using assistive device?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[1][accessname]['question']["11"].containsKey('Flights')) {
-      flightcount =
-          wholelist[1][accessname]['question']["11"]['Flights']['count'];
+      if (wholelist[1][accessname]['question']["11"]['Flights']
+          .containsKey('count')) {
+        flightcount =
+            wholelist[1][accessname]['question']["11"]['Flights']["count"];
+      }
       notifyListeners();
     } else {
-      print('hello');
-
       wholelist[1][accessname]['question']["11"]['Flights'] = {};
       wholelist[1][accessname]['question']["11"]['Answer'] = 0;
       notifyListeners();
     }
 
     if (wholelist[1][accessname]['question']['12'].containsKey('toggle')) {
+      if (wholelist[1][accessname]['question']["12"]['Answer'].length == 0) {
+        setdata(
+            12, 'Yes', 'Smoke detector batteries checked annually/replaced?');
+      }
+      notifyListeners();
     } else {
       wholelist[1][accessname]['question']['12']
           ['toggle'] = <bool>[true, false];
+      if (wholelist[1][accessname]['question']["12"]['Answer'].length == 0) {
+        setdata(
+            12, 'Yes', 'Smoke detector batteries checked annually/replaced?');
+      }
+      notifyListeners();
     }
   }
 
@@ -350,14 +377,12 @@ class LivingArrangementsProvider extends ChangeNotifier {
       } else {
         wholelist[1][accessname]['complete'] -= 1;
         wholelist[1][accessname]['question']["$index"]['Answer'] = value;
-        notifyListeners();
       }
+      notifyListeners();
     } else {
       if (wholelist[1][accessname]['question']["$index"]['Answer'] == 0) {
         wholelist[1][accessname]['complete'] += 1;
-        notifyListeners();
       }
-
       wholelist[1][accessname]['question']["$index"]['Answer'] = value;
       notifyListeners();
     }

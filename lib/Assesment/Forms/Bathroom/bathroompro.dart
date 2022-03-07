@@ -93,11 +93,16 @@ class BathroomPro extends ChangeNotifier {
     }
 
     if (wholelist[5][accessname]['question']["5"].containsKey('toggle')) {
+      if (wholelist[5][accessname]['question']["5"]['Answer'].length == 0) {
+        setdata(5, 'Yes', 'Able to Operate Switches?');
+      }
+      notifyListeners();
     } else {
       wholelist[5][accessname]['question']["5"]['toggle'] = <bool>[true, false];
-      wholelist[5][accessname]['question']["5"]['toggle'][0]
-          ? wholelist[5][accessname]['question']["5"]['Answer'] = 'Yes'
-          : wholelist[5][accessname]['question']["5"]['Answer'] = 'No';
+      if (wholelist[5][accessname]['question']["5"]['Answer'].length == 0) {
+        setdata(5, 'Yes', 'Able to Operate Switches?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[5][accessname]['question']["7"].containsKey('doorwidth')) {
@@ -107,19 +112,29 @@ class BathroomPro extends ChangeNotifier {
     }
 
     if (wholelist[5][accessname]['question']["8"].containsKey('toggle')) {
+      if (wholelist[5][accessname]['question']["8"]['Answer'].length == 0) {
+        setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+      }
+      notifyListeners();
     } else {
       wholelist[5][accessname]['question']["8"]['toggle'] = <bool>[true, false];
-      wholelist[5][accessname]['question']["8"]['toggle'][0]
-          ? wholelist[5][accessname]['question']["8"]['Answer'] = 'Yes'
-          : wholelist[5][accessname]['question']["8"]['Answer'] = 'No';
+      if (wholelist[5][accessname]['question']["8"]['Answer'].length == 0) {
+        setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[5][accessname]['question']["9"].containsKey('toggle')) {
+      if (wholelist[5][accessname]['question']["9"]['Answer'].length == 0) {
+        setdata(9, "Yes", 'Able to Access Telephone?');
+      }
+      notifyListeners();
     } else {
       wholelist[5][accessname]['question']["9"]['toggle'] = <bool>[true, false];
-      wholelist[5][accessname]['question']["9"]['toggle'][0]
-          ? wholelist[5][accessname]['question']["9"]['Answer'] = 'Yes'
-          : wholelist[5][accessname]['question']["9"]['Answer'] = 'No';
+      if (wholelist[5][accessname]['question']["9"]['Answer'].length == 0) {
+        setdata(9, "Yes", 'Able to Access Telephone?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[5][accessname]['question']["9"]
@@ -129,48 +144,73 @@ class BathroomPro extends ChangeNotifier {
     }
 
     if (wholelist[5][accessname]['question']["10"].containsKey('toggle')) {
+      if (wholelist[5][accessname]['question']["10"]['Answer'].length == 0) {
+        setdata(10, "Yes", 'Smoke Detector Present?');
+      }
+      notifyListeners();
     } else {
       wholelist[5][accessname]['question']["10"]
           ['toggle'] = <bool>[true, false];
-      wholelist[5][accessname]['question']["10"]['toggle'][0]
-          ? wholelist[5][accessname]['question']["10"]['Answer'] = 'Yes'
-          : wholelist[5][accessname]['question']["10"]['Answer'] = 'No';
+      if (wholelist[5][accessname]['question']["10"]['Answer'].length == 0) {
+        setdata(10, "Yes", 'Smoke Detector Present?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[5][accessname]['question']["12"].containsKey('toggle')) {
+      if (wholelist[5][accessname]['question']["12"]['Answer'].length == 0) {
+        setdata(12, "Yes", 'Has access to medicine cabinet?');
+      }
+      notifyListeners();
     } else {
       wholelist[5][accessname]['question']["12"]
           ['toggle'] = <bool>[true, false];
-      wholelist[5][accessname]['question']["12"]['toggle'][0]
-          ? wholelist[5][accessname]['question']["12"]['Answer'] = 'Yes'
-          : wholelist[5][accessname]['question']["12"]['Answer'] = 'No';
+      if (wholelist[5][accessname]['question']["12"]['Answer'].length == 0) {
+        setdata(12, "Yes", 'Has access to medicine cabinet?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[5][accessname]['question']["13"].containsKey('toggle')) {
+      if (wholelist[5][accessname]['question']["13"]['Answer'].length == 0) {
+        setdata(13, "Yes", 'Has access to cabinet under sink?');
+      }
+      notifyListeners();
     } else {
       wholelist[5][accessname]['question']["13"]
           ['toggle'] = <bool>[true, false];
-      wholelist[5][accessname]['question']["13"]['toggle'][0]
-          ? wholelist[5][accessname]['question']["13"]['Answer'] = 'Yes'
-          : wholelist[5][accessname]['question']["13"]['Answer'] = 'No';
+      if (wholelist[5][accessname]['question']["13"]['Answer'].length == 0) {
+        setdata(13, "Yes", 'Has access to cabinet under sink?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[5][accessname]['question']["14"].containsKey('toggle')) {
+      if (wholelist[5][accessname]['question']["14"]['Answer'].length == 0) {
+        setdata(14, "Yes", 'Shower: Present?');
+      }
+      notifyListeners();
     } else {
       wholelist[5][accessname]['question']["14"]
           ['toggle'] = <bool>[true, false];
-      wholelist[5][accessname]['question']["14"]['toggle'][0]
-          ? wholelist[5][accessname]['question']["14"]['Answer'] = 'Yes'
-          : wholelist[5][accessname]['question']["14"]['Answer'] = 'No';
+      if (wholelist[5][accessname]['question']["14"]['Answer'].length == 0) {
+        setdata(14, "Yes", 'Shower: Present?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[5][accessname]['question']["15"].containsKey('toggle')) {
+      if (wholelist[5][accessname]['question']["15"]['Answer'].length == 0) {
+        setdata(15, "Yes", 'Able to manage in & out of the shower?');
+      }
+      notifyListeners();
     } else {
       wholelist[5][accessname]['question']["15"]
           ['toggle'] = <bool>[true, false];
-      wholelist[5][accessname]['question']["15"]['toggle'][0]
-          ? wholelist[5][accessname]['question']["15"]['Answer'] = 'Yes'
-          : wholelist[5][accessname]['question']["15"]['Answer'] = 'No';
+      if (wholelist[5][accessname]['question']["15"]['Answer'].length == 0) {
+        setdata(15, "Yes", 'Able to manage in & out of the shower?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[5][accessname]['question']["15"].containsKey('ManageInOut')) {
@@ -179,12 +219,17 @@ class BathroomPro extends ChangeNotifier {
     }
 
     if (wholelist[5][accessname]['question']["16"].containsKey('toggle')) {
+      if (wholelist[5][accessname]['question']["16"]['Answer'].length == 0) {
+        setdata(16, "Yes", 'Grab Bars Present?');
+      }
+      notifyListeners();
     } else {
       wholelist[5][accessname]['question']["16"]
           ['toggle'] = <bool>[true, false];
-      wholelist[5][accessname]['question']["16"]['toggle'][0]
-          ? wholelist[5][accessname]['question']["16"]['Answer'] = 'Yes'
-          : wholelist[5][accessname]['question']["16"]['Answer'] = 'No';
+      if (wholelist[5][accessname]['question']["16"]['Answer'].length == 0) {
+        setdata(16, "Yes", 'Grab Bars Present?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[5][accessname]['question']["16"].containsKey('Grabbar')) {
@@ -202,6 +247,7 @@ class BathroomPro extends ChangeNotifier {
               ['Grabneeded'] = 'Yes'
           : wholelist[5][accessname]['question']["16"]['Grabbar']
               ['Grabneeded'] = 'No';
+      notifyListeners();
     }
 
     if (wholelist[5][accessname]['question']["16"]['Grabbar']
@@ -232,21 +278,31 @@ class BathroomPro extends ChangeNotifier {
     }
 
     if (wholelist[5][accessname]['question']["18"].containsKey('toggle')) {
+      if (wholelist[5][accessname]['question']["18"]['Answer'].length == 0) {
+        setdata(18, "Yes", "Hand-Held Shower Present?");
+      }
+      notifyListeners();
     } else {
       wholelist[5][accessname]['question']["18"]
           ['toggle'] = <bool>[true, false];
-      wholelist[5][accessname]['question']["18"]['toggle'][0]
-          ? wholelist[5][accessname]['question']["18"]['Answer'] = 'Yes'
-          : wholelist[5][accessname]['question']["18"]['Answer'] = 'No';
+      if (wholelist[5][accessname]['question']["18"]['Answer'].length == 0) {
+        setdata(18, "Yes", "Hand-Held Shower Present?");
+      }
+      notifyListeners();
     }
 
     if (wholelist[5][accessname]['question']["20"].containsKey('toggle')) {
+      if (wholelist[5][accessname]['question']["20"]['Answer'].length == 0) {
+        setdata(20, "Yes", 'Tub Present?');
+      }
+      notifyListeners();
     } else {
       wholelist[5][accessname]['question']["20"]
           ['toggle'] = <bool>[true, false];
-      wholelist[5][accessname]['question']["20"]['toggle'][0]
-          ? wholelist[5][accessname]['question']["20"]['Answer'] = 'Yes'
-          : wholelist[5][accessname]['question']["20"]['Answer'] = 'No';
+      if (wholelist[5][accessname]['question']["20"]['Answer'].length == 0) {
+        setdata(20, "Yes", 'Tub Present?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[5][accessname]['question']["20"].containsKey('toggle2')) {
@@ -256,33 +312,49 @@ class BathroomPro extends ChangeNotifier {
       wholelist[5][accessname]['question']["20"]['toggle2'][0]
           ? wholelist[5][accessname]['question']["20"]['ManageInOut'] = 'Yes'
           : wholelist[5][accessname]['question']["20"]['ManageInOut'] = 'No';
+      notifyListeners();
     }
 
     if (wholelist[5][accessname]['question']["21"].containsKey('toggle')) {
+      if (wholelist[5][accessname]['question']["21"]['Answer'].length == 0) {
+        setdata(21, "Yes", 'Able to access faucets Independently?');
+      }
+      notifyListeners();
     } else {
       wholelist[5][accessname]['question']["21"]
           ['toggle'] = <bool>[true, false];
-      wholelist[5][accessname]['question']["21"]['toggle'][0]
-          ? wholelist[5][accessname]['question']["21"]['Answer'] = 'Yes'
-          : wholelist[5][accessname]['question']["21"]['Answer'] = 'No';
+      if (wholelist[5][accessname]['question']["21"]['Answer'].length == 0) {
+        setdata(21, "Yes", 'Able to access faucets Independently?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[5][accessname]['question']["23"].containsKey('toggle')) {
+      if (wholelist[5][accessname]['question']["23"]['Answer'].length == 0) {
+        setdata(23, "Yes", 'Can get on/off commode independently?');
+      }
+      notifyListeners();
     } else {
       wholelist[5][accessname]['question']["23"]
           ['toggle'] = <bool>[true, false];
-      wholelist[5][accessname]['question']["23"]['toggle'][0]
-          ? wholelist[5][accessname]['question']["23"]['Answer'] = 'Yes'
-          : wholelist[5][accessname]['question']["23"]['Answer'] = 'No';
+      if (wholelist[5][accessname]['question']["23"]['Answer'].length == 0) {
+        setdata(23, "Yes", 'Can get on/off commode independently?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[5][accessname]['question']["24"].containsKey('toggle')) {
+      if (wholelist[5][accessname]['question']["24"]['Answer'].length == 0) {
+        setdata(24, "Yes", 'Able to flush commode independently?');
+      }
+      notifyListeners();
     } else {
       wholelist[5][accessname]['question']["24"]
           ['toggle'] = <bool>[true, false];
-      wholelist[5][accessname]['question']["24"]['toggle'][0]
-          ? wholelist[5][accessname]['question']["24"]['Answer'] = 'Yes'
-          : wholelist[5][accessname]['question']["24"]['Answer'] = 'No';
+      if (wholelist[5][accessname]['question']["24"]['Answer'].length == 0) {
+        setdata(24, "Yes", 'Able to flush commode independently?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[5][accessname]['question']["20"].containsKey('ManageInOut')) {

@@ -77,9 +77,16 @@ class DiningPro extends ChangeNotifier {
     }
 
     if (wholelist[4][accessname]['question']["5"].containsKey('toggle')) {
+      if (wholelist[4][accessname]['question']["5"]['Answer'].length == 0) {
+        setdata(5, 'Yes', 'Able to Operate Switches?');
+      }
+      notifyListeners();
     } else {
-      print('getting created');
       wholelist[4][accessname]['question']["5"]['toggle'] = <bool>[true, false];
+      if (wholelist[4][accessname]['question']["5"]['Answer'].length == 0) {
+        setdata(5, 'Yes', 'Able to Operate Switches?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[4][accessname]['question']["7"].containsKey('doorwidth')) {
@@ -89,22 +96,43 @@ class DiningPro extends ChangeNotifier {
     }
 
     if (wholelist[4][accessname]['question']["8"].containsKey('toggle')) {
+      if (wholelist[4][accessname]['question']["8"]['Answer'].length == 0) {
+        setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+      }
+      notifyListeners();
     } else {
-      print('getting created');
       wholelist[4][accessname]['question']["8"]['toggle'] = <bool>[true, false];
+      if (wholelist[4][accessname]['question']["8"]['Answer'].length == 0) {
+        setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[4][accessname]['question']["9"].containsKey('toggle')) {
+      if (wholelist[4][accessname]['question']["9"]['Answer'].length == 0) {
+        setdata(9, 'Yes', 'Smoke Detector Present?');
+      }
+      notifyListeners();
     } else {
-      print('getting created');
       wholelist[4][accessname]['question']["9"]['toggle'] = <bool>[true, false];
+      if (wholelist[4][accessname]['question']["9"]['Answer'].length == 0) {
+        setdata(9, 'Yes', 'Smoke Detector Present?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[4][accessname]['question']["12"].containsKey('toggle')) {
+      if (wholelist[4][accessname]['question']["12"]['Answer'].length == 0) {
+        setdata(12, 'Yes', 'Chair Arms Present?');
+      }
+      notifyListeners();
     } else {
-      print('getting created');
       wholelist[4][accessname]['question']["12"]
           ['toggle'] = <bool>[true, false];
+      if (wholelist[4][accessname]['question']["12"]['Answer'].length == 0) {
+        setdata(12, 'Yes', 'Chair Arms Present?');
+      }
+      notifyListeners();
     }
 
     // if (wholelist[4][accessname]['question']["15"].containsKey('ManageInOut')) {

@@ -106,7 +106,6 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
     }
     getRole();
     getAssessData();
-    setinitialsdata();
     print("RoomName: ${widget.roomname}");
   }
 
@@ -186,141 +185,6 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
             }));
   }
 
-  Future<void> setinitialsdata() async {
-    if (widget.wholelist[1][widget.accessname].containsKey('isSave')) {
-    } else {
-      widget.wholelist[1][widget.accessname]["isSave"] = true;
-    }
-    if (widget.wholelist[1][widget.accessname].containsKey('videos')) {
-      if (widget.wholelist[1][widget.accessname]['videos']
-          .containsKey('name')) {
-      } else {
-        widget.wholelist[1][widget.accessname]['videos']['name'] = "";
-      }
-      if (widget.wholelist[1][widget.accessname]['videos'].containsKey('url')) {
-      } else {
-        widget.wholelist[1][widget.accessname]['videos']['url'] = "";
-      }
-    } else {
-      // print('Yes,it is');
-
-      widget.wholelist[1][widget.accessname]
-          ["videos"] = {'name': '', 'url': ''};
-    }
-
-    if (widget.wholelist[1][widget.accessname]['question']["2"]
-        .containsKey('Modetrnas')) {
-    } else {
-      setState(() {
-        widget.wholelist[1][widget.accessname]['question']["2"]['Modetrnas'] =
-            '';
-        widget.wholelist[1][widget.accessname]['question']["2"]
-            ['Modetrnasother'] = '';
-      });
-    }
-    if (widget.wholelist[1][widget.accessname].containsKey('videos')) {
-    } else {
-      setState(() {
-        widget.wholelist[1][widget.accessname]['videos'] = [];
-      });
-    }
-
-    if (widget.wholelist[1][widget.accessname]['question']["4"]
-        .containsKey('Alone')) {
-      setState(() {
-        if (widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
-            .containsKey('From')) {
-          // time1 = int.parse(wholelist[1][widget.accessname]['question']["4"]
-          //     ['Alone']['From']);
-          if (widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
-                  ['From'] !=
-              "") {
-            time1 = TimeOfDay(
-                hour: int.parse(widget.wholelist[1][widget.accessname]
-                        ['question']["4"]['Alone']['From']
-                    .split(":")[0]),
-                minute: int.parse(widget.wholelist[1][widget.accessname]
-                        ['question']["4"]['Alone']['From']
-                    .split(":")[1]));
-          }
-        }
-        if (widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
-            .containsKey('Till')) {
-          if (widget.wholelist[1][widget.accessname]['question']["4"]['Alone']
-                  ['Till'] !=
-              "") {
-            time2 = TimeOfDay(
-                hour: int.parse(widget.wholelist[1][widget.accessname]
-                        ['question']["4"]['Alone']['Till']
-                    .split(":")[0]),
-                minute: int.parse(widget.wholelist[1][widget.accessname]
-                        ['question']["4"]['Alone']['Till']
-                    .split(":")[1]));
-          }
-        }
-      });
-    } else {
-      setState(() {
-        widget.wholelist[1][widget.accessname]['question']["4"]['Alone'] = {};
-      });
-    }
-
-    if (widget.wholelist[1][widget.accessname]['question']['5']
-        .containsKey('toggle')) {
-    } else {
-      widget.wholelist[1][widget.accessname]['question']['5']
-          ['toggle'] = <bool>[true, false];
-    }
-
-    if (widget.wholelist[1][widget.accessname]['question']["5"]
-        .containsKey('Roomate')) {
-      if (widget.wholelist[1][widget.accessname]['question']["5"]['Roomate']
-          .containsKey('count')) {
-        setState(() {
-          roomatecount = widget.wholelist[1][widget.accessname]['question']["5"]
-              ['Roomate']['count'];
-        });
-      }
-    } else {
-      // print('Yes,it is');
-      setState(() {
-        widget.wholelist[1][widget.accessname]['question']["5"]['Roomate'] = {};
-      });
-    }
-
-    if (widget.wholelist[1][widget.accessname]['question']['7']
-        .containsKey('toggle')) {
-    } else {
-      widget.wholelist[1][widget.accessname]['question']['7']
-          ['toggle'] = <bool>[true, false];
-    }
-
-    if (widget.wholelist[1][widget.accessname]['question']["11"]
-        .containsKey('Flights')) {
-      if (widget.wholelist[1][widget.accessname]['question']["11"]['Flights']
-          .containsKey('count')) {
-        setState(() {
-          flightcount = widget.wholelist[1][widget.accessname]['question']["11"]
-              ['Flights']["count"];
-        });
-      }
-    } else {
-      // print('hello');
-      setState(() {
-        widget.wholelist[1][widget.accessname]['question']["11"]
-            ['Flights'] = {};
-        widget.wholelist[1][widget.accessname]['question']["11"]['Answer'] = 0;
-      });
-    }
-
-    if (widget.wholelist[1][widget.accessname]['question']['12']
-        .containsKey('toggle')) {
-    } else {
-      widget.wholelist[1][widget.accessname]['question']['12']
-          ['toggle'] = <bool>[true, false];
-    }
-  }
-
   getRole() async {
     User user = await _auth.currentUser;
     var runtimeType;
@@ -347,57 +211,6 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
             }));
   }
 
-  setdata(index, value, que) {
-    widget.wholelist[1][widget.accessname]['question']["$index"]['Question'] =
-        que;
-  }
-
-  setreco(index, value) {
-    setState(() {
-      widget.wholelist[1][widget.accessname]['question']["$index"]
-          ['Recommendation'] = value;
-    });
-  }
-
-  getvalue(index) {
-    return widget.wholelist[1][widget.accessname]['question']["$index"]
-        ['Answer'];
-  }
-
-  getreco(index) {
-    return widget.wholelist[1][widget.accessname]['question']["$index"]
-        ['Recommendation'];
-  }
-
-  setprio(index, value) {
-    setState(() {
-      widget.wholelist[1][widget.accessname]['question']["$index"]['Priority'] =
-          value;
-    });
-  }
-
-  getprio(index) {
-    return widget.wholelist[1][widget.accessname]['question']["$index"]
-        ['Priority'];
-  }
-
-  setrecothera(index, value) {
-    // final isValid = _formKey.currentState.validate();
-    // if (!isValid) {
-    //   return;
-    // } else {
-    setState(() {
-      widget.wholelist[1][widget.accessname]['question']["$index"]
-          ['Recommendationthera'] = value;
-    });
-    // }
-  }
-
-  getrecothera(index) {
-    return widget.wholelist[1][widget.accessname]['question']["$index"]
-        ['Recommendationthera'];
-  }
-
   void _showSnackBar(snackbar, BuildContext buildContext) {
     final snackBar = SnackBar(
       duration: const Duration(seconds: 3),
@@ -416,6 +229,85 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
     ScaffoldMessenger.of(buildContext)
       ..hideCurrentSnackBar()
       ..showSnackBar(snackBar);
+  }
+
+  Widget toggleButton(BuildContext context,
+      LivingArrangementsProvider assesspro, int queIndex, String que) {
+    return Container(
+      height: 35,
+      child: ToggleButtons(
+        borderColor: Colors.black,
+        fillColor: Colors.green,
+        borderWidth: 0,
+        selectedBorderColor: Colors.black,
+        selectedColor: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Yes',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'No',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+        ],
+        onPressed: (int select) {
+          if (assessor == therapist && role == "therapist") {
+            setState(() {
+              for (int i = 0;
+                  i <
+                      widget
+                          .wholelist[1][widget.accessname]['question']
+                              ['$queIndex']['toggle']
+                          .length;
+                  i++) {
+                widget.wholelist[1][widget.accessname]['question']['$queIndex']
+                    ['toggle'][i] = i == select;
+              }
+            });
+            assesspro.setdata(
+                queIndex,
+                widget.wholelist[1][widget.accessname]['question']['$queIndex']
+                        ['toggle'][0]
+                    ? 'Yes'
+                    : 'No',
+                que);
+          } else if (role != "therapist") {
+            setState(() {
+              for (int i = 0;
+                  i <
+                      widget
+                          .wholelist[1][widget.accessname]['question']
+                              ['$queIndex']['toggle']
+                          .length;
+                  i++) {
+                widget.wholelist[1][widget.accessname]['question']['$queIndex']
+                    ['toggle'][i] = i == select;
+              }
+            });
+            assesspro.setdata(
+                queIndex,
+                widget.wholelist[1][widget.accessname]['question']['$queIndex']
+                        ['toggle'][0]
+                    ? 'Yes'
+                    : 'No',
+                que);
+          } else {
+            _showSnackBar("You can't change the other fields", context);
+          }
+        },
+        isSelected: widget.wholelist[1][widget.accessname]['question']
+                ['$queIndex']['toggle']
+            .cast<bool>(),
+      ),
+    );
   }
 
   @override
@@ -811,7 +703,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
             onChanged: (value) {
               FocusScope.of(context).requestFocus();
               new TextEditingController().clear();
-              setrecothera(index, value);
+              assesspro.setrecothera(index, value);
               // setState(() {
               //   // print("Color Changed");
               //   if (value.length != 0) {
@@ -871,29 +763,29 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                   Radio(
                     value: '1',
                     onChanged: (value) {
-                      setprio(index, value);
+                      assesspro.setprio(index, value);
                     },
-                    groupValue: getprio(index),
+                    groupValue: assesspro.getprio(index),
                   ),
                   Text('1'),
                   Radio(
                     value: '2',
                     onChanged: (value) {
                       setState(() {
-                        setprio(index, value);
+                        assesspro.setprio(index, value);
                       });
                     },
-                    groupValue: getprio(index),
+                    groupValue: assesspro.getprio(index),
                   ),
                   Text('2'),
                   Radio(
                     value: '3',
                     onChanged: (value) {
                       setState(() {
-                        setprio(index, value);
+                        assesspro.setprio(index, value);
                       });
                     },
-                    groupValue: getprio(index),
+                    groupValue: assesspro.getprio(index),
                   ),
                   Text('3'),
                 ],
@@ -974,11 +866,11 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                   onChanged: (value) {
                     // print(widget.accessname);
                     if (assessor == therapist && role == "therapist") {
-                      setreco(index, value);
+                      assesspro.setreco(index, value);
                       FocusScope.of(context).requestFocus();
                       new TextEditingController().clear();
                     } else if (role != "therapist") {
-                      setreco(index, value);
+                      assesspro.setreco(index, value);
                       FocusScope.of(context).requestFocus();
                       new TextEditingController().clear();
                     } else {
@@ -1579,12 +1471,12 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                       context);
                                 }
                               },
-                              value: getvalue(1),
+                              value: assesspro.getvalue(1),
                             ),
                           )
                         ],
                       ),
-                      (getvalue(1) == "Other")
+                      (assesspro.getvalue(1) == "Other")
                           ? getrecomain(1, false, context)
                           : SizedBox(),
                       SizedBox(height: 15),
@@ -1648,7 +1540,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                       context);
                                 }
                               },
-                              value: getvalue(2),
+                              value: assesspro.getvalue(2),
                             ),
                           )
                         ],
@@ -1656,9 +1548,9 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                       // (getvalue(2) == "Other")
                       //     ? getrecomain(2, false)
                       //     : SizedBox(),
-                      (getvalue(2) != '' &&
-                              getvalue(2) != '0' &&
-                              getvalue(2) != '1')
+                      (assesspro.getvalue(2) != '' &&
+                              assesspro.getvalue(2) != '0' &&
+                              assesspro.getvalue(2) != '1')
                           ? Container(
                               padding: EdgeInsets.only(top: 15),
                               child: Column(
@@ -1744,7 +1636,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                                       ['question']["2"]
                                                   ['Modetrnas'] ==
                                               'Other' ||
-                                          getvalue(2) == "Other")
+                                          assesspro.getvalue(2) == "Other")
                                       ? getrecomain(2, false, context)
                                       : SizedBox(),
                                 ],
@@ -1817,13 +1709,13 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                       context);
                                 }
                               },
-                              value: getvalue(3),
+                              value: assesspro.getvalue(3),
                             ),
                           )
                         ],
                       ),
                       // SizedBox(height: 5),
-                      (getvalue(3) == 'Other')
+                      (assesspro.getvalue(3) == 'Other')
                           ? getrecomain(3, false, context)
                           : SizedBox(),
                       SizedBox(height: 15),
@@ -1875,14 +1767,15 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                       context);
                                 }
                               },
-                              value: getvalue(4),
+                              value: assesspro.getvalue(4),
                             ),
                           )
                         ],
                       ),
                       SizedBox(height: 5),
-                      (getvalue(4) != 'Never Alone' && getvalue(4) != '')
-                          ? (getvalue(4) == 'Alone')
+                      (assesspro.getvalue(4) != 'Never Alone' &&
+                              assesspro.getvalue(4) != '')
+                          ? (assesspro.getvalue(4) == 'Alone')
                               ? getrecomain(4, true, context)
                               : Container(
                                   padding: EdgeInsets.fromLTRB(5, 5, 5, 0),
@@ -2028,42 +1921,43 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                   fontSize: 20,
                                 )),
                           ),
-                          DropdownButton(
-                            items: [
-                              DropdownMenuItem(
-                                child: Text('--'),
-                                value: '',
-                              ),
-                              DropdownMenuItem(
-                                child: Text('Yes'),
-                                value: 'Yes',
-                              ),
-                              DropdownMenuItem(
-                                child: Text('No'),
-                                value: 'No',
-                              ),
-                            ],
-                            onChanged: (value) {
-                              FocusScope.of(context).requestFocus();
-                              new TextEditingController().clear();
-                              // print(widget.accessname);
-                              if (assessor == therapist &&
-                                  role == "therapist") {
-                                assesspro.setdata(5, value, 'Has Room-mate?');
-                              } else if (role != "therapist") {
-                                assesspro.setdata(5, value, 'Has Room-mate?');
-                              } else {
-                                _showSnackBar(
-                                    "You can't change the other fields",
-                                    context);
-                              }
-                            },
-                            value: getvalue(5),
-                          )
+                          // DropdownButton(
+                          //   items: [
+                          //     DropdownMenuItem(
+                          //       child: Text('--'),
+                          //       value: '',
+                          //     ),
+                          //     DropdownMenuItem(
+                          //       child: Text('Yes'),
+                          //       value: 'Yes',
+                          //     ),
+                          //     DropdownMenuItem(
+                          //       child: Text('No'),
+                          //       value: 'No',
+                          //     ),
+                          //   ],
+                          //   onChanged: (value) {
+                          //     FocusScope.of(context).requestFocus();
+                          //     new TextEditingController().clear();
+                          //     // print(widget.accessname);
+                          //     if (assessor == therapist &&
+                          //         role == "therapist") {
+                          //       assesspro.setdata(5, value, 'Has Room-mate?');
+                          //     } else if (role != "therapist") {
+                          //       assesspro.setdata(5, value, 'Has Room-mate?');
+                          //     } else {
+                          //       _showSnackBar(
+                          //           "You can't change the other fields",
+                          //           context);
+                          //     }
+                          //   },
+                          //   value: assesspro.getvalue(5),
+                          // )
+                          toggleButton(context, assesspro, 5, 'Has Room-mate?'),
                         ],
                       ),
                       SizedBox(height: 15),
-                      (getvalue(5) == 'Yes')
+                      (assesspro.getvalue(5) == 'Yes')
                           ? SingleChildScrollView(
                               // reverse: true,
                               child: Container(
@@ -2093,7 +1987,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                                       .width *
                                                   .35,
                                               child: NumericStepButton(
-                                                counterval: roomatecount,
+                                                counterval:
+                                                    assesspro.roomatecount,
                                                 onChanged: (value) {
                                                   if (assessor == therapist &&
                                                       role == "therapist") {
@@ -2103,7 +1998,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                                                   ['question']
                                                               ["5"]['Roomate']
                                                           ['count'] = value;
-                                                      roomatecount = widget
+                                                      assesspro
+                                                          .roomatecount = widget
                                                                       .wholelist[1]
                                                                   [
                                                                   widget
@@ -2165,7 +2061,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                                                   ['question']
                                                               ["5"]['Roomate']
                                                           ['count'] = value;
-                                                      roomatecount = widget
+                                                      assesspro
+                                                          .roomatecount = widget
                                                                       .wholelist[1]
                                                                   [
                                                                   widget
@@ -2235,7 +2132,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                       ),
                                     ),
                                     SizedBox(height: 10),
-                                    (roomatecount > 0)
+                                    (assesspro.roomatecount > 0)
                                         ? Container(
                                             child: Padding(
                                               padding: EdgeInsets.fromLTRB(
@@ -2252,7 +2149,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                                   physics:
                                                       const NeverScrollableScrollPhysics(),
                                                   shrinkWrap: true,
-                                                  itemCount: roomatecount,
+                                                  itemCount:
+                                                      assesspro.roomatecount,
                                                   itemBuilder:
                                                       (context, index1) {
                                                     return roomatecountwidget(
@@ -2275,7 +2173,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
-                            width: MediaQuery.of(context).size.width * .5,
+                            width: MediaQuery.of(context).size.width * .35,
                             child:
                                 Text('Able to get in & out of doors & steps?',
                                     style: TextStyle(
@@ -2297,22 +2195,42 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 child: Text('With Difficulty'),
                                 value: 'With Difficulty',
                               ),
-                              DropdownMenuItem(
-                                child: Text('Min(A)'),
-                                value: 'Min(A)',
-                              ),
-                              DropdownMenuItem(
-                                child: Text('Mod(A)'),
-                                value: 'Mod(A)',
-                              ),
-                              DropdownMenuItem(
-                                child: Text('Max(A)'),
-                                value: 'Max(A)',
-                              ),
-                              DropdownMenuItem(
-                                child: Text('Max(A) x2'),
-                                value: 'Max(A) x2',
-                              )
+                              (role == "therapist")
+                                  ? DropdownMenuItem(
+                                      child: Text('Min(A)'),
+                                      value: 'Min(A)',
+                                    )
+                                  : DropdownMenuItem(
+                                      child: Text('25% Assistance'),
+                                      value: 'Min(A)',
+                                    ),
+                              (role == "therapist")
+                                  ? DropdownMenuItem(
+                                      child: Text('Mod(A)'),
+                                      value: 'Mod(A)',
+                                    )
+                                  : DropdownMenuItem(
+                                      child: Text('50% Assistance'),
+                                      value: 'Mod(A)',
+                                    ),
+                              (role == "therapist")
+                                  ? DropdownMenuItem(
+                                      child: Text('Max(A)'),
+                                      value: 'Max(A)',
+                                    )
+                                  : DropdownMenuItem(
+                                      child: Text('75% Assistance'),
+                                      value: 'Max(A)',
+                                    ),
+                              (role == "therapist")
+                                  ? DropdownMenuItem(
+                                      child: Text('Max(A) x2'),
+                                      value: 'Max(A) x2',
+                                    )
+                                  : DropdownMenuItem(
+                                      child: Text('75% Assistance (2 People)'),
+                                      value: 'Max(A) x2',
+                                    ),
                             ],
                             onChanged: (value) {
                               FocusScope.of(context).requestFocus();
@@ -2331,11 +2249,12 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                     context);
                               }
                             },
-                            value: getvalue(6),
+                            value: assesspro.getvalue(6),
                           )
                         ],
                       ),
-                      (getvalue(6) != 'Fairly Well' && getvalue(6) != '')
+                      (assesspro.getvalue(6) != 'Fairly Well' &&
+                              assesspro.getvalue(6) != '')
                           ? getrecomain(6, true, context)
                           : SizedBox(),
                       SizedBox(
@@ -2352,43 +2271,46 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                   fontSize: 20,
                                 )),
                           ),
-                          DropdownButton(
-                            items: [
-                              DropdownMenuItem(
-                                child: Text('--'),
-                                value: '',
-                              ),
-                              DropdownMenuItem(
-                                child: Text('Yes'),
-                                value: 'Yes',
-                              ),
-                              DropdownMenuItem(
-                                child: Text('No'),
-                                value: 'No',
-                              ),
-                            ],
-                            onChanged: (value) {
-                              FocusScope.of(context).requestFocus();
-                              new TextEditingController().clear();
-                              // print(widget.accessname);
-                              if (assessor == therapist &&
-                                  role == "therapist") {
-                                assesspro.setdata(
-                                    7, value, 'Using assistive device?');
-                              } else if (role != "therapist") {
-                                assesspro.setdata(
-                                    7, value, 'Using assistive device?');
-                              } else {
-                                _showSnackBar(
-                                    "You can't change the other fields",
-                                    context);
-                              }
-                            },
-                            value: getvalue(7),
-                          )
+                          // DropdownButton(
+                          //   items: [
+                          //     DropdownMenuItem(
+                          //       child: Text('--'),
+                          //       value: '',
+                          //     ),
+                          //     DropdownMenuItem(
+                          //       child: Text('Yes'),
+                          //       value: 'Yes',
+                          //     ),
+                          //     DropdownMenuItem(
+                          //       child: Text('No'),
+                          //       value: 'No',
+                          //     ),
+                          //   ],
+                          //   onChanged: (value) {
+                          //     FocusScope.of(context).requestFocus();
+                          //     new TextEditingController().clear();
+                          //     // print(widget.accessname);
+                          //     if (assessor == therapist &&
+                          //         role == "therapist") {
+                          //       assesspro.setdata(
+                          //           7, value, 'Using assistive device?');
+                          //     } else if (role != "therapist") {
+                          //       assesspro.setdata(
+                          //           7, value, 'Using assistive device?');
+                          //     } else {
+                          //       _showSnackBar(
+                          //           "You can't change the other fields",
+                          //           context);
+                          //     }
+                          //   },
+                          //   value: assesspro.getvalue(7),
+                          // )
+                          toggleButton(
+                              context, assesspro, 7, 'Using assistive device?'),
                         ],
                       ),
-                      (getvalue(7) == 'Yes')
+                      SizedBox(height: 15),
+                      (assesspro.getvalue(7) == 'Yes')
                           ? Container(
                               padding: EdgeInsets.fromLTRB(0, 15, 0, 0),
                               child: Row(
@@ -2397,41 +2319,41 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 children: [
                                   Container(
                                     width:
-                                        MediaQuery.of(context).size.width * .3,
+                                        MediaQuery.of(context).size.width * .4,
                                     child: Text('Assistive Device?',
                                         style: TextStyle(
                                           color: Color.fromRGBO(10, 80, 106, 1),
                                           fontSize: 20,
                                         )),
                                   ),
-                                  Container(
-                                      child: IconButton(
-                                          onPressed: () {
-                                            for (int i = 0;
-                                                i < assistiveDevice.length;
-                                                i++) {
-                                              if (assistiveDevice[i]['name'] ==
-                                                  widget.wholelist[1][widget
-                                                                  .accessname]
-                                                              ['question']["7"]
-                                                          ['additional']
-                                                      ["assistiveDevice"]) {
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            ProductDetails(
-                                                                assistiveDevice[
-                                                                    i]['name'],
-                                                                assistiveDevice[
-                                                                        i][
-                                                                    'description'],
-                                                                assistiveDevice[
-                                                                        i]
-                                                                    ['url'])));
-                                              }
-                                            }
-                                          },
-                                          icon: Icon(Icons.info))),
+                                  // Container(
+                                  //     child: IconButton(
+                                  //         onPressed: () {
+                                  //           for (int i = 0;
+                                  //               i < assistiveDevice.length;
+                                  //               i++) {
+                                  //             if (assistiveDevice[i]['name'] ==
+                                  //                 widget.wholelist[1][widget
+                                  //                                 .accessname]
+                                  //                             ['question']["7"]
+                                  //                         ['additional']
+                                  //                     ["assistiveDevice"]) {
+                                  //               Navigator.of(context).push(
+                                  //                   MaterialPageRoute(
+                                  //                       builder: (context) =>
+                                  //                           ProductDetails(
+                                  //                               assistiveDevice[
+                                  //                                   i]['name'],
+                                  //                               assistiveDevice[
+                                  //                                       i][
+                                  //                                   'description'],
+                                  //                               assistiveDevice[
+                                  //                                       i]
+                                  //                                   ['url'])));
+                                  //             }
+                                  //           }
+                                  //         },
+                                  //         icon: Icon(Icons.info))),
                                   DropdownButton(
                                     items: [
                                       DropdownMenuItem(
@@ -2564,15 +2486,16 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                       context);
                                 }
                               },
-                              value: getvalue(8),
+                              value: assesspro.getvalue(8),
                             ),
                           ),
                         ],
                       ),
-                      (getvalue(8) == 'Slight Shuffling' ||
-                              getvalue(8) == 'Limping' ||
-                              getvalue(8) == 'Significant Shuffling' ||
-                              getvalue(8) == 'Other')
+                      (assesspro.getvalue(8) == 'Slight Shuffling' ||
+                              assesspro.getvalue(8) == 'Limping' ||
+                              assesspro.getvalue(8) ==
+                                  'Significant Shuffling' ||
+                              assesspro.getvalue(8) == 'Other')
                           ? getrecomain(8, true, context)
                           : SizedBox(),
                       SizedBox(height: 15),
@@ -2630,14 +2553,14 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                       context);
                                 }
                               },
-                              value: getvalue(9),
+                              value: assesspro.getvalue(9),
                             ),
                           )
                         ],
                       ),
-                      (getvalue(9) != 'Never goes to the curbside' &&
+                      (assesspro.getvalue(9) != 'Never goes to the curbside' &&
                               // getvalue(9) != 'Other' &&
-                              getvalue(9) != '')
+                              assesspro.getvalue(9) != '')
                           ? getrecomain(9, true, context)
                           : SizedBox(),
                       SizedBox(
@@ -2737,7 +2660,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                width: MediaQuery.of(context).size.width * .50,
+                                width: MediaQuery.of(context).size.width * .5,
                                 child: Text('Number of Flight of Stairs',
                                     style: TextStyle(
                                       color: Color.fromRGBO(10, 80, 106, 1),
@@ -2747,7 +2670,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                               SizedBox(
                                 width: MediaQuery.of(context).size.width * .35,
                                 child: NumericStepButton(
-                                  counterval: flightcount,
+                                  counterval: assesspro.flightcount,
                                   onChanged: (value) {
                                     if (assessor == therapist &&
                                         role == "therapist") {
@@ -2764,7 +2687,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                         // widget.wholelist[1][widget.accessname]
                                         //         ['question']["11"]['Answer'] =
                                         //     value;
-                                        flightcount = widget.wholelist[1]
+                                        assesspro.flightcount = widget
+                                                    .wholelist[1]
                                                 [widget.accessname]['question']
                                             ["11"]['Flights']["count"];
                                         print(widget.wholelist[1]
@@ -2850,7 +2774,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                         // widget.wholelist[1][widget.accessname]
                                         //         ['question']["11"]['Answer'] =
                                         //     value;
-                                        flightcount = widget.wholelist[1]
+                                        assesspro.flightcount = widget
+                                                    .wholelist[1]
                                                 [widget.accessname]['question']
                                             ["11"]['Flights']["count"];
                                         print(widget.wholelist[1]
@@ -2958,7 +2883,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             ]),
                       ),
                       // SizedBox(height: 10),
-                      (flightcount > 0)
+                      (assesspro.flightcount > 0)
                           ? Container(
                               child: Padding(
                                 padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
@@ -2972,7 +2897,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                     physics:
                                         const NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
-                                    itemCount: flightcount,
+                                    itemCount: assesspro.flightcount,
                                     itemBuilder: (context, index1) {
                                       return flightcountwidget(
                                           index1 + 1, context);
@@ -2990,7 +2915,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
-                            width: MediaQuery.of(context).size.width * .6,
+                            width: MediaQuery.of(context).size.width * .58,
                             child: Text(
                                 'Smoke detector batteries checked annually/replaced?',
                                 style: TextStyle(
@@ -2998,43 +2923,46 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                   fontSize: 20,
                                 )),
                           ),
-                          DropdownButton(
-                            items: [
-                              DropdownMenuItem(
-                                child: Text('--'),
-                                value: '',
-                              ),
-                              DropdownMenuItem(
-                                child: Text('Yes'),
-                                value: 'Yes',
-                              ),
-                              DropdownMenuItem(
-                                child: Text('No'),
-                                value: 'No',
-                              ),
-                            ],
-                            onChanged: (value) {
-                              FocusScope.of(context).requestFocus();
-                              new TextEditingController().clear();
-                              // print(widget.accessname);
-                              if (assessor == therapist &&
-                                  role == "therapist") {
-                                assesspro.setdata(12, value,
-                                    'Smoke detector batteries checked annually/replaced?');
-                              } else if (role != "therapist") {
-                                assesspro.setdata(12, value,
-                                    'Smoke detector batteries checked annually/replaced?');
-                              } else {
-                                _showSnackBar(
-                                    "You can't change the other fields",
-                                    context);
-                              }
-                            },
-                            value: getvalue(12),
-                          )
+                          // DropdownButton(
+                          //   items: [
+                          //     DropdownMenuItem(
+                          //       child: Text('--'),
+                          //       value: '',
+                          //     ),
+                          //     DropdownMenuItem(
+                          //       child: Text('Yes'),
+                          //       value: 'Yes',
+                          //     ),
+                          //     DropdownMenuItem(
+                          //       child: Text('No'),
+                          //       value: 'No',
+                          //     ),
+                          //   ],
+                          //   onChanged: (value) {
+                          //     FocusScope.of(context).requestFocus();
+                          //     new TextEditingController().clear();
+                          //     // print(widget.accessname);
+                          //     if (assessor == therapist &&
+                          //         role == "therapist") {
+                          //       assesspro.setdata(12, value,
+                          //           'Smoke detector batteries checked annually/replaced?');
+                          //     } else if (role != "therapist") {
+                          //       assesspro.setdata(12, value,
+                          //           'Smoke detector batteries checked annually/replaced?');
+                          //     } else {
+                          //       _showSnackBar(
+                          //           "You can't change the other fields",
+                          //           context);
+                          //     }
+                          //   },
+                          //   value: assesspro.getvalue(12),
+                          // )
+                          toggleButton(context, assesspro, 12,
+                              'Smoke detector batteries checked annually/replaced?'),
                         ],
                       ),
-                      (getvalue(12) == 'No')
+                      SizedBox(height: 15),
+                      (assesspro.getvalue(12) == 'No')
                           ? getrecomain(12, true, context)
                           : SizedBox(height: 5),
                       SizedBox(height: 15),
@@ -3058,7 +2986,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                       Container(
                           // height: 10000,
                           child: TextFormField(
-                        initialValue: getvalue(13),
+                        initialValue: assesspro.getvalue(13),
                         maxLines: 1,
                         decoration: InputDecoration(
                             focusedBorder: OutlineInputBorder(
@@ -3157,11 +3085,13 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                   // print(widget.accessname);
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    setreco(14, value);
-                                    setdata(14, value, 'Oberservations');
+                                    assesspro.setreco(14, value);
+                                    assesspro.setdata(
+                                        14, value, 'Oberservations');
                                   } else if (role != "therapist") {
-                                    setreco(14, value);
-                                    setdata(14, value, 'Oberservations');
+                                    assesspro.setreco(14, value);
+                                    assesspro.setdata(
+                                        14, value, 'Oberservations');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",

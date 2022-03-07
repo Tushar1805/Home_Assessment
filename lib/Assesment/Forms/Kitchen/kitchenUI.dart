@@ -52,50 +52,6 @@ class _KitchenUIState extends State<KitchenUI> {
     getRole();
   }
 
-  // Future<void> setinitials() async {
-  //   if (widget.wholelist[3][widget.accessname].containsKey('videos')) {
-  //     if (widget.wholelist[3][widget.accessname]['videos']
-  //         .containsKey('name')) {
-  //     } else {
-  //       widget.wholelist[3][widget.accessname]['videos']['name'] = "";
-  //     }
-  //     if (widget.wholelist[3][widget.accessname]['videos'].containsKey('url')) {
-  //     } else {
-  //       widget.wholelist[3][widget.accessname]['videos']['url'] = "";
-  //     }
-  //   } else {
-  //     // print('Yes,it is');
-
-  //     widget.wholelist[3][widget.accessname]["videos"] = {};
-  //   }
-  //   if (widget.wholelist[3][widget.accessname]['question']["7"]
-  //       .containsKey('doorwidth')) {
-  //   } else {
-  //     print('getting created');
-  //     widget.wholelist[3][widget.accessname]['question']["7"]['doorwidth'] = 0;
-  //   }
-
-  //   if (widget.wholelist[3][widget.accessname]['question']["15"]
-  //       .containsKey('ManageInOut')) {
-  //   } else {
-  //     widget.wholelist[3][widget.accessname]['question']["15"]['ManageInOut'] =
-  //         '';
-  //   }
-
-  //   if (widget.wholelist[3][widget.accessname]['question']["16"]
-  //       .containsKey('Grabbar')) {
-  //   } else {
-  //     widget.wholelist[3][widget.accessname]['question']["16"]['Grabbar'] = {};
-  //   }
-
-  //   if (widget.wholelist[3][widget.accessname]['question']["17"]
-  //       .containsKey('sidefentrance')) {
-  //   } else {
-  //     widget.wholelist[3][widget.accessname]['question']["17"]
-  //         ['sidefentrance'] = '';
-  //   }
-  // }
-
   Future<void> getAssessData() async {
     final User user = await _auth.currentUser;
     firestoreInstance
@@ -158,6 +114,85 @@ class _KitchenUIState extends State<KitchenUI> {
     ScaffoldMessenger.of(buildContext)
       ..hideCurrentSnackBar()
       ..showSnackBar(snackBar);
+  }
+
+  Widget toggleButton(BuildContext context, KitchenPro assesmentprovider,
+      int queIndex, String que) {
+    return Container(
+      height: 35,
+      child: ToggleButtons(
+        borderColor: Colors.black,
+        fillColor: Colors.green,
+        borderWidth: 0,
+        selectedBorderColor: Colors.black,
+        selectedColor: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Yes',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'No',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+        ],
+        onPressed: (int select) {
+          if (assessor == therapist && role == "therapist") {
+            setState(() {
+              for (int i = 0;
+                  i <
+                      widget
+                          .wholelist[3][widget.accessname]['question']
+                              ['$queIndex']['toggle']
+                          .length;
+                  i++) {
+                widget.wholelist[3][widget.accessname]['question']['$queIndex']
+                    ['toggle'][i] = i == select;
+              }
+            });
+            assesmentprovider.setdata(
+                queIndex,
+                widget.wholelist[3][widget.accessname]['question']['$queIndex']
+                        ['toggle'][0]
+                    ? 'Yes'
+                    : 'No',
+                que);
+          } else if (role != "therapist") {
+            setState(() {
+              for (int i = 0;
+                  i <
+                      widget
+                          .wholelist[3][widget.accessname]['question']
+                              ['$queIndex']['toggle']
+                          .length;
+                  i++) {
+                widget.wholelist[3][widget.accessname]['question']['$queIndex']
+                    ['toggle'][i] = i == select;
+              }
+            });
+            assesmentprovider.setdata(
+                queIndex,
+                widget.wholelist[3][widget.accessname]['question']['$queIndex']
+                        ['toggle'][0]
+                    ? 'Yes'
+                    : 'No',
+                que);
+          } else {
+            _showSnackBar("You can't change the other fields", context);
+          }
+        },
+        isSelected: widget.wholelist[3][widget.accessname]['question']
+                ['$queIndex']['toggle']
+            .cast<bool>(),
+      ),
+    );
   }
 
   @override
@@ -673,7 +708,7 @@ class _KitchenUIState extends State<KitchenUI> {
                                       enabledBorder: OutlineInputBorder(
                                         borderSide: BorderSide(width: 1),
                                       ),
-                                      labelText: '(Count)'),
+                                      labelText: 'Inches'),
                                   keyboardType: TextInputType.phone,
                                   onChanged: (value) {
                                     if (assessor == therapist &&
@@ -1000,97 +1035,13 @@ class _KitchenUIState extends State<KitchenUI> {
                             //     value: assesmentprovider.getvalue(5),
                             //   ),
                             // ),
-                            Container(
-                              height: 35,
-                              child: ToggleButtons(
-                                borderColor: Colors.black,
-                                fillColor: Colors.green,
-                                borderWidth: 0,
-                                selectedBorderColor: Colors.black,
-                                selectedColor: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Yes',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'No',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                ],
-                                onPressed: (int select) {
-                                  if (assessor == therapist &&
-                                      role == "therapist") {
-                                    setState(() {
-                                      for (int i = 0;
-                                          i <
-                                              widget
-                                                  .wholelist[3]
-                                                      [widget.accessname]
-                                                      ['question']['5']
-                                                      ['toggle']
-                                                  .length;
-                                          i++) {
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['5']['toggle'][i] =
-                                            i == select;
-                                      }
-                                    });
-                                    assesmentprovider.setdata(
-                                        5,
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['5']['toggle'][0]
-                                            ? 'Yes'
-                                            : 'No',
-                                        'Able to Operate Switches?');
-                                  } else if (role != "therapist") {
-                                    setState(() {
-                                      for (int i = 0;
-                                          i <
-                                              widget
-                                                  .wholelist[3]
-                                                      [widget.accessname]
-                                                      ['question']['5']
-                                                      ['toggle']
-                                                  .length;
-                                          i++) {
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['5']['toggle'][i] =
-                                            i == select;
-                                      }
-                                    });
-                                    assesmentprovider.setdata(
-                                        5,
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['5']['toggle'][0]
-                                            ? 'Yes'
-                                            : 'No',
-                                        'Able to Operate Switches?');
-                                  } else {
-                                    _showSnackBar(
-                                        "You can't change the other fields",
-                                        context);
-                                  }
-                                },
-                                isSelected: widget.wholelist[3]
-                                        [widget.accessname]['question']['5']
-                                        ['toggle']
-                                    .cast<bool>(),
-                              ),
-                            ),
+                            toggleButton(context, assesmentprovider, 5,
+                                'Able to Operate Switches?'),
                           ],
                         ),
                         SizedBox(height: 10),
 
-                        (assesmentprovider.getvalue(5) != 'No' &&
-                                assesmentprovider.getvalue(5) != '')
+                        (assesmentprovider.getvalue(5) == 'Yes')
                             ? assesmentprovider.getrecomain(
                                 assesmentprovider,
                                 5,
@@ -1201,7 +1152,7 @@ class _KitchenUIState extends State<KitchenUI> {
                                       enabledBorder: OutlineInputBorder(
                                         borderSide: BorderSide(width: 1),
                                       ),
-                                      labelText: '(Inches)'),
+                                      labelText: 'Inches'),
                                   keyboardType: TextInputType.phone,
                                   onChanged: (value) {
                                     if (assessor == therapist &&
@@ -1319,91 +1270,8 @@ class _KitchenUIState extends State<KitchenUI> {
                             //   },
                             //   value: assesmentprovider.getvalue(8),
                             // )
-                            Container(
-                              height: 35,
-                              child: ToggleButtons(
-                                borderColor: Colors.black,
-                                fillColor: Colors.green,
-                                borderWidth: 0,
-                                selectedBorderColor: Colors.black,
-                                selectedColor: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Yes',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'No',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                ],
-                                onPressed: (int select) {
-                                  if (assessor == therapist &&
-                                      role == "therapist") {
-                                    setState(() {
-                                      for (int i = 0;
-                                          i <
-                                              widget
-                                                  .wholelist[3]
-                                                      [widget.accessname]
-                                                      ['question']['8']
-                                                      ['toggle']
-                                                  .length;
-                                          i++) {
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['8']['toggle'][i] =
-                                            i == select;
-                                      }
-                                    });
-                                    assesmentprovider.setdata(
-                                        8,
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['8']['toggle'][0]
-                                            ? 'Yes'
-                                            : 'No',
-                                        'Obstacle/Clutter Present?');
-                                  } else if (role != "therapist") {
-                                    setState(() {
-                                      for (int i = 0;
-                                          i <
-                                              widget
-                                                  .wholelist[3]
-                                                      [widget.accessname]
-                                                      ['question']['8']
-                                                      ['toggle']
-                                                  .length;
-                                          i++) {
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['8']['toggle'][i] =
-                                            i == select;
-                                      }
-                                    });
-                                    assesmentprovider.setdata(
-                                        8,
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['8']['toggle'][0]
-                                            ? 'Yes'
-                                            : 'No',
-                                        'Obstacle/Clutter Present?');
-                                  } else {
-                                    _showSnackBar(
-                                        "You can't change the other fields",
-                                        context);
-                                  }
-                                },
-                                isSelected: widget.wholelist[3]
-                                        [widget.accessname]['question']['8']
-                                        ['toggle']
-                                    .cast<bool>(),
-                              ),
-                            ),
+                            toggleButton(context, assesmentprovider, 8,
+                                'Obstacle/Clutter Present?'),
                           ],
                         ),
                         SizedBox(height: 10),
@@ -1468,96 +1336,12 @@ class _KitchenUIState extends State<KitchenUI> {
                             //   },
                             //   value: assesmentprovider.getvalue(9),
                             // )
-                            Container(
-                              height: 35,
-                              child: ToggleButtons(
-                                borderColor: Colors.black,
-                                fillColor: Colors.green,
-                                borderWidth: 0,
-                                selectedBorderColor: Colors.black,
-                                selectedColor: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Yes',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'No',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                ],
-                                onPressed: (int select) {
-                                  if (assessor == therapist &&
-                                      role == "therapist") {
-                                    setState(() {
-                                      for (int i = 0;
-                                          i <
-                                              widget
-                                                  .wholelist[3]
-                                                      [widget.accessname]
-                                                      ['question']['9']
-                                                      ['toggle']
-                                                  .length;
-                                          i++) {
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['9']['toggle'][i] =
-                                            i == select;
-                                      }
-                                    });
-                                    assesmentprovider.setdata(
-                                        9,
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['9']['toggle'][0]
-                                            ? 'Yes'
-                                            : 'No',
-                                        'Able to Access Telephone');
-                                  } else if (role != "therapist") {
-                                    setState(() {
-                                      for (int i = 0;
-                                          i <
-                                              widget
-                                                  .wholelist[3]
-                                                      [widget.accessname]
-                                                      ['question']['9']
-                                                      ['toggle']
-                                                  .length;
-                                          i++) {
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['9']['toggle'][i] =
-                                            i == select;
-                                      }
-                                    });
-                                    assesmentprovider.setdata(
-                                        9,
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['9']['toggle'][0]
-                                            ? 'Yes'
-                                            : 'No',
-                                        'Able to Access Telephone');
-                                  } else {
-                                    _showSnackBar(
-                                        "You can't change the other fields",
-                                        context);
-                                  }
-                                },
-                                isSelected: widget.wholelist[3]
-                                        [widget.accessname]['question']['9']
-                                        ['toggle']
-                                    .cast<bool>(),
-                              ),
-                            ),
+                            toggleButton(context, assesmentprovider, 9,
+                                'Able to Access Telephone?'),
                           ],
                         ),
                         SizedBox(height: 10),
-                        (assesmentprovider.getvalue(9) == 'No' &&
-                                assesmentprovider.getvalue(9) != "")
+                        (assesmentprovider.getvalue(9) == 'No')
                             ? assesmentprovider.getrecomain(
                                 assesmentprovider,
                                 9,
@@ -1619,96 +1403,12 @@ class _KitchenUIState extends State<KitchenUI> {
                             //   },
                             //   value: assesmentprovider.getvalue(10),
                             // )
-                            Container(
-                              height: 35,
-                              child: ToggleButtons(
-                                borderColor: Colors.black,
-                                fillColor: Colors.green,
-                                borderWidth: 0,
-                                selectedBorderColor: Colors.black,
-                                selectedColor: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Yes',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'No',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                ],
-                                onPressed: (int select) {
-                                  if (assessor == therapist &&
-                                      role == "therapist") {
-                                    setState(() {
-                                      for (int i = 0;
-                                          i <
-                                              widget
-                                                  .wholelist[3]
-                                                      [widget.accessname]
-                                                      ['question']['10']
-                                                      ['toggle']
-                                                  .length;
-                                          i++) {
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['10']['toggle']
-                                            [i] = i == select;
-                                      }
-                                    });
-                                    assesmentprovider.setdata(
-                                        10,
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['10']['toggle'][0]
-                                            ? 'Yes'
-                                            : 'No',
-                                        'Able to Access Stove');
-                                  } else if (role != "therapist") {
-                                    setState(() {
-                                      for (int i = 0;
-                                          i <
-                                              widget
-                                                  .wholelist[3]
-                                                      [widget.accessname]
-                                                      ['question']['10']
-                                                      ['toggle']
-                                                  .length;
-                                          i++) {
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['10']['toggle']
-                                            [i] = i == select;
-                                      }
-                                    });
-                                    assesmentprovider.setdata(
-                                        10,
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['10']['toggle'][0]
-                                            ? 'Yes'
-                                            : 'No',
-                                        'Able to Access Stove');
-                                  } else {
-                                    _showSnackBar(
-                                        "You can't change the other fields",
-                                        context);
-                                  }
-                                },
-                                isSelected: widget.wholelist[3]
-                                        [widget.accessname]['question']['10']
-                                        ['toggle']
-                                    .cast<bool>(),
-                              ),
-                            ),
+                            toggleButton(context, assesmentprovider, 10,
+                                'Able to Access Stove?'),
                           ],
                         ),
                         SizedBox(height: 10),
-                        (assesmentprovider.getvalue(10) == 'No' &&
-                                assesmentprovider.getvalue(10) != '')
+                        (assesmentprovider.getvalue(10) == 'No')
                             ? assesmentprovider.getrecomain(
                                 assesmentprovider,
                                 10,
@@ -1844,96 +1544,12 @@ class _KitchenUIState extends State<KitchenUI> {
                             //   },
                             //   value: assesmentprovider.getvalue(12),
                             // )
-                            Container(
-                              height: 35,
-                              child: ToggleButtons(
-                                borderColor: Colors.black,
-                                fillColor: Colors.green,
-                                borderWidth: 0,
-                                selectedBorderColor: Colors.black,
-                                selectedColor: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Yes',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'No',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                ],
-                                onPressed: (int select) {
-                                  if (assessor == therapist &&
-                                      role == "therapist") {
-                                    setState(() {
-                                      for (int i = 0;
-                                          i <
-                                              widget
-                                                  .wholelist[3]
-                                                      [widget.accessname]
-                                                      ['question']['12']
-                                                      ['toggle']
-                                                  .length;
-                                          i++) {
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['12']['toggle']
-                                            [i] = i == select;
-                                      }
-                                    });
-                                    assesmentprovider.setdata(
-                                        12,
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['12']['toggle'][0]
-                                            ? 'Yes'
-                                            : 'No',
-                                        'Able to Access Sink');
-                                  } else if (role != "therapist") {
-                                    setState(() {
-                                      for (int i = 0;
-                                          i <
-                                              widget
-                                                  .wholelist[3]
-                                                      [widget.accessname]
-                                                      ['question']['12']
-                                                      ['toggle']
-                                                  .length;
-                                          i++) {
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['12']['toggle']
-                                            [i] = i == select;
-                                      }
-                                    });
-                                    assesmentprovider.setdata(
-                                        12,
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['12']['toggle'][0]
-                                            ? 'Yes'
-                                            : 'No',
-                                        'Able to Access Sink');
-                                  } else {
-                                    _showSnackBar(
-                                        "You can't change the other fields",
-                                        context);
-                                  }
-                                },
-                                isSelected: widget.wholelist[3]
-                                        [widget.accessname]['question']['12']
-                                        ['toggle']
-                                    .cast<bool>(),
-                              ),
-                            ),
+                            toggleButton(context, assesmentprovider, 12,
+                                'Able to Access Sink?'),
                           ],
                         ),
                         SizedBox(height: 10),
-                        (assesmentprovider.getvalue(12) != 'Yes' &&
-                                assesmentprovider.getvalue(12) != '')
+                        (assesmentprovider.getvalue(12) == 'No')
                             ? assesmentprovider.getrecomain(
                                 assesmentprovider,
                                 12,
@@ -1995,91 +1611,8 @@ class _KitchenUIState extends State<KitchenUI> {
                             //   },
                             //   value: assesmentprovider.getvalue(13),
                             // )
-                            Container(
-                              height: 35,
-                              child: ToggleButtons(
-                                borderColor: Colors.black,
-                                fillColor: Colors.green,
-                                borderWidth: 0,
-                                selectedBorderColor: Colors.black,
-                                selectedColor: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Yes',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'No',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                ],
-                                onPressed: (int select) {
-                                  if (assessor == therapist &&
-                                      role == "therapist") {
-                                    setState(() {
-                                      for (int i = 0;
-                                          i <
-                                              widget
-                                                  .wholelist[3]
-                                                      [widget.accessname]
-                                                      ['question']['13']
-                                                      ['toggle']
-                                                  .length;
-                                          i++) {
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['13']['toggle']
-                                            [i] = i == select;
-                                      }
-                                    });
-                                    assesmentprovider.setdata(
-                                        13,
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['13']['toggle'][0]
-                                            ? 'Yes'
-                                            : 'No',
-                                        'Able to Access Dishwasher');
-                                  } else if (role != "therapist") {
-                                    setState(() {
-                                      for (int i = 0;
-                                          i <
-                                              widget
-                                                  .wholelist[3]
-                                                      [widget.accessname]
-                                                      ['question']['13']
-                                                      ['toggle']
-                                                  .length;
-                                          i++) {
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['13']['toggle']
-                                            [i] = i == select;
-                                      }
-                                    });
-                                    assesmentprovider.setdata(
-                                        13,
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['13']['toggle'][0]
-                                            ? 'Yes'
-                                            : 'No',
-                                        'Able to Access Dishwasher');
-                                  } else {
-                                    _showSnackBar(
-                                        "You can't change the other fields",
-                                        context);
-                                  }
-                                },
-                                isSelected: widget.wholelist[3]
-                                        [widget.accessname]['question']['13']
-                                        ['toggle']
-                                    .cast<bool>(),
-                              ),
-                            ),
+                            toggleButton(context, assesmentprovider, 13,
+                                'Able to Access Dishwasher?'),
                           ],
                         ),
                         SizedBox(height: 10),
@@ -2145,91 +1678,8 @@ class _KitchenUIState extends State<KitchenUI> {
                             //   },
                             //   value: assesmentprovider.getvalue(14),
                             // )
-                            Container(
-                              height: 35,
-                              child: ToggleButtons(
-                                borderColor: Colors.black,
-                                fillColor: Colors.green,
-                                borderWidth: 0,
-                                selectedBorderColor: Colors.black,
-                                selectedColor: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Yes',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'No',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                ],
-                                onPressed: (int select) {
-                                  if (assessor == therapist &&
-                                      role == "therapist") {
-                                    setState(() {
-                                      for (int i = 0;
-                                          i <
-                                              widget
-                                                  .wholelist[3]
-                                                      [widget.accessname]
-                                                      ['question']['14']
-                                                      ['toggle']
-                                                  .length;
-                                          i++) {
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['14']['toggle']
-                                            [i] = i == select;
-                                      }
-                                    });
-                                    assesmentprovider.setdata(
-                                        14,
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['14']['toggle'][0]
-                                            ? 'Yes'
-                                            : 'No',
-                                        'Able to Access Refrigerator?');
-                                  } else if (role != "therapist") {
-                                    setState(() {
-                                      for (int i = 0;
-                                          i <
-                                              widget
-                                                  .wholelist[3]
-                                                      [widget.accessname]
-                                                      ['question']['14']
-                                                      ['toggle']
-                                                  .length;
-                                          i++) {
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['14']['toggle']
-                                            [i] = i == select;
-                                      }
-                                    });
-                                    assesmentprovider.setdata(
-                                        14,
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['14']['toggle'][0]
-                                            ? 'Yes'
-                                            : 'No',
-                                        'Able to Access Refrigerator?');
-                                  } else {
-                                    _showSnackBar(
-                                        "You can't change the other fields",
-                                        context);
-                                  }
-                                },
-                                isSelected: widget.wholelist[3]
-                                        [widget.accessname]['question']['14']
-                                        ['toggle']
-                                    .cast<bool>(),
-                              ),
-                            ),
+                            toggleButton(context, assesmentprovider, 14,
+                                'Able to Access Refrigerator?'),
                           ],
                         ),
                         SizedBox(height: 10),
@@ -2295,91 +1745,8 @@ class _KitchenUIState extends State<KitchenUI> {
                             //   },
                             //   value: assesmentprovider.getvalue(15),
                             // )
-                            Container(
-                              height: 35,
-                              child: ToggleButtons(
-                                borderColor: Colors.black,
-                                fillColor: Colors.green,
-                                borderWidth: 0,
-                                selectedBorderColor: Colors.black,
-                                selectedColor: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Yes',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'No',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                ],
-                                onPressed: (int select) {
-                                  if (assessor == therapist &&
-                                      role == "therapist") {
-                                    setState(() {
-                                      for (int i = 0;
-                                          i <
-                                              widget
-                                                  .wholelist[3]
-                                                      [widget.accessname]
-                                                      ['question']['15']
-                                                      ['toggle']
-                                                  .length;
-                                          i++) {
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['15']['toggle']
-                                            [i] = i == select;
-                                      }
-                                    });
-                                    assesmentprovider.setdata(
-                                        15,
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['15']['toggle'][0]
-                                            ? 'Yes'
-                                            : 'No',
-                                        'Able to Access High Cabinets');
-                                  } else if (role != "therapist") {
-                                    setState(() {
-                                      for (int i = 0;
-                                          i <
-                                              widget
-                                                  .wholelist[3]
-                                                      [widget.accessname]
-                                                      ['question']['15']
-                                                      ['toggle']
-                                                  .length;
-                                          i++) {
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['15']['toggle']
-                                            [i] = i == select;
-                                      }
-                                    });
-                                    assesmentprovider.setdata(
-                                        15,
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['15']['toggle'][0]
-                                            ? 'Yes'
-                                            : 'No',
-                                        'Able to Access High Cabinets');
-                                  } else {
-                                    _showSnackBar(
-                                        "You can't change the other fields",
-                                        context);
-                                  }
-                                },
-                                isSelected: widget.wholelist[3]
-                                        [widget.accessname]['question']['15']
-                                        ['toggle']
-                                    .cast<bool>(),
-                              ),
-                            ),
+                            toggleButton(context, assesmentprovider, 15,
+                                'Able to Access High Cabinets?'),
                           ],
                         ),
                         SizedBox(height: 10),
@@ -2446,91 +1813,8 @@ class _KitchenUIState extends State<KitchenUI> {
                             //   },
                             //   value: assesmentprovider.getvalue(16),
                             // )
-                            Container(
-                              height: 35,
-                              child: ToggleButtons(
-                                borderColor: Colors.black,
-                                fillColor: Colors.green,
-                                borderWidth: 0,
-                                selectedBorderColor: Colors.black,
-                                selectedColor: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Yes',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'No',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                ],
-                                onPressed: (int select) {
-                                  if (assessor == therapist &&
-                                      role == "therapist") {
-                                    setState(() {
-                                      for (int i = 0;
-                                          i <
-                                              widget
-                                                  .wholelist[3]
-                                                      [widget.accessname]
-                                                      ['question']['16']
-                                                      ['toggle']
-                                                  .length;
-                                          i++) {
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['16']['toggle']
-                                            [i] = i == select;
-                                      }
-                                    });
-                                    assesmentprovider.setdata(
-                                        16,
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['16']['toggle'][0]
-                                            ? 'Yes'
-                                            : 'No',
-                                        'Able to Access Lower Cabinets');
-                                  } else if (role != "therapist") {
-                                    setState(() {
-                                      for (int i = 0;
-                                          i <
-                                              widget
-                                                  .wholelist[3]
-                                                      [widget.accessname]
-                                                      ['question']['16']
-                                                      ['toggle']
-                                                  .length;
-                                          i++) {
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['16']['toggle']
-                                            [i] = i == select;
-                                      }
-                                    });
-                                    assesmentprovider.setdata(
-                                        16,
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['16']['toggle'][0]
-                                            ? 'Yes'
-                                            : 'No',
-                                        'Able to Access Lower Cabinets');
-                                  } else {
-                                    _showSnackBar(
-                                        "You can't change the other fields",
-                                        context);
-                                  }
-                                },
-                                isSelected: widget.wholelist[3]
-                                        [widget.accessname]['question']['16']
-                                        ['toggle']
-                                    .cast<bool>(),
-                              ),
-                            )
+                            toggleButton(context, assesmentprovider, 16,
+                                'Able to Access Lower Cabinets?'),
                           ],
                         ),
 
@@ -2597,91 +1881,8 @@ class _KitchenUIState extends State<KitchenUI> {
                             //   },
                             //   value: assesmentprovider.getvalue(17),
                             // )
-                            Container(
-                              height: 35,
-                              child: ToggleButtons(
-                                borderColor: Colors.black,
-                                fillColor: Colors.green,
-                                borderWidth: 0,
-                                selectedBorderColor: Colors.black,
-                                selectedColor: Colors.white,
-                                borderRadius: BorderRadius.circular(20),
-                                children: <Widget>[
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Yes',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'No',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ),
-                                ],
-                                onPressed: (int select) {
-                                  if (assessor == therapist &&
-                                      role == "therapist") {
-                                    setState(() {
-                                      for (int i = 0;
-                                          i <
-                                              widget
-                                                  .wholelist[3]
-                                                      [widget.accessname]
-                                                      ['question']['17']
-                                                      ['toggle']
-                                                  .length;
-                                          i++) {
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['17']['toggle']
-                                            [i] = i == select;
-                                      }
-                                    });
-                                    assesmentprovider.setdata(
-                                        17,
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['17']['toggle'][0]
-                                            ? 'Yes'
-                                            : 'No',
-                                        'Able to Access Lower Cabinets');
-                                  } else if (role != "therapist") {
-                                    setState(() {
-                                      for (int i = 0;
-                                          i <
-                                              widget
-                                                  .wholelist[3]
-                                                      [widget.accessname]
-                                                      ['question']['17']
-                                                      ['toggle']
-                                                  .length;
-                                          i++) {
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['17']['toggle']
-                                            [i] = i == select;
-                                      }
-                                    });
-                                    assesmentprovider.setdata(
-                                        17,
-                                        widget.wholelist[3][widget.accessname]
-                                                ['question']['17']['toggle'][0]
-                                            ? 'Yes'
-                                            : 'No',
-                                        'Able to Access Lower Cabinets');
-                                  } else {
-                                    _showSnackBar(
-                                        "You can't change the other fields",
-                                        context);
-                                  }
-                                },
-                                isSelected: widget.wholelist[3]
-                                        [widget.accessname]['question']['17']
-                                        ['toggle']
-                                    .cast<bool>(),
-                              ),
-                            )
+                            toggleButton(context, assesmentprovider, 17,
+                                'Smoke Detector Present?'),
                           ],
                         ),
                         SizedBox(height: 10),

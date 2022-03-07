@@ -98,19 +98,43 @@ class GaragePro extends ChangeNotifier {
     }
 
     if (wholelist[9][accessname]['question']["5"].containsKey('toggle')) {
+      if (wholelist[9][accessname]['question']["5"]['Answer'].length == 0) {
+        setdata(5, 'Yes', 'Able to Operate Switches?');
+      }
+      notifyListeners();
     } else {
       wholelist[9][accessname]['question']["5"]['toggle'] = <bool>[true, false];
+      if (wholelist[9][accessname]['question']["5"]['Answer'].length == 0) {
+        setdata(5, 'Yes', 'Able to Operate Switches?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[9][accessname]['question']["8"].containsKey('toggle')) {
+      if (wholelist[9][accessname]['question']["8"]['Answer'].length == 0) {
+        setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+      }
+      notifyListeners();
     } else {
       wholelist[9][accessname]['question']["8"]['toggle'] = <bool>[true, false];
+      if (wholelist[9][accessname]['question']["8"]['Answer'].length == 0) {
+        setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[9][accessname]['question']["11"].containsKey('toggle')) {
+      if (wholelist[9][accessname]['question']["11"]['Answer'].length == 0) {
+        setdata(11, 'Yes', 'Smoke Detector Present?');
+      }
+      notifyListeners();
     } else {
       wholelist[9][accessname]['question']["11"]
           ['toggle'] = <bool>[true, false];
+      if (wholelist[9][accessname]['question']["11"]['Answer'].length == 0) {
+        setdata(11, 'Yes', 'Smoke Detector Present?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[9][accessname]['question']["7"].containsKey('doorwidth')) {

@@ -64,103 +64,8 @@ class _PatioUIState extends State<PatioUI> {
       colorsset["field${i + 1}"] = Color.fromRGBO(10, 80, 106, 1);
     }
     getRole();
-    setinitials();
-    getAssessData();
-  }
-
-  Future<void> setinitials() async {
-    if (widget.wholelist[8][widget.accessname].containsKey('isSave')) {
-    } else {
-      widget.wholelist[8][widget.accessname]["isSave"] = true;
-    }
-    if (widget.wholelist[8][widget.accessname].containsKey('videos')) {
-      if (widget.wholelist[8][widget.accessname]['videos']
-          .containsKey('name')) {
-      } else {
-        widget.wholelist[8][widget.accessname]['videos']['name'] = "";
-      }
-      if (widget.wholelist[8][widget.accessname]['videos'].containsKey('url')) {
-      } else {
-        widget.wholelist[8][widget.accessname]['videos']['url'] = "";
-      }
-    } else {
-      // print('Yes,it is');
-
-      widget.wholelist[8][widget.accessname]
-          ["videos"] = {'name': '', 'url': ''};
-    }
-
-    if (widget.wholelist[8][widget.accessname]['question']["5"]
-        .containsKey('toggle')) {
-    } else {
-      widget.wholelist[8][widget.accessname]['question']["5"]
-          ['toggle'] = <bool>[true, false];
-    }
-
-    if (widget.wholelist[8][widget.accessname]['question']["8"]
-        .containsKey('toggle')) {
-    } else {
-      widget.wholelist[8][widget.accessname]['question']["8"]
-          ['toggle'] = <bool>[true, false];
-    }
-
-    if (widget.wholelist[8][widget.accessname]['question']["11"]
-        .containsKey('toggle')) {
-    } else {
-      widget.wholelist[8][widget.accessname]['question']["11"]
-          ['toggle'] = <bool>[true, false];
-    }
-
-    if (widget.wholelist[8][widget.accessname]['question']["7"]
-        .containsKey('doorwidth')) {
-    } else {
-      print('getting created');
-      widget.wholelist[8][widget.accessname]['question']["7"]['doorwidth'] = 0;
-    }
-
-    if (widget.wholelist[8][widget.accessname]['question']["9"]
-        .containsKey('MultipleStair')) {
-      if (widget.wholelist[8][widget.accessname]['question']["9"]
-              ['MultipleStair']
-          .containsKey('count')) {
-        setState(() {
-          stepcount = widget.wholelist[8][widget.accessname]['question']["9"]
-              ['MultipleStair']['count'];
-        });
-      }
-    } else {
-      print('creating!!!!!!');
-      widget.wholelist[8][widget.accessname]['question']["9"]
-          ['MultipleStair'] = {};
-    }
-
-    if (widget.wholelist[8][widget.accessname]['question']["10"]
-        .containsKey('Railling')) {
-    } else {
-      widget.wholelist[8][widget.accessname]['question']["10"]['Railling'] = {
-        'OneSided': {},
-      };
-    }
-  }
-
-  Future<void> getAssessData() async {
-    final User user = await _auth.currentUser;
-    firestoreInstance
-        .collection("assessments")
-        .doc(widget.docID)
-        .get()
-        .then((value) => setState(() {
-              curUid = user.uid;
-              assessor = value["assessor"];
-              therapist = value["therapist"];
-              videoUrl = widget.wholelist[8][widget.accessname]["videos"]["url"]
-                      .toString() ??
-                  "";
-              videoName = widget.wholelist[8][widget.accessname]["videos"]
-                          ["name"]
-                      .toString() ??
-                  "";
-            }));
+    // setinitials();
+    // getAssessData();
   }
 
   Future<String> getRole() async {
@@ -173,88 +78,14 @@ class _PatioUIState extends State<PatioUI> {
         if (runtimeType == "List<dynamic>") {
           for (int i = 0; i < value.data()["role"].length; i++) {
             if (value.data()["role"][i].toString() == "therapist") {
-              setState(() {
-                role = "therapist";
-              });
+              role = "therapist";
             }
           }
         } else {
-          setState(() {
-            role = value.data()["role"];
-          });
+          role = value.data()["role"];
         }
       },
     );
-  }
-
-  setdata(index, value, que) {
-    widget.wholelist[8][widget.accessname]['question']["$index"]['Question'] =
-        que;
-    if (value.length == 0) {
-      if (widget.wholelist[8][widget.accessname]['question']["$index"]['Answer']
-              .length ==
-          0) {
-      } else {
-        setState(() {
-          widget.wholelist[8][widget.accessname]['complete'] -= 1;
-          widget.wholelist[8][widget.accessname]['question']["$index"]
-              ['Answer'] = value;
-        });
-      }
-    } else {
-      if (widget.wholelist[8][widget.accessname]['question']["$index"]['Answer']
-              .length ==
-          0) {
-        setState(() {
-          widget.wholelist[8][widget.accessname]['complete'] += 1;
-        });
-      }
-      setState(() {
-        widget.wholelist[8][widget.accessname]['question']["$index"]['Answer'] =
-            value;
-      });
-    }
-  }
-
-  setreco(index, value) {
-    setState(() {
-      widget.wholelist[8][widget.accessname]['question']["$index"]
-          ['Recommendation'] = value;
-    });
-  }
-
-  getvalue(index) {
-    return widget.wholelist[8][widget.accessname]['question']["$index"]
-        ['Answer'];
-  }
-
-  getreco(index) {
-    return widget.wholelist[8][widget.accessname]['question']["$index"]
-        ['Recommendation'];
-  }
-
-  setrecothera(index, value) {
-    setState(() {
-      widget.wholelist[8][widget.accessname]['question']["$index"]
-          ['Recommendationthera'] = value;
-    });
-  }
-
-  setprio(index, value) {
-    setState(() {
-      widget.wholelist[8][widget.accessname]['question']["$index"]['Priority'] =
-          value;
-    });
-  }
-
-  getprio(index) {
-    return widget.wholelist[8][widget.accessname]['question']["$index"]
-        ['Priority'];
-  }
-
-  getrecothera(index) {
-    return widget.wholelist[8][widget.accessname]['question']["$index"]
-        ['Recommendationthera'];
   }
 
   void _showSnackBar(snackbar, BuildContext buildContext) {
@@ -500,16 +331,7 @@ class _PatioUIState extends State<PatioUI> {
     Future deleteFile(String imagePath) async {
       String imagePath1 = 'asssessmentVideos/' + imagePath;
       try {
-        // FirebaseStorage.instance
-        //     .ref()
-        //     .child(imagePath1)
-        //     .delete()
-        //     .then((_) => print('Successfully deleted $imagePath storage item'));
         Reference ref = await FirebaseStorage.instance.refFromURL(imagePath);
-        ref.delete();
-
-        // FirebaseStorage firebaseStorege = FirebaseStorage.instance;
-        // StorageReference storageReference = firebaseStorege.getReferenceFromUrl(imagePath);
 
         print('deleteFile(): file deleted');
         // return url;
@@ -560,7 +382,7 @@ class _PatioUIState extends State<PatioUI> {
                       ['$queIndex']['toggle'][i] = i == select;
                 }
               });
-              setdata(
+              assesmentprovider.setdata(
                   queIndex,
                   widget.wholelist[8][widget.accessname]['question']
                           ['$queIndex']['toggle'][0]
@@ -580,7 +402,7 @@ class _PatioUIState extends State<PatioUI> {
                       ['$queIndex']['toggle'][i] = i == select;
                 }
               });
-              setdata(
+              assesmentprovider.setdata(
                   queIndex,
                   widget.wholelist[8][widget.accessname]['question']
                           ['$queIndex']['toggle'][0]
@@ -913,12 +735,14 @@ class _PatioUIState extends State<PatioUI> {
                                       FocusScope.of(context).requestFocus();
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
-                                      setdata(1, value, 'Threshold to Patio');
+                                      assesmentprovider.setdata(
+                                          1, value, 'Threshold to Patio');
                                     } else if (role != "therapist") {
                                       FocusScope.of(context).requestFocus();
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
-                                      setdata(1, value, 'Threshold to Patio');
+                                      assesmentprovider.setdata(
+                                          1, value, 'Threshold to Patio');
                                     } else {
                                       _showSnackBar(
                                           "You can't change the other fields",
@@ -928,10 +752,10 @@ class _PatioUIState extends State<PatioUI> {
                                 ),
                               ),
                             ]),
-                        (getvalue(1) != '')
-                            ? (double.parse(getvalue(1)) > 5)
-                                ? getrecomain(
-                                    1, true, 'Comments (if any)', context)
+                        (assesmentprovider.getvalue(1) != '')
+                            ? (double.parse(assesmentprovider.getvalue(1)) > 5)
+                                ? getrecomain(1, true, 'Comments (if any)',
+                                    context, assesmentprovider)
                                 : SizedBox()
                             : SizedBox(),
                         SizedBox(height: 15),
@@ -984,26 +808,31 @@ class _PatioUIState extends State<PatioUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(2, value, 'Flooring Type');
+                                    assesmentprovider.setdata(
+                                        2, value, 'Flooring Type');
                                   } else if (role != "therapist") {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(2, value, 'Flooring Type');
+                                    assesmentprovider.setdata(
+                                        2, value, 'Flooring Type');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
                                         context);
                                   }
                                 },
-                                value: getvalue(2),
+                                value: assesmentprovider.getvalue(2),
                               ),
                             )
                           ],
                         ),
-                        (getvalue(2) == 'Wood - Smooth Finish' ||
-                                getvalue(2) == 'Tile - Smooth Finish')
-                            ? getrecomain(2, true, 'Comments (if any)', context)
+                        (assesmentprovider.getvalue(2) ==
+                                    'Wood - Smooth Finish' ||
+                                assesmentprovider.getvalue(2) ==
+                                    'Tile - Smooth Finish')
+                            ? getrecomain(2, true, 'Comments (if any)', context,
+                                assesmentprovider)
                             : SizedBox(),
                         SizedBox(height: 15),
                         // Divider(
@@ -1047,25 +876,29 @@ class _PatioUIState extends State<PatioUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(3, value, 'Floor Coverage');
+                                    assesmentprovider.setdata(
+                                        3, value, 'Floor Coverage');
                                   } else if (role != "therapist") {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(3, value, 'Floor Coverage');
+                                    assesmentprovider.setdata(
+                                        3, value, 'Floor Coverage');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
                                         context);
                                   }
                                 },
-                                value: getvalue(3),
+                                value: assesmentprovider.getvalue(3),
                               ),
                             )
                           ],
                         ),
-                        (getvalue(3) != 'No covering' && getvalue(3) != '')
-                            ? getrecomain(3, true, 'Comments (if any)', context)
+                        (assesmentprovider.getvalue(3) != 'No covering' &&
+                                assesmentprovider.getvalue(3) != '')
+                            ? getrecomain(3, true, 'Comments (if any)', context,
+                                assesmentprovider)
                             : SizedBox(),
                         SizedBox(height: 15),
                         // Divider(
@@ -1105,25 +938,28 @@ class _PatioUIState extends State<PatioUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(4, value, 'Lighting Type');
+                                    assesmentprovider.setdata(
+                                        4, value, 'Lighting Type');
                                   } else if (role != "therapist") {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(4, value, 'Lighting Type');
+                                    assesmentprovider.setdata(
+                                        4, value, 'Lighting Type');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
                                         context);
                                   }
                                 },
-                                value: getvalue(4),
+                                value: assesmentprovider.getvalue(4),
                               ),
                             )
                           ],
                         ),
-                        (getvalue(4) == 'Inadequate')
-                            ? getrecomain(4, true, 'Specify Type', context)
+                        (assesmentprovider.getvalue(4) == 'Inadequate')
+                            ? getrecomain(4, true, 'Specify Type', context,
+                                assesmentprovider)
                             : SizedBox(),
                         SizedBox(height: 15),
                         // Divider(
@@ -1184,9 +1020,10 @@ class _PatioUIState extends State<PatioUI> {
                                 'Able to Operate Switches?')
                           ],
                         ),
-
-                        (getvalue(5) == 'No' && getvalue(5) != '')
-                            ? getrecomain(5, true, 'Comments(if any)', context)
+                        SizedBox(height: 15),
+                        (assesmentprovider.getvalue(5) == 'No')
+                            ? getrecomain(5, true, 'Comments(if any)', context,
+                                assesmentprovider)
                             : SizedBox(),
                         SizedBox(height: 15),
 
@@ -1243,19 +1080,21 @@ class _PatioUIState extends State<PatioUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(6, value, 'Switch Type');
+                                    assesmentprovider.setdata(
+                                        6, value, 'Switch Type');
                                   } else if (role != "therapist") {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(6, value, 'Switch Type');
+                                    assesmentprovider.setdata(
+                                        6, value, 'Switch Type');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
                                         context);
                                   }
                                 },
-                                value: getvalue(6),
+                                value: assesmentprovider.getvalue(6),
                               ),
                             ),
                           ],
@@ -1295,7 +1134,8 @@ class _PatioUIState extends State<PatioUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(7, value, 'Door Width');
+                                    assesmentprovider.setdata(
+                                        7, value, 'Door Width');
                                     setState(() {
                                       widget.wholelist[8][widget.accessname]
                                           ['question']["7"]['doorwidth'] = 0;
@@ -1308,7 +1148,8 @@ class _PatioUIState extends State<PatioUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(7, value, 'Door Width');
+                                    assesmentprovider.setdata(
+                                        7, value, 'Door Width');
                                     setState(() {
                                       widget.wholelist[8][widget.accessname]
                                           ['question']["7"]['doorwidth'] = 0;
@@ -1339,7 +1180,8 @@ class _PatioUIState extends State<PatioUI> {
                                 widget.wholelist[8][widget.accessname]
                                         ['question']["7"]['doorwidth'] !=
                                     '')
-                            ? getrecomain(7, true, 'Comments (if any)', context)
+                            ? getrecomain(7, true, 'Comments (if any)', context,
+                                assesmentprovider)
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -1400,8 +1242,10 @@ class _PatioUIState extends State<PatioUI> {
                                 'Obstacle/Clutter Present?')
                           ],
                         ),
-                        (getvalue(8) == 'Yes')
-                            ? getrecomain(8, true, 'Specify Clutter', context)
+                        SizedBox(height: 15),
+                        (assesmentprovider.getvalue(8) == 'Yes')
+                            ? getrecomain(8, true, 'Specify Clutter', context,
+                                assesmentprovider)
                             : SizedBox(),
                         SizedBox(height: 15),
                         Row(
@@ -1442,25 +1286,29 @@ class _PatioUIState extends State<PatioUI> {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(9, value, 'Type of Steps');
+                                    assesmentprovider.setdata(
+                                        9, value, 'Type of Steps');
                                   } else if (role != "therapist") {
                                     FocusScope.of(context).requestFocus();
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
-                                    setdata(9, value, 'Type of Steps');
+                                    assesmentprovider.setdata(
+                                        9, value, 'Type of Steps');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
                                         context);
                                   }
                                 },
-                                value: getvalue(9),
+                                value: assesmentprovider.getvalue(9),
                               ),
                             ),
                           ],
                         ),
-                        (getvalue(9) != '' && getvalue(9) != 'N/A')
-                            ? (getvalue(9) == 'Single Dimension')
+                        (assesmentprovider.getvalue(9) != '' &&
+                                assesmentprovider.getvalue(9) != 'N/A')
+                            ? (assesmentprovider.getvalue(9) ==
+                                    'Single Dimension')
                                 ? SingleChildScrollView(
                                     // reverse: true,
                                     child: Container(
@@ -2001,13 +1849,13 @@ class _PatioUIState extends State<PatioUI> {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(10, value,
+                                  assesmentprovider.setdata(10, value,
                                       'Railing is present on which side?');
                                 } else if (role != "therapist") {
                                   FocusScope.of(context).requestFocus();
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
-                                  setdata(10, value,
+                                  assesmentprovider.setdata(10, value,
                                       'Railing is present on which side?');
                                 } else {
                                   _showSnackBar(
@@ -2015,17 +1863,17 @@ class _PatioUIState extends State<PatioUI> {
                                       context);
                                 }
                               },
-                              value: getvalue(10),
+                              value: assesmentprovider.getvalue(10),
                             )
                           ],
                         ),
                         SizedBox(
                           height: 10,
                         ),
-                        (getvalue(10) == 'On Neither Side')
-                            ? getrecomain(
-                                10, true, 'Comments (if any)', context)
-                            : (getvalue(10) == 'One Side')
+                        (assesmentprovider.getvalue(10) == 'On Neither Side')
+                            ? getrecomain(10, true, 'Comments (if any)',
+                                context, assesmentprovider)
+                            : (assesmentprovider.getvalue(10) == 'One Side')
                                 ? Container(
                                     child: Column(
                                     children: [
@@ -2163,7 +2011,8 @@ class _PatioUIState extends State<PatioUI> {
                                         ),
                                       ),
                                       (role == 'therapist')
-                                          ? getrecowid(10, context)
+                                          ? getrecowid(
+                                              10, context, assesmentprovider)
                                           : SizedBox()
                                     ],
                                   ))
@@ -2222,9 +2071,10 @@ class _PatioUIState extends State<PatioUI> {
                                 'Smoke Detector Present?')
                           ],
                         ),
-                        (getvalue(11) == 'No')
-                            ? getrecomain(
-                                11, true, 'Comments (if any)', context)
+                        SizedBox(height: 15),
+                        (assesmentprovider.getvalue(11) == 'No')
+                            ? getrecomain(11, true, 'Comments (if any)',
+                                context, assesmentprovider)
                             : SizedBox(),
 
                         SizedBox(height: 15),
@@ -2303,11 +2153,13 @@ class _PatioUIState extends State<PatioUI> {
                                     // print(widget.accessname);
                                     if (assessor == therapist &&
                                         role == "therapist") {
-                                      setreco(12, value);
-                                      setdata(12, value, 'Oberservations');
+                                      assesmentprovider.setreco(12, value);
+                                      assesmentprovider.setdata(
+                                          12, value, 'Oberservations');
                                     } else if (role != "therapist") {
-                                      setreco(12, value);
-                                      setdata(12, value, 'Oberservations');
+                                      assesmentprovider.setreco(12, value);
+                                      assesmentprovider.setdata(
+                                          12, value, 'Oberservations');
                                     } else {
                                       _showSnackBar(
                                           "You can't change the other fields",
@@ -2428,8 +2280,8 @@ class _PatioUIState extends State<PatioUI> {
     );
   }
 
-  Widget getrecomain(
-      int index, bool isthera, String fieldlabel, BuildContext context) {
+  Widget getrecomain(int index, bool isthera, String fieldlabel,
+      BuildContext context, PatioProvider assesmentprovider) {
     return SingleChildScrollView(
       // reverse: true,
       child: Container(
@@ -2494,12 +2346,12 @@ class _PatioUIState extends State<PatioUI> {
                     FocusScope.of(context).requestFocus();
                     new TextEditingController().clear();
                     // print(widget.accessname);
-                    setreco(index, value);
+                    assesmentprovider.setreco(index, value);
                   } else if (role != "therapist") {
                     FocusScope.of(context).requestFocus();
                     new TextEditingController().clear();
                     // print(widget.accessname);
-                    setreco(index, value);
+                    assesmentprovider.setreco(index, value);
                   } else {
                     _showSnackBar("You can't change the other fields", context);
                   }
@@ -2507,7 +2359,7 @@ class _PatioUIState extends State<PatioUI> {
               ),
             ),
             (role == 'therapist' && isthera)
-                ? getrecowid(index, context)
+                ? getrecowid(index, context, assesmentprovider)
                 : SizedBox(),
           ],
         ),
@@ -2515,7 +2367,8 @@ class _PatioUIState extends State<PatioUI> {
     );
   }
 
-  Widget getrecowid(index, BuildContext context) {
+  Widget getrecowid(
+      index, BuildContext context, PatioProvider assesmentprovider) {
     if (widget.wholelist[8][widget.accessname]["question"]["$index"]
             ["Recommendationthera"] !=
         "") {
@@ -2606,7 +2459,7 @@ class _PatioUIState extends State<PatioUI> {
             // FocusScope.of(context).requestFocus();
             // new TextEditingController().clear();
             // print(widget.accessname);
-            setrecothera(index, value);
+            assesmentprovider.setrecothera(index, value);
           },
         ),
         Row(
@@ -2618,45 +2471,45 @@ class _PatioUIState extends State<PatioUI> {
                 Radio(
                   value: '1',
                   onChanged: (value) {
-                    setprio(index, value);
+                    assesmentprovider.setprio(index, value);
                     setState(() {
                       if (index == 11) {
                         _controllerstreco['field11'].text =
                             'Please install a well functioning Smoke detector Immediately. Most states have free Smoke Detectors available for FREE. Please contact your local Fire Department.';
-                        setrecothera(11,
+                        assesmentprovider.setrecothera(11,
                             'Please install a well functioning Smoke detector Immediately. Most states have free Smoke Detectors available for FREE. Please contact your local Fire Department.');
                       }
                     });
                   },
-                  groupValue: getprio(index),
+                  groupValue: assesmentprovider.getprio(index),
                 ),
                 Text('1'),
                 Radio(
                   value: '2',
                   onChanged: (value) {
                     setState(() {
-                      setprio(index, value);
+                      assesmentprovider.setprio(index, value);
                       if (index == 11) {
                         _controllerstreco['field11'].text = '';
-                        setrecothera(11, '');
+                        assesmentprovider.setrecothera(11, '');
                       }
                     });
                   },
-                  groupValue: getprio(index),
+                  groupValue: assesmentprovider.getprio(index),
                 ),
                 Text('2'),
                 Radio(
                   value: '3',
                   onChanged: (value) {
                     setState(() {
-                      setprio(index, value);
+                      assesmentprovider.setprio(index, value);
                       if (index == 11) {
                         _controllerstreco['field11'].text = '';
-                        setrecothera(11, '');
+                        assesmentprovider.setrecothera(11, '');
                       }
                     });
                   },
-                  groupValue: getprio(index),
+                  groupValue: assesmentprovider.getprio(index),
                 ),
                 Text('3'),
               ],

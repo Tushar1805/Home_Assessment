@@ -18,7 +18,8 @@ class Patio extends StatelessWidget {
       child: MultiProvider(providers: [
         ChangeNotifierProvider<NewAssesmentProvider>(
             create: (_) => NewAssesmentProvider("")),
-        ChangeNotifierProvider<PatioProvider>(create: (_) => PatioProvider())
+        ChangeNotifierProvider<PatioProvider>(
+            create: (_) => PatioProvider(roomname, wholelist, accessname))
       ], child: PatioUI(roomname, wholelist, accessname, docID)),
     ));
   }

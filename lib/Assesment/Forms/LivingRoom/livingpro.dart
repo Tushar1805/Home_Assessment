@@ -81,8 +81,16 @@ class LivingProvider extends ChangeNotifier {
     }
 
     if (wholelist[2][accessname]['question']["5"].containsKey('toggle')) {
+      if (wholelist[2][accessname]['question']["5"]['Answer'].length == 0) {
+        setdata(5, 'Yes', 'Able to Operate Switches?');
+      }
+      notifyListeners();
     } else {
       wholelist[2][accessname]['question']["5"]['toggle'] = <bool>[true, false];
+      if (wholelist[2][accessname]['question']["5"]['Answer'].length == 0) {
+        setdata(5, 'Yes', 'Able to Operate Switches?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[2][accessname]['question']["7"].containsKey('doorwidth')) {
@@ -91,19 +99,43 @@ class LivingProvider extends ChangeNotifier {
     }
 
     if (wholelist[2][accessname]['question']["8"].containsKey('toggle')) {
+      if (wholelist[2][accessname]['question']["8"]['Answer'].length == 0) {
+        setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+      }
+      notifyListeners();
     } else {
       wholelist[2][accessname]['question']["8"]['toggle'] = <bool>[true, false];
+      if (wholelist[2][accessname]['question']["8"]['Answer'].length == 0) {
+        setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[2][accessname]['question']["9"].containsKey('toggle')) {
+      if (wholelist[2][accessname]['question']["9"]['Answer'].length == 0) {
+        setdata(9, 'Yes', 'Able to Access Telephone?');
+      }
+      notifyListeners();
     } else {
       wholelist[2][accessname]['question']["9"]['toggle'] = <bool>[true, false];
+      if (wholelist[2][accessname]['question']["9"]['Answer'].length == 0) {
+        setdata(9, 'Yes', 'Able to Access Telephone?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[2][accessname]['question']["10"].containsKey('toggle')) {
+      if (wholelist[2][accessname]['question']["10"]['Answer'].length == 0) {
+        setdata(10, 'Yes', 'Smoke Detector Present?');
+      }
+      notifyListeners();
     } else {
       wholelist[2][accessname]['question']["10"]
           ['toggle'] = <bool>[true, false];
+      if (wholelist[2][accessname]['question']["10"]['Answer'].length == 0) {
+        setdata(10, 'Yes', 'Smoke Detector Present?');
+      }
+      notifyListeners();
     }
   }
 

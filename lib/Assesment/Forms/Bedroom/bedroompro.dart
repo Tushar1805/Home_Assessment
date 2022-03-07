@@ -96,8 +96,16 @@ class BedroomPro extends ChangeNotifier {
     }
 
     if (wholelist[6][accessname]['question']["5"].containsKey('toggle')) {
+      if (wholelist[6][accessname]['question']["5"]['Answer'].length == 0) {
+        setdata(5, 'Yes', 'Able to Operate Switches?');
+      }
+      notifyListeners();
     } else {
       wholelist[6][accessname]['question']["5"]['toggle'] = <bool>[true, false];
+      if (wholelist[6][accessname]['question']["5"]['Answer'].length == 0) {
+        setdata(5, 'Yes', 'Able to Operate Switches?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[6][accessname]['question']["7"].containsKey('doorwidth')) {
@@ -106,37 +114,83 @@ class BedroomPro extends ChangeNotifier {
     }
 
     if (wholelist[6][accessname]['question']["8"].containsKey('toggle')) {
+      if (wholelist[6][accessname]['question']["8"]['Answer'].length == 0) {
+        setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+      }
+      notifyListeners();
     } else {
       wholelist[6][accessname]['question']["8"]['toggle'] = <bool>[true, false];
+      if (wholelist[6][accessname]['question']["8"]['Answer'].length == 0) {
+        setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[6][accessname]['question']["9"].containsKey('toggle')) {
+      if (wholelist[6][accessname]['question']["9"]['Answer'].length == 0) {
+        setdata(9, 'Yes', 'Able to get in & out of the door?');
+      }
+      notifyListeners();
     } else {
       wholelist[6][accessname]['question']["9"]['toggle'] = <bool>[true, false];
+      if (wholelist[6][accessname]['question']["9"]['Answer'].length == 0) {
+        setdata(9, 'Yes', 'Able to get in & out of the door?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[6][accessname]['question']["10"].containsKey('toggle')) {
+      if (wholelist[6][accessname]['question']["10"]['Answer'].length == 0) {
+        setdata(10, 'Yes', 'Smoke Detector Present?');
+      }
+      notifyListeners();
     } else {
       wholelist[6][accessname]['question']["10"]
           ['toggle'] = <bool>[true, false];
+      if (wholelist[6][accessname]['question']["10"]['Answer'].length == 0) {
+        setdata(10, 'Yes', 'Smoke Detector Present?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[6][accessname]['question']["13"].containsKey('toggle')) {
+      if (wholelist[6][accessname]['question']["13"]['Answer'].length == 0) {
+        setdata(13, 'Yes', 'Able to get in & out of bed?');
+      }
+      notifyListeners();
     } else {
       wholelist[6][accessname]['question']["13"]
           ['toggle'] = <bool>[true, false];
+      if (wholelist[6][accessname]['question']["13"]['Answer'].length == 0) {
+        setdata(13, 'Yes', 'Able to get in & out of bed?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[6][accessname]['question']["14"].containsKey('toggle')) {
+      if (wholelist[6][accessname]['question']["14"]['Answer'].length == 0) {
+        setdata(14, 'Yes', 'Able to access the night stand?');
+      }
+      notifyListeners();
     } else {
       wholelist[6][accessname]['question']["14"]
           ['toggle'] = <bool>[true, false];
+      if (wholelist[6][accessname]['question']["14"]['Answer'].length == 0) {
+        setdata(14, 'Yes', 'Able to access the night stand?');
+      }
     }
 
     if (wholelist[6][accessname]['question']["15"].containsKey('toggle')) {
+      if (wholelist[6][accessname]['question']["15"]['Answer'].length == 0) {
+        setdata(15, 'Yes', 'Able to Access Telephone?');
+      }
+      notifyListeners();
     } else {
       wholelist[6][accessname]['question']["15"]
           ['toggle'] = <bool>[true, false];
+      if (wholelist[6][accessname]['question']["15"]['Answer'].length == 0) {
+        setdata(15, 'Yes', 'Able to Access Telephone?');
+      }
     }
 
     if (wholelist[6][accessname]['question']["15"]
@@ -146,15 +200,29 @@ class BedroomPro extends ChangeNotifier {
     }
 
     if (wholelist[6][accessname]['question']["16"].containsKey('toggle')) {
+      if (wholelist[6][accessname]['question']["16"]['Answer'].length == 0) {
+        setdata(16, 'Yes', 'Able to access the dresser drawer?');
+      }
+      notifyListeners();
     } else {
       wholelist[6][accessname]['question']["16"]
           ['toggle'] = <bool>[true, false];
+      if (wholelist[6][accessname]['question']["16"]['Answer'].length == 0) {
+        setdata(16, 'Yes', 'Able to access the dresser drawer?');
+      }
     }
 
     if (wholelist[6][accessname]['question']["17"].containsKey('toggle')) {
+      if (wholelist[6][accessname]['question']["17"]['Answer'].length == 0) {
+        setdata(17, 'Yes', 'Able to Access Closet/Clothes?');
+      }
+      notifyListeners();
     } else {
       wholelist[6][accessname]['question']["17"]
           ['toggle'] = <bool>[true, false];
+      if (wholelist[6][accessname]['question']["17"]['Answer'].length == 0) {
+        setdata(17, 'Yes', 'Able to Access Closet/Clothes?');
+      }
     }
 
     // if (wholelist[6][accessname]['question']["15"].containsKey('ManageInOut')) {

@@ -98,33 +98,6 @@ class _PathwayUIState extends State<PathwayUI> {
     getAssessData();
   }
 
-  // setinitials() {
-
-  //   if (widget.wholelist[0][widget.accessname]['question']["8"]
-  //       .containsKey('Railling')) {
-  //   } else {
-  //     widget.wholelist[0][widget.accessname]['question']["8"]['Railling'] = {
-  //       'OneSided': {},
-  //     };
-  //   }
-  //   if (widget.wholelist[0][widget.accessname]['question']["7"]
-  //       .containsKey('MultipleStair')) {
-  //     if (widget.wholelist[0][widget.accessname]['question']["7"]
-  //             ['MultipleStair']
-  //         .containsKey('count')) {
-  //       setState(() {
-  //         stepcount = widget.wholelist[0][widget.accessname]['question']["7"]
-  //             ['MultipleStair']['count'];
-  //       });
-  //     }
-  //   } else {
-  //     widget.wholelist[0][widget.accessname]['question']["7"]
-  //         ['MultipleStair'] = {};
-  //   }
-  //   print(widget.wholelist[0][widget.accessname]['question']["7"]
-  //       ['MultipleStair']);
-  // }
-
   /// This fucntion will help us to get role of the logged in user
   Future<String> getRole() async {
     var runtimeType;
@@ -245,255 +218,6 @@ class _PathwayUIState extends State<PathwayUI> {
     });
   }
 
-  // Future<void> selectImage(String source, PathwayPro pathwaypro) async {
-  //   if (source == 'camera') {
-  //     final pickedImage =
-  //         await ImagePicker().getImage(source: ImageSource.camera);
-  //     if (pickedImage != null) {
-  //       // Navigator.pop(context);
-  //       pathwaypro.addImage(pickedImage.path);
-
-  //       setState(() async {
-  //         path.add(pickedImage.path);
-  //         _image.add(File(pickedImage?.path));
-  //         // print("image = $_image");
-  //         uploading = true;
-  //         await uploadFile(_image);
-  //         widget.wholelist[0][widget.accessname]["images"] = mediaList.toList();
-  //       });
-  //       // Navigator.of(context).pushReplacement(MaterialPageRoute(
-  //       //     builder: (context) => Pathway(widget.roomname,
-  //       //         widget.wholelist, widget.accessname, widget.docID)));
-  //     } else {
-  //       // Navigator.pop(context);
-  //       setState(() {});
-  //       final snackBar = SnackBar(content: Text('Image Not Selected!'));
-  //       pathwaypro.notifyListeners();
-  //       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  //     }
-  //   } else {
-  //     final pickedImage =
-  //         await ImagePicker().getImage(source: ImageSource.gallery);
-  //     if (pickedImage != null) {
-  //       // Navigator.pop(context);
-  //       pathwaypro.addImage(pickedImage.path);
-
-  //       setState(() async {
-  //         // Navigator.pop(context);
-  //         path.add(pickedImage.path);
-  //         _image.add(File(pickedImage?.path));
-  //         uploading = true;
-  //         await uploadFile(_image);
-  //         // print("selected image= ${_image.toList()}");
-
-  //         widget.wholelist[0][widget.accessname]["images"] = mediaList.toList();
-  //       });
-  //     } else {
-  //       // Navigator.pop(context);
-  //       setState(() {});
-  //       final snackBar = SnackBar(content: Text('Image Not Selected!'));
-  //       pathwaypro.notifyListeners();
-  //       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  //     }
-  //   }
-  // }
-
-  // void uploadImageClicked(BuildContext context, PathwayPro pathwaypro) {
-  //   showDialog(
-  //       context: context,
-  //       builder: (context) {
-  //         return WillPopScope(
-  //           // ignore: missing_return
-  //           onWillPop: () {
-  //             if (uploading == false) {
-  //               Navigator.of(context).push(MaterialPageRoute(
-  //                   builder: (context) => Pathway(widget.roomname,
-  //                       widget.wholelist, widget.accessname, widget.docID)));
-  //               _showSnackBar("Images Uploaded Successfully", context);
-  //             } else {
-  //               _showSnackBar("Uploading images ", context);
-  //             }
-  //           },
-  //           child: AlertDialog(
-  //             actionsPadding: EdgeInsets.all(20),
-  //             title: Center(
-  //                 child: Text(
-  //               'Select Image From',
-  //               style: darkBlackTextStyle()
-  //                   .copyWith(fontSize: 18.0, fontWeight: FontWeight.w600),
-  //             )),
-  //             actions: [
-  //               Column(
-  //                 crossAxisAlignment: CrossAxisAlignment.center,
-  //                 mainAxisAlignment: MainAxisAlignment.center,
-  //                 children: [
-  //                   Row(
-  //                     // mainAxisSize: MainAxisSize.max,
-  //                     mainAxisAlignment: MainAxisAlignment.center,
-  //                     children: [
-  //                       Container(
-  //                           width: 200,
-  //                           height: 80.0,
-  //                           color: Color(0xFFf0f0fa),
-  //                           child: InkWell(
-  //                             onTap: () async {
-  //                               await selectImage('camera', pathwaypro);
-  //                               print("pressed");
-  //                             },
-  //                             child: Padding(
-  //                               padding: const EdgeInsets.symmetric(
-  //                                   horizontal: 25, vertical: 8.0),
-  //                               child: Column(
-  //                                 mainAxisAlignment: MainAxisAlignment.center,
-  //                                 children: [
-  //                                   Icon(
-  //                                     Icons.add_a_photo_outlined,
-  //                                     color: Color.fromRGBO(10, 80, 106, 1),
-  //                                   ),
-  //                                   SizedBox(
-  //                                     height: 5.0,
-  //                                   ),
-  //                                   Text('Use Camera')
-  //                                 ],
-  //                               ),
-  //                             ),
-  //                           )),
-  //                     ],
-  //                   ),
-  //                   SizedBox(
-  //                     height: 20.0,
-  //                   ),
-  //                   Row(
-  //                     mainAxisSize: MainAxisSize.max,
-  //                     mainAxisAlignment: MainAxisAlignment.center,
-  //                     children: [
-  //                       Container(
-  //                           width: 200,
-  //                           height: 80.0,
-  //                           color: Color(0xFFf0f0fa),
-  //                           child: InkWell(
-  //                             onTap: () async {
-  //                               await selectImage('gallery', pathwaypro);
-  //                             },
-  //                             child: Padding(
-  //                               padding: const EdgeInsets.all(8.0),
-  //                               child: Column(
-  //                                 mainAxisAlignment: MainAxisAlignment.center,
-  //                                 children: [
-  //                                   Icon(
-  //                                     Icons.photo_library_outlined,
-  //                                     color: Color.fromRGBO(10, 80, 106, 1),
-  //                                   ),
-  //                                   SizedBox(
-  //                                     height: 5.0,
-  //                                   ),
-  //                                   Text('Upload from Gallery')
-  //                                 ],
-  //                               ),
-  //                             ),
-  //                           )),
-  //                     ],
-  //                   ),
-  //                   SizedBox(
-  //                     height: 20.0,
-  //                   ),
-  //                   Container(
-  //                     padding: EdgeInsets.fromLTRB(43, 10, 20, 10),
-  //                     child: Row(
-  //                       mainAxisAlignment: MainAxisAlignment.start,
-  //                       crossAxisAlignment: CrossAxisAlignment.start,
-  //                       children: [
-  //                         Text("Note: ",
-  //                             style: darkBlackTextStyle().copyWith(
-  //                                 fontSize: 16.0, fontWeight: FontWeight.w600)),
-  //                         Container(
-  //                           width: MediaQuery.of(context).size.width * .4,
-  //                           child: Text("Touch overlay background to exit."),
-  //                         ),
-  //                       ],
-  //                     ),
-  //                   ),
-
-  //                   // SizedBox(height: 10),
-
-  //                   Container(
-  //                     padding: EdgeInsets.fromLTRB(28, 10, 20, 10),
-  //                     child: Row(
-  //                       mainAxisAlignment: MainAxisAlignment.start,
-  //                       crossAxisAlignment: CrossAxisAlignment.start,
-  //                       children: [
-  //                         Text("Warning: ",
-  //                             style: darkBlackTextStyle().copyWith(
-  //                                 fontSize: 16.0, fontWeight: FontWeight.w600)),
-  //                         Container(
-  //                           width: MediaQuery.of(context).size.width * .4,
-  //                           child: Text(
-  //                               "You can select only one video so cover all parts of room in one video."),
-  //                         ),
-  //                       ],
-  //                     ),
-  //                   ),
-
-  //                   // SizedBox(height: 10),
-  //                   // Text("Note: Touch overlay background to exit"),
-  //                 ],
-  //               ),
-  //               SizedBox(
-  //                 height: 20.0,
-  //               ),
-  //             ],
-  //           ),
-  //         );
-  //       });
-  // }
-
-  // Future uploadFile(List<File> image) async {
-  //   print("**************Uploading image***************");
-
-  //   int i = 1;
-  //   for (var img in image) {
-  //     setState(() {
-  //       value = i / image.length * 100;
-  //     });
-  //     try {
-  //       String name = 'applicationImages/' + DateTime.now().toIso8601String();
-  //       StorageReference ref = FirebaseStorage.instance.ref().child(name);
-
-  //       StorageUploadTask upload = ref.putFile(img);
-  //       String url =
-  //           (await (await upload.onComplete).ref.getDownloadURL()).toString();
-  //       // imageDownloadUrl = url;
-  //       mediaList.add(url);
-  //       print("URL = $url");
-  //       i++;
-  //     } catch (e) {
-  //       print(e.toString());
-  //     }
-  //   }
-  //   setState(() {
-  //     uploading = false;
-  //   });
-  // }
-
-  /// This fucntion helps us to create such fields which will be needed to fill extra
-  /// data sunch as fields generated dynamically.
-
-// This function is used to control and camera button
-//
-//  Note: Image picker do not work with speech_to_text.
-  // Future getImage(bool isCamera) async {
-  // File image;
-  // if (isCamera) {
-  //   // ignore: deprecated_member_use
-  //   image = await ImagePicker.pickImage(source: ImageSource.camera);
-  // } else {
-  //   // ignore: deprecated_member_use
-  //   image = await ImagePicker.pickImage(source: ImageSource.gallery);
-  // }
-  // setState(() {
-  //   _image = image;
-  // });
-  // }
   void _showSnackBar(snackbar, BuildContext buildContext) {
     final snackBar = SnackBar(
       duration: const Duration(seconds: 3),
@@ -514,7 +238,86 @@ class _PathwayUIState extends State<PathwayUI> {
       ..showSnackBar(snackBar);
   }
 
-// UI
+  Widget toggleButton(
+      BuildContext context, PathwayPro pathwaypro, int queIndex, String que) {
+    return Container(
+      height: 35,
+      child: ToggleButtons(
+        borderColor: Colors.black,
+        fillColor: Colors.green,
+        borderWidth: 0,
+        selectedBorderColor: Colors.black,
+        selectedColor: Colors.white,
+        borderRadius: BorderRadius.circular(20),
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'Yes',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              'No',
+              style: TextStyle(fontSize: 16),
+            ),
+          ),
+        ],
+        onPressed: (int select) {
+          if (assessor == therapist && role == "therapist") {
+            setState(() {
+              for (int i = 0;
+                  i <
+                      widget
+                          .wholelist[0][widget.accessname]['question']
+                              ['$queIndex']['toggle']
+                          .length;
+                  i++) {
+                widget.wholelist[0][widget.accessname]['question']['$queIndex']
+                    ['toggle'][i] = i == select;
+              }
+            });
+            pathwaypro.setdata(
+                queIndex,
+                widget.wholelist[0][widget.accessname]['question']['$queIndex']
+                        ['toggle'][0]
+                    ? 'Yes'
+                    : 'No',
+                que);
+          } else if (role != "therapist") {
+            setState(() {
+              for (int i = 0;
+                  i <
+                      widget
+                          .wholelist[0][widget.accessname]['question']
+                              ['$queIndex']['toggle']
+                          .length;
+                  i++) {
+                widget.wholelist[0][widget.accessname]['question']['$queIndex']
+                    ['toggle'][i] = i == select;
+              }
+            });
+            pathwaypro.setdata(
+                queIndex,
+                widget.wholelist[0][widget.accessname]['question']['$queIndex']
+                        ['toggle'][0]
+                    ? 'Yes'
+                    : 'No',
+                que);
+          } else {
+            _showSnackBar("You can't change the other fields", context);
+          }
+        },
+        isSelected: widget.wholelist[0][widget.accessname]['question']
+                ['$queIndex']['toggle']
+            .cast<bool>(),
+      ),
+    );
+  }
+
+  // UI
   @override
   Widget build(BuildContext context) {
     final pathwaypro = Provider.of<PathwayPro>(context);
@@ -1586,49 +1389,52 @@ class _PathwayUIState extends State<PathwayUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .6,
+                              width: MediaQuery.of(context).size.width * .58,
                               child: Text('Obstacle/Clutter Present?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
                                   )),
                             ),
-                            DropdownButton(
-                              items: [
-                                DropdownMenuItem(
-                                  child: Text('--'),
-                                  value: '',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Yes'),
-                                  value: 'Yes',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('No'),
-                                  value: 'No',
-                                )
-                              ],
-                              onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
-                                new TextEditingController().clear();
-                                // print(widget.accessname);
-                                if (assessor == therapist &&
-                                    role == "therapist") {
-                                  setdata(
-                                      1, value, 'Obstacle/Clutter Present?');
-                                } else if (role != "therapist") {
-                                  setdata(
-                                      1, value, 'Obstacle/Clutter Present?');
-                                } else {
-                                  _showSnackBar(
-                                      "You can't change the other fields",
-                                      context);
-                                }
-                              },
-                              value: getvalue(1),
-                            )
+                            // DropdownButton(
+                            //   items: [
+                            //     DropdownMenuItem(
+                            //       child: Text('--'),
+                            //       value: '',
+                            //     ),
+                            //     DropdownMenuItem(
+                            //       child: Text('Yes'),
+                            //       value: 'Yes',
+                            //     ),
+                            //     DropdownMenuItem(
+                            //       child: Text('No'),
+                            //       value: 'No',
+                            //     )
+                            //   ],
+                            //   onChanged: (value) {
+                            //     FocusScope.of(context).requestFocus();
+                            //     new TextEditingController().clear();
+                            //     // print(widget.accessname);
+                            //     if (assessor == therapist &&
+                            //         role == "therapist") {
+                            //       setdata(
+                            //           1, value, 'Obstacle/Clutter Present?');
+                            //     } else if (role != "therapist") {
+                            //       setdata(
+                            //           1, value, 'Obstacle/Clutter Present?');
+                            //     } else {
+                            //       _showSnackBar(
+                            //           "You can't change the other fields",
+                            //           context);
+                            //     }
+                            //   },
+                            //   value: getvalue(1),
+                            // )
+                            toggleButton(context, pathwaypro, 1,
+                                'Obstacle/Clutter Present?')
                           ],
                         ),
+                        SizedBox(height: 15),
                         (getvalue(1) == 'Yes')
                             ? getrecomain(1, true, context)
                             : SizedBox(),
@@ -1762,43 +1568,46 @@ class _PathwayUIState extends State<PathwayUI> {
                                     fontSize: 20,
                                   )),
                             ),
-                            DropdownButton(
-                              items: [
-                                DropdownMenuItem(
-                                  child: Text('--'),
-                                  value: '',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Yes'),
-                                  value: 'Yes',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('No'),
-                                  value: 'No',
-                                )
-                              ],
-                              onChanged: (value) {
-                                if (role != "therapist") {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  setdata(4, value, 'Entrance Has Lights?');
-                                } else if (assessor == therapist &&
-                                    role == "therapist") {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  setdata(4, value, 'Entrance Has Lights?');
-                                } else {
-                                  _showSnackBar(
-                                      "You can't change the other fields",
-                                      context);
-                                }
-                              },
-                              value: getvalue(4),
-                            )
+                            // DropdownButton(
+                            //   items: [
+                            //     DropdownMenuItem(
+                            //       child: Text('--'),
+                            //       value: '',
+                            //     ),
+                            //     DropdownMenuItem(
+                            //       child: Text('Yes'),
+                            //       value: 'Yes',
+                            //     ),
+                            //     DropdownMenuItem(
+                            //       child: Text('No'),
+                            //       value: 'No',
+                            //     )
+                            //   ],
+                            //   onChanged: (value) {
+                            //     if (role != "therapist") {
+                            //       FocusScope.of(context).requestFocus();
+                            //       new TextEditingController().clear();
+                            //       // print(widget.accessname);
+                            //       setdata(4, value, 'Entrance Has Lights?');
+                            //     } else if (assessor == therapist &&
+                            //         role == "therapist") {
+                            //       FocusScope.of(context).requestFocus();
+                            //       new TextEditingController().clear();
+                            //       // print(widget.accessname);
+                            //       setdata(4, value, 'Entrance Has Lights?');
+                            //     } else {
+                            //       _showSnackBar(
+                            //           "You can't change the other fields",
+                            //           context);
+                            //     }
+                            //   },
+                            //   value: getvalue(4),
+                            // )
+                            toggleButton(
+                                context, pathwaypro, 4, "Entrance Has Lights?"),
                           ],
                         ),
+                        SizedBox(height: 15),
                         (getvalue(4) == 'No')
                             ? getrecomain(4, true, context)
                             : SizedBox(),
@@ -1873,7 +1682,7 @@ class _PathwayUIState extends State<PathwayUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .6,
+                              width: MediaQuery.of(context).size.width * .58,
                               child: Text('Smoke Detector Present?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
@@ -1897,45 +1706,48 @@ class _PathwayUIState extends State<PathwayUI> {
                             //     padding:
                             //         const EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
                             // child:
-                            DropdownButton(
-                              items: [
-                                DropdownMenuItem(
-                                  child: Text('--'),
-                                  value: '',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Yes'),
-                                  value: 'Yes',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('No'),
-                                  value: 'No',
-                                ),
-                              ],
-                              onChanged: (value) {
-                                if (assessor == therapist &&
-                                    role == "therapist") {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  setdata(6, value, 'Smoke Detector Present?');
-                                } else if (role != "therapist") {
-                                  FocusScope.of(context).requestFocus();
-                                  new TextEditingController().clear();
-                                  // print(widget.accessname);
-                                  setdata(6, value, 'Smoke Detector Present?');
-                                } else {
-                                  _showSnackBar(
-                                      "You can't change the other fields",
-                                      context);
-                                }
-                              },
-                              value: getvalue(6),
-                            ),
+                            // DropdownButton(
+                            //   items: [
+                            //     DropdownMenuItem(
+                            //       child: Text('--'),
+                            //       value: '',
+                            //     ),
+                            //     DropdownMenuItem(
+                            //       child: Text('Yes'),
+                            //       value: 'Yes',
+                            //     ),
+                            //     DropdownMenuItem(
+                            //       child: Text('No'),
+                            //       value: 'No',
+                            //     ),
+                            //   ],
+                            //   onChanged: (value) {
+                            //     if (assessor == therapist &&
+                            //         role == "therapist") {
+                            //       FocusScope.of(context).requestFocus();
+                            //       new TextEditingController().clear();
+                            //       // print(widget.accessname);
+                            //       setdata(6, value, 'Smoke Detector Present?');
+                            //     } else if (role != "therapist") {
+                            //       FocusScope.of(context).requestFocus();
+                            //       new TextEditingController().clear();
+                            //       // print(widget.accessname);
+                            //       setdata(6, value, 'Smoke Detector Present?');
+                            //     } else {
+                            //       _showSnackBar(
+                            //           "You can't change the other fields",
+                            //           context);
+                            //     }
+                            //   },
+                            //   value: getvalue(6),
+                            // ),
                             //   ),
                             // )
+                            toggleButton(context, pathwaypro, 6,
+                                "Smoke Detector Present?"),
                           ],
                         ),
+                        SizedBox(height: 15),
                         (getvalue(6) == 'No')
                             ? getrecomain(6, true, context)
                             : SizedBox(),
@@ -2110,162 +1922,187 @@ class _PathwayUIState extends State<PathwayUI> {
                                               ],
                                             ),
                                           ),
-                                          Container(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  0, 10, 0, 5),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Container(
-                                                    width:
-                                                        MediaQuery.of(context)
+                                          widget.wholelist[0][widget.accessname]
+                                                                  ['question']
+                                                              ["7"]['stepCount']
+                                                          ["count"] !=
+                                                      '0' &&
+                                                  widget.wholelist[0][widget.accessname]
+                                                                  ['question']
+                                                              ["7"]['stepCount']
+                                                          ["count"] !=
+                                                      ""
+                                              ? Container(
+                                                  padding: EdgeInsets.fromLTRB(
+                                                      0, 10, 0, 5),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Container(
+                                                        width: MediaQuery.of(
+                                                                    context)
                                                                 .size
                                                                 .width *
                                                             .4,
-                                                    child: TextFormField(
-                                                      initialValue: widget
-                                                                      .wholelist[0]
+                                                        child: TextFormField(
+                                                          initialValue: widget
+                                                                          .wholelist[0]
+                                                                      [
+                                                                      widget
+                                                                          .accessname]
                                                                   [
-                                                                  widget
-                                                                      .accessname]
-                                                              ['question']["7"]
-                                                          ['Single Step Width'],
-                                                      keyboardType:
-                                                          TextInputType.phone,
-                                                      decoration:
-                                                          InputDecoration(
-                                                              focusedBorder:
-                                                                  OutlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                    color: colorsset[
-                                                                        "field${7}"],
-                                                                    width: 1),
-                                                              ),
-                                                              enabledBorder:
-                                                                  OutlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                    width: 1,
-                                                                    color: colorsset[
-                                                                        "field${7}"]),
-                                                              ),
-                                                              labelText:
-                                                                  'Step Width:'),
-                                                      onChanged: (value) {
-                                                        if (assessor ==
-                                                                therapist &&
-                                                            role ==
+                                                                  'question']["7"]
+                                                              [
+                                                              'Single Step Width'],
+                                                          keyboardType:
+                                                              TextInputType
+                                                                  .phone,
+                                                          decoration:
+                                                              InputDecoration(
+                                                                  focusedBorder:
+                                                                      OutlineInputBorder(
+                                                                    borderSide: BorderSide(
+                                                                        color: colorsset[
+                                                                            "field${7}"],
+                                                                        width:
+                                                                            1),
+                                                                  ),
+                                                                  enabledBorder:
+                                                                      OutlineInputBorder(
+                                                                    borderSide: BorderSide(
+                                                                        width:
+                                                                            1,
+                                                                        color: colorsset[
+                                                                            "field${7}"]),
+                                                                  ),
+                                                                  labelText:
+                                                                      'Step Width:'),
+                                                          onChanged: (value) {
+                                                            if (assessor ==
+                                                                    therapist &&
+                                                                role ==
+                                                                    "therapist") {
+                                                              setState(() {
+                                                                widget.wholelist[0]
+                                                                            [
+                                                                            widget
+                                                                                .accessname]
+                                                                        [
+                                                                        'question']["7"]
+                                                                    [
+                                                                    'Single Step Width'] = value;
+                                                              });
+                                                            } else if (role !=
                                                                 "therapist") {
-                                                          setState(() {
-                                                            widget.wholelist[0][
-                                                                        widget
-                                                                            .accessname]
+                                                              setState(() {
+                                                                widget.wholelist[0]
+                                                                            [
+                                                                            widget
+                                                                                .accessname]
+                                                                        [
+                                                                        'question']["7"]
                                                                     [
-                                                                    'question']["7"]
-                                                                [
-                                                                'Single Step Width'] = value;
-                                                          });
-                                                        } else if (role !=
-                                                            "therapist") {
-                                                          setState(() {
-                                                            widget.wholelist[0][
-                                                                        widget
-                                                                            .accessname]
-                                                                    [
-                                                                    'question']["7"]
-                                                                [
-                                                                'Single Step Width'] = value;
-                                                          });
-                                                        } else {
-                                                          _showSnackBar(
-                                                              "You can't change the other fields",
-                                                              context);
-                                                        }
+                                                                    'Single Step Width'] = value;
+                                                              });
+                                                            } else {
+                                                              _showSnackBar(
+                                                                  "You can't change the other fields",
+                                                                  context);
+                                                            }
 
-                                                        // print(widget.wholelist[
-                                                        //             0][
-                                                        //         widget
-                                                        //             .accessname]
-                                                        //     ['question']["7"]);
-                                                      },
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    width:
-                                                        MediaQuery.of(context)
+                                                            // print(widget.wholelist[
+                                                            //             0][
+                                                            //         widget
+                                                            //             .accessname]
+                                                            //     ['question']["7"]);
+                                                          },
+                                                        ),
+                                                      ),
+                                                      Container(
+                                                        width: MediaQuery.of(
+                                                                    context)
                                                                 .size
                                                                 .width *
                                                             .4,
-                                                    child: TextFormField(
-                                                      initialValue: widget
-                                                                      .wholelist[0]
+                                                        child: TextFormField(
+                                                          initialValue: widget
+                                                                          .wholelist[0]
+                                                                      [
+                                                                      widget
+                                                                          .accessname]
                                                                   [
-                                                                  widget
-                                                                      .accessname]
-                                                              ['question']["7"][
-                                                          'Single Step Height'],
-                                                      keyboardType:
-                                                          TextInputType.phone,
-                                                      decoration:
-                                                          InputDecoration(
-                                                              focusedBorder:
-                                                                  OutlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                    color: colorsset[
-                                                                        "field${7}"],
-                                                                    width: 1),
-                                                              ),
-                                                              enabledBorder:
-                                                                  OutlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                    width: 1,
-                                                                    color: colorsset[
-                                                                        "field${7}"]),
-                                                              ),
-                                                              labelText:
-                                                                  'Step Height:'),
-                                                      onChanged: (value) {
-                                                        if (assessor ==
-                                                                therapist &&
-                                                            role ==
+                                                                  'question']["7"]
+                                                              [
+                                                              'Single Step Height'],
+                                                          keyboardType:
+                                                              TextInputType
+                                                                  .phone,
+                                                          decoration:
+                                                              InputDecoration(
+                                                                  focusedBorder:
+                                                                      OutlineInputBorder(
+                                                                    borderSide: BorderSide(
+                                                                        color: colorsset[
+                                                                            "field${7}"],
+                                                                        width:
+                                                                            1),
+                                                                  ),
+                                                                  enabledBorder:
+                                                                      OutlineInputBorder(
+                                                                    borderSide: BorderSide(
+                                                                        width:
+                                                                            1,
+                                                                        color: colorsset[
+                                                                            "field${7}"]),
+                                                                  ),
+                                                                  labelText:
+                                                                      'Step Height:'),
+                                                          onChanged: (value) {
+                                                            if (assessor ==
+                                                                    therapist &&
+                                                                role ==
+                                                                    "therapist") {
+                                                              setState(() {
+                                                                widget.wholelist[0]
+                                                                            [
+                                                                            widget
+                                                                                .accessname]
+                                                                        [
+                                                                        'question']["7"]
+                                                                    [
+                                                                    'Single Step Height'] = value;
+                                                              });
+                                                            } else if (role !=
                                                                 "therapist") {
-                                                          setState(() {
-                                                            widget.wholelist[0][
-                                                                        widget
-                                                                            .accessname]
+                                                              setState(() {
+                                                                widget.wholelist[0]
+                                                                            [
+                                                                            widget
+                                                                                .accessname]
+                                                                        [
+                                                                        'question']["7"]
                                                                     [
-                                                                    'question']["7"]
-                                                                [
-                                                                'Single Step Height'] = value;
-                                                          });
-                                                        } else if (role !=
-                                                            "therapist") {
-                                                          setState(() {
-                                                            widget.wholelist[0][
-                                                                        widget
-                                                                            .accessname]
-                                                                    [
-                                                                    'question']["7"]
-                                                                [
-                                                                'Single Step Height'] = value;
-                                                          });
-                                                        } else {
-                                                          _showSnackBar(
-                                                              "You can't change the other fields",
-                                                              context);
-                                                        }
+                                                                    'Single Step Height'] = value;
+                                                              });
+                                                            } else {
+                                                              _showSnackBar(
+                                                                  "You can't change the other fields",
+                                                                  context);
+                                                            }
 
-                                                        // print(widget.wholelist[
-                                                        //             0][
-                                                        //         widget
-                                                        //             .accessname]
-                                                        //     ['question']["7"]);
-                                                      },
-                                                    ),
-                                                  ),
-                                                ],
-                                              ))
+                                                            // print(widget.wholelist[
+                                                            //             0][
+                                                            //         widget
+                                                            //             .accessname]
+                                                            //     ['question']["7"]);
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ))
+                                              : SizedBox(),
                                         ],
                                       ),
                                     ),
@@ -2776,7 +2613,7 @@ class _PathwayUIState extends State<PathwayUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .5,
+                              width: MediaQuery.of(context).size.width * .35,
                               child: Text(
                                   'Able to Manage Through Doors/Thresholds/ Door Sills?',
                                   style: TextStyle(
@@ -2798,22 +2635,43 @@ class _PathwayUIState extends State<PathwayUI> {
                                   child: Text('With Difficulty'),
                                   value: 'With Difficulty',
                                 ),
-                                DropdownMenuItem(
-                                  child: Text('Min(A)'),
-                                  value: 'Min(A)',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Mod(A)'),
-                                  value: 'Mod(A)',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Max(A)'),
-                                  value: 'Max(A)',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Max(A) x2'),
-                                  value: 'Max(A) x2',
-                                )
+                                (role == "therapist")
+                                    ? DropdownMenuItem(
+                                        child: Text('Min(A)'),
+                                        value: 'Min(A)',
+                                      )
+                                    : DropdownMenuItem(
+                                        child: Text('25% Assistance'),
+                                        value: 'Min(A)',
+                                      ),
+                                (role == "therapist")
+                                    ? DropdownMenuItem(
+                                        child: Text('Mod(A)'),
+                                        value: 'Mod(A)',
+                                      )
+                                    : DropdownMenuItem(
+                                        child: Text('50% Assistance'),
+                                        value: 'Mod(A)',
+                                      ),
+                                (role == "therapist")
+                                    ? DropdownMenuItem(
+                                        child: Text('Max(A)'),
+                                        value: 'Max(A)',
+                                      )
+                                    : DropdownMenuItem(
+                                        child: Text('75% Assistance'),
+                                        value: 'Max(A)',
+                                      ),
+                                (role == "therapist")
+                                    ? DropdownMenuItem(
+                                        child: Text('Max(A) x2'),
+                                        value: 'Max(A) x2',
+                                      )
+                                    : DropdownMenuItem(
+                                        child:
+                                            Text('75% Assistance (2 People)'),
+                                        value: 'Max(A) x2',
+                                      ),
                               ],
                               onChanged: (value) {
                                 if (assessor == therapist &&
@@ -2849,7 +2707,7 @@ class _PathwayUIState extends State<PathwayUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .5,
+                              width: MediaQuery.of(context).size.width * .35,
                               child: Text('Able to Lock/Unlock Doors?',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
@@ -2870,22 +2728,43 @@ class _PathwayUIState extends State<PathwayUI> {
                                   child: Text('With Difficulty'),
                                   value: 'With Difficulty',
                                 ),
-                                DropdownMenuItem(
-                                  child: Text('Min(A)'),
-                                  value: 'Min(A)',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Mod(A)'),
-                                  value: 'Mod(A)',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Max(A)'),
-                                  value: 'Max(A)',
-                                ),
-                                DropdownMenuItem(
-                                  child: Text('Max(A) x2'),
-                                  value: 'Max(A) x2',
-                                )
+                                (role == "therapist")
+                                    ? DropdownMenuItem(
+                                        child: Text('Min(A)'),
+                                        value: 'Min(A)',
+                                      )
+                                    : DropdownMenuItem(
+                                        child: Text('25% Assistance'),
+                                        value: 'Min(A)',
+                                      ),
+                                (role == "therapist")
+                                    ? DropdownMenuItem(
+                                        child: Text('Mod(A)'),
+                                        value: 'Mod(A)',
+                                      )
+                                    : DropdownMenuItem(
+                                        child: Text('50% Assistance'),
+                                        value: 'Mod(A)',
+                                      ),
+                                (role == "therapist")
+                                    ? DropdownMenuItem(
+                                        child: Text('Max(A)'),
+                                        value: 'Max(A)',
+                                      )
+                                    : DropdownMenuItem(
+                                        child: Text('75% Assistance'),
+                                        value: 'Max(A)',
+                                      ),
+                                (role == "therapist")
+                                    ? DropdownMenuItem(
+                                        child: Text('Max(A) x2'),
+                                        value: 'Max(A) x2',
+                                      )
+                                    : DropdownMenuItem(
+                                        child:
+                                            Text('75% Assistance (2 People)'),
+                                        value: 'Max(A) x2',
+                                      ),
                               ],
                               onChanged: (value) {
                                 if (assessor == therapist &&

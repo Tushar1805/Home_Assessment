@@ -105,14 +105,46 @@ class SwimmingPoolProvider extends ChangeNotifier {
     }
 
     if (wholelist[11][accessname]['question']["1"].containsKey('toggle1')) {
+      if (wholelist[11][accessname]['question']["1"]['aboveGround']
+                  ['adaptationAvailable']
+              .length ==
+          0) {
+        wholelist[11][accessname]['question']["1"]['aboveGround']
+            ['adaptationAvailable'] = 'Yes';
+      }
+      notifyListeners();
     } else {
       wholelist[11][accessname]['question']["1"]
           ['toggle1'] = <bool>[true, false];
+      if (wholelist[11][accessname]['question']["1"]['aboveGround']
+                  ['adaptationAvailable']
+              .length ==
+          0) {
+        wholelist[11][accessname]['question']["1"]['aboveGround']
+            ['adaptationAvailable'] = 'Yes';
+      }
+      notifyListeners();
     }
     if (wholelist[11][accessname]['question']["1"].containsKey('toggle2')) {
+      if (wholelist[11][accessname]['question']["1"]['aboveGround']
+                  ['isClientSafe']
+              .length ==
+          0) {
+        wholelist[11][accessname]['question']["1"]['aboveGround']
+            ['isClientSafe'] = 'Yes';
+      }
+      notifyListeners();
     } else {
       wholelist[11][accessname]['question']["1"]
           ['toggle2'] = <bool>[true, false];
+      if (wholelist[11][accessname]['question']["1"]['aboveGround']
+                  ['isClientSafe']
+              .length ==
+          0) {
+        wholelist[11][accessname]['question']["1"]['aboveGround']
+            ['isClientSafe'] = 'Yes';
+      }
+      notifyListeners();
     }
 
     if (wholelist[11][accessname]['question']["1"].containsKey('aboveGround')) {
@@ -133,14 +165,30 @@ class SwimmingPoolProvider extends ChangeNotifier {
     }
 
     if (wholelist[11][accessname]['question']["2"].containsKey('toggle')) {
+      if (wholelist[11][accessname]['question']["2"]['Answer'].length == 0) {
+        setdata(2, 'Yes', 'Pool Accessible?');
+      }
+      notifyListeners();
     } else {
       wholelist[11][accessname]['question']["2"]
           ['toggle'] = <bool>[true, false];
+      if (wholelist[11][accessname]['question']["2"]['Answer'].length == 0) {
+        setdata(2, 'Yes', 'Pool Accessible?');
+      }
+      notifyListeners();
     }
     if (wholelist[11][accessname]['question']["4"].containsKey('toggle')) {
+      if (wholelist[11][accessname]['question']["4"]['Answer'].length == 0) {
+        setdata(4, 'Yes', 'Pool Deck Clutter?');
+      }
+      notifyListeners();
     } else {
       wholelist[11][accessname]['question']["4"]
           ['toggle'] = <bool>[true, false];
+      if (wholelist[11][accessname]['question']["4"]['Answer'].length == 0) {
+        setdata(4, 'Yes', 'Pool Deck Clutter?');
+      }
+      notifyListeners();
     }
   }
 

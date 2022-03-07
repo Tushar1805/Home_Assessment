@@ -80,8 +80,16 @@ class KitchenPro extends ChangeNotifier {
     }
 
     if (wholelist[3][accessname]['question']["5"].containsKey('toggle')) {
+      if (wholelist[3][accessname]['question']["5"]['Answer'].length == 0) {
+        setdata(5, 'Yes', 'Able to Operate Switches?');
+      }
+      notifyListeners();
     } else {
       wholelist[3][accessname]['question']["5"]['toggle'] = <bool>[true, false];
+      if (wholelist[3][accessname]['question']["5"]['Answer'].length == 0) {
+        setdata(5, 'Yes', 'Able to Operate Switches?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[3][accessname]['question']["7"].containsKey('doorwidth')) {
@@ -91,43 +99,99 @@ class KitchenPro extends ChangeNotifier {
     }
 
     if (wholelist[3][accessname]['question']["8"].containsKey('toggle')) {
+      if (wholelist[3][accessname]['question']["8"]['Answer'].length == 0) {
+        setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+      }
+      notifyListeners();
     } else {
       wholelist[3][accessname]['question']["8"]['toggle'] = <bool>[true, false];
+      if (wholelist[3][accessname]['question']["8"]['Answer'].length == 0) {
+        setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[3][accessname]['question']["9"].containsKey('toggle')) {
+      if (wholelist[3][accessname]['question']["9"]['Answer'].length == 0) {
+        setdata(9, 'Yes', 'Able to Access Telephone?');
+      }
+      notifyListeners();
     } else {
       wholelist[3][accessname]['question']["9"]['toggle'] = <bool>[true, false];
+      if (wholelist[3][accessname]['question']["9"]['Answer'].length == 0) {
+        setdata(9, 'Yes', 'Able to Access Telephone?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[3][accessname]['question']["10"].containsKey('toggle')) {
+      if (wholelist[3][accessname]['question']["10"]['Answer'].length == 0) {
+        setdata(10, 'Yes', 'Able to Access Stove?');
+      }
+      notifyListeners();
     } else {
       wholelist[3][accessname]['question']["10"]
           ['toggle'] = <bool>[true, false];
+      if (wholelist[3][accessname]['question']["10"]['Answer'].length == 0) {
+        setdata(10, 'Yes', 'Able to Access Stove?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[3][accessname]['question']["12"].containsKey('toggle')) {
+      if (wholelist[3][accessname]['question']["12"]['Answer'].length == 0) {
+        setdata(12, 'Yes', 'Able to Access Sink?');
+      }
+      notifyListeners();
     } else {
       wholelist[3][accessname]['question']["12"]
           ['toggle'] = <bool>[true, false];
+      if (wholelist[3][accessname]['question']["12"]['Answer'].length == 0) {
+        setdata(12, 'Yes', 'Able to Access Sink?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[3][accessname]['question']["13"].containsKey('toggle')) {
+      if (wholelist[3][accessname]['question']["13"]['Answer'].length == 0) {
+        setdata(13, 'Yes', 'Able to Access Dishwasher?');
+      }
+      notifyListeners();
     } else {
       wholelist[3][accessname]['question']["13"]
           ['toggle'] = <bool>[true, false];
+      if (wholelist[3][accessname]['question']["13"]['Answer'].length == 0) {
+        setdata(13, 'Yes', 'Able to Access Dishwasher?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[3][accessname]['question']["14"].containsKey('toggle')) {
+      if (wholelist[3][accessname]['question']["14"]['Answer'].length == 0) {
+        setdata(14, 'Yes', 'Able to Access Refrigerator?');
+      }
+      notifyListeners();
     } else {
       wholelist[3][accessname]['question']["14"]
           ['toggle'] = <bool>[true, false];
+      if (wholelist[3][accessname]['question']["14"]['Answer'].length == 0) {
+        setdata(14, 'Yes', 'Able to Access Refrigerator?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[3][accessname]['question']["15"].containsKey('toggle')) {
+      if (wholelist[3][accessname]['question']["15"]['Answer'].length == 0) {
+        setdata(15, 'Yes', 'Able to Access High Cabinets?');
+      }
+      notifyListeners();
     } else {
       wholelist[3][accessname]['question']["15"]
           ['toggle'] = <bool>[true, false];
+      if (wholelist[3][accessname]['question']["15"]['Answer'].length == 0) {
+        setdata(15, 'Yes', 'Able to Access High Cabinets?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[3][accessname]['question']["15"].containsKey('ManageInOut')) {
@@ -135,26 +199,32 @@ class KitchenPro extends ChangeNotifier {
       wholelist[3][accessname]['question']["15"]['ManageInOut'] = '';
     }
 
-    if (wholelist[3][accessname]['question']["16"].containsKey('Grabbar')) {
-    } else {
-      wholelist[3][accessname]['question']["16"]['Grabbar'] = {};
-    }
     if (wholelist[3][accessname]['question']["16"].containsKey('toggle')) {
+      if (wholelist[3][accessname]['question']["16"]['Answer'].length == 0) {
+        setdata(16, 'Yes', 'Able to Access Lower Cabinets?');
+      }
+      notifyListeners();
     } else {
       wholelist[3][accessname]['question']["16"]
           ['toggle'] = <bool>[true, false];
+      if (wholelist[3][accessname]['question']["16"]['Answer'].length == 0) {
+        setdata(16, 'Yes', 'Able to Access Lower Cabinets?');
+      }
+      notifyListeners();
     }
 
     if (wholelist[3][accessname]['question']["17"].containsKey('toggle')) {
+      if (wholelist[3][accessname]['question']["17"]['Answer'].length == 0) {
+        setdata(17, 'Yes', 'Smoke Detector Present?');
+      }
+      notifyListeners();
     } else {
       wholelist[3][accessname]['question']["17"]
           ['toggle'] = <bool>[true, false];
-    }
-
-    if (wholelist[3][accessname]['question']["17"]
-        .containsKey('sidefentrance')) {
-    } else {
-      wholelist[3][accessname]['question']["17"]['sidefentrance'] = '';
+      if (wholelist[3][accessname]['question']["17"]['Answer'].length == 0) {
+        setdata(17, 'Yes', 'Smoke Detector Present?');
+      }
+      notifyListeners();
     }
   }
 
