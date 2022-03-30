@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,12 +7,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:tryapp/Assesment/Forms/Pathway/pathwaybase.dart';
 import 'dart:io';
 import 'package:tryapp/Assesment/Forms/Pathway/pathwaypro.dart';
 import 'package:provider/provider.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
-import 'package:tryapp/CompleteAssessment/completeAssessmentBase.dart';
 import 'package:tryapp/constants.dart';
 import 'package:path/path.dart';
 
@@ -71,6 +70,10 @@ class _PathwayUIState extends State<PathwayUI> {
   String videoDownloadUrl, videoUrl, videoName;
   File video;
   var falseIndex = -1, trueIndex = -1;
+  bool _speechRecognitionAvailable = false;
+  bool _isListening = false;
+
+  String transcription = '';
 
   @override
   void initState() {
@@ -96,7 +99,51 @@ class _PathwayUIState extends State<PathwayUI> {
     // setinitials();
     getRole();
     getAssessData();
+    // activateSpeechRecognizer();
   }
+
+  // void activateSpeechRecognizer() {
+  //   print('_MyAppState.activateSpeechRecognizer... ');
+  //   _speechRecognition = new SpeechRecognition();
+  //   _speechRecognition.setAvailabilityHandler(onSpeechAvailability);
+  //   // _speechRecognition.setCurrentLocaleHandler(onCurrentLocale);
+  //   _speechRecognition.setRecognitionStartedHandler(onRecognitionStarted);
+  //   _speechRecognition.setRecognitionResultHandler(onRecognitionResult);
+  //   _speechRecognition.setRecognitionCompleteHandler(onRecognitionComplete);
+  //   _speechRecognition
+  //       .activate()
+  //       .then((res) => setState(() => _speechRecognitionAvailable = res));
+  // }
+
+  // void start(index, isthera) {
+  //   print("starterd");
+  //   _speechRecognition
+  //       .listen()
+  //       .then((result) => print('_MyAppState.start => result $result'));
+  // }
+
+  // void cancel(index) => _speechRecognition
+  //     .cancel()
+  //     .then((result) => setState(() => _isListening = result));
+
+  // void stop(index) => _speechRecognition
+  //     .stop()
+  //     .then((result) => setState(() => _isListening = result));
+
+  // void onSpeechAvailability(bool result) =>
+  //     setState(() => _speechRecognitionAvailable = result);
+
+  // void onCurrentLocale(String locale) {
+  //   print('_MyAppState.onCurrentLocale... $locale');
+  //   setState(
+  //       () => selectedLang = languages.firstWhere((l) => l.code == locale));
+  // }
+
+  void onRecognitionStarted() => setState(() => _isListening = true);
+
+  void onRecognitionResult(text) => setState(() => transcription = text);
+
+  void onRecognitionComplete() => setState(() => _isListening = false);
 
   /// This fucntion will help us to get role of the logged in user
   Future<String> getRole() async {
@@ -217,6 +264,31 @@ class _PathwayUIState extends State<PathwayUI> {
           ['Recommendationthera'] = value;
     });
   }
+
+  // void initSpeechRecognizer(index) {
+  //   _speechRecognition = SpeechRecognition();
+
+  //   _speechRecognition.setAvailabilityHandler(
+  //     (bool result) => setState(() => available = result),
+  //   );
+
+  //   _speechRecognition.setRecognitionStartedHandler(
+  //     () => setState(() => isListening["field$index"] = true),
+  //   );
+
+  //   _speechRecognition.setRecognitionResultHandler(
+  //     (String speech) => setState(() => widget.wholelist[0][widget.accessname]
+  //         ['question']["$index"]['Recommendationthera'] = speech),
+  //   );
+
+  //   _speechRecognition.setRecognitionCompleteHandler(
+  //     () => setState(() => isListening["field$index"] = false),
+  //   );
+
+  //   _speechRecognition.activate().then(
+  //         (result) => setState(() => available = result),
+  //       );
+  // }
 
   void _showSnackBar(snackbar, BuildContext buildContext) {
     final snackBar = SnackBar(
@@ -608,7 +680,7 @@ class _PathwayUIState extends State<PathwayUI> {
       // }
     }
 
-    /// This fucntion is to take care of speeck to text mic button and place the text in
+    /// This fucntion is to take care of speech to text mic button and place the text in
     /// the particular field.
     void _listen(index, bool isthera) async {
       if (!isListening['field$index']) {
@@ -624,6 +696,7 @@ class _PathwayUIState extends State<PathwayUI> {
           onError: (val) => print('onError: $val'),
         );
         if (available) {
+          var systemLocale = await _speech.systemLocale();
           setState(() {
             // _isListening = true;
             colorsset["field$index"] = Color.fromRGBO(10, 80, 106, 1);
@@ -631,30 +704,38 @@ class _PathwayUIState extends State<PathwayUI> {
           });
           if (isthera) {
             _speech.listen(
-              onResult: (val) => setState(() {
-                _controllerstreco["field$index"].text = widget.wholelist[0]
-                            [widget.accessname]['question']["$index"]
-                        ['Recommendationthera'] +
-                    " " +
-                    val.recognizedWords;
-                // if (val.hasConfidenceRating && val.confidence > 0) {
-                //   _confidence = val.confidence;
-                // }
-              }),
-            );
+                onResult: (val) => setState(() {
+                      _controllerstreco["field$index"].text =
+                          widget.wholelist[0][widget.accessname]['question']
+                                  ["$index"]['Recommendationthera'] +
+                              " " +
+                              val.recognizedWords;
+                      // if (val.hasConfidenceRating && val.confidence > 0) {
+                      //   _confidence = val.confidence;
+                      // }
+                    }),
+                listenFor: Duration(minutes: 1),
+                localeId: systemLocale.localeId,
+                onSoundLevelChange: null,
+                cancelOnError: true,
+                partialResults: true);
           } else {
             _speech.listen(
-              onResult: (val) => setState(() {
-                _controllers["field$index"].text = widget.wholelist[0]
-                            [widget.accessname]['question']["$index"]
-                        ['Recommendation'] +
-                    " " +
-                    val.recognizedWords;
-                // if (val.hasConfidenceRating && val.confidence > 0) {
-                //   _confidence = val.confidence;
-                // }
-              }),
-            );
+                onResult: (val) => setState(() {
+                      _controllers["field$index"].text = widget.wholelist[0]
+                                  [widget.accessname]['question']["$index"]
+                              ['Recommendation'] +
+                          " " +
+                          val.recognizedWords;
+                      // if (val.hasConfidenceRating && val.confidence > 0) {
+                      //   _confidence = val.confidence;
+                      // }
+                    }),
+                listenFor: Duration(milliseconds: 5000),
+                localeId: systemLocale.localeId,
+                onSoundLevelChange: null,
+                cancelOnError: true,
+                partialResults: true);
           }
         }
       } else {
@@ -935,20 +1016,20 @@ class _PathwayUIState extends State<PathwayUI> {
               //         labelText: 'Comments'
               //         ),
               //     onChanged: (value) {
-              //       if (assessor == therapist && role == "therapist") {
-              //         FocusScope.of(context).requestFocus();
-              //         new TextEditingController().clear();
-              //         // print(widget.accessname);
-              //         setreco(index, value);
-              //       } else if (role != "therapist") {
-              //         FocusScope.of(context).requestFocus();
-              //         new TextEditingController().clear();
-              //         // print(widget.accessname);
-              //         setreco(index, value);
-              //       } else {
-              //         _showSnackBar(
-              //             "You can't change the other fields", context);
-              //       }
+              // if (assessor == therapist && role == "therapist") {
+              //   FocusScope.of(context).requestFocus();
+              //   new TextEditingController().clear();
+              //   // print(widget.accessname);
+              //   setreco(index, value);
+              // } else if (role != "therapist") {
+              //   FocusScope.of(context).requestFocus();
+              //   new TextEditingController().clear();
+              //   // print(widget.accessname);
+              //   setreco(index, value);
+              // } else {
+              //   _showSnackBar(
+              //       "You can't change the other fields", context);
+              // }
               //     },
               //   ),
               // ),
@@ -985,7 +1066,7 @@ class _PathwayUIState extends State<PathwayUI> {
                       ),
                     ),
                     AvatarGlow(
-                      animate: isListening['field$index'],
+                      animate: isListening["field$index"],
                       glowColor: Theme.of(context).primaryColor,
                       endRadius: 35.0,
                       duration: const Duration(milliseconds: 2000),
@@ -998,18 +1079,24 @@ class _PathwayUIState extends State<PathwayUI> {
                         alignment: Alignment.center,
                         margin: EdgeInsets.all(0),
                         child: FloatingActionButton(
-                          heroTag: "btn$index",
+                          heroTag: "btn${index + 100}",
                           child: Icon(
                             Icons.mic,
                             size: 20,
                           ),
                           onPressed: () {
                             if (assessor == therapist && role == "therapist") {
-                              _listen(index, isthera);
+                              _listen(index, false);
                               setdatalisten(index);
+                              Timer(Duration(seconds: 3), () {
+                                ticklisten(index);
+                              });
                             } else if (role != "therapist") {
-                              _listen(index, isthera);
+                              _listen(index, false);
                               setdatalisten(index);
+                              Timer(Duration(seconds: 3), () {
+                                ticklisten(index);
+                              });
                             } else {
                               _showSnackBar(
                                   "You can't change the other fields", context);
@@ -2907,7 +2994,12 @@ class _PathwayUIState extends State<PathwayUI> {
                                       Icons.mic,
                                       size: 20,
                                     ),
-                                    onPressed: () {
+                                    onPressed: () async {
+                                      // Map<Permission, PermissionStatus>
+                                      //     permissions = await [
+                                      //   Permission.microphone
+                                      // ].request();
+
                                       if (assessor == therapist &&
                                           role == "therapist") {
                                         _listen(12, false);
@@ -2920,10 +3012,6 @@ class _PathwayUIState extends State<PathwayUI> {
                                             "You can't change the other fields",
                                             context);
                                       }
-                                      // print("1: ${isListening['field12']}");
-                                      // ticklisten(12);
-                                      // print("2: ${isListening['field12']}");
-                                      print(isListening);
                                     },
                                   ),
                                 ),

@@ -1017,7 +1017,8 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                         )),
                   ));
             } else {
-              if (innerlist['room${index1 + 1}']['isUsed'][0]) {
+              if (innerlist['room${index1 + 1}']['isUsed'] != null &&
+                  innerlist['room${index1 + 1}']['isUsed'][0]) {
                 return Container(
                     width: double.infinity,
                     padding: EdgeInsets.all(10),
@@ -1140,7 +1141,8 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
           shrinkWrap: true,
           itemCount: innerlist['count'],
           itemBuilder: (context, index1) {
-            if (!innerlist['room${index1 + 1}']['isUsed'][0]) {
+            if (innerlist['room${index1 + 1}']['isUsed'] != null &&
+                !innerlist['room${index1 + 1}']['isUsed'][0]) {
               return Container(
                   width: double.infinity,
                   padding: EdgeInsets.all(10),
