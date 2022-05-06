@@ -435,7 +435,7 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                         Container(
                           child: ConstrainedBox(
                             constraints:
-                                BoxConstraints(maxHeight: 3000, minHeight: 0),
+                                BoxConstraints(maxHeight: 10000, minHeight: 0),
                             child: ListView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),

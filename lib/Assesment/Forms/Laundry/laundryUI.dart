@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tryapp/Assesment/Forms/Laundry/laundrybase.dart';
 import 'package:tryapp/Assesment/Forms/Laundry/laundrypro.dart';
 import 'package:tryapp/Assesment/Forms/ViewVideo.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
@@ -44,11 +45,33 @@ class _LaundryUIState extends State<LaundryUI> {
   String videoDownloadUrl, videoUrl, videoName;
   File video;
   bool uploading = false;
+  List<DropdownMenuItem<dynamic>> items = [];
   @override
   void initState() {
     getAssessData();
     getRole();
     super.initState();
+    fillDropItem();
+  }
+
+  fillDropItem() {
+    List<dynamic> itemList = [];
+    setState(() {
+      for (var i = 0; i < widget.wholelist[7]['count']; i++) {
+        if (widget.wholelist[7]['room${i + 1}']['isUsed'][0]) {
+          itemList.add("room${i + 1}".toString());
+        }
+      }
+
+      itemList.forEach((element) {
+        DropdownMenuItem<String> ddmi = DropdownMenuItem<String>(
+          child: Text("${widget.wholelist[7][element.toString()]['name']}",
+              style: TextStyle(fontSize: 18, color: Colors.white)),
+          value: element.toString(),
+        );
+        items.add(ddmi);
+      });
+    });
   }
 
   Future<void> getAssessData() async {
@@ -436,14 +459,83 @@ class _LaundryUIState extends State<LaundryUI> {
       );
     }
 
+    listenDropButton() {
+      var test = widget.wholelist[7][widget.accessname]['complete'];
+      for (int i = 0;
+          i < widget.wholelist[7][widget.accessname]['question'].length;
+          i++) {
+        assesmentprovider.setdatalisten(i + 1);
+        assesmentprovider.setdatalistenthera(i + 1);
+      }
+      // if (test == 0) {
+      //   _showSnackBar(
+      //       "You Must Have To Fill The Details First", context);
+      // } else {
+      if (role == "therapist") {
+        // if (assesmentprovider.saveToForm) {
+        NewAssesmentRepository().setLatestChangeDate(widget.docID);
+        NewAssesmentRepository().setForm(widget.wholelist, widget.docID);
+        // Navigator.pop(
+        //     context, widget.wholelist[7][widget.accessname]);
+        // } else {
+        //   _showSnackBar(
+        //       "Provide all recommendtions", context);
+        // }
+      } else {
+        NewAssesmentRepository().setLatestChangeDate(widget.docID);
+        NewAssesmentRepository().setForm(widget.wholelist, widget.docID);
+        // Navigator.pop(
+        //     context, widget.wholelist[7][widget.accessname]);
+      }
+    }
+
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        listenDropButton();
+        return true;
+      },
       child: Scaffold(
         appBar: AppBar(
           title: (widget.roomname != null)
-              ? Text("${widget.roomname}")
+              ? Container(
+                  padding: EdgeInsets.all(8),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton(
+                      iconDisabledColor: Colors.white,
+                      dropdownColor: Color.fromRGBO(10, 80, 106, 1),
+                      icon: Icon(
+                        // Add this
+                        Icons.arrow_drop_down, // Add this
+                        color: Colors.white, // Add this
+                      ),
+                      items: items,
+                      onChanged: (value) {
+                        setState(() {
+                          widget.accessname = value;
+                          widget.roomname =
+                              widget.wholelist[7][widget.accessname]['name'];
+                        });
+                        print(widget.roomname);
+                        listenDropButton();
+                        Navigator.of(context)
+                            .pushReplacement(MaterialPageRoute(
+                                builder: (context) => Laundry(
+                                    widget.roomname,
+                                    widget.wholelist,
+                                    widget.accessname,
+                                    widget.docID)))
+                            .then((value) => setState(() {
+                                  widget.wholelist[7][widget]['complete'] =
+                                      value['complete'];
+                                  // widget.wholelist[index]['']
+                                }));
+                      },
+                      value: widget.accessname,
+                    ),
+                  ),
+                )
               : Text('Laundry'),
-          automaticallyImplyLeading: false,
+          // automaticallyImplyLeading: false,
           backgroundColor: _colorgreen,
           actions: [
             IconButton(

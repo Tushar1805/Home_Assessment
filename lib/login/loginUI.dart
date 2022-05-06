@@ -107,7 +107,9 @@ class _LoginFormState extends State<LoginForm> {
                       // image: DecorationImage(
                       //     image: AssetImage('assets/piclog.png'),
                       //     fit: BoxFit.cover),
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20)),
                     ),
                     child: Container(
                       padding: EdgeInsets.all(10),

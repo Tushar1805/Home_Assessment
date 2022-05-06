@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tryapp/Assesment/Forms/Garage/garagebase.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
 import 'package:tryapp/constants.dart';
 import '../ViewVideo.dart';
@@ -45,13 +46,35 @@ class _GarageUIState extends State<GarageUI> {
   String videoDownloadUrl, videoUrl, videoName;
   File video;
   bool uploading = false;
+  List<DropdownMenuItem<dynamic>> items = [];
   var test = TextEditingController();
   @override
   void initState() {
     super.initState();
     getAssessData();
     getRole();
+    fillDropItem();
     // setinitialsdata();
+  }
+
+  fillDropItem() {
+    List<dynamic> itemList = [];
+    setState(() {
+      for (var i = 0; i < widget.wholelist[9]['count']; i++) {
+        if (widget.wholelist[9]['room${i + 1}']['isUsed'][0]) {
+          itemList.add("room${i + 1}".toString());
+        }
+      }
+
+      itemList.forEach((element) {
+        DropdownMenuItem<String> ddmi = DropdownMenuItem<String>(
+          child: Text("${widget.wholelist[9][element.toString()]['name']}",
+              style: TextStyle(fontSize: 18, color: Colors.white)),
+          value: element.toString(),
+        );
+        items.add(ddmi);
+      });
+    });
   }
 
   Future<void> setinitialsdata() async {
@@ -183,7 +206,7 @@ class _GarageUIState extends State<GarageUI> {
         setState(() {
           videoUrl = url;
           print("************Url = $videoUrl**********");
-           var path = videos.path;
+          var path = videos.path;
           var lastSeparator = path.lastIndexOf(Platform.pathSeparator);
           var newPath = path.substring(0, lastSeparator + 1) + widget.roomname;
           videos = videos.renameSync(newPath);
@@ -486,14 +509,83 @@ class _GarageUIState extends State<GarageUI> {
       );
     }
 
+    listenDropButton() {
+      var test = widget.wholelist[9][widget.accessname]['complete'];
+      for (int i = 0;
+          i < widget.wholelist[9][widget.accessname]['question'].length;
+          i++) {
+        assesmentprovider.setdatalisten(i + 1);
+        assesmentprovider.setdatalistenthera(i + 1);
+      }
+      // if (test == 0) {
+      //   _showSnackBar(
+      //       "You Must Have To Fill The Details First", context);
+      // } else {
+      if (role == "therapist") {
+        // if (assesmentprovider.saveToForm) {
+        NewAssesmentRepository().setLatestChangeDate(widget.docID);
+        NewAssesmentRepository().setForm(widget.wholelist, widget.docID);
+        // Navigator.pop(
+        //     context, widget.wholelist[9][widget.accessname]);
+        // } else {
+        //   _showSnackBar(
+        //       "Provide all recommendations", context);
+        // }
+      } else {
+        NewAssesmentRepository().setLatestChangeDate(widget.docID);
+        NewAssesmentRepository().setForm(widget.wholelist, widget.docID);
+        // Navigator.pop(
+        //     context, widget.wholelist[9][widget.accessname]);
+      }
+    }
+
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        listenDropButton();
+        return true;
+      },
       child: Scaffold(
         appBar: AppBar(
           title: (widget.roomname != null)
-              ? Text("${widget.roomname}")
+              ? Container(
+                  padding: EdgeInsets.all(8),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton(
+                      iconDisabledColor: Colors.white,
+                      dropdownColor: Color.fromRGBO(10, 80, 106, 1),
+                      icon: Icon(
+                        // Add this
+                        Icons.arrow_drop_down, // Add this
+                        color: Colors.white, // Add this
+                      ),
+                      items: items,
+                      onChanged: (value) {
+                        setState(() {
+                          widget.accessname = value;
+                          widget.roomname =
+                              widget.wholelist[9][widget.accessname]['name'];
+                        });
+                        print(widget.roomname);
+                        listenDropButton();
+                        Navigator.of(context)
+                            .pushReplacement(MaterialPageRoute(
+                                builder: (context) => Garage(
+                                    widget.roomname,
+                                    widget.wholelist,
+                                    widget.accessname,
+                                    widget.docID)))
+                            .then((value) => setState(() {
+                                  widget.wholelist[9][widget]['complete'] =
+                                      value['complete'];
+                                  // widget.wholelist[index]['']
+                                }));
+                      },
+                      value: widget.accessname,
+                    ),
+                  ),
+                )
               : Text('Garage'),
-          automaticallyImplyLeading: false,
+          // automaticallyImplyLeading: false,
           backgroundColor: _colorgreen,
           actions: [
             IconButton(

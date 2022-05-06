@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:csv/csv.dart';
+import 'package:ext_storage/ext_storage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -79,6 +83,11 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   String token;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  QuerySnapshot dataset;
+  bool loading = false;
+  var data2;
+  Map<String, dynamic> datasetmain = {};
 
   void initState() {
     // await _pushNotificationService.initialize();
@@ -111,6 +120,87 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    getdocset() async {
+      setState(() {
+        loading = true;
+      });
+
+      dataset = await firestore.collection("fallassessmnet").get();
+      // Map<String, DocumentSnapshot> datasetmaintemp = {};
+      // for (int i = 0; i < dataset.docs.length; i++) {
+      //   await getfielddata(
+      //     dataset.docs[i]['assessee'],
+      //   );
+      //   datasetmaintemp["$i"] = (data2);
+      // }
+      Map<String, dynamic> temptry = {};
+      for (int j = 0; j < dataset.docs.length; j++) {
+        temptry["$j"] = dataset.docs[j].data();
+      }
+
+      setState(() {
+        datasetmain = temptry;
+        loading = false;
+      });
+      print("datasetMain: ${datasetmain}");
+    }
+
+    void _generateCsvFile() async {
+      // Map<Permission, PermissionStatus> statuses = await [
+      //   Permission.storage,
+      // ].request();
+
+      String directory = await ExtStorage.getExternalStoragePublicDirectory(
+          ExtStorage.DIRECTORY_DOWNLOADS);
+
+      await getdocset();
+      List<List<dynamic>> rows = [];
+
+      setState(() {
+        List<dynamic> row = [];
+        row.add("First Name");
+        row.add("Last Name");
+        row.add("Email");
+        row.add("address");
+        row.add("Gender");
+        row.add("Phone Number");
+        row.add("Assessment/answer");
+        row.add("Value for answer");
+        row.add("Score");
+        rows.add(row);
+        for (int i = 0; i < datasetmain.length; i++) {
+          List<dynamic> row = [];
+          row.add(datasetmain["$i"]["firstName"]);
+          row.add(datasetmain["$i"]["lastName"]);
+          row.add(dataset.docs[i]["email"]);
+          row.add(dataset.docs[i]["address"]);
+          row.add(dataset.docs[i]["gender"]);
+          row.add(dataset.docs[i]["phoneNo"]);
+          for (var j = 0; j < dataset.docs[i]["assessment"].length; j++) {
+            row.add(dataset.docs[i]["assessment"][j]['answer']);
+            row.add(dataset.docs[i]["assessment"][j]['value']);
+          }
+          row.add(dataset.docs[i]["score"]);
+          rows.add(row);
+        }
+
+        String csv = const ListToCsvConverter().convert(rows);
+
+        String file = "$directory";
+        String filePath = file + "/fallAssessment.csv";
+        File f = File(filePath);
+
+        f.writeAsString(csv);
+        // OpenFile.open(f.path);
+      });
+
+      // String file = "$dir";
+
+      // File f = File(file + "/filename.csv");
+
+      // print("csv: $csv");
+    }
+
     return Scaffold(
       backgroundColor: Color.fromRGBO(10, 80, 106, 1),
       body: Center(
@@ -132,7 +222,9 @@ class _MyHomePageState extends State<MyHomePage> {
                       // image: DecorationImage(
                       //     image: AssetImage('assets/piclog.png'),
                       //     fit: BoxFit.cover),
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20)),
                     ),
                     child: Container(
                       padding: EdgeInsets.all(10),
@@ -218,6 +310,11 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: _generateCsvFile,
+      //   tooltip: 'getData',
+      //   child: const Icon(Icons.add),
+      // ),
     );
   }
 

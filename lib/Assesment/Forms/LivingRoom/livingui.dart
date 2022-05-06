@@ -9,6 +9,7 @@ import 'package:avatar_glow/avatar_glow.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:tryapp/Assesment/Forms/LivingRoom/livingbase.dart';
 import 'package:tryapp/Assesment/Forms/LivingRoom/livingpro.dart';
 import 'package:tryapp/Assesment/Forms/viewVideo.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
@@ -50,9 +51,11 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
   File video;
   bool uploading = false;
   var falseIndex = -1, trueIndex = -1;
+  List<DropdownMenuItem<dynamic>> items = [];
   @override
   void initState() {
     super.initState();
+    fillDropItem();
     _speech = stt.SpeechToText();
     for (int i = 0;
         i < widget.wholelist[2][widget.accessname]['question'].length;
@@ -60,15 +63,35 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
       _controllers["field${i + 1}"] = TextEditingController();
       _controllerstreco["field${i + 1}"] = TextEditingController();
       isListening["field${i + 1}"] = false;
-      _controllers["field${i + 1}"].text = widget.wholelist[2]
-          [widget.accessname]['question']["${i + 1}"]['Recommendation'];
+      _controllers["field${i + 1}"].text = capitalize(widget.wholelist[2]
+          [widget.accessname]['question']["${i + 1}"]['Recommendation']);
       _controllerstreco["field${i + 1}"].text =
-          '${widget.wholelist[2][widget.accessname]['question']["${i + 1}"]['Recommendationthera']}';
+          '${capitalize(widget.wholelist[2][widget.accessname]['question']["${i + 1}"]['Recommendationthera'])}';
       colorsset["field${i + 1}"] = Color.fromRGBO(10, 80, 106, 1);
     }
     // setinitials();
     getAssessData();
     getRole();
+  }
+
+  fillDropItem() {
+    List<dynamic> itemList = [];
+    setState(() {
+      for (var i = 0; i < widget.wholelist[2]['count']; i++) {
+        if (widget.wholelist[2]['room${i + 1}']['isUsed'][0]) {
+          itemList.add("room${i + 1}".toString());
+        }
+      }
+
+      itemList.forEach((element) {
+        DropdownMenuItem<String> ddmi = DropdownMenuItem<String>(
+          child: Text("${widget.wholelist[2][element.toString()]['name']}",
+              style: TextStyle(fontSize: 18, color: Colors.white)),
+          value: element.toString(),
+        );
+        items.add(ddmi);
+      });
+    });
   }
 
   // Future<void> setinitials() async {
@@ -99,6 +122,28 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
   //     widget.wholelist[2][widget.accessname]['question']["7"]['doorwidth'] = 0;
   //   }
   // }
+  String capitalize(String s) {
+    // Each sentence becomes an array element
+    var output = '';
+    if (s != null && s != '') {
+      var sentences = s.split('.');
+      // Initialize string as empty string
+
+      // Loop through each sentence
+      for (var sen in sentences) {
+        // Trim leading and trailing whitespace
+        var trimmed = sen.trim();
+        // Capitalize first letter of current sentence
+
+        var capitalized = trimmed.isNotEmpty
+            ? "${trimmed[0].toUpperCase() + trimmed.substring(1)}"
+            : '';
+        // Add current sentence to output with a period
+        output += capitalized + ". ";
+      }
+    }
+    return output;
+  }
 
   Future<void> getAssessData() async {
     final User user = await _auth.currentUser;
@@ -316,6 +361,44 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
   @override
   Widget build(BuildContext context) {
     LivingProvider provider = Provider.of<LivingProvider>(context);
+
+    listenDropButton() {
+      var test = widget.wholelist[2][widget.accessname]["complete"];
+      for (int i = 0;
+          i < widget.wholelist[2][widget.accessname]['question'].length;
+          i++) {
+        // print(colorsset["field${i + 1}"]);
+        // if (colorsset["field${i + 1}"] == Colors.red) {
+        //   showDialog(
+        //       context: context,
+        //       builder: (context) => CustomDialog(
+        //           title: "Not Saved",
+        //           description:
+        //               "Please click cancel button to save the field"));
+        //   test = 1;
+        // }
+      }
+      // if (test == 0) {
+      //   _showSnackBar(
+      //       "You Must Have to Fill The Details First", context);
+      // } else {
+      if (role == "therapist") {
+        // if (saveToForm) {
+        NewAssesmentRepository().setLatestChangeDate(widget.docID);
+        NewAssesmentRepository().setForm(widget.wholelist, widget.docID);
+        // Navigator.pop(
+        //     context, widget.wholelist[0][widget.accessname]);
+        // } else {
+        //   _showSnackBar(
+        //       "Provide all recommendations", context);
+        // }
+      } else {
+        NewAssesmentRepository().setLatestChangeDate(widget.docID);
+        NewAssesmentRepository().setForm(widget.wholelist, widget.docID);
+        // Navigator.pop(
+        //     context, widget.wholelist[0][widget.accessname]);
+      }
+    }
 
     Future<void> upload(File videos) async {
       setState(() {
@@ -553,13 +636,52 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
     }
 
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        listenDropButton();
+        return true;
+      },
       child: Scaffold(
         appBar: AppBar(
           title: (widget.roomname != null)
-              ? Text("${widget.roomname}")
+              ? Container(
+                  padding: EdgeInsets.all(8),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton(
+                      iconDisabledColor: Colors.white,
+                      dropdownColor: Color.fromRGBO(10, 80, 106, 1),
+                      icon: Icon(
+                        // Add this
+                        Icons.arrow_drop_down, // Add this
+                        color: Colors.white, // Add this
+                      ),
+                      items: items,
+                      onChanged: (value) {
+                        setState(() {
+                          widget.accessname = value;
+                          widget.roomname =
+                              widget.wholelist[2][widget.accessname]['name'];
+                        });
+                        print(widget.roomname);
+                        listenDropButton();
+                        Navigator.of(context)
+                            .pushReplacement(MaterialPageRoute(
+                                builder: (context) => LivingRoom(
+                                    widget.roomname,
+                                    widget.wholelist,
+                                    widget.accessname,
+                                    widget.docID)))
+                            .then((value) => setState(() {
+                                  widget.wholelist[2][widget]['complete'] =
+                                      value['complete'];
+                                  // widget.wholelist[index]['']
+                                }));
+                      },
+                      value: widget.accessname,
+                    ),
+                  ),
+                )
               : Text('Living Room'),
-          automaticallyImplyLeading: false,
+          // automaticallyImplyLeading: false,
           backgroundColor: _colorgreen,
           actions: [
             IconButton(
@@ -892,7 +1014,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                         SizedBox(height: 10),
                         (provider.getvalue(1) != "")
                             ? (double.parse(provider.getvalue(1)) > 5)
-                                ? getrecomain(1, true, "Comments (if any)",
+                                ? getrecomain(1, true, "Comments (If Any)",
                                     context, provider)
                                 : SizedBox()
                             : SizedBox(),

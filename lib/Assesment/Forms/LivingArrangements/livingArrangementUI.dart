@@ -98,15 +98,38 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
       _controllers["field${i + 1}"] = TextEditingController();
       _controllerstreco["field${i + 1}"] = TextEditingController();
       isListening["field${i + 1}"] = false;
-      _controllers["field${i + 1}"].text = widget.wholelist[1]
-          [widget.accessname]['question']["${i + 1}"]['Recommendation'];
+      _controllers["field${i + 1}"].text = capitalize(widget.wholelist[1]
+          [widget.accessname]['question']["${i + 1}"]['Recommendation']);
       _controllerstreco["field${i + 1}"].text =
-          '${widget.wholelist[1][widget.accessname]['question']["${i + 1}"]['Recommendationthera']}';
+          '${capitalize(widget.wholelist[1][widget.accessname]['question']["${i + 1}"]['Recommendationthera'])}';
       colorsset["field${i + 1}"] = Color.fromRGBO(10, 80, 106, 1);
     }
     getRole();
     getAssessData();
     print("RoomName: ${widget.roomname}");
+  }
+
+  String capitalize(String s) {
+    // Each sentence becomes an array element
+    var output = '';
+    if (s != null && s != '') {
+      var sentences = s.split('.');
+      // Initialize string as empty string
+
+      // Loop through each sentence
+      for (var sen in sentences) {
+        // Trim leading and trailing whitespace
+        var trimmed = sen.trim();
+        // Capitalize first letter of current sentence
+
+        var capitalized = trimmed.isNotEmpty
+            ? "${trimmed[0].toUpperCase() + trimmed.substring(1)}"
+            : '';
+        // Add current sentence to output with a period
+        output += capitalized + ". ";
+      }
+    }
+    return output;
   }
 
   Future<Null> selectTime1(BuildContext context) async {
@@ -889,6 +912,40 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
       );
     }
 
+    listenDropButton() {
+      var test = widget.wholelist[1][widget.accessname]["complete"];
+      for (int i = 0;
+          i < widget.wholelist[1][widget.accessname]['question'].length;
+          i++) {
+        setdatalisten(i + 1);
+        setdatalistenthera(i + 1);
+      }
+      // if (!isValid) {
+      // _showSnackBar("Recommendation Required", context);
+      // } else {
+      // if (test == 0) {
+      //   _showSnackBar(
+      //       "You Must Have to Fill the Form First",
+      //       context);
+      // } else {
+      if (role == "therapist") {
+        // if (saveToForm) {
+        NewAssesmentRepository().setLatestChangeDate(widget.docID);
+        NewAssesmentRepository().setForm(widget.wholelist, widget.docID);
+        // Navigator.pop(context,
+        //     widget.wholelist[1][widget.accessname]);
+        // } else {
+        //   _showSnackBar(
+        //       "Provide all recommendations", context);
+        // }
+      } else {
+        NewAssesmentRepository().setLatestChangeDate(widget.docID);
+        NewAssesmentRepository().setForm(widget.wholelist, widget.docID);
+        // Navigator.pop(context,
+        //     widget.wholelist[1][widget.accessname]);
+      }
+    }
+
     Widget flightcountwidget(index, BuildContext context) {
       return Container(
         child: Column(
@@ -1148,13 +1205,16 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
     }
 
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        listenDropButton();
+        return true;
+      },
       child: Scaffold(
         appBar: AppBar(
           title: (widget.roomname != null)
               ? Text("${widget.roomname}")
               : Text('Living Arrangements'),
-          automaticallyImplyLeading: false,
+          // automaticallyImplyLeading: false,
           backgroundColor: _colorgreen,
           actions: [
             IconButton(

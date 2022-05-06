@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:tryapp/Assesment/Forms/SwimmingPool/swimmingbase.dart';
 import 'package:tryapp/Assesment/Forms/SwimmingPool/swimmingpro.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
 import 'package:path/path.dart';
@@ -57,6 +58,7 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
   String videoDownloadUrl, videoUrl, videoName;
   File video;
   var falseIndex = -1, trueIndex = -1;
+  List<DropdownMenuItem<dynamic>> items = [];
 
   @override
   void initState() {
@@ -68,15 +70,59 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
       _controllers["field${i + 1}"] = TextEditingController();
       _controllerstreco["field${i + 1}"] = TextEditingController();
       isListening["field${i + 1}"] = false;
-      _controllers["field${i + 1}"].text = widget.wholelist[11]
-          [widget.accessname]['question']["${i + 1}"]['Recommendation'];
+      _controllers["field${i + 1}"].text = capitalize(widget.wholelist[11]
+          [widget.accessname]['question']["${i + 1}"]['Recommendation']);
       _controllerstreco["field${i + 1}"].text =
-          '${widget.wholelist[11][widget.accessname]['question']["${i + 1}"]['Recommendationthera']}';
+          '${capitalize(widget.wholelist[11][widget.accessname]['question']["${i + 1}"]['Recommendationthera'])}';
       colorsset["field${i + 1}"] = Color.fromRGBO(10, 80, 106, 1);
     }
     getRole();
     getAssessData();
     setinitialsdata();
+    fillDropItem();
+  }
+
+  fillDropItem() {
+    List<dynamic> itemList = [];
+    setState(() {
+      for (var i = 0; i < widget.wholelist[11]['count']; i++) {
+        if (widget.wholelist[11]['room${i + 1}']['isUsed'][0]) {
+          itemList.add("room${i + 1}".toString());
+        }
+      }
+
+      itemList.forEach((element) {
+        DropdownMenuItem<String> ddmi = DropdownMenuItem<String>(
+          child: Text("${widget.wholelist[11][element.toString()]['name']}",
+              style: TextStyle(fontSize: 18, color: Colors.white)),
+          value: element.toString(),
+        );
+        items.add(ddmi);
+      });
+    });
+  }
+
+  String capitalize(String s) {
+    // Each sentence becomes an array element
+    var output = '';
+    if (s != null && s != '') {
+      var sentences = s.split('.');
+      // Initialize string as empty string
+
+      // Loop through each sentence
+      for (var sen in sentences) {
+        // Trim leading and trailing whitespace
+        var trimmed = sen.trim();
+        // Capitalize first letter of current sentence
+
+        var capitalized = trimmed.isNotEmpty
+            ? "${trimmed[0].toUpperCase() + trimmed.substring(1)}"
+            : '';
+        // Add current sentence to output with a period
+        output += capitalized + ". ";
+      }
+    }
+    return output;
   }
 
   Future<void> getRole() async {
@@ -548,14 +594,91 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
       );
     }
 
+    listenDropButton() {
+      var test = widget.wholelist[11][widget.accessname]["complete"];
+      for (int i = 0;
+          i < widget.wholelist[11][widget.accessname]['question'].length;
+          i++) {
+        setdatalisten(i + 1);
+        setdatalistenthera(i + 1);
+      }
+      // if (!isValid) {
+      // _showSnackBar("Recommendation Required", context);
+      // } else {
+      // if (test == 0) {
+      //   _showSnackBar(
+      //       "You Must Have to Fill the Form First",
+      //       context);
+      // } else {
+      if (role == "therapist") {
+        // if (saveToForm) {
+        NewAssesmentRepository().setLatestChangeDate(widget.docID);
+        NewAssesmentRepository().setForm(widget.wholelist, widget.docID);
+        // Navigator.pop(context,
+        //     widget.wholelist[11][widget.accessname]);
+        // Navigator.pop(context,
+        //     widget.wholelist[11][widget.accessname]);
+        // } else {
+        //   _showSnackBar(
+        //       "Provide all recommendations", context);
+        // }
+      } else {
+        NewAssesmentRepository().setLatestChangeDate(widget.docID);
+        NewAssesmentRepository().setForm(widget.wholelist, widget.docID);
+        // Navigator.pop(context,
+        //     widget.wholelist[11][widget.accessname]);
+        // Navigator.pop(context,
+        //     widget.wholelist[11][widget.accessname]);
+      }
+    }
+
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        listenDropButton();
+        return true;
+      },
       child: Scaffold(
         appBar: AppBar(
           title: (widget.roomname != null)
-              ? Text("${widget.roomname}")
+              ? Container(
+                  padding: EdgeInsets.all(8),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton(
+                      iconDisabledColor: Colors.white,
+                      dropdownColor: Color.fromRGBO(10, 80, 106, 1),
+                      icon: Icon(
+                        // Add this
+                        Icons.arrow_drop_down, // Add this
+                        color: Colors.white, // Add this
+                      ),
+                      items: items,
+                      onChanged: (value) {
+                        setState(() {
+                          widget.accessname = value;
+                          widget.roomname =
+                              widget.wholelist[11][widget.accessname]['name'];
+                        });
+                        print(widget.roomname);
+                        listenDropButton();
+                        Navigator.of(context)
+                            .pushReplacement(MaterialPageRoute(
+                                builder: (context) => SwimmingPool(
+                                    widget.roomname,
+                                    widget.wholelist,
+                                    widget.accessname,
+                                    widget.docID)))
+                            .then((value) => setState(() {
+                                  widget.wholelist[11][widget]['complete'] =
+                                      value['complete'];
+                                  // widget.wholelist[index]['']
+                                }));
+                      },
+                      value: widget.accessname,
+                    ),
+                  ),
+                )
               : Text('Swimming Pool'),
-          automaticallyImplyLeading: false,
+          // automaticallyImplyLeading: false,
           backgroundColor: _colorgreen,
           actions: [
             IconButton(

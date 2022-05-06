@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,8 @@ import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server/gmail.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
+// import 'dart:js' as js;
 
 import '../../constants.dart';
 
@@ -28,8 +31,6 @@ class _ShareAppState extends State<ShareApp> {
   bool loading = false;
 
   String template = "";
-
-  //
 
   @override
   void initState() {
@@ -238,13 +239,15 @@ class _ShareAppState extends State<ShareApp> {
   }
 
   Future<void> sendEmail() async {
-    await GoogleAuthApi.signOut();
+    // await GoogleAuthApi.signOut();
+    setState(() {
+      loading = true;
+    });
 
     Reference ref = FirebaseStorage.instance.ref().child("/app-release.apk");
     String url = (await ref.getDownloadURL()).toString();
 
     setState(() {
-      loading = true;
       recipients.add(recipient);
       reverse(recipients);
       template = "<html>" +
@@ -324,12 +327,6 @@ class _ShareAppState extends State<ShareApp> {
           "<img src='image003.png' alt=' ', class ='imgSize'><img src='image004.png' alt=' ', class ='imgSize'>" +
           "<br></br>" +
           "<br></br>" +
-          // "<p><i>The information in this email/ faxed document(s) is confidential and may be legally privileged. " +
-          // "It is intended solely for the addressee. Access to this email/ faxed document(s) by anyone else is unauthorized. " +
-          // "If you are not the intended recipient, any disclosure, copying, distribution or any action taken or omitted to be taken " +
-          // "in reliance on it, is prohibited and may be unlawful. If you believe that you have received this email / " +
-          // "faxed document(s) in error, please contact the sender immediately and destroy all the copies of documents received " +
-          // "erroneously.</i></p>" +
           "</body>" +
           "</head>" +
           "</html>";
@@ -444,37 +441,39 @@ class _ShareAppState extends State<ShareApp> {
 
       // template = "";
     });
-    final user = await GoogleAuthApi.signIn();
 
-    if (user == null) return;
+    // final user = await GoogleAuthApi.signIn();
 
-    final email = user.email;
-    final auth = await user.authentication;
-    final token = auth.accessToken;
+    // if (user == null) return;
 
-    print("Authentication: $email");
-    print("recipient: $recipient");
+    // final email = user.email;
+    // final auth = await user.authentication;
+    // final token = auth.accessToken;
 
-    Directory tempDir = await getTemporaryDirectory();
-    String tempPath = tempDir.path;
+    // print("Authentication: $email");
+    // print("recipient: $recipient");
 
-    // AndroidGuide File
+    // Directory tempDir = await getTemporaryDirectory();
+    // String tempPath = tempDir.path;
+
+    // // AndroidGuide File
     File android = await copyAsset("assets/androidGuide.pdf", "androidGuide");
 
     //  AppleGuide File
 
     File apple = await copyAsset("assets/appleGuide.pdf", "appleGuide");
 
-    final smtpServer = gmailSaslXoauth2(email, token);
-    final message = Message()
-      ..from = Address(email, 'Be Home Be Safe')
-      ..recipients.add(recipient)
-      ..subject = "Prism Application (Trial)"
-      ..html = template
-      ..attachments = [
-        FileAttachment(File(apple.path)),
-        FileAttachment(File(android.path))
-      ];
+    // final smtpServer = gmailSaslXoauth2(email, token);
+    // final message = Message()
+    //   ..from = Address(email, 'Be Home Be Safe')
+    //   ..recipients.add(recipient)
+    //   ..subject = "Prism Application (Trial)"
+    //   ..html = template
+    //   ..attachments = [
+    //     FileAttachment(File(apple.path)),
+    //     FileAttachment(File(android.path))
+    //   ];
+
     // ..attachments.add(FileAttachment(File("assets/androidGuide")))
     // ..attachments.add(FileAttachment(File("assets/appleGuide")))
 
@@ -496,10 +495,36 @@ class _ShareAppState extends State<ShareApp> {
     //     " but don't worry about that we have taken care of it.";
 
     try {
-      await send(message, smtpServer);
-      setState(() {
-        loading = false;
-      });
+      // await send(message, smtpServer);
+      // HttpsCallable callable =
+      //     FirebaseFunctions.instance.httpsCallable('sendMail');
+      // final resp = await callable
+      //     .call(<String, dynamic>{'toUser': recipient, 'mailText': template});
+      // setState(() {
+      //   loading = false;
+      // });
+      // print(template);
+
+      // await send(message, smtpServer);
+      // setState(() {
+      //   loading = false;
+      // });
+
+      // Using flutter email sender here
+
+      /*
+      // final Email email = Email(
+      //   isHTML: true,
+      //   subject: "Prism Application (Trial)",
+      //   body: template,
+      //   recipients: [recipient],
+      //   attachmentPaths: [apple.path, android.path],
+      // );
+      // await FlutterEmailSender.send(email);
+      */
+
+      // js.context.callMethod('mailer', [template, recipient, android, apple]);
+
       showSnackBar(context, "Email sent successfully");
     } on MailerException catch (e) {
       print('Message not sent.');
@@ -510,20 +535,23 @@ class _ShareAppState extends State<ShareApp> {
         loading = false;
       });
     }
+    setState(() {
+      loading = false;
+    });
   }
 }
 
-class GoogleAuthApi {
-  static final _googleSignIn =
-      GoogleSignIn(scopes: ['https://mail.google.com/']);
+// class GoogleAuthApi {
+//   static final _googleSignIn =
+//       GoogleSignIn(scopes: ['https://mail.google.com/']);
 
-  static Future<GoogleSignInAccount> signIn() async {
-    if (await _googleSignIn.isSignedIn()) {
-      return _googleSignIn.currentUser;
-    } else {
-      return await _googleSignIn.signIn();
-    }
-  }
+//   static Future<GoogleSignInAccount> signIn() async {
+//     if (await _googleSignIn.isSignedIn()) {
+//       return _googleSignIn.currentUser;
+//     } else {
+//       return await _googleSignIn.signIn();
+//     }
+//   }
 
-  static Future signOut() => _googleSignIn.signOut();
-}
+//   static Future signOut() => _googleSignIn.signOut();
+// }

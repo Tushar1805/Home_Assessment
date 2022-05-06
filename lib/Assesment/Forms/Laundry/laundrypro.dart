@@ -59,15 +59,38 @@ class LaundryPro extends ChangeNotifier {
       controllers["field${i + 1}"] = TextEditingController();
       controllerstreco["field${i + 1}"] = TextEditingController();
       isListening["field${i + 1}"] = false;
-      controllers["field${i + 1}"].text =
-          wholelist[7][accessname]['question']["${i + 1}"]['Recommendation'];
+      controllers["field${i + 1}"].text = capitalize(
+          wholelist[7][accessname]['question']["${i + 1}"]['Recommendation']);
       controllerstreco["field${i + 1}"].text =
-          '${wholelist[7][accessname]['question']["${i + 1}"]['Recommendationthera']}';
+          '${capitalize(wholelist[7][accessname]['question']["${i + 1}"]['Recommendationthera'])}';
       colorsset["field${i + 1}"] = Color.fromRGBO(10, 80, 106, 1);
     }
     getRole();
     setinitials();
     doorwidth = int.tryParse('$getvalue(7)');
+  }
+
+  String capitalize(String s) {
+    // Each sentence becomes an array element
+    var output = '';
+    if (s != null && s != '') {
+      var sentences = s.split('.');
+      // Initialize string as empty string
+
+      // Loop through each sentence
+      for (var sen in sentences) {
+        // Trim leading and trailing whitespace
+        var trimmed = sen.trim();
+        // Capitalize first letter of current sentence
+
+        var capitalized = trimmed.isNotEmpty
+            ? "${trimmed[0].toUpperCase() + trimmed.substring(1)}"
+            : '';
+        // Add current sentence to output with a period
+        output += capitalized + ". ";
+      }
+    }
+    return output;
   }
 
   void _showSnackBar(snackbar, BuildContext buildContext) {

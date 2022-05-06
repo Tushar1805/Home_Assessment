@@ -95,6 +95,56 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
       assesmentprovider.listofRooms = widget.wholelist;
     }
     double _w = MediaQuery.of(context).size.width;
+
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        assesmentprovider.setassessmainstatus(widget.docID);
+        if (!edit) {
+          for (int i = 0; i < assesmentprovider.listofRooms.length; i++) {
+            if (assesmentprovider.listofRooms[i]['name'] ==
+                'Living Arrangements') {
+              setState(() {
+                assesmentprovider.listofRooms[i]['room$i'] = {
+                  'name': '${assesmentprovider.listofRooms[i]['name']}',
+                  'complete': 0,
+                  'total': gettotal(assesmentprovider.getlistdata()[i]['name']),
+                  'question':
+                      getMaps(assesmentprovider.getlistdata()[i]['name']),
+                };
+              });
+            }
+          }
+        }
+
+        /// Here we are calling the Cards UI page where each and every rooms created
+        /// will be displayed but we are also passing the provider link. Because the same data
+        /// will be needing rthe rooms data in further pages.
+        edit
+            ? Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CompleteAssessmentBase(
+                        assesmentprovider.getlistdata(), widget.docID, role)))
+            : Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => CardsUINew(
+                        assesmentprovider.getlistdata(), widget.docID)));
+        NewAssesmentRepository()
+            .setAssessmentCurrentStatus("Assessment in Progress", widget.docID);
+        NewAssesmentRepository()
+            .setForm(assesmentprovider.getlistdata(), widget.docID);
+      },
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: Text("Edit Rooms"),
+      content: Text("Rooms has been updated."),
+      actions: [
+        okButton,
+      ],
+    );
     return WillPopScope(
       /// This will give a pop up whenever we try to get back from the
       /// areas of room available.
@@ -236,80 +286,104 @@ class _NewAssesmentUIState extends State<NewAssesmentUI> {
                   //     );
                   //   },
                   // )),
+                  SizedBox(
+                    height: 20,
+                  ),
                   Container(
-                      width: double.infinity,
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.all(15),
-                      child: ClipOval(
-                        child: Material(
-                          color: Colors.orange, // button color
-                          child: InkWell(
-                            splashColor:
-                                Color.fromRGBO(10, 80, 106, 1), // inkwell color
-                            child: SizedBox(
-                                width: 76,
-                                height: 76,
-                                child: Icon(Icons.arrow_forward,
-                                    color: Colors.white)),
-                            onTap: () {
-                              /// This is the next button.
-                              /// As said earlier we do skip the living Arrangements card so here
-                              /// it is taken care of. we do create only a single room for living arrangements
-
-                              assesmentprovider
-                                  .setassessmainstatus(widget.docID);
-                              if (!edit) {
-                                for (int i = 0;
-                                    i < assesmentprovider.listofRooms.length;
-                                    i++) {
-                                  if (assesmentprovider.listofRooms[i]
-                                          ['name'] ==
-                                      'Living Arrangements') {
-                                    setState(() {
-                                      assesmentprovider.listofRooms[i]
-                                          ['room$i'] = {
-                                        'name':
-                                            '${assesmentprovider.listofRooms[i]['name']}',
-                                        'complete': 0,
-                                        'total': gettotal(assesmentprovider
-                                            .getlistdata()[i]['name']),
-                                        'question': getMaps(assesmentprovider
-                                            .getlistdata()[i]['name']),
-                                      };
-                                    });
-                                  }
-                                }
-                              }
-
-                              /// Here we are calling the Cards UI page where each and every rooms created
-                              /// will be displayed but we are also passing the provider link. Because the same data
-                              /// will be needing rthe rooms data in further pages.
-                              edit
-                                  ? Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              CompleteAssessmentBase(
-                                                  assesmentprovider
-                                                      .getlistdata(),
-                                                  widget.docID,
-                                                  role)))
-                                  : Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => CardsUINew(
-                                              assesmentprovider.getlistdata(),
-                                              widget.docID)));
-                              NewAssesmentRepository()
-                                  .setAssessmentCurrentStatus(
-                                      "Assessment in Progress", widget.docID);
-                              NewAssesmentRepository().setForm(
-                                  assesmentprovider.getlistdata(),
-                                  widget.docID);
-                            },
+                      height: MediaQuery.of(context).size.height * 0.06,
+                      child: RaisedButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(20),
                           ),
-                        ),
-                      ))
+                          color: Colors.orange,
+                          child: Text(
+                            'Submit & Continue',
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                          onPressed: () {
+                            /// This is the next button.
+                            /// As said earlier we do skip the living Arrangements card so here
+                            /// it is taken care of. we do create only a single room for living arrangements
+                            ///
+
+                            // set up the AlertDialog
+                            showDialog(
+                                context: context, builder: (context) => alert);
+                          })),
+                  //     Container(
+                  //       width: double.infinity,
+                  //       alignment: Alignment.center,
+                  //       padding: EdgeInsets.all(15),
+                  //       child: Material(
+                  //         color: Colors.orange, // button color
+                  //         child: InkWell(
+                  //           splashColor:
+                  //               Color.fromRGBO(10, 80, 106, 1), // inkwell color
+                  //           child: SizedBox(
+                  //               width: 7,
+                  //               height: 76,
+                  //               child: Center(
+                  //                   child: Text("Save & Continue",
+                  //                       style: TextStyle(
+                  //                         color: Colors.white,
+                  //                         fontSize: 18,
+                  //                       )))
+                  //               // Icon(Icons.arrow_forward,
+                  //               //     color: Colors.white)
+                  //               ),
+                  //           onTap: () {
+                  //             /// This is the next button.
+                  //             /// As said earlier we do skip the living Arrangements card so here
+                  //             /// it is taken care of. we do create only a single room for living arrangements
+
+                  //             assesmentprovider.setassessmainstatus(widget.docID);
+                  //             if (!edit) {
+                  //               for (int i = 0;
+                  //                   i < assesmentprovider.listofRooms.length;
+                  //                   i++) {
+                  //                 if (assesmentprovider.listofRooms[i]['name'] ==
+                  //                     'Living Arrangements') {
+                  //                   setState(() {
+                  //                     assesmentprovider.listofRooms[i]['room$i'] = {
+                  //                       'name':
+                  //                           '${assesmentprovider.listofRooms[i]['name']}',
+                  //                       'complete': 0,
+                  //                       'total': gettotal(assesmentprovider
+                  //                           .getlistdata()[i]['name']),
+                  //                       'question': getMaps(assesmentprovider
+                  //                           .getlistdata()[i]['name']),
+                  //                     };
+                  //                   });
+                  //                 }
+                  //               }
+                  //             }
+
+                  //             /// Here we are calling the Cards UI page where each and every rooms created
+                  //             /// will be displayed but we are also passing the provider link. Because the same data
+                  //             /// will be needing rthe rooms data in further pages.
+                  //             edit
+                  //                 ? Navigator.push(
+                  //                     context,
+                  //                     MaterialPageRoute(
+                  //                         builder: (context) =>
+                  //                             CompleteAssessmentBase(
+                  //                                 assesmentprovider.getlistdata(),
+                  //                                 widget.docID,
+                  //                                 role)))
+                  //                 : Navigator.push(
+                  //                     context,
+                  //                     MaterialPageRoute(
+                  //                         builder: (context) => CardsUINew(
+                  //                             assesmentprovider.getlistdata(),
+                  //                             widget.docID)));
+                  //             NewAssesmentRepository().setAssessmentCurrentStatus(
+                  //                 "Assessment in Progress", widget.docID);
+                  //             NewAssesmentRepository().setForm(
+                  //                 assesmentprovider.getlistdata(), widget.docID);
+                  //           },
+                  //         ),
+                  //       ),
+                  //     )
                 ],
               )),
         ),

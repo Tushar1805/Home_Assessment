@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tryapp/Assesment/Forms/Kitchen/kitchen.dart';
 import 'package:tryapp/Assesment/Forms/Kitchen/kitchenpro.dart';
 import 'package:tryapp/Assesment/Forms/ViewVideo.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
@@ -44,12 +45,35 @@ class _KitchenUIState extends State<KitchenUI> {
   String videoDownloadUrl, videoUrl, videoName;
   File video;
   bool uploading = false;
+  List<DropdownMenuItem<dynamic>> items = [];
+  @override
   @override
   void initState() {
     super.initState();
     // setinitials();
+    fillDropItem();
     getAssessData();
     getRole();
+  }
+
+  fillDropItem() {
+    List<dynamic> itemList = [];
+    setState(() {
+      for (var i = 0; i < widget.wholelist[3]['count']; i++) {
+        if (widget.wholelist[3]['room${i + 1}']['isUsed'][0]) {
+          itemList.add("room${i + 1}".toString());
+        }
+      }
+
+      itemList.forEach((element) {
+        DropdownMenuItem<String> ddmi = DropdownMenuItem<String>(
+          child: Text("${widget.wholelist[3][element.toString()]['name']}",
+              style: TextStyle(fontSize: 18, color: Colors.white)),
+          value: element.toString(),
+        );
+        items.add(ddmi);
+      });
+    });
   }
 
   Future<void> getAssessData() async {
@@ -438,13 +462,52 @@ class _KitchenUIState extends State<KitchenUI> {
     }
 
     return WillPopScope(
-      onWillPop: () async => false,
+      onWillPop: () async {
+        listenDropButton(assesmentprovider);
+        return true;
+      },
       child: Scaffold(
         appBar: AppBar(
           title: (widget.roomname != null)
-              ? Text("${widget.roomname}")
+              ? Container(
+                  padding: EdgeInsets.all(8),
+                  child: DropdownButtonHideUnderline(
+                    child: DropdownButton(
+                      iconDisabledColor: Colors.white,
+                      dropdownColor: Color.fromRGBO(10, 80, 106, 1),
+                      icon: Icon(
+                        // Add this
+                        Icons.arrow_drop_down, // Add this
+                        color: Colors.white, // Add this
+                      ),
+                      items: items,
+                      onChanged: (value) {
+                        setState(() {
+                          widget.accessname = value;
+                          widget.roomname =
+                              widget.wholelist[3][widget.accessname]['name'];
+                        });
+                        print(widget.roomname);
+                        listenDropButton(assesmentprovider);
+                        Navigator.of(context)
+                            .pushReplacement(MaterialPageRoute(
+                                builder: (context) => Kitchen(
+                                    widget.roomname,
+                                    widget.wholelist,
+                                    widget.accessname,
+                                    widget.docID)))
+                            .then((value) => setState(() {
+                                  widget.wholelist[3][widget]['complete'] =
+                                      value['complete'];
+                                  // widget.wholelist[index]['']
+                                }));
+                      },
+                      value: widget.accessname,
+                    ),
+                  ),
+                )
               : Text('Kitchen'),
-          automaticallyImplyLeading: false,
+          // automaticallyImplyLeading: false,
           backgroundColor: _colorgreen,
           actions: [
             IconButton(
@@ -2088,6 +2151,33 @@ class _KitchenUIState extends State<KitchenUI> {
       NewAssesmentRepository().setLatestChangeDate(widget.docID);
       NewAssesmentRepository().setForm(widget.wholelist, widget.docID);
       Navigator.pop(buildContext, widget.wholelist[3][widget.accessname]);
+    }
+    // }
+  }
+
+  void listenDropButton(KitchenPro assesmentprovider) {
+    var test = widget.wholelist[3][widget.accessname]['complete'];
+    for (int i = 0;
+        i < widget.wholelist[3][widget.accessname]['question'].length;
+        i++) {
+      assesmentprovider.setdatalisten(i + 1);
+      assesmentprovider.setdatalistenthera(i + 1);
+    }
+    // if (test == 0) {
+    //   _showSnackBar("You Must Have To Fill The Details First", buildContext);
+    // } else {
+    if (role == "therapist") {
+      // if (assesmentprovider.saveToForm) {
+      NewAssesmentRepository().setLatestChangeDate(widget.docID);
+      NewAssesmentRepository().setForm(widget.wholelist, widget.docID);
+      // Navigator.pop(buildContext, widget.wholelist[3][widget.accessname]);
+      // } else {
+      //   _showSnackBar("Provide all recommendations", buildContext);
+      // }
+    } else {
+      NewAssesmentRepository().setLatestChangeDate(widget.docID);
+      NewAssesmentRepository().setForm(widget.wholelist, widget.docID);
+      // Navigator.pop(buildContext, widget.wholelist[3][widget.accessname]);
     }
     // }
   }
