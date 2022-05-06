@@ -180,6 +180,7 @@ class TherapistProvider extends ChangeNotifier {
       temptry["$j"] = datasetmaintemp["$j"].data();
     }
     datasetmain = temptry;
+    print("Detailed map: $datasetmain");
     loading = false;
     notifyListeners();
   }

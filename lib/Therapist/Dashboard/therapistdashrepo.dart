@@ -40,6 +40,7 @@ class TherapistRepository {
     dataset = await firestore
         .collection('assessments')
         .where('therapist', isEqualTo: user.uid)
+        .orderBy("date", descending: true)
         .get();
     return dataset;
 
