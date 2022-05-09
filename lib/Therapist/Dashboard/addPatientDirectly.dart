@@ -2,26 +2,31 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tryapp/Patient_Caregiver_Family/patientDetails.dart';
+import 'package:tryapp/login/login.dart';
 
 import '../../constants.dart';
 
-class TherapistDetails extends StatefulWidget {
-  final TherapistClass therapist;
-  final PatientClass patient;
-  bool needTherapist;
-  TherapistDetails(this.therapist, this.patient, this.needTherapist, {Key key})
-      : super(key: key);
-
+class AddPatientDirectly extends StatefulWidget {
   @override
-  _TherapistDetailsState createState() => _TherapistDetailsState();
+  _AddPatientDirectlyState createState() => _AddPatientDirectlyState();
 }
 
-class _TherapistDetailsState extends State<TherapistDetails> {
+class _AddPatientDirectlyState extends State<AddPatientDirectly> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  String fname, lname, email, address, phone, age, gender, uid, role;
+  String fname,
+      lname,
+      email,
+      address1 = "",
+      address2 = "",
+      phone,
+      age,
+      gender,
+      uid,
+      role;
   bool loadingPage = false;
-  var _groupValue = -1;
+  FirebaseAuth auth = FirebaseAuth.instance;
+  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  bool loading = false;
 
   void initState() {
     super.initState();
@@ -63,7 +68,7 @@ class _TherapistDetailsState extends State<TherapistDetails> {
 
   Widget _buildfName() {
     return TextFormField(
-        initialValue: (widget.therapist != null) ? widget.therapist.fname : "",
+        initialValue: "",
         decoration: formInputDecoration("Enter Your First Name"),
         validator: (String value) {
           if (value.isEmpty) {
@@ -78,7 +83,7 @@ class _TherapistDetailsState extends State<TherapistDetails> {
 
   Widget _buildlName() {
     return TextFormField(
-        initialValue: (widget.therapist != null) ? widget.therapist.lname : "",
+        initialValue: "",
         decoration: formInputDecoration("Enter Your Last Name"),
         validator: (String value) {
           if (value.isEmpty) {
@@ -93,7 +98,7 @@ class _TherapistDetailsState extends State<TherapistDetails> {
 
   Widget _buildEmail() {
     return TextFormField(
-        initialValue: (widget.therapist != null) ? widget.therapist.email : "",
+        initialValue: "",
         decoration: formInputDecoration("Enter Email Address (Username)"),
         validator: (String value) {
           if (value.isEmpty) {
@@ -113,7 +118,7 @@ class _TherapistDetailsState extends State<TherapistDetails> {
 
   Widget _buildPhone() {
     return TextFormField(
-        initialValue: (widget.therapist != null) ? widget.therapist.mobile : "",
+        initialValue: "",
         keyboardType: TextInputType.phone,
         decoration: formInputDecoration("Enter Mobile Number"),
         validator: (String value) {
@@ -127,25 +132,39 @@ class _TherapistDetailsState extends State<TherapistDetails> {
         });
   }
 
-  Widget _buildAddress() {
+  Widget _buildAddress1(var text) {
     return TextFormField(
-        initialValue:
-            (widget.therapist != null) ? widget.therapist.address : "",
-        decoration: formInputDecoration("Enter Organizationa Address"),
+        initialValue: "",
+        decoration: formInputDecoration(text),
         validator: (String value) {
-          // if (value.isEmpty) {
-          //   return 'Address is Required';
-          // }
+          if (value.isEmpty) {
+            return 'Address Line 1 is Required';
+          }
           return null;
         },
         onSaved: (String value) {
-          address = value;
+          address1 = value;
+        });
+  }
+
+  Widget _buildAddress2(var text) {
+    return TextFormField(
+        initialValue: "",
+        decoration: formInputDecoration(text),
+        validator: (String value) {
+          if (value.isEmpty) {
+            return 'Address Line 2 is Required';
+          }
+          return null;
+        },
+        onSaved: (String value) {
+          address2 = value;
         });
   }
 
   Widget _buildAge() {
     return TextFormField(
-        initialValue: (widget.therapist != null) ? widget.therapist.age : "",
+        initialValue: "",
         keyboardType: TextInputType.number,
         decoration: formInputDecoration("Enter Age"),
         // ignore: missing_return
@@ -164,6 +183,7 @@ class _TherapistDetailsState extends State<TherapistDetails> {
   Widget _buildGender() {
     return Container(
       child: DropdownButtonFormField<String>(
+        // value: (widget.patient != null) ? widget.patient.gender : "",
         decoration: formInputDecoration("Select Gender"),
         items: <String>[
           'Male',
@@ -179,7 +199,6 @@ class _TherapistDetailsState extends State<TherapistDetails> {
           );
         }).toList(),
         onChanged: (_) {},
-        // value: (widget.therapist != null) ? widget.therapist.gender : "",
       ),
     );
   }
@@ -215,8 +234,8 @@ class _TherapistDetailsState extends State<TherapistDetails> {
                 child: Center(
                   child: Text(
                       isSuccess
-                          ? 'Profile Updated Successfully!'
-                          : 'Something Went Wrong! Try Again...',
+                          ? 'Profile updated successfully!'
+                          : 'Something went wrong! try again...',
                       style:
                           normalTextStyle().copyWith(color: redOrangeColor())),
                 ),
@@ -269,7 +288,7 @@ class _TherapistDetailsState extends State<TherapistDetails> {
   //   await docTodo.update(user.toJson());
   // }
 
-  TherapistClass therapistDetails() {
+  PatientClass patientDetails() {
     setState(() {
       loadingPage = true;
     });
@@ -277,12 +296,12 @@ class _TherapistDetailsState extends State<TherapistDetails> {
     if (!isValid) {
       return null;
     } else {
-      final therapist = TherapistClass(
+      final patient = PatientClass(
         fname: fname,
         lname: lname,
         email: email,
-        role: "therapist",
-        address: address,
+        role: "patient",
+        address: address1 + ', ' + address2,
         mobile: phone,
         age: age,
         // gender: gender,
@@ -293,7 +312,7 @@ class _TherapistDetailsState extends State<TherapistDetails> {
       //   showSubmitDialog(true);
       //   loadingPage = false;
       // });
-      return therapist;
+      return patient;
     }
   }
 
@@ -317,6 +336,22 @@ class _TherapistDetailsState extends State<TherapistDetails> {
       // ...
       return true;
     }
+  }
+
+  scheduleAssessment(String therapistUid, String patientUid, String address) {
+    var doc = firestore.collection("assessments").doc().id;
+
+    firestore.collection("assessments").doc(doc).set({
+      "therapist": therapistUid,
+      "patient": patientUid,
+      "assessor": therapistUid,
+      'docID': doc,
+      'date': Timestamp.now(),
+      'status': 'new',
+      'home': address,
+      'currentStatus': "Assessment Scheduled",
+    }).then((value) => Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => Login("123456"))));
   }
 
   @override
@@ -348,7 +383,7 @@ class _TherapistDetailsState extends State<TherapistDetails> {
                 SizedBox(
                   width: 10.0,
                 ),
-                Text('Therapist Details', style: titleBarWhiteTextStyle()),
+                Text('Patient Details', style: titleBarWhiteTextStyle()),
               ],
             ),
           ),
@@ -357,171 +392,128 @@ class _TherapistDetailsState extends State<TherapistDetails> {
       ),
       backgroundColor: Colors.grey[200],
       body: SingleChildScrollView(
-        child: Container(
-            height: MediaQuery.of(context).size.height,
-            margin: EdgeInsets.all(24),
-            child: Column(
+          child: Container(
+        // height: MediaQuery.of(context).size.height * 0.8,
+        margin: EdgeInsets.all(24),
+        child: Column(children: [
+          Form(
+            key: _formKey,
+            // child: Stack(children: [
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+              _buildfName(),
+              SizedBox(
+                height: 15,
+              ),
+              _buildlName(),
+              SizedBox(
+                height: 15,
+              ),
+              _buildEmail(),
+              SizedBox(
+                height: 15,
+              ),
+              // _buildPhone(),
+              // SizedBox(
+              //   height: 15,
+              // ),
+              _buildAddress1("Enter Home Address Line 1"),
+              SizedBox(
+                height: 15,
+              ),
+              _buildAddress2("Enter Home Address Line 2"),
+              SizedBox(
+                height: 15,
+              ),
+              _buildPhone(),
+              SizedBox(
+                height: 15,
+              ),
+              _buildAge(),
+              // SizedBox(
+              //   height: 15,
+              // ),
+              // _buildGender(),
+              // SizedBox(
+              //   height: 50,
+              // ),
+            ]),
+          ),
+          Container(
+            padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+            alignment: Alignment.bottomRight,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                // Container(
-                //   padding: EdgeInsets.all(10),
-                //   child: Text(
-                //     "Choose which therapist you want.",
-                //     style: TextStyle(
-                //         fontSize: 18, color: Color.fromRGBO(10, 80, 106, 1)),
-                //   ),
-                // ),
-                RadioListTile(
-                  value: 0,
-                  groupValue: _groupValue,
-                  title: Text("I need a therapist from BHBS"),
-                  onChanged: (newValue) => setState(() {
-                    // assessor = newValue;
-                    _groupValue = 0;
-                  }),
-                  activeColor: Colors.blue,
-                ),
-                RadioListTile(
-                  value: 1,
-                  groupValue: _groupValue,
-                  title: Text("I already have a therapist"),
-                  onChanged: (newValue) => setState(() {
-                    // assessor = newValue;
-                    _groupValue = 1;
-                  }),
-                  activeColor: Colors.blue,
-                ),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.595,
-                  child: Stack(
-                    children: [
-                      SingleChildScrollView(
-                        child: Column(children: [
-                          (_groupValue != 0)
-                              ? Form(
-                                  key: _formKey,
-                                  child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        _buildfName(),
-                                        SizedBox(
-                                          height: 15,
-                                        ),
-                                        _buildlName(),
-                                        SizedBox(
-                                          height: 15,
-                                        ),
-                                        _buildEmail(),
-                                        SizedBox(
-                                          height: 15,
-                                        ),
-                                        // _buildPhone(),
-                                        // SizedBox(
-                                        //   height: 15,
-                                        // ),
-                                        _buildAddress(),
-                                        SizedBox(
-                                          height: 15,
-                                        ),
-                                        _buildPhone(),
-                                        SizedBox(
-                                          height: 15,
-                                        ),
-                                        // _buildAge(),
-                                        // SizedBox(
-                                        //   height: 15,
-                                        // ),
-                                        // _buildGender(),
-                                        // SizedBox(
-                                        //   height: 50,
-                                        // ),
-                                      ]),
-                                )
-                              : SizedBox(),
-                        ]),
+                TextButton(
+                  onPressed: () async {
+                    setState(() {
+                      loading = true;
+                    });
+                    if (!_formKey.currentState.validate()) {
+                      return;
+                    }
+                    _formKey.currentState.save();
+
+                    User patientUser;
+
+                    PatientClass patient = patientDetails();
+                    bool check = await checkIfEmailInUse(patient.email);
+
+                    await auth
+                        .createUserWithEmailAndPassword(
+                            email: patient.email, password: "123456")
+                        .then((value) => patientUser = value.user);
+
+                    firestore
+                        .collection("users")
+                        .doc(patientUser.uid)
+                        .set(patient.toJson(), SetOptions(merge: true));
+
+                    check
+                        ? showSnackBar(context,
+                            "Email already exists use a different email address")
+                        : scheduleAssessment("KFJgI4NcS5VmpWvk2fb8Kk2fhXE3",
+                            patientUser.uid, patient.address);
+                    setState(() {
+                      loading = false;
+                    });
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    height: 40.0,
+                    decoration: new BoxDecoration(
+                      color: Color.fromRGBO(10, 80, 106, 1),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(5.0),
                       ),
-                      // Positioned(
-                      // top: MediaQuery.of(context).size.height * 0.52,
-                      // left: MediaQuery.of(context).size.width * 0.4,
-                      Container(
-                        alignment: Alignment.bottomRight,
-                        child: TextButton(
-                          onPressed: () async {
-                            if (_groupValue == 0) {
-                              setState(() {
-                                widget.needTherapist = false;
-                              });
-                            } else {
-                              setState(() {
-                                widget.needTherapist = true;
-                              });
-                            }
-                            if (_groupValue != 0) {
-                              if (!_formKey.currentState.validate()) {
-                                return;
-                              }
-                              _formKey.currentState.save();
-
-                              TherapistClass therapist = therapistDetails();
-                              bool check =
-                                  await checkIfEmailInUse(therapist.email);
-                              print("$check");
-
-                              (check && _groupValue > 0)
-                                  ? showSnackBar(
-                                      context,
-                                      _groupValue != -1
-                                          ? "Email already exists use a different email address"
-                                          : "Select one of the options")
-                                  : Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                          builder: (context) => PatientDetails(
-                                              therapist,
-                                              widget.patient,
-                                              widget.needTherapist)));
-                            } else {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => PatientDetails(
-                                      new TherapistClass(),
-                                      widget.patient,
-                                      widget.needTherapist)));
-                            }
-                          },
-                          child: Container(
-                            width: MediaQuery.of(context).size.width * 0.4,
-                            height: 40.0,
-                            decoration: new BoxDecoration(
-                              color: Color.fromRGBO(10, 80, 106, 1),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(5.0),
-                              ),
-                            ),
-                            child: Center(
-                              child: Text(
-                                'Next',
-                                style: whiteTextStyle().copyWith(
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.w600),
-                              ),
+                    ),
+                    child: loading
+                        ? Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : Center(
+                            child: Text(
+                              'Schedule Assessment',
+                              style: whiteTextStyle().copyWith(
+                                  fontSize: 15.0, fontWeight: FontWeight.w600),
                             ),
                           ),
-                        ),
-                      ),
-                      // ),
-                    ],
                   ),
-                )
+                ),
               ],
-            )),
-      ),
+            ),
+          )
+        ]),
+      )),
     );
   }
 }
 
-class TherapistClass {
+class PatientClass {
   String fname, lname, role, address, mobile, email, age, gender, isNewUser;
 
-  TherapistClass(
+  PatientClass(
       {this.fname,
       this.lname,
       this.role,
@@ -544,7 +536,7 @@ class TherapistClass {
         'newUser': isNewUser
       };
 
-  static TherapistClass fromJson(Map<String, dynamic> json) => TherapistClass(
+  static PatientClass fromJson(Map<String, dynamic> json) => PatientClass(
         fname: json['firstName'],
         lname: json['lastName'],
         email: json['email'],
@@ -555,18 +547,4 @@ class TherapistClass {
         // gender: json['gender'],
         isNewUser: json['newUser'],
       );
-}
-
-class Utils {
-  static DateTime toDateTime(Timestamp value) {
-    if (value == null) return null;
-
-    return value.toDate();
-  }
-
-  static DateTime fromDateTimeToJson(DateTime date) {
-    if (date == null) return null;
-
-    return date.toUtc();
-  }
 }

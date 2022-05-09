@@ -301,8 +301,10 @@ class PatientProvider extends ChangeNotifier {
       var parts = s.split(' ');
       // print(parts);
       String sum = '';
-      parts.forEach(
-          (cur) => {sum += cur[0].toUpperCase() + cur.substring(1) + " "});
+      parts.forEach((cur) => {
+            if (cur.length != 0)
+              {sum += cur[0].toUpperCase() + cur.substring(1) + " "}
+          });
       return sum;
     }
   }

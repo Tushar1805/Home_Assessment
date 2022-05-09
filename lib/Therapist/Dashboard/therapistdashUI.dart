@@ -8,6 +8,7 @@ import 'package:tryapp/Assesment/newassesment/newassesmentbase.dart';
 import 'package:tryapp/CompleteAssessment/completeAssessmentBase.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/reportui.dart';
 import 'package:tryapp/Therapist/Dashboard/ViewFeedbackBase.dart';
+import 'package:tryapp/Therapist/Dashboard/addPatientDirectly.dart';
 import 'package:tryapp/Therapist/Dashboard/shareApp.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistpro.dart';
 import 'package:tryapp/constants.dart';
@@ -941,6 +942,23 @@ class _TherapistUIState extends State<TherapistUI> {
                                 builder: (context) => ViewFeedbackBase()))
                       },
                     ),
+                    admin
+                        ? ListTile(
+                            leading:
+                                Icon(Icons.add_moderator, color: Colors.green),
+                            title: Text(
+                              'Add Patient',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            onTap: () => {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          AddPatientDirectly()))
+                            },
+                          )
+                        : SizedBox(),
                     admin
                         ? ListTile(
                             leading: Icon(Icons.admin_panel_settings_sharp,
