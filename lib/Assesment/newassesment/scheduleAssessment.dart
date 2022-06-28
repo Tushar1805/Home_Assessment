@@ -70,6 +70,7 @@ class _ScheduleAssessmentState extends State<ScheduleAssessment> {
       'status': 'new',
       'home': widget.patient.address,
       'currentStatus': "Assessment Scheduled",
+      'viewStatus': 'new'
     }).then((value) => Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => Login("123456"))));
   }
@@ -109,6 +110,8 @@ class _ScheduleAssessmentState extends State<ScheduleAssessment> {
           ),
           decoration: new BoxDecoration(color: Color.fromRGBO(10, 80, 106, 1)),
         ),
+        foregroundColor: Color.fromRGBO(10, 80, 106, 1),
+        backgroundColor: Color.fromRGBO(10, 80, 106, 1),
       ),
       backgroundColor: Colors.grey[200],
       body: Container(

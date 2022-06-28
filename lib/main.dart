@@ -25,15 +25,13 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
         android: AndroidNotificationDetails(
           channel.id,
           channel.name,
-          channel.description,
         ),
       ));
 }
 
 const AndroidNotificationChannel channel = AndroidNotificationChannel(
   'high_importance_channel', // id
-  'High Importance Notifications', // title
-  'This channel is used for important notifications.', // description
+  'High Importance Notifications', // title// description
   importance: Importance.high,
 );
 
@@ -109,7 +107,6 @@ class _MyHomePageState extends State<MyHomePage> {
               android: AndroidNotificationDetails(
                 channel.id,
                 channel.name,
-                channel.description,
                 icon: android?.smallIcon,
               ),
             ));

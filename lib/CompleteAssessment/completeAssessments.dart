@@ -11,7 +11,7 @@ import 'package:tryapp/Assesment/Forms/LivingArrangements/livingArrangementbase.
 import 'package:tryapp/Assesment/Forms/LivingRoom/livingbase.dart';
 import 'package:tryapp/Assesment/Forms/Pathway/pathwaybase.dart';
 import 'package:tryapp/Assesment/Forms/Patio/patiobase.dart';
-import 'package:async_button_builder/async_button_builder.dart';
+// import 'package:async_button_builder/async_button_builder.dart';
 import 'package:tryapp/Assesment/Forms/SwimmingPool/swimmingbase.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentbase.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
@@ -516,64 +516,88 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                     )),
               ),
               Container(
-                child: Container(
-                  padding: EdgeInsets.all(15),
-                  alignment: Alignment.bottomRight,
-                  // height: double.infinity,
-                  child: AsyncButtonBuilder(
-                    child: Padding(
-                      // Value keys are important as otherwise our custom transitions
-                      // will have no way to differentiate between children.
-                      key: ValueKey('foo'),
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 20.0,
-                      ),
-                      child: Text(
-                        'Submit Assessment Details',
-                        style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    loadingWidget: Padding(
-                      key: ValueKey('bar'),
-                      padding: const EdgeInsets.all(17.0),
-                      child: SizedBox(
-                        height: 25.0,
-                        width: 25.0,
-                        child: CircularProgressIndicator(
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
-                      ),
-                    ),
-                    successWidget: Padding(
-                      key: ValueKey('foobar'),
-                      padding: const EdgeInsets.all(17.5),
-                      child: Icon(
-                        Icons.check,
-                        color: Colors.white,
-                      ),
-                    ),
-                    onPressed: () async {
-                      bool save = false;
-                      print("********Start*****");
-                      await Future.delayed(const Duration(milliseconds: 1500),
-                          () {
-                        // 1'st loop will check the number of areas in the form
-                        outerloop:
-                        for (int i = 0; i < widget.wholelist.length; i++) {
-                          print("********1st loop*****");
-                          print("length = ${widget.wholelist.length}");
-                          int count = widget.wholelist[i]['count'] ?? 0;
-                          print("count = $count");
-                          if (count > 0) {
-                            // This loop checks the number of rooms in a single area
-                            // After that checks any question is remaining or unfilled.
-                            for (int j = 1; j <= count; j++) {
-                              print("********2nd loop*****");
-                              if (widget.wholelist[i]['name'] ==
-                                  'Living Arrangements') {
+                padding: EdgeInsets.all(15),
+                alignment: Alignment.bottomRight,
+                child: ElevatedButton(
+                  child: Text(
+                    'Submit Assessment Details',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                  style: ButtonStyle(
+                      padding: MaterialStateProperty.all<EdgeInsets>(
+                          EdgeInsets.all(15)),
+                      foregroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(18.0),
+                              side: BorderSide(color: Colors.blueAccent)))),
+                  onPressed: () async {
+                    bool save = false;
+                    print("********Start*****");
+                    await Future.delayed(const Duration(milliseconds: 1500),
+                        () {
+                      // 1'st loop will check the number of areas in the form
+                      outerloop:
+                      for (int i = 0; i < widget.wholelist.length; i++) {
+                        print("********1st loop*****");
+                        print("length = ${widget.wholelist.length}");
+                        int count = widget.wholelist[i]['count'] ?? 0;
+                        print("count = $count");
+                        if (count > 0) {
+                          // This loop checks the number of rooms in a single area
+                          // After that checks any question is remaining or unfilled.
+                          for (int j = 1; j <= count; j++) {
+                            print("********2nd loop*****");
+                            if (widget.wholelist[i]['name'] ==
+                                'Living Arrangements') {
+                              if (widget.wholelist[i]["room$j"]["complete"] ==
+                                  gettotal(widget.wholelist[i]["name"])) {
+                                // setState(() {
+                                //   save = true;
+                                // });
+                                if (widget.role == "therapist") {
+                                  if (widget.wholelist[i]["room$j"]["isSave"] !=
+                                          null &&
+                                      widget.wholelist[i]["room$j"]["isSave"] ==
+                                          true) {
+                                    setState(() {
+                                      save = true;
+                                    });
+                                    print(
+                                        "***********true for $i with $j************");
+                                  } else {
+                                    setState(() {
+                                      save = false;
+                                      roomNumber = i;
+                                      innerRoomNumber = j;
+                                      route = widget.wholelist[i];
+                                    });
+                                    print(
+                                        "***********false for $i with $j************");
+                                    break outerloop;
+                                  }
+                                } else {
+                                  setState(() {
+                                    save = true;
+                                  });
+                                  print(
+                                      "***********true for $i with $j************");
+                                }
+                              } else {
+                                setState(() {
+                                  save = false;
+                                  roomNumber = i;
+                                  innerRoomNumber = j;
+                                  route = widget.wholelist[i];
+                                });
+                                print(
+                                    "***********false for $i with $j************");
+                                break outerloop;
+                              }
+                            } else {
+                              if (widget.wholelist[i]["room$j"]["isUsed"][0]) {
                                 if (widget.wholelist[i]["room$j"]["complete"] ==
                                     gettotal(widget.wholelist[i]["name"])) {
                                   // setState(() {
@@ -620,257 +644,544 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                                       "***********false for $i with $j************");
                                   break outerloop;
                                 }
-                              } else {
-                                if (widget.wholelist[i]["room$j"]["isUsed"]
-                                    [0]) {
-                                  if (widget.wholelist[i]["room$j"]
-                                          ["complete"] ==
-                                      gettotal(widget.wholelist[i]["name"])) {
-                                    // setState(() {
-                                    //   save = true;
-                                    // });
-                                    if (widget.role == "therapist") {
-                                      if (widget.wholelist[i]["room$j"]
-                                                  ["isSave"] !=
-                                              null &&
-                                          widget.wholelist[i]["room$j"]
-                                                  ["isSave"] ==
-                                              true) {
-                                        setState(() {
-                                          save = true;
-                                        });
-                                        print(
-                                            "***********true for $i with $j************");
-                                      } else {
-                                        setState(() {
-                                          save = false;
-                                          roomNumber = i;
-                                          innerRoomNumber = j;
-                                          route = widget.wholelist[i];
-                                        });
-                                        print(
-                                            "***********false for $i with $j************");
-                                        break outerloop;
-                                      }
-                                    } else {
-                                      setState(() {
-                                        save = true;
-                                      });
-                                      print(
-                                          "***********true for $i with $j************");
-                                    }
-                                  } else {
-                                    setState(() {
-                                      save = false;
-                                      roomNumber = i;
-                                      innerRoomNumber = j;
-                                      route = widget.wholelist[i];
-                                    });
-                                    print(
-                                        "***********false for $i with $j************");
-                                    break outerloop;
-                                  }
-                                }
                               }
                             }
                           }
                         }
-                      });
-                      if (widget.role == 'therapist') {
-                        if (save) {
-                          NewAssesmentRepository().setAssessmentCurrentStatus(
-                              "Report Generated", widget.docID);
-                          NewAssesmentRepository()
-                              .setStatus("old", widget.docID);
-                          NewAssesmentRepository()
-                              .setAssessmentCompletionDate(widget.docID);
-                          // Navigator.of(context).pop();
-                          Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) => Therapist()));
-                        } else {
-                          // _showSnackBar(
-                          //     "You must give all the recommendations", context);
-                          // showDialog(
-                          //     context,
-                          //     "Oops, you have missed giving recommedation in ${widget.wholelist[roomNumber]['room$innerRoomNumber']['name']}. Please fill out and then continue.",
-                          //     route,
-                          //     roomNumber,
-                          //     innerRoomNumber);
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              // return object of type Dialog
-                              return AlertDialog(
-                                title: new Text("Form Incomplete"),
-                                content: new Text(
-                                    "Oops, you have missed giving recommendation in ${widget.wholelist[roomNumber]['room$innerRoomNumber']['name']}. Please fill out and then continue."),
-                                actions: <Widget>[
-                                  // usually buttons at the bottom of the dialog
-                                  new FlatButton(
-                                    child: new Text(
-                                      "Ok",
-                                      style: TextStyle(
-                                          fontSize: 20, color: Colors.blue),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        }
-                      } else if (widget.role == 'nurse/case manager') {
-                        print("#############");
-                        if (save == true) {
-                          print("**************");
-                          NewAssesmentRepository().setAssessmentCurrentStatus(
-                              "Assessment Finished", widget.docID);
-                          Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(builder: (context) => Nurse()));
-                        } else {
-                          // _showSnackBar("Form is incomplete", context);
-                          // showDialog(
-                          //     context,
-                          //     "Oops, you have missed a question in ${widget.wholelist[roomNumber]['room$innerRoomNumber']['name']}. Please fill out and then continue.",
-                          //     route,
-                          //     roomNumber,
-                          //     innerRoomNumber);
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              // return object of type Dialog
-                              return AlertDialog(
-                                title: new Text("Form Incomplete"),
-                                content: new Text(
-                                    "Oops, you have missed a question in ${widget.wholelist[roomNumber]['room$innerRoomNumber']['name']}. Please fill out and then continue."),
-                                actions: <Widget>[
-                                  // usually buttons at the bottom of the dialog
-                                  new FlatButton(
-                                    child: Text(
-                                      "Ok",
-                                      style: TextStyle(
-                                          fontSize: 20, color: Colors.blue),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        }
-                      } else if (widget.role == "patient") {
-                        if (save == true) {
-                          NewAssesmentRepository().setAssessmentCurrentStatus(
-                              "Assessment Finished", widget.docID);
-                          Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (context) => Patient()));
-                        } else {
-                          // _showSnackBar("form is incomplete", context);
-                          // showDialog(
-                          //     context,
-                          //     "Oops, you have missed a question in ${widget.wholelist[roomNumber]['room$innerRoomNumber']['name']}. Please fill out and then continue.",
-                          //     route,
-                          //     roomNumber,
-                          //     innerRoomNumber);
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              // return object of type Dialog
-                              return AlertDialog(
-                                title: new Text("Form Incomplete"),
-                                content: new Text(
-                                    "Oops, you have missed a question in ${widget.wholelist[roomNumber]['room$innerRoomNumber']['name']}. Please fill out and then continue."),
-                                actions: <Widget>[
-                                  // usually buttons at the bottom of the dialog
-                                  new FlatButton(
-                                    child: Text(
-                                      "Ok",
-                                      style: TextStyle(
-                                          fontSize: 20, color: Colors.blue),
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        }
                       }
-                      // } else {
-                      //   _showSnackBar(
-                      //       "You Must Have to Fill All Details", context);
-                      // }
-                      // if (save == true) {
-                      //   NewAssesmentRepository()
-                      //       .setLatestChangeDate(widget.docID);
+                    });
 
-                      //   NewAssesmentRepository()
-                      //       .setForm(widget.wholelist, widget.docID);
-                      //   _showSnackBar(
-                      //       "Assessment Submitted Successfully", context);
-                      // } else {
-                      //   _showSnackBar("Form is incomplete", context);
+                    // print(widget.wholelist)
+                    // if (save) {
+                    if (widget.role == 'therapist') {
+                      // for (int i = 0; i < widget.wholelist.length; i++) {
+                      //   if (widget.wholelist[i]["count"] > 0) {
+                      //     int count = widget.wholelist[i]["count"];
+                      //     for (int j = 1; j <= count; j++) {
+                      //       for (int k = 0;
+                      //           k <
+                      //               widget.wholelist[i]["room$j"]
+                      //                   ["completed"];
+                      //           k++) {
+                      //         if (widget.wholelist[i]["room$j"]["question"]
+                      //                     ["$k"]["Priority"] !=
+                      //                 "0" &&
+                      //             widget.wholelist[i]["room$j"]["question"]
+                      //                     ["$k"]["Recommendationthera"] !=
+                      //                 "") {
+                      //           setState(() {
+                      //             saved = true;
+                      //           });
+                      //         } else {
+                      //           setState(() {
+                      //             saved = false;
+                      //           });
+
+                      //           break;
+                      //         }
+                      //       }
+                      //     }
+                      //   }
                       // }
-                      // // // print(widget.wholelist);
-                      // // NewAssesmentRepository().setassessmentclosingtime(docID);
-                      // if (role == 'therapist') {
-                      //   NewAssesmentRepository().setAssessmentCurrentStatus(
-                      //       "Report Generated", widget.docID);
-                      //   NewAssesmentRepository()
-                      //       .setAssessmentCompletionDate(widget.docID);
-                      //   Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      //       builder: (context) => Therapist()));
-                      // } else if (role == 'nurse/case manager') {
-                      //   NewAssesmentRepository().setAssessmentCurrentStatus(
-                      //       "Assessment Finished", widget.docID);
-                      //   Navigator.of(context).pushReplacement(
-                      //       MaterialPageRoute(builder: (context) => Nurse()));
-                      // } else if (role == 'patient') {
-                      //   NewAssesmentRepository().setAssessmentCurrentStatus(
-                      //       "Assessment Finished", widget.docID);
-                      //   Navigator.of(context).pushReplacement(
-                      //       MaterialPageRoute(builder: (context) => Patient()));
-                      // }
-                      // NewAssesmentRepository()
-                      //     .setLatestChangeDate(widget.docID);
-                    },
-                    loadingSwitchInCurve: Curves.bounceInOut,
-                    loadingTransitionBuilder: (child, animation) {
-                      return SlideTransition(
-                        position: Tween<Offset>(
-                          begin: Offset(0, 1.0),
-                          end: Offset(0, 0),
-                        ).animate(animation),
-                        child: child,
-                      );
-                    },
-                    builder: (context, child, callback, state) {
-                      return Material(
-                        color: state.maybeWhen(
-                          success: () => Colors.green[600],
-                          orElse: () => Colors.blue,
-                        ),
-                        // This prevents the loading indicator showing below the
-                        // button
-                        clipBehavior: Clip.hardEdge,
-                        shape: StadiumBorder(),
-                        child: InkWell(
-                          child: child,
-                          onTap: callback,
-                        ),
-                      );
-                    },
-                  ),
+                      if (save == true) {
+                        NewAssesmentRepository().setAssessmentCurrentStatus(
+                            "Report Generated", widget.docID);
+                        NewAssesmentRepository().setStatus("old", widget.docID);
+                        NewAssesmentRepository()
+                            .setAssessmentCompletionDate(widget.docID);
+                        //         NewAssesmentRepository()
+                        //     .setLatestChangeDate(widget.docID);
+
+                        // NewAssesmentRepository()
+                        //     .setForm(widget.wholelist, widget.docID);
+                        // Navigator.of(context).pop();
+                        Navigator.of(context).pushReplacement(MaterialPageRoute(
+                            builder: (context) => Therapist()));
+                        _showSnackBar(
+                            "Assessment submitted successfully", context);
+                      } else {
+                        // _showSnackBar(
+                        //     "You must give all the recommendations", context);
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            // return object of type Dialog
+                            return AlertDialog(
+                              title: new Text("Form Incomplete"),
+                              content: new Text(
+                                  "Oops, you have missed giving recommendation in ${widget.wholelist[roomNumber]['room$innerRoomNumber']['name']}. Please fill out and then continue."),
+                              actions: <Widget>[
+                                // usually buttons at the bottom of the dialog
+                                new FlatButton(
+                                  child: new Text(
+                                    "Ok",
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.blue),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    } else if (widget.role == 'nurse/case manager') {
+                      if (save == true) {
+                        NewAssesmentRepository().setAssessmentCurrentStatus(
+                            "Assessment Finished", widget.docID);
+                        //          NewAssesmentRepository()
+                        //     .setLatestChangeDate(widget.docID);
+
+                        // NewAssesmentRepository()
+                        //     .setForm(widget.wholelist, widget.docID);
+                        Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) => Nurse()));
+                        _showSnackBar(
+                            "Assessment submitted successfully", context);
+                      } else {
+                        // _showSnackBar("Form is incomplete", context);
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            // return object of type Dialog
+                            return AlertDialog(
+                              title: new Text("Form Incomplete"),
+                              content: new Text(
+                                  "Oops, you have missed a question in ${widget.wholelist[roomNumber]['room$innerRoomNumber']['name']}. Please fill out and then continue."),
+                              actions: <Widget>[
+                                // usually buttons at the bottom of the dialog
+                                new FlatButton(
+                                  child: Text(
+                                    "Ok",
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.blue),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    } else if (widget.role == "patient") {
+                      if (save == true) {
+                        NewAssesmentRepository().setAssessmentCurrentStatus(
+                            "Assessment Finished", widget.docID);
+                        //          NewAssesmentRepository()
+                        //     .setLatestChangeDate(widget.docID);
+
+                        // NewAssesmentRepository()
+                        //     .setForm(widget.wholelist, widget.docID);
+                        Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (context) => Patient()));
+                        _showSnackBar(
+                            "Assessment submitted successfully", context);
+                      } else {
+                        // _showSnackBar("Form is incomplete", context);
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            // return object of type Dialog
+                            return AlertDialog(
+                              title: new Text("Form Incomplete"),
+                              content: new Text(
+                                  "Oops, you have missed a question in ${widget.wholelist[roomNumber]['room$innerRoomNumber']['name']}. Please fill out and then continue."),
+                              actions: <Widget>[
+                                // usually buttons at the bottom of the dialog
+                                new FlatButton(
+                                  child: Text(
+                                    "Ok",
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.blue),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    }
+                    // } else {
+                    //   _showSnackBar(
+                    //       "You Must Have to Fill All Details", context);
+                    // }
+                    // if (save == true) {
+                    //   NewAssesmentRepository()
+                    //       .setLatestChangeDate(widget.docID);
+
+                    //   NewAssesmentRepository()
+                    //       .setForm(widget.wholelist, widget.docID);
+                    //   _showSnackBar(
+                    //       "Assessment Submitted Successfully", context);
+                    // } else {
+                    //   _showSnackBar("Form is incomplete", context);
+                    // }
+                  },
                 ),
               ),
+              // Container(
+              //   child: Container(
+              //     padding: EdgeInsets.all(15),
+              //     alignment: Alignment.bottomRight,
+              //     // height: double.infinity,
+              //     child: AsyncButtonBuilder(
+              //       child: Padding(
+              //         // Value keys are important as otherwise our custom transitions
+              //         // will have no way to differentiate between children.
+              //         key: ValueKey('foo'),
+              //         padding: const EdgeInsets.symmetric(
+              //           horizontal: 16.0,
+              //           vertical: 20.0,
+              //         ),
+              //         child: Text(
+              //           'Submit Assessment Details',
+              //           style: TextStyle(
+              //               color: Colors.white, fontWeight: FontWeight.bold),
+              //         ),
+              //       ),
+              //       loadingWidget: Padding(
+              //         key: ValueKey('bar'),
+              //         padding: const EdgeInsets.all(17.0),
+              //         child: SizedBox(
+              //           height: 25.0,
+              //           width: 25.0,
+              //           child: CircularProgressIndicator(
+              //             valueColor:
+              //                 AlwaysStoppedAnimation<Color>(Colors.white),
+              //           ),
+              //         ),
+              //       ),
+              //       successWidget: Padding(
+              //         key: ValueKey('foobar'),
+              //         padding: const EdgeInsets.all(17.5),
+              //         child: Icon(
+              //           Icons.check,
+              //           color: Colors.white,
+              //         ),
+              //       ),
+              //       onPressed: () async {
+              //         bool save = false;
+              //         print("********Start*****");
+              //         await Future.delayed(const Duration(milliseconds: 1500),
+              //             () {
+              //           // 1'st loop will check the number of areas in the form
+              //           outerloop:
+              //           for (int i = 0; i < widget.wholelist.length; i++) {
+              //             print("********1st loop*****");
+              //             print("length = ${widget.wholelist.length}");
+              //             int count = widget.wholelist[i]['count'] ?? 0;
+              //             print("count = $count");
+              //             if (count > 0) {
+              //               // This loop checks the number of rooms in a single area
+              //               // After that checks any question is remaining or unfilled.
+              //               for (int j = 1; j <= count; j++) {
+              //                 print("********2nd loop*****");
+              //                 if (widget.wholelist[i]['name'] ==
+              //                     'Living Arrangements') {
+              //                   if (widget.wholelist[i]["room$j"]["complete"] ==
+              //                       gettotal(widget.wholelist[i]["name"])) {
+              //                     // setState(() {
+              //                     //   save = true;
+              //                     // });
+              //                     if (widget.role == "therapist") {
+              //                       if (widget.wholelist[i]["room$j"]
+              //                                   ["isSave"] !=
+              //                               null &&
+              //                           widget.wholelist[i]["room$j"]
+              //                                   ["isSave"] ==
+              //                               true) {
+              //                         setState(() {
+              //                           save = true;
+              //                         });
+              //                         print(
+              //                             "***********true for $i with $j************");
+              //                       } else {
+              //                         setState(() {
+              //                           save = false;
+              //                           roomNumber = i;
+              //                           innerRoomNumber = j;
+              //                           route = widget.wholelist[i];
+              //                         });
+              //                         print(
+              //                             "***********false for $i with $j************");
+              //                         break outerloop;
+              //                       }
+              //                     } else {
+              //                       setState(() {
+              //                         save = true;
+              //                       });
+              //                       print(
+              //                           "***********true for $i with $j************");
+              //                     }
+              //                   } else {
+              //                     setState(() {
+              //                       save = false;
+              //                       roomNumber = i;
+              //                       innerRoomNumber = j;
+              //                       route = widget.wholelist[i];
+              //                     });
+              //                     print(
+              //                         "***********false for $i with $j************");
+              //                     break outerloop;
+              //                   }
+              //                 } else {
+              //                   if (widget.wholelist[i]["room$j"]["isUsed"]
+              //                       [0]) {
+              //                     if (widget.wholelist[i]["room$j"]
+              //                             ["complete"] ==
+              //                         gettotal(widget.wholelist[i]["name"])) {
+              //                       // setState(() {
+              //                       //   save = true;
+              //                       // });
+              //                       if (widget.role == "therapist") {
+              //                         if (widget.wholelist[i]["room$j"]
+              //                                     ["isSave"] !=
+              //                                 null &&
+              //                             widget.wholelist[i]["room$j"]
+              //                                     ["isSave"] ==
+              //                                 true) {
+              //                           setState(() {
+              //                             save = true;
+              //                           });
+              //                           print(
+              //                               "***********true for $i with $j************");
+              //                         } else {
+              //                           setState(() {
+              //                             save = false;
+              //                             roomNumber = i;
+              //                             innerRoomNumber = j;
+              //                             route = widget.wholelist[i];
+              //                           });
+              //                           print(
+              //                               "***********false for $i with $j************");
+              //                           break outerloop;
+              //                         }
+              //                       } else {
+              //                         setState(() {
+              //                           save = true;
+              //                         });
+              //                         print(
+              //                             "***********true for $i with $j************");
+              //                       }
+              //                     } else {
+              //                       setState(() {
+              //                         save = false;
+              //                         roomNumber = i;
+              //                         innerRoomNumber = j;
+              //                         route = widget.wholelist[i];
+              //                       });
+              //                       print(
+              //                           "***********false for $i with $j************");
+              //                       break outerloop;
+              //                     }
+              //                   }
+              //                 }
+              //               }
+              //             }
+              //           }
+              //         });
+              //         if (widget.role == 'therapist') {
+              //           if (save) {
+              //             NewAssesmentRepository().setAssessmentCurrentStatus(
+              //                 "Report Generated", widget.docID);
+              //             NewAssesmentRepository()
+              //                 .setStatus("old", widget.docID);
+              //             NewAssesmentRepository()
+              //                 .setAssessmentCompletionDate(widget.docID);
+              //             // Navigator.of(context).pop();
+              //             Navigator.of(context).pushReplacement(
+              //                 MaterialPageRoute(
+              //                     builder: (context) => Therapist()));
+              //           } else {
+              //             // _showSnackBar(
+              //             //     "You must give all the recommendations", context);
+              //             // showDialog(
+              //             //     context,
+              //             //     "Oops, you have missed giving recommedation in ${widget.wholelist[roomNumber]['room$innerRoomNumber']['name']}. Please fill out and then continue.",
+              //             //     route,
+              //             //     roomNumber,
+              //             //     innerRoomNumber);
+              //             showDialog(
+              //               context: context,
+              //               builder: (BuildContext context) {
+              //                 // return object of type Dialog
+              //                 return AlertDialog(
+              //                   title: new Text("Form Incomplete"),
+              //                   content: new Text(
+              //                       "Oops, you have missed giving recommendation in ${widget.wholelist[roomNumber]['room$innerRoomNumber']['name']}. Please fill out and then continue."),
+              //                   actions: <Widget>[
+              //                     // usually buttons at the bottom of the dialog
+              //                     new FlatButton(
+              //                       child: new Text(
+              //                         "Ok",
+              //                         style: TextStyle(
+              //                             fontSize: 20, color: Colors.blue),
+              //                       ),
+              //                       onPressed: () {
+              //                         Navigator.of(context).pop();
+              //                       },
+              //                     ),
+              //                   ],
+              //                 );
+              //               },
+              //             );
+              //           }
+              //         } else if (widget.role == 'nurse/case manager') {
+              //           print("#############");
+              //           if (save == true) {
+              //             print("**************");
+              //             NewAssesmentRepository().setAssessmentCurrentStatus(
+              //                 "Assessment Finished", widget.docID);
+              //             Navigator.of(context).pushReplacement(
+              //                 MaterialPageRoute(builder: (context) => Nurse()));
+              //           } else {
+              //             // _showSnackBar("Form is incomplete", context);
+              //             // showDialog(
+              //             //     context,
+              //             //     "Oops, you have missed a question in ${widget.wholelist[roomNumber]['room$innerRoomNumber']['name']}. Please fill out and then continue.",
+              //             //     route,
+              //             //     roomNumber,
+              //             //     innerRoomNumber);
+              //             showDialog(
+              //               context: context,
+              //               builder: (BuildContext context) {
+              //                 // return object of type Dialog
+              //                 return AlertDialog(
+              //                   title: new Text("Form Incomplete"),
+              //                   content: new Text(
+              //                       "Oops, you have missed a question in ${widget.wholelist[roomNumber]['room$innerRoomNumber']['name']}. Please fill out and then continue."),
+              //                   actions: <Widget>[
+              //                     // usually buttons at the bottom of the dialog
+              //                     new FlatButton(
+              //                       child: Text(
+              //                         "Ok",
+              //                         style: TextStyle(
+              //                             fontSize: 20, color: Colors.blue),
+              //                       ),
+              //                       onPressed: () {
+              //                         Navigator.of(context).pop();
+              //                       },
+              //                     ),
+              //                   ],
+              //                 );
+              //               },
+              //             );
+              //           }
+              //         } else if (widget.role == "patient") {
+              //           if (save == true) {
+              //             NewAssesmentRepository().setAssessmentCurrentStatus(
+              //                 "Assessment Finished", widget.docID);
+              //             Navigator.of(context).pushReplacement(
+              //                 MaterialPageRoute(
+              //                     builder: (context) => Patient()));
+              //           } else {
+              //             // _showSnackBar("form is incomplete", context);
+              //             // showDialog(
+              //             //     context,
+              //             //     "Oops, you have missed a question in ${widget.wholelist[roomNumber]['room$innerRoomNumber']['name']}. Please fill out and then continue.",
+              //             //     route,
+              //             //     roomNumber,
+              //             //     innerRoomNumber);
+              //             showDialog(
+              //               context: context,
+              //               builder: (BuildContext context) {
+              //                 // return object of type Dialog
+              //                 return AlertDialog(
+              //                   title: new Text("Form Incomplete"),
+              //                   content: new Text(
+              //                       "Oops, you have missed a question in ${widget.wholelist[roomNumber]['room$innerRoomNumber']['name']}. Please fill out and then continue."),
+              //                   actions: <Widget>[
+              //                     // usually buttons at the bottom of the dialog
+              //                     new FlatButton(
+              //                       child: Text(
+              //                         "Ok",
+              //                         style: TextStyle(
+              //                             fontSize: 20, color: Colors.blue),
+              //                       ),
+              //                       onPressed: () {
+              //                         Navigator.of(context).pop();
+              //                       },
+              //                     ),
+              //                   ],
+              //                 );
+              //               },
+              //             );
+              //           }
+              //         }
+              //         // } else {
+              //         //   _showSnackBar(
+              //         //       "You Must Have to Fill All Details", context);
+              //         // }
+              //         // if (save == true) {
+              //         //   NewAssesmentRepository()
+              //         //       .setLatestChangeDate(widget.docID);
+
+              //         //   NewAssesmentRepository()
+              //         //       .setForm(widget.wholelist, widget.docID);
+              //         //   _showSnackBar(
+              //         //       "Assessment Submitted Successfully", context);
+              //         // } else {
+              //         //   _showSnackBar("Form is incomplete", context);
+              //         // }
+              //         // // // print(widget.wholelist);
+              //         // // NewAssesmentRepository().setassessmentclosingtime(docID);
+              //         // if (role == 'therapist') {
+              //         //   NewAssesmentRepository().setAssessmentCurrentStatus(
+              //         //       "Report Generated", widget.docID);
+              //         //   NewAssesmentRepository()
+              //         //       .setAssessmentCompletionDate(widget.docID);
+              //         //   Navigator.of(context).pushReplacement(MaterialPageRoute(
+              //         //       builder: (context) => Therapist()));
+              //         // } else if (role == 'nurse/case manager') {
+              //         //   NewAssesmentRepository().setAssessmentCurrentStatus(
+              //         //       "Assessment Finished", widget.docID);
+              //         //   Navigator.of(context).pushReplacement(
+              //         //       MaterialPageRoute(builder: (context) => Nurse()));
+              //         // } else if (role == 'patient') {
+              //         //   NewAssesmentRepository().setAssessmentCurrentStatus(
+              //         //       "Assessment Finished", widget.docID);
+              //         //   Navigator.of(context).pushReplacement(
+              //         //       MaterialPageRoute(builder: (context) => Patient()));
+              //         // }
+              //         // NewAssesmentRepository()
+              //         //     .setLatestChangeDate(widget.docID);
+              //       },
+              //       loadingSwitchInCurve: Curves.bounceInOut,
+              //       loadingTransitionBuilder: (child, animation) {
+              //         return SlideTransition(
+              //           position: Tween<Offset>(
+              //             begin: Offset(0, 1.0),
+              //             end: Offset(0, 0),
+              //           ).animate(animation),
+              //           child: child,
+              //         );
+              //       },
+              //       builder: (context, child, callback, state) {
+              //         return Material(
+              //           color: state.maybeWhen(
+              //             success: () => Colors.green[600],
+              //             orElse: () => Colors.blue,
+              //           ),
+              //           // This prevents the loading indicator showing below the
+              //           // button
+              //           clipBehavior: Clip.hardEdge,
+              //           shape: StadiumBorder(),
+              //           child: InkWell(
+              //             child: child,
+              //             onTap: callback,
+              //           ),
+              //         );
+              //       },
+              //     ),
+              //   ),
+              // ),
             ],
           )),
     );

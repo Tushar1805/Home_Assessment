@@ -1,16 +1,13 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:cloud_functions/cloud_functions.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server/gmail.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 // import 'dart:js' as js;
 
 import '../../constants.dart';
@@ -31,6 +28,7 @@ class _ShareAppState extends State<ShareApp> {
   bool loading = false;
 
   String template = "";
+  // final JavascriptRuntime jsRuntime = getJavascriptRuntime();
 
   @override
   void initState() {
@@ -82,6 +80,30 @@ class _ShareAppState extends State<ShareApp> {
       ..hideCurrentSnackBar()
       ..showSnackBar(snackBar);
   }
+
+  // Future<String> sendEmailJs(JavascriptRuntime jsRuntime, mailText, toUser,
+  //     androidGuide, iosGuide) async {
+  //   try {
+  //     String executeJs = await rootBundle.loadString("assets/app.js");
+  //     final jsResult = jsRuntime.evaluate(executeJs +
+  //         """mailer($mailText, $toUser, $androidGuide, $iosGuide)""");
+  //     final jsStringResult = jsResult.stringResult;
+  //     return jsStringResult;
+  //   } catch (e) {
+  //     print("JS Function ERROR: ${e.toString()}");
+  //   }
+  // }
+
+  // Future<String> callJsMethod(JavascriptRuntime jsRuntime, a, b) async {
+  //   try {
+  //     String executeJs = await rootBundle.loadString("assets/app.js");
+  //     final jsResult = jsRuntime.evaluate(executeJs + """add($a, $b)""");
+  //     final jsStringResult = jsResult.stringResult;
+  //     return jsStringResult;
+  //   } catch (e) {
+  //     print("JS Function ERROR: ${e.toString()}");
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -238,6 +260,15 @@ class _ShareAppState extends State<ShareApp> {
     return tempFile;
   }
 
+  Future<File> copyAssetForWeb(var asset, var name) async {
+    Directory tempDir = await getApplicationDocumentsDirectory();
+    String tempPath = tempDir.path;
+    File tempFile = File('$tempPath/$name.pdf');
+    ByteData bd = await rootBundle.load(asset);
+    await tempFile.writeAsBytes(bd.buffer.asUint8List(), flush: true);
+    return tempFile;
+  }
+
   Future<void> sendEmail() async {
     // await GoogleAuthApi.signOut();
     setState(() {
@@ -246,6 +277,8 @@ class _ShareAppState extends State<ShareApp> {
 
     Reference ref = FirebaseStorage.instance.ref().child("/app-release.apk");
     String url = (await ref.getDownloadURL()).toString();
+
+    print("URL: $url");
 
     setState(() {
       recipients.add(recipient);
@@ -457,11 +490,19 @@ class _ShareAppState extends State<ShareApp> {
     // String tempPath = tempDir.path;
 
     // // AndroidGuide File
-    File android = await copyAsset("assets/androidGuide.pdf", "androidGuide");
+    if (kIsWeb) {
+      File android =
+          await copyAssetForWeb("assets/androidGuide.pdf", "androidGuide");
+    } else {
+      File android = await copyAsset("assets/androidGuide.pdf", "androidGuide");
+    }
 
     //  AppleGuide File
-
-    File apple = await copyAsset("assets/appleGuide.pdf", "appleGuide");
+    if (kIsWeb) {
+      File apple = await copyAssetForWeb("assets/appleGuide.pdf", "appleGuide");
+    } else {
+      File apple = await copyAsset("assets/appleGuide.pdf", "appleGuide");
+    }
 
     // final smtpServer = gmailSaslXoauth2(email, token);
     // final message = Message()
@@ -496,10 +537,15 @@ class _ShareAppState extends State<ShareApp> {
 
     try {
       // await send(message, smtpServer);
-      // HttpsCallable callable =
-      //     FirebaseFunctions.instance.httpsCallable('sendMail');
-      // final resp = await callable
-      //     .call(<String, dynamic>{'toUser': recipient, 'mailText': template});
+      HttpsCallable callable =
+          FirebaseFunctions.instance.httpsCallable('sendMail');
+      // final resp = await callable.call();
+      final resp = await callable.call(<String, dynamic>{
+        'toUser': recipient,
+        'mailText': template,
+        // 'androidGuide': android.path.toString(),
+        // 'iosGuide': apple.path.toString(),
+      });
       // setState(() {
       //   loading = false;
       // });
@@ -525,12 +571,17 @@ class _ShareAppState extends State<ShareApp> {
 
       // js.context.callMethod('mailer', [template, recipient, android, apple]);
 
+      // final result =
+      //     await sendEmailJs(jsRuntime, template, recipient, android, apple);
+      // final result = callJsMethod(jsRuntime, 15, 5);
+
+      // print("Result : $result");
+      print("RESPONSE: $resp");
+
       showSnackBar(context, "Email sent successfully");
-    } on MailerException catch (e) {
+    } catch (e) {
+      print("ERROR: ${e.toString()}");
       print('Message not sent.');
-      for (var p in e.problems) {
-        print('Problem: ${p.code}: ${p.msg}');
-      }
       setState(() {
         loading = false;
       });

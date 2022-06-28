@@ -41,6 +41,7 @@ class _NurseUIState extends State<NurseUI> {
       address,
       patientUid;
   String imgUrl = "";
+  String requestedPatientNames;
 
   @override
   void initState() {
@@ -50,6 +51,37 @@ class _NurseUIState extends State<NurseUI> {
     getUserDetails();
     getPatientDetails();
     getCurrentUid();
+    Future.delayed(Duration(seconds: 10), () async {
+      if (requestedPatientNames != null) {
+        await showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => new AlertDialog(
+            title: new Text("New Assessment"),
+            content: Container(
+              height: MediaQuery.of(context).size.height * 0.3,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Text(
+                      '$requestedPatientNames has requested you to conduct an assessment.',
+                      style:
+                          TextStyle(fontSize: 17, fontWeight: FontWeight.w300)),
+                ],
+              ),
+            ),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      }
+    });
   }
 
   Future<void> setImage() async {
@@ -559,6 +591,11 @@ class _NurseUIState extends State<NurseUI> {
   @override
   Widget build(BuildContext context) {
     NurseProvider assesspro = Provider.of<NurseProvider>(context);
+    if (!assesspro.loading) {
+      setState(() {
+        requestedPatientNames = assesspro.requestedPatientNames;
+      });
+    }
 
     return WillPopScope(
         onWillPop: () async => false,

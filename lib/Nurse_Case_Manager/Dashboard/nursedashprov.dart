@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import './nursedashrepo.dart';
 
@@ -144,9 +145,15 @@ class NurseProvider extends ChangeNotifier {
   String curretnassessmentdocref, role;
   bool loading = false;
   String sortdata = '';
+  String requestedPatientNames;
   NurseProvider(String role) {
-    getdocset(role);
+    initialize(role);
+    // getdocset(role);
     // print(role);
+  }
+  initialize(role) async {
+    await getdocset(role);
+    showDialogTo();
   }
 
   getdocset(role) async {
@@ -167,6 +174,21 @@ class NurseProvider extends ChangeNotifier {
     datasetmain = temptry;
     loading = false;
     notifyListeners();
+  }
+
+  showDialogTo() async {
+    User user = await FirebaseAuth.instance.currentUser;
+    for (var i = 0; i < datasetmain.length; i++) {
+      if (dataset.docs[i]['currentStatus'] == "Assessment Scheduled" &&
+          dataset.docs[i]["assessor"] == user.uid) {
+        requestedPatientNames = datasetmain['$i']['firstName'] +
+            ' ' +
+            datasetmain['$i']['lastName'];
+      }
+    }
+    loading = false;
+    notifyListeners();
+    print("requestedPatientNames: $requestedPatientNames");
   }
 
   getsorteddata(sortby, type) async {

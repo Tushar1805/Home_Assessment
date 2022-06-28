@@ -4,7 +4,6 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -48,7 +47,6 @@ class _ReportUIState extends State<ReportUI> {
   bool _allowWriteFile = false;
   List<Map<String, dynamic>> assess = [];
   final pdf = pw.Document();
-  Dio dio;
   final Color colorb = Color.fromRGBO(10, 80, 106, 1);
   List<Card> list4 = [];
   List<Card> list5 = [];
@@ -119,18 +117,22 @@ class _ReportUIState extends State<ReportUI> {
       (value) {
         setState(() {
           if (value.data() != null) {
-            fname =
-                (capitalize(value.data()["firstName"].toString()) ?? "First");
-            lname = (capitalize(value.data()["lastName"].toString()) ?? "Last");
-            // gender = (capitalize(value.data()["gender"].toString()) ?? "Male");
-            address =
-                (capitalize(value.data()["houses"][0]["city"].toString()) ??
-                    "Nagpur");
-            age = (value.data()["age"].toString() ?? "21");
-            phone = (value.data()["mobileNo"].toString() ?? "1234567890");
-            email = (value.data()["email"].toString() ?? "user@gmail.com");
-            height = (value.data()["height"].toString() ?? "5.5");
-            weight = (value.data()["weight"].toString() ?? "50");
+            fname = (capitalize(value.data()["firstName"].toString()) ??
+                "First name not provided");
+            lname = (capitalize(value.data()["lastName"].toString()) ??
+                "Last name not provided");
+            gender = (capitalize(value.data()["gender"].toString()) ??
+                "Gender not provided");
+            address = (capitalize(value.data()["address"].toString()) ??
+                "Address not provided");
+            age = (value.data()["age"].toString() ?? "Age not provided");
+            phone = (value.data()["mobile"].toString() ??
+                "phone number not provided");
+            email = (value.data()["email"].toString() ?? "Email not Provided");
+            height =
+                (value.data()["height"].toString() ?? "Height not provided");
+            weight =
+                (value.data()["weight"].toString() ?? "Weight not provided");
             handDominance =
                 (value.data()["handDominance"].toString() ?? "Right");
           }
@@ -199,13 +201,18 @@ class _ReportUIState extends State<ReportUI> {
         if (value.data()["date"] != null) {
           setState(() {
             startingTime =
-                DateFormat.yMd().format(value.data()["date"].toDate());
+                DateFormat.yMd().format(value.data()["date"].toDate()) +
+                    " " +
+                    DateFormat.jm().format(value.data()["date"].toDate());
           });
         }
         if (value.data()["assessmentCompletionDate"] != null) {
           setState(() {
             closingTime = DateFormat.yMd()
-                .format(value.data()["assessmentCompletionDate"].toDate());
+                    .format(value.data()["assessmentCompletionDate"].toDate()) +
+                " " +
+                DateFormat.jm()
+                    .format(value.data()["assessmentCompletionDate"].toDate());
           });
         }
       }
@@ -256,25 +263,27 @@ class _ReportUIState extends State<ReportUI> {
                       mainAxisAlignment: pw.MainAxisAlignment.start,
                       children: [
                         pw.Container(
-                          padding: pw.EdgeInsets.only(left: 5, right: 5),
-                          child: pw.Text(
-                              ' ${assess[index]['name']}: ' +
-                                  '${assess[index]['room$i']['name']}: ' +
-                                  '${assess[index]['room$i']['question']['$j']['Question']}: ' +
-                                  '${assess[index]['room$i']['question']['$j']['Answer']}',
-                              style: pw.TextStyle(fontSize: 14)),
-                        ),
+                            padding: pw.EdgeInsets.all(5),
+                            child: pw.Wrap(children: [
+                              pw.Text(
+                                  '${assess[index]['name']}: ' +
+                                      '${assess[index]['room$i']['name']}: ' +
+                                      '${assess[index]['room$i']['question']['$j']['Question']}: ' +
+                                      '${assess[index]['room$i']['question']['$j']['Answer']}',
+                                  style: pw.TextStyle(fontSize: 16)),
+                            ])),
                       ]),
                   pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
                       mainAxisAlignment: pw.MainAxisAlignment.start,
                       children: [
                         pw.Container(
-                          padding: pw.EdgeInsets.only(left: 5, right: 5),
-                          child: pw.Text(
-                              ' ${assess[index]['room$i']['question']['$j']['Recommendationthera']}',
-                              style: pw.TextStyle(fontSize: 14)),
-                        ),
+                            padding: pw.EdgeInsets.all(5),
+                            child: pw.Wrap(children: [
+                              pw.Text(
+                                  '${assess[index]['room$i']['question']['$j']['Recommendationthera']}',
+                                  style: pw.TextStyle(fontSize: 16)),
+                            ]))
                       ]),
                 ]),
               );
@@ -307,16 +316,26 @@ class _ReportUIState extends State<ReportUI> {
     pw.TableRow buildRow(label, value) {
       return pw.TableRow(children: [
         pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.center,
-            mainAxisAlignment: pw.MainAxisAlignment.center,
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            mainAxisAlignment: pw.MainAxisAlignment.start,
             children: [
-              pw.Text(' $label', style: pw.TextStyle(fontSize: 14)),
+              pw.Container(
+                  padding: pw.EdgeInsets.all(5),
+                  child: pw.Wrap(children: [
+                    pw.Text('$label',
+                        style: pw.TextStyle(
+                            fontSize: 16, fontWeight: pw.FontWeight.bold)),
+                  ])),
             ]),
         pw.Column(
-            crossAxisAlignment: pw.CrossAxisAlignment.center,
-            mainAxisAlignment: pw.MainAxisAlignment.center,
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            mainAxisAlignment: pw.MainAxisAlignment.start,
             children: [
-              pw.Text(' $value', style: pw.TextStyle(fontSize: 14)),
+              pw.Container(
+                  padding: pw.EdgeInsets.all(5),
+                  child: pw.Wrap(children: [
+                    pw.Text('$value', style: pw.TextStyle(fontSize: 16)),
+                  ])),
             ]),
       ]);
     }
@@ -368,12 +387,16 @@ class _ReportUIState extends State<ReportUI> {
     pw.TableRow buildPriority(value, color1, color2) {
       return pw.TableRow(children: [
         pw.Container(
+          padding: pw.EdgeInsets.only(top: 5, bottom: 5),
           color: color1,
           child:
               pw.Row(mainAxisAlignment: pw.MainAxisAlignment.center, children: [
             pw.Center(
                 child: pw.Text(' $value',
-                    style: pw.TextStyle(fontSize: 14, color: color2))),
+                    style: pw.TextStyle(
+                        fontSize: 18,
+                        color: color2,
+                        fontWeight: pw.FontWeight.bold))),
           ]),
         ),
       ]);
@@ -385,13 +408,23 @@ class _ReportUIState extends State<ReportUI> {
             crossAxisAlignment: pw.CrossAxisAlignment.center,
             mainAxisAlignment: pw.MainAxisAlignment.center,
             children: [
-              pw.Text('Recommendations For', style: pw.TextStyle(fontSize: 14)),
+              pw.Container(
+                padding: pw.EdgeInsets.all(5),
+                child: pw.Text('Recommendations For',
+                    style: pw.TextStyle(
+                        fontSize: 16, fontWeight: pw.FontWeight.bold)),
+              )
             ]),
         pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.center,
             mainAxisAlignment: pw.MainAxisAlignment.center,
             children: [
-              pw.Text('Recommendation', style: pw.TextStyle(fontSize: 14)),
+              pw.Container(
+                padding: pw.EdgeInsets.all(5),
+                child: pw.Text('Recommendations',
+                    style: pw.TextStyle(
+                        fontSize: 16, fontWeight: pw.FontWeight.bold)),
+              )
             ]),
       ]);
     }
@@ -481,10 +514,11 @@ class _ReportUIState extends State<ReportUI> {
                           fit: pw.BoxFit.fitHeight),
                       pw.Container(
                           height: 25,
-                          color: PdfColor.fromHex("0a506a"),
-                          child: pw.Text('$closingTime',
+                          // color: PdfColor.fromHex("0a506a"),
+                          child: pw.Text(
+                              '${closingTime ?? 'Date will apppear here'}',
                               style: pw.TextStyle(
-                                  color: PdfColors.white,
+                                  color: PdfColor.fromHex("0a506a"),
                                   fontSize: 20,
                                   fontWeight: pw.FontWeight.bold))),
                     ])),
@@ -511,42 +545,234 @@ class _ReportUIState extends State<ReportUI> {
         },
       ),
     );
+    pw.Widget header() {
+      return pw.Header(
+          outlineColor: PdfColors.white,
+          child: pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              children: [
+                pw.Text("Home Safety Report",
+                    style: pw.TextStyle(
+                        fontSize: 30, fontWeight: pw.FontWeight.bold)),
+                pw.Image(
+                    pw.MemoryImage(
+                      bhbs,
+                    ),
+                    height: 30,
+                    width: 140,
+                    fit: pw.BoxFit.fitHeight),
+              ]));
+    }
+
+    // Complete page UI
+
+    // pdf.addPage(pw.MultiPage(
+    //     header: (context) => header(),
+    //     pageFormat: PdfPageFormat.a4.copyWith(
+    //         marginBottom: 20, marginLeft: 20, marginRight: 20, marginTop: 0),
+    //     build: (pw.Context context) {
+    //       return <pw.Widget>[
+    //         // pw.Image(
+    //         //     pw.MemoryImage(
+    //         //       byteList,
+    //         //     ),
+    //         //     fit: pw.BoxFit.fitHeight),
+    //         // pw.Padding(
+    //         //     padding: pw.EdgeInsets.only(top: 10),
+    //         //     child: pw.Header(
+    //         //         outlineColor: PdfColors.white,
+    //         //         child: pw.Row(
+    //         //             mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+    //         //             children: [
+    //         //               pw.Text("Home Safety Report",
+    //         //                   style: pw.TextStyle(
+    //         //                       fontSize: 30,
+    //         //                       fontWeight: pw.FontWeight.bold)),
+    //         //               pw.Image(
+    //         //                   pw.MemoryImage(
+    //         //                     bhbs,
+    //         //                   ),
+    //         //                   height: 30,
+    //         //                   width: 140,
+    //         //                   fit: pw.BoxFit.fitHeight),
+    //         //             ]))),
+    //         pw.SizedBox(height: 20),
+    //         pw.Table(border: pw.TableBorder.all(width: 1), columnWidths: {
+    //           0: pw.FixedColumnWidth(200),
+    //           1: pw.FixedColumnWidth(200)
+    //         }, children: [
+    //           pw.TableRow(
+    //               decoration:
+    //                   pw.BoxDecoration(color: PdfColor.fromHex("#66AD47")),
+    //               children: [
+    //                 pw.Column(
+    //                     crossAxisAlignment: pw.CrossAxisAlignment.start,
+    //                     mainAxisAlignment: pw.MainAxisAlignment.start,
+    //                     children: [
+    //                       pw.Container(
+    //                           // width: 200,
+    //                           // decoration: pw.BoxDecoration(
+    //                           //     color: PdfColor.fromHex("#5cff67")),
+    //                           padding: pw.EdgeInsets.all(5),
+    //                           child: pw.Wrap(children: [
+    //                             pw.Text('Patient',
+    //                                 style: pw.TextStyle(
+    //                                     fontSize: 18,
+    //                                     fontWeight: pw.FontWeight.bold)),
+    //                           ]))
+    //                     ]),
+    //                 pw.Column(
+    //                     crossAxisAlignment: pw.CrossAxisAlignment.start,
+    //                     mainAxisAlignment: pw.MainAxisAlignment.start,
+    //                     children: [
+    //                       pw.Container(
+    //                           // width: 200,
+    //                           // decoration: pw.BoxDecoration(
+    //                           //     color: PdfColor.fromHex("#5cff67")),
+    //                           padding: pw.EdgeInsets.all(5),
+    //                           child: pw.Wrap(children: [
+    //                             pw.Text('Details',
+    //                                 style: pw.TextStyle(
+    //                                     fontSize: 18,
+    //                                     fontWeight: pw.FontWeight.bold)),
+    //                           ]))
+    //                     ]),
+    //               ]),
+    //           buildRow("Name", "$fname $lname"),
+    //           buildRow("Gender", gender),
+    //           buildRow("Address", address),
+    //           buildRow("Age", age),
+    //           buildRow("Email", email),
+    //           buildRow("Phone Number", phone),
+    //           // buildRow("Height", "$height ft"),
+    //           // buildRow("Weight(lbs)", "$weight kg"),
+    //           // buildRow("Hand Dominance", handDominance),
+    //           // buildRow("Date of Assessment", "10/5/20"),
+    //           buildRow("Assessment Start Time", startingTime),
+    //           buildRow("Assessment End Time", closingTime),
+    //           // buildBlankRow("null ", "null "),
+    //         ]),
+    //         // buildTableBlankRow("null", "null"),
+    //         pw.SizedBox(height: 20),
+    //         pw.Table(border: pw.TableBorder.all(width: 1), children: [
+    //           // pw.TableRow(children: [pw.Center(child: pw.Text("Priority 1"))]),
+    //           buildPriority("Priority 1", PdfColors.red, PdfColors.black),
+    //         ]),
+    //         pw.Table(border: pw.TableBorder.all(width: 1), columnWidths: {
+    //           0: pw.FixedColumnWidth(200),
+    //           1: pw.FixedColumnWidth(200)
+    //         }, children: [
+    //           buildSubHead(),
+    //         ]),
+    //         pw.Table(border: pw.TableBorder.all(width: 1), columnWidths: {
+    //           0: pw.FixedColumnWidth(200),
+    //           1: pw.FixedColumnWidth(200)
+    //         }, children: [
+    //           for (int i = 0; i < list1.length; i++) list1[i]
+    //         ]),
+    //         // buildTableBlankRow("null", "null"),
+    //         pw.SizedBox(height: 20),
+    //         pw.Table(border: pw.TableBorder.all(width: 1), children: [
+    //           // pw.TableRow(children: [pw.Center(child: pw.Text("Priority 2"))]),
+    //           buildPriority("Priority 2", PdfColors.orange, PdfColors.black),
+    //         ]),
+    //         pw.Table(border: pw.TableBorder.all(width: 1), columnWidths: {
+    //           0: pw.FixedColumnWidth(200),
+    //           1: pw.FixedColumnWidth(200)
+    //         }, children: [
+    //           buildSubHead(),
+    //         ]),
+    //         pw.Table(border: pw.TableBorder.all(width: 1), columnWidths: {
+    //           0: pw.FixedColumnWidth(200),
+    //           1: pw.FixedColumnWidth(200)
+    //         }, children: [
+    //           for (int i = 0; i < list2.length; i++) list2[i]
+    //         ]),
+    //         // buildTableBlankRow("null", "null"),
+    //         pw.SizedBox(height: 20),
+    //         pw.Table(border: pw.TableBorder.all(width: 1), children: [
+    //           // pw.TableRow(children: [pw.Center(child: pw.Text("Priority 3"))]),
+    //           buildPriority("Priority 3", PdfColors.yellow, PdfColors.black),
+    //         ]),
+    //         pw.Table(border: pw.TableBorder.all(width: 1), columnWidths: {
+    //           0: pw.FixedColumnWidth(200),
+    //           1: pw.FixedColumnWidth(200)
+    //         }, children: [
+    //           buildSubHead(),
+    //         ]),
+    //         pw.Table(border: pw.TableBorder.all(width: 1), columnWidths: {
+    //           0: pw.FixedColumnWidth(200),
+    //           1: pw.FixedColumnWidth(200)
+    //         }, children: [
+    //           for (int i = 0; i < list3.length; i++) list3[i]
+    //         ]),
+    //         pw.SizedBox(height: 40),
+    //         pw.Text("Disclaimer: ",
+    //             style:
+    //                 pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold)),
+    //         pw.SizedBox(height: 2),
+    //         pw.Text("Please Note: ",
+    //             style:
+    //                 pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold)),
+    //         pw.Paragraph(
+    //             style: pw.TextStyle(
+    //               fontSize: 14,
+    //             ),
+    //             text:
+    //                 "The above recommendations / comments are made to the best of the abilities of this clinician given the present circumstances. Certain recommendations are given with a proactive and preventative approach in mind. These are recommendations / suggestions, decision to apply and implement them into practice is left to the autonomy of the client and his / her judgment of his / her circumstances. The clinician / Organization does not take any responsibility if the client decides not to follow through with these recommendations. Whenever possible, client has been provided with alternative choices and the client chose the options to suit his / her needs, knowledge and circumstances per their perception. This clinician will be available to consult on an as needed basis, should additional consultation needs arise.")
+    //       ];
+    //     }));
+
+    // User Details
 
     pdf.addPage(pw.MultiPage(
+        header: (context) => header(),
         pageFormat: PdfPageFormat.a4.copyWith(
-            marginBottom: 20, marginLeft: 20, marginRight: 20, marginTop: 20),
+            marginBottom: 20, marginLeft: 20, marginRight: 20, marginTop: 0),
         build: (pw.Context context) {
           return <pw.Widget>[
-            // pw.Image(
-            //     pw.MemoryImage(
-            //       byteList,
-            //     ),
-            //     fit: pw.BoxFit.fitHeight),
-            pw.Padding(
-                padding: pw.EdgeInsets.only(top: 10),
-                child: pw.Header(
-                    outlineColor: PdfColors.white,
-                    child: pw.Row(
-                        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                        children: [
-                          pw.Text("Home Safety Report",
-                              style: pw.TextStyle(
-                                  fontSize: 30,
-                                  fontWeight: pw.FontWeight.bold)),
-                          pw.Image(
-                              pw.MemoryImage(
-                                bhbs,
-                              ),
-                              height: 30,
-                              width: 140,
-                              fit: pw.BoxFit.fitHeight),
-                        ]))),
             pw.SizedBox(height: 20),
             pw.Table(border: pw.TableBorder.all(width: 1), columnWidths: {
               0: pw.FixedColumnWidth(200),
               1: pw.FixedColumnWidth(200)
             }, children: [
-              buildRow("Patient", "Details"),
+              pw.TableRow(
+                  decoration:
+                      pw.BoxDecoration(color: PdfColor.fromHex("#66AD47")),
+                  children: [
+                    pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        mainAxisAlignment: pw.MainAxisAlignment.start,
+                        children: [
+                          pw.Container(
+                              // width: 200,
+                              // decoration: pw.BoxDecoration(
+                              //     color: PdfColor.fromHex("#5cff67")),
+                              padding: pw.EdgeInsets.all(5),
+                              child: pw.Wrap(children: [
+                                pw.Text('Patient',
+                                    style: pw.TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: pw.FontWeight.bold)),
+                              ]))
+                        ]),
+                    pw.Column(
+                        crossAxisAlignment: pw.CrossAxisAlignment.start,
+                        mainAxisAlignment: pw.MainAxisAlignment.start,
+                        children: [
+                          pw.Container(
+                              // width: 200,
+                              // decoration: pw.BoxDecoration(
+                              //     color: PdfColor.fromHex("#5cff67")),
+                              padding: pw.EdgeInsets.all(5),
+                              child: pw.Wrap(children: [
+                                pw.Text('Details',
+                                    style: pw.TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: pw.FontWeight.bold)),
+                              ]))
+                        ]),
+                  ]),
               buildRow("Name", "$fname $lname"),
               buildRow("Gender", gender),
               buildRow("Address", address),
@@ -559,9 +785,20 @@ class _ReportUIState extends State<ReportUI> {
               // buildRow("Date of Assessment", "10/5/20"),
               buildRow("Assessment Start Time", startingTime),
               buildRow("Assessment End Time", closingTime),
-              buildBlankRow("null ", "null "),
+              // buildBlankRow("null ", "null "),
             ]),
-            buildTableBlankRow("null", "null"),
+          ];
+        }));
+
+    //Priority 1
+
+    pdf.addPage(pw.MultiPage(
+        header: (context) => header(),
+        pageFormat: PdfPageFormat.a4.copyWith(
+            marginBottom: 20, marginLeft: 20, marginRight: 20, marginTop: 0),
+        build: (pw.Context context) {
+          return <pw.Widget>[
+            pw.SizedBox(height: 20),
             pw.Table(border: pw.TableBorder.all(width: 1), children: [
               // pw.TableRow(children: [pw.Center(child: pw.Text("Priority 1"))]),
               buildPriority("Priority 1", PdfColors.red, PdfColors.black),
@@ -578,7 +815,16 @@ class _ReportUIState extends State<ReportUI> {
             }, children: [
               for (int i = 0; i < list1.length; i++) list1[i]
             ]),
-            buildTableBlankRow("null", "null"),
+          ];
+        }));
+    //Priority 2
+    pdf.addPage(pw.MultiPage(
+        header: (context) => header(),
+        pageFormat: PdfPageFormat.a4.copyWith(
+            marginBottom: 20, marginLeft: 20, marginRight: 20, marginTop: 0),
+        build: (pw.Context context) {
+          return <pw.Widget>[
+            pw.SizedBox(height: 20),
             pw.Table(border: pw.TableBorder.all(width: 1), children: [
               // pw.TableRow(children: [pw.Center(child: pw.Text("Priority 2"))]),
               buildPriority("Priority 2", PdfColors.orange, PdfColors.black),
@@ -595,7 +841,17 @@ class _ReportUIState extends State<ReportUI> {
             }, children: [
               for (int i = 0; i < list2.length; i++) list2[i]
             ]),
-            buildTableBlankRow("null", "null"),
+          ];
+        }));
+
+// priority 3
+    pdf.addPage(pw.MultiPage(
+        header: (context) => header(),
+        pageFormat: PdfPageFormat.a4.copyWith(
+            marginBottom: 20, marginLeft: 20, marginRight: 20, marginTop: 0),
+        build: (pw.Context context) {
+          return <pw.Widget>[
+            pw.SizedBox(height: 20),
             pw.Table(border: pw.TableBorder.all(width: 1), children: [
               // pw.TableRow(children: [pw.Center(child: pw.Text("Priority 3"))]),
               buildPriority("Priority 3", PdfColors.yellow, PdfColors.black),
@@ -612,7 +868,7 @@ class _ReportUIState extends State<ReportUI> {
             }, children: [
               for (int i = 0; i < list3.length; i++) list3[i]
             ]),
-            pw.SizedBox(height: 10),
+            pw.SizedBox(height: 40),
             pw.Text("Disclaimer: ",
                 style:
                     pw.TextStyle(fontSize: 14, fontWeight: pw.FontWeight.bold)),
@@ -628,6 +884,34 @@ class _ReportUIState extends State<ReportUI> {
                     "The above recommendations / comments are made to the best of the abilities of this clinician given the present circumstances. Certain recommendations are given with a proactive and preventative approach in mind. These are recommendations / suggestions, decision to apply and implement them into practice is left to the autonomy of the client and his / her judgment of his / her circumstances. The clinician / Organization does not take any responsibility if the client decides not to follow through with these recommendations. Whenever possible, client has been provided with alternative choices and the client chose the options to suit his / her needs, knowledge and circumstances per their perception. This clinician will be available to consult on an as needed basis, should additional consultation needs arise.")
           ];
         }));
+    // pdf.addPage(
+    //   pw.Page(
+
+    //     pageFormat: PdfPageFormat.a4.copyWith(
+    //         marginBottom: 20, marginLeft: 20, marginRight: 20, marginTop: 550),
+    //     build: (pw.Context context) {
+    //       return pw.Column(
+    //           mainAxisAlignment: pw.MainAxisAlignment.start,
+    //           crossAxisAlignment: pw.CrossAxisAlignment.start,
+    //           children: [
+
+    //             pw.Text("Disclaimer: ",
+    //                 style: pw.TextStyle(
+    //                     fontSize: 14, fontWeight: pw.FontWeight.bold)),
+    //             pw.SizedBox(height: 2),
+    //             pw.Text("Please Note: ",
+    //                 style: pw.TextStyle(
+    //                     fontSize: 14, fontWeight: pw.FontWeight.bold)),
+    //             pw.Paragraph(
+    //                 style: pw.TextStyle(
+    //                   fontSize: 14,
+    //                 ),
+    //                 text:
+    //                     "The above recommendations / comments are made to the best of the abilities of this clinician given the present circumstances. Certain recommendations are given with a proactive and preventative approach in mind. These are recommendations / suggestions, decision to apply and implement them into practice is left to the autonomy of the client and his / her judgment of his / her circumstances. The clinician / Organization does not take any responsibility if the client decides not to follow through with these recommendations. Whenever possible, client has been provided with alternative choices and the client chose the options to suit his / her needs, knowledge and circumstances per their perception. This clinician will be available to consult on an as needed basis, should additional consultation needs arise.")
+    //           ]);
+    //     },
+    //   ),
+    // );
   }
 
   Future<void> imageLoader() async {

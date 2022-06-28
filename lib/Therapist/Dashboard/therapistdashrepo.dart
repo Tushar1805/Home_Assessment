@@ -5,6 +5,7 @@ class TherapistRepository {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseAuth _auth = FirebaseAuth.instance;
   QuerySnapshot dataset;
+  QuerySnapshot statusDataset;
   DocumentSnapshot feedback;
   QuerySnapshot datasetorder;
 
@@ -45,6 +46,17 @@ class TherapistRepository {
     return dataset;
 
     // return dataset;
+  }
+
+  Future<QuerySnapshot> getAssessmentStatus() async {
+    User user = _auth.currentUser;
+    statusDataset = await firestore
+        .collection('assessments')
+        .where('therapist', isEqualTo: user.uid)
+        .where('status', isEqualTo: 'new')
+        .orderBy("date", descending: true)
+        .get();
+    return statusDataset;
   }
 
   Future<DocumentSnapshot> getFeedback() async {

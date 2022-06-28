@@ -47,11 +47,11 @@ class UserRepository {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
-      User useer = result.user;
+      User user = result.user;
       print("******************result: $result**************");
 
-      if (useer != null) {
-        return useer.uid;
+      if (user != null) {
+        return user.uid;
       } else {
         return null;
       }

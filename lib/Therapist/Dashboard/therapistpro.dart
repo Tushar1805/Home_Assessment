@@ -139,11 +139,18 @@ class TherapistProvider extends ChangeNotifier {
   String getq;
   bool assessdisplay = false;
   QuerySnapshot dataset;
+  QuerySnapshot statusDataset;
   DocumentSnapshot document;
   Map<String, dynamic> datasetorder;
   //  datamain;
   Map<String, dynamic> datasetmain = {};
+  Map<String, dynamic> statusDatasetMain = {};
   Map<String, dynamic> datasetFeedback = {};
+  List<String> requestedPatientNames = [];
+  List<String> recommendationPatientNames = [];
+  List<String> finishedPatientNames = [];
+  List<String> cmPatientNames = [];
+  List<String> cmNames = [];
   var docs;
   var data2;
   var data3;
@@ -151,10 +158,13 @@ class TherapistProvider extends ChangeNotifier {
   bool loading = false;
   bool loading1 = false;
   String sortdata = '';
+  bool showRequestedPatientDialog = false;
   TherapistProvider(String role) {
-    User user = FirebaseAuth.instance.currentUser;
-    getdocset(role);
-    getFeedback();
+    initialize(role);
+    // getdocset(role);
+    // getFeedback();
+    // getStatusDocSet();
+    // getRequestedPatientNames();
     // firestore.collection("assessments").doc(user.uid).get().then((value) {
     //   if (value.data() != null) {
     //   } else {
@@ -162,6 +172,13 @@ class TherapistProvider extends ChangeNotifier {
     //   }
     // });
     // print(role);
+  }
+
+  initialize(role) async {
+    await getdocset(role);
+    await getFeedback();
+    // await getStatusDocSet();
+    await getRequestedPatientNames();
   }
 
   getdocset(role) async {
@@ -183,6 +200,71 @@ class TherapistProvider extends ChangeNotifier {
     print("Detailed map: $datasetmain");
     loading = false;
     notifyListeners();
+  }
+
+  // getStatusDocSet() async {
+  //   // loading = true;
+  //   notifyListeners();
+  //   statusDataset = await therarepo.getAssessmentStatus();
+  //   Map<String, DocumentSnapshot> datasetmaintemp = {};
+  //   for (int i = 0; i < statusDataset.docs.length; i++) {
+  //     await getfielddata(
+  //       statusDataset.docs[i]['patient'],
+  //     );
+  //     datasetmaintemp["$i"] = (data2);
+  //   }
+  //   Map<String, dynamic> temptry = {};
+  //   for (int j = 0; j < datasetmaintemp.length; j++) {
+  //     temptry["$j"] = datasetmaintemp["$j"].data();
+  //   }
+  //   statusDatasetMain = temptry;
+  //   print("status dataset main: $statusDatasetMain");
+  //   // loading = false;
+  //   notifyListeners();
+  // }
+
+  getRequestedPatientNames() async {
+    User user = await FirebaseAuth.instance.currentUser;
+    for (var i = 0; i < datasetmain.length; i++) {
+      if (dataset.docs[i]['currentStatus'] == 'Assessment Scheduled' &&
+          dataset.docs[i]["assessor"] == user.uid) {
+        requestedPatientNames.add(datasetmain['$i']['firstName'] +
+            ' ' +
+            datasetmain['$i']['lastName']);
+      }
+      if (dataset.docs[i]['currentStatus'] == 'Assessment in Progress' &&
+          dataset.docs[i]["assessor"] == user.uid) {
+        recommendationPatientNames.add(datasetmain['$i']['firstName'] +
+            ' ' +
+            datasetmain['$i']['lastName']);
+      }
+      if (dataset.docs[i]['currentStatus'] == 'Assessment Finished' &&
+          dataset.docs[i]["assessor"] == dataset.docs[i]["patient"]) {
+        finishedPatientNames.add(datasetmain['$i']['firstName'] +
+            ' ' +
+            datasetmain['$i']['lastName']);
+      }
+      if (dataset.docs[i]['currentStatus'] == 'Assessment Finished' &&
+          dataset.docs[i]["assessor"] != dataset.docs[i]["patient"] &&
+          dataset.docs[i]["assessor"] != user.uid) {
+        cmPatientNames.add(datasetmain['$i']['firstName'] +
+            ' ' +
+            datasetmain['$i']['lastName']);
+        var data = await firestore
+            .collection('users')
+            .doc(dataset.docs[i]["assessor"])
+            .get();
+        cmNames.add(data.data()['firstName'] + " " + data.data()['lastName']);
+      }
+    }
+    requestedPatientNames.length != 0
+        ? showRequestedPatientDialog = true
+        : showRequestedPatientDialog = false;
+    print("Requested Patients Name List: $requestedPatientNames");
+    print("Recommendation Patients Name List: $recommendationPatientNames");
+    print("Finished Patients Name List: $finishedPatientNames");
+    print("Case manager Patients Name List: $cmPatientNames");
+    print("Case manager Name List: $cmNames");
   }
 
   getFeedback() async {

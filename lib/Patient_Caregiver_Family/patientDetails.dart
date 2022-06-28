@@ -74,7 +74,7 @@ class _PatientDetailsState extends State<PatientDetails> {
   Widget _buildfName() {
     return TextFormField(
         initialValue: (widget.patient != null) ? widget.patient.fname : "",
-        decoration: formInputDecoration("Enter Your First Name"),
+        decoration: formInputDecoration("Enter Patient's First Name"),
         validator: (String value) {
           if (value.isEmpty) {
             return 'First name is Required';
@@ -89,7 +89,7 @@ class _PatientDetailsState extends State<PatientDetails> {
   Widget _buildlName() {
     return TextFormField(
         initialValue: (widget.patient != null) ? widget.patient.lname : "",
-        decoration: formInputDecoration("Enter Your Last Name"),
+        decoration: formInputDecoration("Enter Patient's Last Name"),
         validator: (String value) {
           if (value.isEmpty) {
             return 'Last name is Required';
@@ -104,7 +104,8 @@ class _PatientDetailsState extends State<PatientDetails> {
   Widget _buildEmail() {
     return TextFormField(
         initialValue: (widget.patient != null) ? widget.patient.email : "",
-        decoration: formInputDecoration("Enter Email Address (Username)"),
+        decoration:
+            formInputDecoration("Enter Patient's Email Address (Username)"),
         validator: (String value) {
           if (value.isEmpty) {
             return 'Email is Required';
@@ -125,7 +126,7 @@ class _PatientDetailsState extends State<PatientDetails> {
     return TextFormField(
         initialValue: (widget.patient != null) ? widget.patient.mobile : "",
         keyboardType: TextInputType.phone,
-        decoration: formInputDecoration("Enter Mobile Number"),
+        decoration: formInputDecoration("Enter Patient's Mobile Number"),
         validator: (String value) {
           if (value.isEmpty) {
             return 'Phone Number is Required';
@@ -347,7 +348,7 @@ class _PatientDetailsState extends State<PatientDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 72,
+        toolbarHeight: 60,
         automaticallyImplyLeading: false,
         backwardsCompatibility: false,
         systemOverlayStyle: SystemUiOverlayStyle(
@@ -378,6 +379,8 @@ class _PatientDetailsState extends State<PatientDetails> {
           ),
           decoration: new BoxDecoration(color: Color.fromRGBO(10, 80, 106, 1)),
         ),
+        foregroundColor: Color.fromRGBO(10, 80, 106, 1),
+        backgroundColor: Color.fromRGBO(10, 80, 106, 1),
       ),
       backgroundColor: Colors.grey[200],
       body: SingleChildScrollView(

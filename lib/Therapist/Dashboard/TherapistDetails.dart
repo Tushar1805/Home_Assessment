@@ -64,7 +64,7 @@ class _TherapistDetailsState extends State<TherapistDetails> {
   Widget _buildfName() {
     return TextFormField(
         initialValue: (widget.therapist != null) ? widget.therapist.fname : "",
-        decoration: formInputDecoration("Enter Your First Name"),
+        decoration: formInputDecoration("Enter Therapist's First Name"),
         validator: (String value) {
           if (value.isEmpty) {
             return 'First name is Required';
@@ -79,7 +79,7 @@ class _TherapistDetailsState extends State<TherapistDetails> {
   Widget _buildlName() {
     return TextFormField(
         initialValue: (widget.therapist != null) ? widget.therapist.lname : "",
-        decoration: formInputDecoration("Enter Your Last Name"),
+        decoration: formInputDecoration("Enter Therapist's Last Name"),
         validator: (String value) {
           if (value.isEmpty) {
             return 'Last name is Required';
@@ -94,7 +94,8 @@ class _TherapistDetailsState extends State<TherapistDetails> {
   Widget _buildEmail() {
     return TextFormField(
         initialValue: (widget.therapist != null) ? widget.therapist.email : "",
-        decoration: formInputDecoration("Enter Email Address (Username)"),
+        decoration:
+            formInputDecoration("Enter Therapist's Email Address (Username)"),
         validator: (String value) {
           if (value.isEmpty) {
             return 'Email is Required';
@@ -115,7 +116,7 @@ class _TherapistDetailsState extends State<TherapistDetails> {
     return TextFormField(
         initialValue: (widget.therapist != null) ? widget.therapist.mobile : "",
         keyboardType: TextInputType.phone,
-        decoration: formInputDecoration("Enter Mobile Number"),
+        decoration: formInputDecoration("Enter Therapist's Mobile Number"),
         validator: (String value) {
           if (value.isEmpty) {
             return 'Phone Number is Required';
@@ -131,7 +132,8 @@ class _TherapistDetailsState extends State<TherapistDetails> {
     return TextFormField(
         initialValue:
             (widget.therapist != null) ? widget.therapist.address : "",
-        decoration: formInputDecoration("Enter Organizationa Address"),
+        decoration:
+            formInputDecoration("Enter Therapist's Organization Address"),
         validator: (String value) {
           // if (value.isEmpty) {
           //   return 'Address is Required';
@@ -147,7 +149,7 @@ class _TherapistDetailsState extends State<TherapistDetails> {
     return TextFormField(
         initialValue: (widget.therapist != null) ? widget.therapist.age : "",
         keyboardType: TextInputType.number,
-        decoration: formInputDecoration("Enter Age"),
+        decoration: formInputDecoration("Enter Therapist's Age"),
         // ignore: missing_return
         validator: (String value) {
           int age = int.tryParse(value);
@@ -323,7 +325,7 @@ class _TherapistDetailsState extends State<TherapistDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 72,
+        toolbarHeight: 60,
         automaticallyImplyLeading: false,
         backwardsCompatibility: false,
         systemOverlayStyle: SystemUiOverlayStyle(
@@ -354,6 +356,8 @@ class _TherapistDetailsState extends State<TherapistDetails> {
           ),
           decoration: new BoxDecoration(color: Color.fromRGBO(10, 80, 106, 1)),
         ),
+        backgroundColor: Color.fromRGBO(10, 80, 106, 1),
+        foregroundColor: Color.fromRGBO(10, 80, 106, 1),
       ),
       backgroundColor: Colors.grey[200],
       body: SingleChildScrollView(

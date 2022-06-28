@@ -304,7 +304,7 @@ class _AddPatientDirectlyState extends State<AddPatientDirectly> {
         address: address1 + ', ' + address2,
         mobile: phone,
         age: age,
-        // gender: gender,
+        gender: gender,
       );
 
       // therapistDetails(therapist, uid);
@@ -521,7 +521,7 @@ class PatientClass {
       this.address,
       this.mobile,
       this.age,
-      // this.gender,
+      this.gender,
       this.isNewUser = "true"});
 
   Map<String, dynamic> toJson() => {
@@ -532,7 +532,7 @@ class PatientClass {
         'mobile': mobile,
         'address': address,
         'age': age,
-        // 'gender': gender,
+        'gender': gender,
         'newUser': isNewUser
       };
 
@@ -544,7 +544,7 @@ class PatientClass {
         mobile: json['mobile'],
         address: json['address'],
         age: json['age'],
-        // gender: json['gender'],
+        gender: json['gender'],
         isNewUser: json['newUser'],
       );
 }

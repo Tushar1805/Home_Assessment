@@ -28,15 +28,134 @@ class _PatientUIState extends State<PatientUI> {
   User curuser;
   var fname, lname, curUid, address, therapistUid, theraFName, theraLName;
   String imgUrl = "";
+  String requestedTherapistNames;
+  String recommendationTherapistNames;
+  String waitingTherapistNames;
+  String assessingTherapist;
+  String assessingCasemanager;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     setImage();
     getUserName();
     getCurrentUid();
     // print("First name: " + fname);
+    Future.delayed(Duration(seconds: 10), () async {
+      if (requestedTherapistNames != null) {
+        await showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => new AlertDialog(
+            title: new Text("Wait!"),
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                    '$requestedTherapistNames will soon begin your assessment. You will then be able to see your assessment report',
+                    style:
+                        TextStyle(fontSize: 17, fontWeight: FontWeight.w300)),
+              ],
+            ),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      } else if (recommendationTherapistNames != null) {
+        await showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => new AlertDialog(
+            title: new Text("Wait!"),
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                    '$recommendationTherapistNames will soon give recommendation to your assessment. You will then be able to see your assessment report',
+                    style:
+                        TextStyle(fontSize: 17, fontWeight: FontWeight.w300)),
+              ],
+            ),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      } else if (waitingTherapistNames != null) {
+        await showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => new AlertDialog(
+            title: new Text("Wait!"),
+            content: Container(
+              // height: MediaQuery.of(context).size.height * 0.3,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                        '$waitingTherapistNames will soon complete your assessment. You will then be able to see your assessment report',
+                        style: TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.w300)),
+                  ],
+                ),
+              ),
+            ),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      } else if (assessingTherapist != null && assessingCasemanager != null) {
+        await showDialog<String>(
+          context: context,
+          builder: (BuildContext context) => new AlertDialog(
+            title: new Text("Wait!"),
+            content: Container(
+              // height: MediaQuery.of(context).size.height * 0.3,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                        "You will be able to view your assessment report once $assessingCasemanager conducts your assessment and $assessingTherapist provides recommendation on the same.",
+                        style: TextStyle(
+                            fontSize: 17, fontWeight: FontWeight.w300)),
+                  ],
+                ),
+              ),
+            ),
+            actions: <Widget>[
+              new FlatButton(
+                child: new Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          ),
+        );
+      }
+    });
   }
 
   Future<void> setImage() async {
@@ -734,6 +853,16 @@ class _PatientUIState extends State<PatientUI> {
   @override
   Widget build(BuildContext context) {
     PatientProvider assesspro = Provider.of<PatientProvider>(context);
+    if (!assesspro.loading) {
+      setState(() {
+        requestedTherapistNames = assesspro.requestedTherapistNames;
+        recommendationTherapistNames = assesspro.recommendationTherapistNames;
+        waitingTherapistNames = assesspro.waitingTherapistNames;
+        assessingTherapist = assesspro.assessingTherapist;
+        assessingCasemanager = assesspro.assessingCasemanager;
+      });
+    }
+    print("Widget asessingTherapist: $assessingTherapist");
     return WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(

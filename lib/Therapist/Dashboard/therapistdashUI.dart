@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -33,6 +34,14 @@ class _TherapistUIState extends State<TherapistUI> {
   int sum = 0;
   double rating = 0.0;
   bool admin = false;
+  bool beginAssessmentStatus = false;
+  bool recommendationStatus = false;
+  List<String> requestedPatientNames = [];
+  List<String> recommendationPatientNames = [];
+  List<String> finishedPatientNames = [];
+  List<String> cmPatientNames = [];
+  List<String> cmNames = [];
+  String dialogMessage;
 
   @override
   void initState() {
@@ -41,6 +50,839 @@ class _TherapistUIState extends State<TherapistUI> {
     getUserDetails();
     getCurrentUid();
     getFeedback();
+
+    // if (requestedPatientNames.isNotEmpty &&
+    //     recommendationPatientNames.isNotEmpty &&
+    //     finishedPatientNames.isNotEmpty &&
+    //     cmPatientNames.isNotEmpty &&
+    //     cmNames.isNotEmpty) {
+    //   dialogMessage =
+    //       'You can now begin assessment for $requestedPatientNames.\nProvide Recommendation for the assessment of $recommendationPatientNames & $finishedPatientNames.\n$cmNames has conducted assessment for $cmPatientNames respectively. Please, provide recommendation on the same.';
+    // } else if (requestedPatientNames.isNotEmpty &&
+    //     recommendationPatientNames.isNotEmpty &&
+    //     finishedPatientNames.isNotEmpty) {
+    //   dialogMessage =
+    //       'You can now begin assessment for $requestedPatientNames.\nProvide Recommendation for the assessment of $recommendationPatientNames & $finishedPatientNames.';
+    // } else if (requestedPatientNames.isNotEmpty &&
+    //     recommendationPatientNames.isNotEmpty &&
+    //     cmPatientNames.isNotEmpty &&
+    //     cmNames.isNotEmpty) {
+    //   dialogMessage =
+    //       'You can now begin assessment for $requestedPatientNames.\nProvide Recommendation for the assessment of $recommendationPatientNames.\n$cmNames has conducted assessment for $cmPatientNames respectively. Please, provide recommendation on the same.';
+    // } else if (requestedPatientNames.isNotEmpty &&
+    //     finishedPatientNames.isNotEmpty &&
+    //     cmPatientNames.isNotEmpty &&
+    //     cmNames.isNotEmpty) {
+    //   dialogMessage =
+    //       'You can now begin assessment for $requestedPatientNames.\nProvide Recommendation for the assessment of $finishedPatientNames.\n$cmNames has conducted assessment for $cmPatientNames respectively. Please, provide recommendation on the same.';
+    // } else if (recommendationPatientNames.isNotEmpty &&
+    //     finishedPatientNames.isNotEmpty &&
+    //     cmPatientNames.isNotEmpty &&
+    //     cmNames.isNotEmpty) {
+    //   dialogMessage =
+    //       '\nProvide Recommendation for the assessment of $recommendationPatientNames & $finishedPatientNames.\n$cmNames has conducted assessment for $cmPatientNames respectively. Please, provide recommendation on the same.';
+    // } else if (requestedPatientNames.isNotEmpty &&
+    //     recommendationPatientNames.isNotEmpty) {
+    //   dialogMessage =
+    //       'You can now begin assessment for $requestedPatientNames.\nProvide Recommendation for the assessment of $recommendationPatientNames.';
+    // } else if (requestedPatientNames.isNotEmpty &&
+    //     finishedPatientNames.isNotEmpty) {
+    //   dialogMessage =
+    //       'You can now begin assessment for $requestedPatientNames.\nProvide Recommendation for the assessment of $finishedPatientNames.';
+    // } else if (requestedPatientNames.isNotEmpty &&
+    //     cmPatientNames.isNotEmpty &&
+    //     cmNames.isNotEmpty) {
+    //   dialogMessage =
+    //       'You can now begin assessment for $requestedPatientNames.\n$cmNames has conducted assessment for $cmPatientNames respectively. Please, provide recommendation on the same.';
+    // } else if (recommendationPatientNames.isNotEmpty &&
+    //     finishedPatientNames.isNotEmpty) {
+    //   dialogMessage =
+    //       'Provide Recommendation for the assessment of $recommendationPatientNames & $finishedPatientNames.';
+    // } else if (recommendationPatientNames.isNotEmpty &&
+    //     cmPatientNames.isNotEmpty &&
+    //     cmNames.isNotEmpty) {
+    //   dialogMessage =
+    //       'Provide Recommendation for the assessment of $recommendationPatientNames.\n$cmNames has conducted assessment for $cmPatientNames respectively. Please, provide recommendation on the same.';
+    // } else if (finishedPatientNames.isNotEmpty &&
+    //     cmPatientNames.isNotEmpty &&
+    //     cmNames.isNotEmpty) {
+    //   dialogMessage =
+    //       'Provide Recommendation for the assessment of $finishedPatientNames.\n$cmNames has conducted assessment for $cmPatientNames respectively. Please, provide recommendation on the same.';
+    // } else if (requestedPatientNames.isNotEmpty) {
+    //   dialogMessage =
+    //       'You can now begin assessment for $requestedPatientNames.';
+    // } else if (recommendationPatientNames.isNotEmpty) {
+    //   dialogMessage =
+    //       'Provide Recommendation for the assessment of $recommendationPatientNames.';
+    // } else if (finishedPatientNames.isNotEmpty) {
+    //   dialogMessage =
+    //       'Provide Recommendation for the assessment of $finishedPatientNames.';
+    // } else if (cmPatientNames.isNotEmpty && cmNames.isNotEmpty) {
+    //   dialogMessage =
+    //       '$cmNames has conducted assessment for $cmPatientNames respectively. Please, provide recommendation on the same';
+    // }
+
+    if (!kIsWeb) {
+      Future.delayed(Duration(seconds: 30), () async {
+        if (requestedPatientNames.isNotEmpty &&
+            recommendationPatientNames.isNotEmpty &&
+            finishedPatientNames.isNotEmpty &&
+            cmPatientNames.isNotEmpty &&
+            cmNames.isNotEmpty) {
+          await showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => new AlertDialog(
+              title: new Text("Attention!"),
+              content: Container(
+                // height: MediaQuery.of(context).size.height * 0.3,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text('You can now begin assessment for',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                      ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: requestedPatientNames.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Text(
+                              '${index + 1}. ${requestedPatientNames[index]}',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w300));
+                        },
+                      ),
+                      Text('\nProvide Recommendation for the assessment of',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                      ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: recommendationPatientNames.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Text(
+                              '${index + 1}. ${recommendationPatientNames[index]}',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w300));
+                        },
+                      ),
+                      Text('\nProvide Recommendation for the assessment of',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                      ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: finishedPatientNames.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Text(
+                              '${index + 1}. ${finishedPatientNames[index]}',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w300));
+                        },
+                      ),
+                      Text(
+                          '\n$cmNames has conducted assessment for $cmPatientNames. Please, provide recommendation on the same',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                    ],
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        } else if (requestedPatientNames.isNotEmpty &&
+            recommendationPatientNames.isNotEmpty &&
+            finishedPatientNames.isNotEmpty) {
+          await showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => new AlertDialog(
+              title: new Text("Attention!"),
+              content: Container(
+                // height: MediaQuery.of(context).size.height * 0.3,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text('You can now begin assessment for',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                      ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: requestedPatientNames.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Text(
+                              '${index + 1}. ${requestedPatientNames[index]}',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w300));
+                        },
+                      ),
+                      Text('\nProvide Recommendation for the assessment of',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                      ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: recommendationPatientNames.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Text(
+                              '${index + 1}. ${recommendationPatientNames[index]}',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w300));
+                        },
+                      ),
+                      Text('\nProvide Recommendation for the assessment of',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                      ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: finishedPatientNames.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Text(
+                              '${index + 1}. ${finishedPatientNames[index]}',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w300));
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        } else if (requestedPatientNames.isNotEmpty &&
+            recommendationPatientNames.isNotEmpty &&
+            cmPatientNames.isNotEmpty &&
+            cmNames.isNotEmpty) {
+          await showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => new AlertDialog(
+              title: new Text("Attention!"),
+              content: Container(
+                // height: MediaQuery.of(context).size.height * 0.3,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text('You can now begin assessment for',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                      ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: requestedPatientNames.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Text(
+                              '${index + 1}. ${requestedPatientNames[index]}',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w300));
+                        },
+                      ),
+                      Text('\nProvide Recommendation for the assessment of',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                      ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: recommendationPatientNames.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Text(
+                              '${index + 1}. ${recommendationPatientNames[index]}',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w300));
+                        },
+                      ),
+                      Text(
+                          '\n$cmNames has conducted assessment for $cmPatientNames. Please, provide recommendation on the same',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                    ],
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        } else if (requestedPatientNames.isNotEmpty &&
+            finishedPatientNames.isNotEmpty &&
+            cmPatientNames.isNotEmpty &&
+            cmNames.isNotEmpty) {
+          await showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => new AlertDialog(
+              title: new Text("Attention!"),
+              content: Container(
+                // height: MediaQuery.of(context).size.height * 0.3,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text('You can now begin assessment for',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                      ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: requestedPatientNames.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Text(
+                              '${index + 1}. ${requestedPatientNames[index]}',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w300));
+                        },
+                      ),
+                      Text('\nProvide Recommendation for the assessment of',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                      ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: finishedPatientNames.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Text(
+                              '${index + 1}. ${finishedPatientNames[index]}',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w300));
+                        },
+                      ),
+                      Text(
+                          '\n$cmNames has conducted assessment for $cmPatientNames. Please, provide recommendation on the same',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                    ],
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        } else if (recommendationPatientNames.isNotEmpty &&
+            finishedPatientNames.isNotEmpty &&
+            cmPatientNames.isNotEmpty &&
+            cmNames.isNotEmpty) {
+          await showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => new AlertDialog(
+              title: new Text("Attention!"),
+              content: Container(
+                // height: MediaQuery.of(context).size.height * 0.3,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text('\nProvide Recommendation for the assessment of',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                      ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: recommendationPatientNames.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Text(
+                              '${index + 1}. ${recommendationPatientNames[index]}',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w300));
+                        },
+                      ),
+                      Text('\nProvide Recommendation for the assessment of',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                      ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: finishedPatientNames.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Text(
+                              '${index + 1}. ${finishedPatientNames[index]}',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w300));
+                        },
+                      ),
+                      Text(
+                          '\n$cmNames has conducted assessment for $cmPatientNames. Please, provide recommendation on the same',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                    ],
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        } else if (requestedPatientNames.isNotEmpty &&
+            recommendationPatientNames.isNotEmpty) {
+          await showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => new AlertDialog(
+              title: new Text("Attention!"),
+              content: Container(
+                // height: MediaQuery.of(context).size.height * 0.3,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text('You can now begin assessment for',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                      ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: requestedPatientNames.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Text(
+                              '${index + 1}. ${requestedPatientNames[index]}',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w300));
+                        },
+                      ),
+                      Text('\nProvide Recommendation for the assessment of',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                      ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: recommendationPatientNames.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Text(
+                              '${index + 1}. ${recommendationPatientNames[index]}',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w300));
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        } else if (requestedPatientNames.isNotEmpty &&
+            finishedPatientNames.isNotEmpty) {
+          await showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => new AlertDialog(
+              title: new Text("Attention!"),
+              content: Container(
+                // height: MediaQuery.of(context).size.height * 0.3,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text('You can now begin assessment for',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                      ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: requestedPatientNames.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Text(
+                              '${index + 1}. ${requestedPatientNames[index]}',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w300));
+                        },
+                      ),
+                      Text('\nProvide Recommendation for the assessment of',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                      ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: finishedPatientNames.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Text(
+                              '${index + 1}. ${finishedPatientNames[index]}',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w300));
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        } else if (requestedPatientNames.isNotEmpty &&
+            cmPatientNames.isNotEmpty &&
+            cmNames.isNotEmpty) {
+          await showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => new AlertDialog(
+              title: new Text("Attention!"),
+              content: Container(
+                // height: MediaQuery.of(context).size.height * 0.3,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text('You can now begin assessment for',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                      ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: requestedPatientNames.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Text(
+                              '${index + 1}. ${requestedPatientNames[index]}',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w300));
+                        },
+                      ),
+                      Text(
+                          '\n$cmNames has conducted assessment for $cmPatientNames. Please, provide recommendation on the same',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                    ],
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        } else if (recommendationPatientNames.isNotEmpty &&
+            cmPatientNames.isNotEmpty &&
+            cmNames.isNotEmpty) {
+          await showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => new AlertDialog(
+              title: new Text("Attention!"),
+              content: Container(
+                // height: MediaQuery.of(context).size.height * 0.3,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text('\nProvide Recommendation for the assessment of',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                      ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: recommendationPatientNames.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Text(
+                              '${index + 1}. ${recommendationPatientNames[index]}',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w300));
+                        },
+                      ),
+                      Text(
+                          '\n$cmNames has conducted assessment for $cmPatientNames. Please, provide recommendation on the same',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                    ],
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        } else if (recommendationPatientNames.isNotEmpty &&
+            finishedPatientNames.isNotEmpty) {
+          await showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => new AlertDialog(
+              title: new Text("Attention!"),
+              content: Container(
+                // height: MediaQuery.of(context).size.height * 0.3,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text('\nProvide Recommendation for the assessment of',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                      ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: recommendationPatientNames.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Text(
+                              '${index + 1}. ${recommendationPatientNames[index]}',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w300));
+                        },
+                      ),
+                      Text('\nProvide Recommendation for the assessment of',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                      ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: finishedPatientNames.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Text(
+                              '${index + 1}. ${finishedPatientNames[index]}',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w300));
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        } else if (recommendationPatientNames.isNotEmpty &&
+            cmPatientNames.isNotEmpty &&
+            cmNames.isNotEmpty) {
+          await showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => new AlertDialog(
+              title: new Text("Attention!"),
+              content: Container(
+                // height: MediaQuery.of(context).size.height * 0.3,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text('\nProvide Recommendation for the assessment of',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                      ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: recommendationPatientNames.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Text(
+                              '${index + 1}. ${recommendationPatientNames[index]}',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w300));
+                        },
+                      ),
+                      Text(
+                          '\n$cmNames has conducted assessment for $cmPatientNames. Please, provide recommendation on the same',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                    ],
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        } else if (requestedPatientNames.isNotEmpty) {
+          await showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => new AlertDialog(
+              title: new Text("New Assignment"),
+              content: Container(
+                height: MediaQuery.of(context).size.height * 0.3,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text('You can now begin assessment for',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                      ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: requestedPatientNames.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Text(
+                              '${index + 1}. ${requestedPatientNames[index]}',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w300));
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        } else if (recommendationPatientNames.isNotEmpty) {
+          await showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => new AlertDialog(
+              title: new Text("Provide Recommendations"),
+              content: Container(
+                height: MediaQuery.of(context).size.height * 0.3,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text('Provide Recommendation for the assessment of',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                      ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        itemCount: recommendationPatientNames.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Text(
+                              '${index + 1}. ${recommendationPatientNames[index]}',
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.w300));
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        } else if (cmPatientNames.isNotEmpty && cmNames.isNotEmpty) {
+          await showDialog<String>(
+            context: context,
+            builder: (BuildContext context) => new AlertDialog(
+              title: new Text("Provide Recommendations"),
+              content: Container(
+                height: MediaQuery.of(context).size.height * 0.3,
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                          '\n$cmNames has conducted assessment for $cmPatientNames. Please, provide recommendation on the same',
+                          style: TextStyle(
+                              fontSize: 17, fontWeight: FontWeight.w300)),
+                    ],
+                  ),
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text("OK"),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        }
+      });
+    }
   }
 
   getFeedback() async {
@@ -344,7 +1186,34 @@ class _TherapistUIState extends State<TherapistUI> {
     }
   }
 
-  Widget ongoingassess(TherapistProvider assesspro) {
+  showAlertDialog(BuildContext context) {
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        // Navigator.of(context).pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("My title"),
+      content: Text("This is my message."),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
+  Widget ongoingassess(TherapistProvider assesspro, BuildContext context) {
     return (assesspro.loading)
         ? Center(child: CircularProgressIndicator())
         : (assesspro.datasetmain.length == 0)
@@ -716,6 +1585,14 @@ class _TherapistUIState extends State<TherapistUI> {
   @override
   Widget build(BuildContext context) {
     TherapistProvider assesspro = Provider.of<TherapistProvider>(context);
+    setState(() {
+      requestedPatientNames = assesspro.requestedPatientNames.toList();
+      recommendationPatientNames =
+          assesspro.recommendationPatientNames.toList();
+      finishedPatientNames = assesspro.finishedPatientNames.toList();
+      cmPatientNames = assesspro.cmPatientNames.toList();
+      cmNames = assesspro.cmNames.toList();
+    });
     Widget getName(String name) {
       if (name != null) {
         return Container(
@@ -1010,6 +1887,6 @@ class _TherapistUIState extends State<TherapistUI> {
               ],
             ),
             backgroundColor: Colors.grey[300],
-            body: ongoingassess(assesspro)));
+            body: ongoingassess(assesspro, context)));
   }
 }

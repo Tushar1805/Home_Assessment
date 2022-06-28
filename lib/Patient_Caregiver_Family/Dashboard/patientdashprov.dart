@@ -156,14 +156,25 @@ class PatientProvider extends ChangeNotifier {
   //  datamain;
   Map<String, dynamic> datasetmain = {};
   Map<String, dynamic> homemain = {};
+  String requestedTherapistNames;
+  String recommendationTherapistNames;
+  String waitingTherapistNames;
+  String assessingTherapist;
+  String assessingCasemanager;
   var docs;
   var data2;
   String curretnassessmentdocref, role;
   bool loading = false;
   String sortdata = '';
   PatientProvider(String role) {
-    getdocset(role);
+    initialize(role);
+    // getdocset(role);
     // print(role);
+  }
+
+  initialize(role) async {
+    await getdocset(role);
+    await showDialogTo();
   }
 
   // getHomeAddresses() async {
@@ -202,8 +213,52 @@ class PatientProvider extends ChangeNotifier {
       temptry["$j"] = datasetmaintemp["$j"].data();
     }
     datasetmain = temptry;
+    // loading = false;
+    notifyListeners();
+  }
+
+  showDialogTo() async {
+    User user = await FirebaseAuth.instance.currentUser;
+    for (var i = 0; i < datasetmain.length; i++) {
+      if (dataset.docs[i]['currentStatus'] == "Assessment Scheduled" &&
+          dataset.docs[i]["assessor"] == dataset.docs[i]["therapist"]) {
+        requestedTherapistNames = datasetmain['$i']['firstName'] +
+            ' ' +
+            datasetmain['$i']['lastName'];
+      }
+      if (dataset.docs[i]['currentStatus'] == "Assessment Finished" &&
+          dataset.docs[i]["assessor"] == dataset.docs[i]["therapist"]) {
+        recommendationTherapistNames = datasetmain['$i']['firstName'] +
+            ' ' +
+            datasetmain['$i']['lastName'];
+      }
+      if (dataset.docs[i]['currentStatus'] == "Assessment in Progress" &&
+          dataset.docs[i]["assessor"] == dataset.docs[i]["therapist"]) {
+        waitingTherapistNames = datasetmain['$i']['firstName'] +
+            ' ' +
+            datasetmain['$i']['lastName'];
+      }
+      if (dataset.docs[i]["assessor"] != user.uid &&
+          dataset.docs[i]["assessor"] != dataset.docs[i]["therapist"] &&
+          dataset.docs[i]['currentStatus'] == "Assessment Scheduled") {
+        var data = await firestore
+            .collection('users')
+            .doc(dataset.docs[i]["assessor"])
+            .get();
+        assessingTherapist = datasetmain['$i']['firstName'] +
+            ' ' +
+            datasetmain['$i']['lastName'];
+        assessingCasemanager =
+            data.data()['firstName'] + " " + data.data()['lastName'];
+      }
+    }
     loading = false;
     notifyListeners();
+    print("requestedTherapistNames: $requestedTherapistNames");
+    print("recommendationTherapistNames: $recommendationTherapistNames");
+    print("waitingTherapistNames: $waitingTherapistNames");
+    print("assessingTherapist: $assessingTherapist");
+    print("assessingCasemanager: $assessingCasemanager");
   }
 
   getsorteddata(sortby, type) async {

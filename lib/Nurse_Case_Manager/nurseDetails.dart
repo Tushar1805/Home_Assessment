@@ -58,7 +58,7 @@ class _NurseDetailsState extends State<NurseDetails> {
   Widget _buildfName() {
     return TextFormField(
         // initialValue: (widget.patient != null) ? widget.patient.fname : "",
-        decoration: formInputDecoration("Enter Your First Name"),
+        decoration: formInputDecoration("Enter First Name"),
         validator: (String value) {
           if (value.isEmpty) {
             return 'First name is Required';
@@ -73,7 +73,7 @@ class _NurseDetailsState extends State<NurseDetails> {
   Widget _buildlName() {
     return TextFormField(
         // initialValue: (widget.patient != null) ? widget.patient.lname : "",
-        decoration: formInputDecoration("Enter Your Last Name"),
+        decoration: formInputDecoration("Enter Last Name"),
         validator: (String value) {
           if (value.isEmpty) {
             return 'Last name is Required';
@@ -247,7 +247,7 @@ class _NurseDetailsState extends State<NurseDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 72,
+        toolbarHeight: 60,
         automaticallyImplyLeading: false,
         backwardsCompatibility: false,
         systemOverlayStyle: SystemUiOverlayStyle(
@@ -278,6 +278,8 @@ class _NurseDetailsState extends State<NurseDetails> {
           ),
           decoration: new BoxDecoration(color: Color.fromRGBO(10, 80, 106, 1)),
         ),
+        foregroundColor: Color.fromRGBO(10, 80, 106, 1),
+        backgroundColor: Color.fromRGBO(10, 80, 106, 1),
       ),
       backgroundColor: Colors.grey[200],
       body: Container(
