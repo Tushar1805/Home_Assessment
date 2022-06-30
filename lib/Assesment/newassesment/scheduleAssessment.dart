@@ -128,10 +128,10 @@ class _ScheduleAssessmentState extends State<ScheduleAssessment> {
                           padding: EdgeInsets.all(20),
                           alignment: Alignment.topLeft,
                           child: Text(
-                            "Who will be doing the assessment a family member, the therapist or the case manager ?\n\n" +
-                                "If patient/family selected, patient/family will fill the entire details of assessment and therapist will give recommendations only.\n\n" +
-                                "If therapist selected, therapist will do entire process himself.\n\n" +
-                                "If case manager selected, case manager will fill the entire details of assessment and therapist will give recommendations only.",
+                            "Who will be doing the assignment? (a family member/ the therapist/ case manager)\n\n" +
+                                "If patient/family is selected, patient/family wil fill the entire details of assessment and then the therapist will give recommendations only.\n\n" +
+                                "If therapist is selected, the therapist will do the assessment and provide recommendations.\n\n" +
+                                "If case manager is selected, the case manager will fill the entire details of assessment and the therapist will give recommendations only.",
                             style: TextStyle(fontSize: 18),
                           )),
 
