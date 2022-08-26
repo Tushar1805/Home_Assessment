@@ -36,7 +36,7 @@ dependencies:
   number_inc_dec: ^0.7.0
   html: ^0.15.0
   avatar_glow: ^2.0.1
-  speech_to_text: ^5.4.3
+  speech_to_text: ^4.2.0
   # async_button_builder:
   # icon_picker: ^1.0.0
   deep_collection: ^1.0.1
