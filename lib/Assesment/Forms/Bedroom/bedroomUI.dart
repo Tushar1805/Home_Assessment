@@ -963,7 +963,8 @@ class _BedroomUIState extends State<BedroomUI> {
                             ]),
                         (assesmentprovider.getvalue(1) != '' &&
                                 assesmentprovider.getvalue(1)[0] != '.')
-                            ? (double.parse(assesmentprovider.getvalue(1)) > 5)
+                            ? (double.parse(assesmentprovider.getvalue(1)) >=
+                                    2.5)
                                 ? assesmentprovider.getrecomain(
                                     assesmentprovider,
                                     1,
@@ -1666,6 +1667,10 @@ class _BedroomUIState extends State<BedroomUI> {
                                   DropdownMenuItem(
                                     child: Text('Adjustable'),
                                     value: 'Adjustable',
+                                  ),
+                                  DropdownMenuItem(
+                                    child: Text('Murphy Bed'),
+                                    value: 'Murphy Bed',
                                   ),
                                 ],
                                 onChanged: (value) {

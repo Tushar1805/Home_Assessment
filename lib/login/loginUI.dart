@@ -1,6 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tryapp/login/forgotPassword.dart';
 import 'package:tryapp/login/resetPassword.dart';
 // import 'package:tryapp/home/homeUi.dart';
 // import 'package:tryapp/welcome.dart';
@@ -225,7 +226,7 @@ class _LoginFormState extends State<LoginForm> {
                               padding: EdgeInsets.all(10),
                               color: Colors.lightGreen[800],
                               onPressed: () async {
-                                String email = _email.text;
+                                String email = _email.text.toLowerCase();
                                 String password = widget.pass;
                                 setState(() {
                                   loading = true;
@@ -344,7 +345,121 @@ class _LoginFormState extends State<LoginForm> {
                                       style: TextStyle(color: Colors.white),
                                     ),
                             ),
+                          ),
+                          SizedBox(
+                            height: 24,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => ForgotPassword()));
+                            },
+                            child: Text(
+                              "Forgot Password",
+                              style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                  color: Colors.white,
+                                  fontSize: 20),
+                            ),
                           )
+                          // Container(
+                          //   width: MediaQuery.of(context).size.width * .5,
+                          //   height: 50,
+                          //   child: RaisedButton(
+                          //     shape: RoundedRectangleBorder(
+                          //       borderRadius: BorderRadius.circular(20.0),
+                          //     ),
+                          //     padding: EdgeInsets.all(10),
+                          //     color: Colors.white,
+                          //     onPressed: () async {
+                          //       if (_email.text.toLowerCase() == "") {
+                          //         showDialog(
+                          //           context: context,
+                          //           builder: (BuildContext context) {
+                          //             // return object of type Dialog
+                          //             return AlertDialog(
+                          //               title: new Text("Oops!"),
+                          //               content: new Text(
+                          //                   "To reset password enter your correct email address first"),
+                          //               actions: <Widget>[
+                          //                 // usually buttons at the bottom of the dialog
+                          //                 new FlatButton(
+                          //                   child: new Text("Close"),
+                          //                   onPressed: () {
+                          //                     setState(() {
+                          //                       loading = false;
+                          //                     });
+                          //                     Navigator.of(context).pop();
+                          //                   },
+                          //                 ),
+                          //               ],
+                          //             );
+                          //           },
+                          //         );
+                          //       } else {
+                          //         FirebaseAuth.instance
+                          //             .sendPasswordResetEmail(
+                          //                 email: _email.text.toString())
+                          //             .then((_) {
+                          //           showDialog(
+                          //             context: context,
+                          //             builder: (BuildContext context) {
+                          //               // return object of type Dialog
+                          //               return AlertDialog(
+                          //                 title: new Text("Success"),
+                          //                 content: new Text(
+                          //                     "Link has been sent to your email for password reset"),
+                          //                 actions: <Widget>[
+                          //                   // usually buttons at the bottom of the dialog
+                          //                   new FlatButton(
+                          //                     child: new Text("Close"),
+                          //                     onPressed: () {
+                          //                       setState(() {
+                          //                         loading = false;
+                          //                       });
+                          //                       Navigator.of(context).pop();
+                          //                     },
+                          //                   ),
+                          //                 ],
+                          //               );
+                          //             },
+                          //           );
+                          //         }).catchError((error) {
+                          //           showDialog(
+                          //             context: context,
+                          //             builder: (BuildContext context) {
+                          //               // return object of type Dialog
+                          //               return AlertDialog(
+                          //                 title: new Text("oops!"),
+                          //                 content: new Text(
+                          //                     "Reseting Password failed"),
+                          //                 actions: <Widget>[
+                          //                   // usually buttons at the bottom of the dialog
+                          //                   new FlatButton(
+                          //                     child: new Text("Close"),
+                          //                     onPressed: () {
+                          //                       setState(() {
+                          //                         loading = false;
+                          //                       });
+                          //                       Navigator.of(context).pop();
+                          //                     },
+                          //                   ),
+                          //                 ],
+                          //               );
+                          //             },
+                          //           );
+                          //         });
+                          //       }
+                          //     },
+                          //     child: loginProvider.loading
+                          //         ? CircularProgressIndicator()
+                          //         : Text(
+                          //             'Forgot Password',
+                          //             style: TextStyle(
+                          //                 color: Colors.lightGreen[800]),
+                          //           ),
+                          //   ),
+                          // )
                         ],
                       )),
                 ),

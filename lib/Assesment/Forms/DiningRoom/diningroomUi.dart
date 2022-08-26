@@ -874,7 +874,8 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                               ),
                             ]),
                         (assesmentprovider.getvalue(1) != '')
-                            ? (double.parse(assesmentprovider.getvalue(1)) > 5)
+                            ? (double.parse(assesmentprovider.getvalue(1)) >=
+                                    2.5)
                                 ? assesmentprovider.getrecomain(
                                     assesmentprovider,
                                     1,

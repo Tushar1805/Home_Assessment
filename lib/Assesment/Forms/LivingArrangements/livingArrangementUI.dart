@@ -576,6 +576,39 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
       }
     }
 
+    setdatalisten(index) {
+      setState(() {
+        widget.wholelist[1][widget.accessname]['question']["$index"]
+            ['Recommendation'] = _controllers["field$index"].text;
+        cur = !cur;
+      });
+      if (index == 10 || index == 14) {
+        if (_controllers["field$index"].text.length == 0) {
+          if (widget
+                  .wholelist[1][widget.accessname]['question']["$index"]
+                      ['Answer']
+                  .length ==
+              0) {
+          } else {
+            widget.wholelist[1][widget.accessname]['complete'] -= 1;
+            widget.wholelist[1][widget.accessname]['question']["$index"]
+                ['Answer'] = _controllers["field$index"].text;
+          }
+        } else {
+          if (widget
+                  .wholelist[1][widget.accessname]['question']["$index"]
+                      ['Answer']
+                  .length ==
+              0) {
+            widget.wholelist[1][widget.accessname]['complete'] += 1;
+          }
+
+          widget.wholelist[1][widget.accessname]['question']["$index"]
+              ['Answer'] = _controllers["field$index"].text;
+        }
+      }
+    }
+
     void _listen(index) async {
       if (!_isListening) {
         bool available = await _speech.initialize(
@@ -615,12 +648,13 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
         _speech.stop();
       }
       print(isListening);
+      setdatalisten(index);
     }
 
-    setdatalisten(index) {
+    setdatalistenthera(index) {
       setState(() {
         widget.wholelist[1][widget.accessname]['question']["$index"]
-            ['Recommendation'] = _controllers["field$index"].text;
+            ['Recommendationthera'] = _controllerstreco["field$index"].text;
         cur = !cur;
       });
     }
@@ -661,14 +695,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
         });
         _speech.stop();
       }
-    }
-
-    setdatalistenthera(index) {
-      setState(() {
-        widget.wholelist[1][widget.accessname]['question']["$index"]
-            ['Recommendationthera'] = _controllerstreco["field$index"].text;
-        cur = !cur;
-      });
+      setdatalistenthera(index);
     }
 
     Widget getrecowid(index, BuildContext context) {
@@ -737,15 +764,23 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
               // });
             },
             controller: _controllerstreco["field$index"],
-            cursorColor: (isColor) ? Colors.green : Colors.red,
+            cursorColor: _controllerstreco["field$index"].text != ""
+                ? Colors.green
+                : Colors.red,
             decoration: InputDecoration(
                 focusedBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                      color: (isColor) ? Colors.green : Colors.red, width: 1),
+                      color: _controllerstreco["field$index"].text != ""
+                          ? Colors.green
+                          : Colors.red,
+                      width: 1),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderSide: BorderSide(
-                      color: (isColor) ? Colors.green : Colors.red, width: 1),
+                      color: _controllerstreco["field$index"].text != ""
+                          ? Colors.green
+                          : Colors.red,
+                      width: 1),
                 ),
                 suffix: Container(
                   // color: Colors.red,
@@ -773,8 +808,10 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                     ),
                   ]),
                 ),
-                labelStyle:
-                    TextStyle(color: (isColor) ? Colors.green : Colors.red),
+                labelStyle: TextStyle(
+                    color: _controllerstreco["field$index"].text != ""
+                        ? Colors.green
+                        : Colors.red),
                 labelText: 'Recommendation'),
           ),
           Row(
@@ -2563,7 +2600,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
-                            width: MediaQuery.of(context).size.width * .5,
+                            width: MediaQuery.of(context).size.width * .45,
                             child: Text('Access to Curbside',
                                 style: TextStyle(
                                   color: Color.fromRGBO(10, 80, 106, 1),
@@ -2571,7 +2608,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 )),
                           ),
                           Container(
-                            width: MediaQuery.of(context).size.width * .35,
+                            width: MediaQuery.of(context).size.width * .40,
                             child: DropdownButton(
                               isExpanded: true,
                               items: [

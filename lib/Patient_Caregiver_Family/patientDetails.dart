@@ -74,7 +74,7 @@ class _PatientDetailsState extends State<PatientDetails> {
   Widget _buildfName() {
     return TextFormField(
         initialValue: (widget.patient != null) ? widget.patient.fname : "",
-        decoration: formInputDecoration("Enter Patient's First Name"),
+        decoration: formInputDecoration("Enter First Name"),
         validator: (String value) {
           if (value.isEmpty) {
             return 'First name is Required';
@@ -89,7 +89,7 @@ class _PatientDetailsState extends State<PatientDetails> {
   Widget _buildlName() {
     return TextFormField(
         initialValue: (widget.patient != null) ? widget.patient.lname : "",
-        decoration: formInputDecoration("Enter Patient's Last Name"),
+        decoration: formInputDecoration("Enter Last Name"),
         validator: (String value) {
           if (value.isEmpty) {
             return 'Last name is Required';
@@ -104,14 +104,12 @@ class _PatientDetailsState extends State<PatientDetails> {
   Widget _buildEmail() {
     return TextFormField(
         initialValue: (widget.patient != null) ? widget.patient.email : "",
-        decoration:
-            formInputDecoration("Enter Patient's Email Address (Username)"),
+        decoration: formInputDecoration("Enter Email Address (Username)"),
         validator: (String value) {
           if (value.isEmpty) {
             return 'Email is Required';
           }
-          if (!RegExp(
-                  r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
+          if (!RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
               .hasMatch(value)) {
             return 'Please Enter a valid Email Address';
           }
@@ -126,10 +124,12 @@ class _PatientDetailsState extends State<PatientDetails> {
     return TextFormField(
         initialValue: (widget.patient != null) ? widget.patient.mobile : "",
         keyboardType: TextInputType.phone,
-        decoration: formInputDecoration("Enter Patient's Mobile Number"),
+        decoration: formInputDecoration("Enter Mobile Number"),
         validator: (String value) {
           if (value.isEmpty) {
             return 'Phone Number is Required';
+          } else if (value.length < 10 || value.length > 10) {
+            return 'Invalid Number';
           }
           return null;
         },

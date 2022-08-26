@@ -64,7 +64,7 @@ class _TherapistDetailsState extends State<TherapistDetails> {
   Widget _buildfName() {
     return TextFormField(
         initialValue: (widget.therapist != null) ? widget.therapist.fname : "",
-        decoration: formInputDecoration("Enter Therapist's First Name"),
+        decoration: formInputDecoration("Enter First Name"),
         validator: (String value) {
           if (value.isEmpty) {
             return 'First name is Required';
@@ -79,7 +79,7 @@ class _TherapistDetailsState extends State<TherapistDetails> {
   Widget _buildlName() {
     return TextFormField(
         initialValue: (widget.therapist != null) ? widget.therapist.lname : "",
-        decoration: formInputDecoration("Enter Therapist's Last Name"),
+        decoration: formInputDecoration("Enter Last Name"),
         validator: (String value) {
           if (value.isEmpty) {
             return 'Last name is Required';
@@ -94,21 +94,19 @@ class _TherapistDetailsState extends State<TherapistDetails> {
   Widget _buildEmail() {
     return TextFormField(
         initialValue: (widget.therapist != null) ? widget.therapist.email : "",
-        decoration:
-            formInputDecoration("Enter Therapist's Email Address (Username)"),
+        decoration: formInputDecoration("Enter Email Address (Username)"),
         validator: (String value) {
           if (value.isEmpty) {
             return 'Email is Required';
           }
-          if (!RegExp(
-                  r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
+          if (!RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
               .hasMatch(value)) {
             return 'Please Enter a valid Email Address';
           }
           return null;
         },
         onSaved: (String value) {
-          email = value;
+          email = value.toLowerCase();
         });
   }
 
@@ -116,10 +114,12 @@ class _TherapistDetailsState extends State<TherapistDetails> {
     return TextFormField(
         initialValue: (widget.therapist != null) ? widget.therapist.mobile : "",
         keyboardType: TextInputType.phone,
-        decoration: formInputDecoration("Enter Therapist's Mobile Number"),
+        decoration: formInputDecoration("Enter Mobile Number"),
         validator: (String value) {
           if (value.isEmpty) {
             return 'Phone Number is Required';
+          } else if (value.length < 10 || value.length > 10) {
+            return 'Invalid Number';
           }
           return null;
         },
@@ -132,8 +132,7 @@ class _TherapistDetailsState extends State<TherapistDetails> {
     return TextFormField(
         initialValue:
             (widget.therapist != null) ? widget.therapist.address : "",
-        decoration:
-            formInputDecoration("Enter Therapist's Organization Address"),
+        decoration: formInputDecoration("Enter Organization Address"),
         validator: (String value) {
           // if (value.isEmpty) {
           //   return 'Address is Required';
@@ -149,12 +148,14 @@ class _TherapistDetailsState extends State<TherapistDetails> {
     return TextFormField(
         initialValue: (widget.therapist != null) ? widget.therapist.age : "",
         keyboardType: TextInputType.number,
-        decoration: formInputDecoration("Enter Therapist's Age"),
+        decoration: formInputDecoration("Enter Age"),
         // ignore: missing_return
         validator: (String value) {
           int age = int.tryParse(value);
           if (age == null || age <= 0) {
             return 'Age is Required';
+          } else if (age < 1 || age > 101) {
+            return 'Enter Valid Age';
           }
           return null;
         },

@@ -93,8 +93,7 @@ class _NurseDetailsState extends State<NurseDetails> {
           if (value.isEmpty) {
             return 'Email is Required';
           }
-          if (!RegExp(
-                  r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$")
+          if (!RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
               .hasMatch(value)) {
             return 'Please Enter a valid Email Address';
           }
@@ -113,6 +112,8 @@ class _NurseDetailsState extends State<NurseDetails> {
         validator: (String value) {
           if (value.isEmpty) {
             return 'Phone Number is Required';
+          } else if (value.length < 10 || value.length > 10) {
+            return 'Invalid Number';
           }
           return null;
         },

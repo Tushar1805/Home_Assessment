@@ -1013,7 +1013,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                             ]),
                         SizedBox(height: 10),
                         (provider.getvalue(1) != "")
-                            ? (double.parse(provider.getvalue(1)) > 5)
+                            ? (double.parse(provider.getvalue(1)) >= 2.5)
                                 ? getrecomain(1, true, "Comments (If Any)",
                                     context, provider)
                                 : SizedBox()
@@ -2008,14 +2008,18 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                 onChanged: (value) {
                   if (assessor == therapist && role == "therapist") {
                     FocusScope.of(context).requestFocus();
+                    print(
+                        "_controllers['field$index']: ${_controllers["field$index"].text}");
                     new TextEditingController().clear();
+                    print(
+                        "_controllers['field$index']: ${_controllers["field$index"].text}");
                     // print(widget.accessname);
-                    provider.setreco(index, value);
+                    provider.setreco(index, _controllers["field$index"].text);
                   } else if (role != "therapist") {
                     FocusScope.of(context).requestFocus();
                     new TextEditingController().clear();
                     // print(widget.accessname);
-                    provider.setreco(index, value);
+                    provider.setreco(index, _controllers["field$index"].text);
                   } else {
                     _showSnackBar("You can't change the other fields", context);
                   }
@@ -2083,11 +2087,17 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
           decoration: InputDecoration(
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    color: (isColor) ? Colors.green : Colors.red, width: 1),
+                    color: _controllerstreco["field$index"].text != ""
+                        ? Colors.green
+                        : Colors.red,
+                    width: 1),
               ),
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    width: 1, color: (isColor) ? Colors.green : Colors.red),
+                    width: 1,
+                    color: _controllerstreco["field$index"].text != ""
+                        ? Colors.green
+                        : Colors.red),
               ),
               suffix: Container(
                 // color: Colors.red,
@@ -2115,14 +2125,16 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                   ),
                 ]),
               ),
-              labelStyle:
-                  TextStyle(color: (isColor) ? Colors.green : Colors.red),
+              labelStyle: TextStyle(
+                  color: _controllerstreco["field$index"].text != ""
+                      ? Colors.green
+                      : Colors.red),
               labelText: 'Recommendation'),
           onChanged: (value) {
             FocusScope.of(context).requestFocus();
             new TextEditingController().clear();
             // print(widget.accessname);
-            provider.setrecothera(index, value);
+            provider.setrecothera(index, _controllerstreco["field$index"].text);
           },
         ),
         Row(
@@ -2189,6 +2201,47 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
     );
   }
 
+  setdatalistenthera(index) {
+    setState(() {
+      widget.wholelist[8][widget.accessname]['question']["$index"]
+          ['Recommendationthera'] = _controllerstreco["field$index"].text;
+      cur = !cur;
+    });
+  }
+
+  setdatalisten(index) {
+    print("******************");
+    setState(() {
+      widget.wholelist[2][widget.accessname]['question']["$index"]
+          ['Recommendation'] = _controllers["field$index"].text;
+      cur = !cur;
+    });
+    print(_controllers["field$index"].text);
+    if (index == 11) {
+      if (_controllers["field$index"].text.length == 0) {
+        if (widget
+                .wholelist[2][widget.accessname]['question']["$index"]['Answer']
+                .length ==
+            0) {
+        } else {
+          widget.wholelist[2][widget.accessname]['complete'] -= 1;
+          widget.wholelist[2][widget.accessname]['question']["$index"]
+              ['Answer'] = _controllers["field$index"].text;
+        }
+      } else {
+        if (widget
+                .wholelist[2][widget.accessname]['question']["$index"]['Answer']
+                .length ==
+            0) {
+          widget.wholelist[2][widget.accessname]['complete'] += 1;
+        }
+
+        widget.wholelist[2][widget.accessname]['question']["$index"]['Answer'] =
+            _controllers["field$index"].text;
+      }
+    }
+  }
+
   void _listen(index) async {
     if (!_isListening) {
       bool available = await _speech.initialize(
@@ -2228,6 +2281,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
       });
       _speech.stop();
     }
+    setdatalisten(index);
   }
 
   void _listenthera(index) async {
@@ -2266,22 +2320,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
       });
       _speech.stop();
     }
-  }
-
-  setdatalistenthera(index) {
-    setState(() {
-      widget.wholelist[8][widget.accessname]['question']["$index"]
-          ['Recommendationthera'] = _controllerstreco["field$index"].text;
-      cur = !cur;
-    });
-  }
-
-  setdatalisten(index) {
-    setState(() {
-      widget.wholelist[2][widget.accessname]['question']["$index"]
-          ['Recommendation'] = _controllers["field$index"].text;
-      cur = !cur;
-    });
+    setdatalistenthera(index);
   }
 }
 

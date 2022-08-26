@@ -800,7 +800,8 @@ class _KitchenUIState extends State<KitchenUI> {
                         ),
                         (assesmentprovider.getvalue(1) != '0' &&
                                 assesmentprovider.getvalue(1) != '')
-                            ? (double.parse(assesmentprovider.getvalue(1)) > 5)
+                            ? (double.parse(assesmentprovider.getvalue(1)) >=
+                                    2.5)
                                 ? assesmentprovider.getrecomain(
                                     assesmentprovider,
                                     1,

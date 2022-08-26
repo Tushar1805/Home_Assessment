@@ -6742,6 +6742,31 @@ class _PathwayUIState extends State<PathwayUI> {
             ['Recommendation'] = _controllers["field$index"].text;
         cur = !cur;
       });
+      if (index == 12) {
+        if (_controllers["field$index"].text.length == 0) {
+          if (widget
+                  .wholelist[0][widget.accessname]['question']["$index"]
+                      ['Answer']
+                  .length ==
+              0) {
+          } else {
+            widget.wholelist[0][widget.accessname]['complete'] -= 1;
+            widget.wholelist[0][widget.accessname]['question']["$index"]
+                ['Answer'] = _controllers["field$index"].text;
+          }
+        } else {
+          if (widget
+                  .wholelist[0][widget.accessname]['question']["$index"]
+                      ['Answer']
+                  .length ==
+              0) {
+            widget.wholelist[0][widget.accessname]['complete'] += 1;
+          }
+
+          widget.wholelist[0][widget.accessname]['question']["$index"]
+              ['Answer'] = _controllers["field$index"].text;
+        }
+      }
     }
 
     /// this fucntion helps us to listent to hte done button at the bottom
@@ -6821,6 +6846,15 @@ class _PathwayUIState extends State<PathwayUI> {
       // }
     }
 
+    setdatalistenThera(index) {
+      setState(() {
+        widget.wholelist[0][widget.accessname]['question']["$index"]
+            ['Recommendationthera'] = _controllerstreco["field$index"].text;
+        curThera = !curThera;
+      });
+      print(_controllerstreco["field$index"].text);
+    }
+
     /// This fucntion is to take care of speech to text mic button and place the text in
     /// the particular field.
     void _listen(index, bool isthera) async {
@@ -6858,7 +6892,7 @@ class _PathwayUIState extends State<PathwayUI> {
                 listenFor: Duration(minutes: 1),
                 localeId: systemLocale.localeId,
                 onSoundLevelChange: null,
-                cancelOnError: true,
+                // cancelOnError: true,
                 partialResults: true);
           } else {
             _speech.listen(
@@ -6872,10 +6906,10 @@ class _PathwayUIState extends State<PathwayUI> {
                       //   _confidence = val.confidence;
                       // }
                     }),
-                listenFor: Duration(milliseconds: 5000),
+                listenFor: Duration(minutes: 1),
                 localeId: systemLocale.localeId,
                 onSoundLevelChange: null,
-                cancelOnError: true,
+                // cancelOnError: true,
                 partialResults: true);
           }
         }
@@ -6887,6 +6921,7 @@ class _PathwayUIState extends State<PathwayUI> {
         });
         _speech.stop();
       }
+      isthera ? setdatalistenThera(index) : setdatalisten(index);
     }
 
     ticklisten(index) {
@@ -6897,14 +6932,6 @@ class _PathwayUIState extends State<PathwayUI> {
         colorsset["field$index"] = Color.fromRGBO(10, 80, 106, 1);
       });
       _speech.stop();
-    }
-
-    setdatalistenThera(index) {
-      setState(() {
-        widget.wholelist[0][widget.accessname]['question']["$index"]
-            ['Recommendationthera'] = _controllerstreco["field$index"].text;
-        curThera = !curThera;
-      });
     }
 
     Widget getrecowid(index, BuildContext context) {
@@ -6978,11 +7005,17 @@ class _PathwayUIState extends State<PathwayUI> {
             decoration: InputDecoration(
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    color: (isColor) ? Colors.green : Colors.red, width: 1),
+                    color: _controllerstreco["field$index"].text != ""
+                        ? Colors.green
+                        : Colors.red,
+                    width: 1),
               ),
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    width: 1, color: (isColor) ? Colors.green : Colors.red),
+                    width: 1,
+                    color: _controllerstreco["field$index"].text != ""
+                        ? Colors.green
+                        : Colors.red),
               ),
               suffix: Container(
                 // color: Colors.red,
@@ -7018,8 +7051,10 @@ class _PathwayUIState extends State<PathwayUI> {
                   ),
                 ]),
               ),
-              labelStyle:
-                  TextStyle(color: (isColor) ? Colors.green : Colors.red),
+              labelStyle: TextStyle(
+                  color: _controllerstreco["field$index"].text != ""
+                      ? Colors.green
+                      : Colors.red),
               labelText: 'Recommendation',
             ),
             // initialValue: (index == 6)
@@ -7095,167 +7130,166 @@ class _PathwayUIState extends State<PathwayUI> {
           // color: Colors.yellow,
           child: Column(
             children: [
-              // Container(
-              //   child: TextFormField(
-              //     maxLines: 1,
-              //     showCursor: cur,
-              //     controller: _controllers["field$index"],
-              //     decoration: InputDecoration(
-              //         focusedBorder: OutlineInputBorder(
-              //           borderSide: BorderSide(
-              //               color: colorsset["field$index"], width: 1),
-              //         ),
-              //         enabledBorder: OutlineInputBorder(
-              //           borderSide: BorderSide(
-              //               width: 1, color: colorsset["field$index"]),
-              //         ),
-              //         suffix: Container(
-              //           // color: Colors.red,
-              //           width: 40,
-              //           height: 30,
-              //           padding: EdgeInsets.all(0),
-              //           child: Row(children: [
-              //             Container(
-              //               // color: Colors.green,
-              //               alignment: Alignment.center,
-              //               width: 40,
-              //               height: 60,
-              //               margin: EdgeInsets.all(0),
-              //               child: AvatarGlow(
-              //                 animate: isListening['field$index'],
-              //                 glowColor: Theme.of(context).primaryColor,
-              //                 endRadius: 35.0,
-              //                 duration: const Duration(milliseconds: 2000),
-              //                 repeatPauseDuration:
-              //                     const Duration(milliseconds: 100),
-              //                 repeat: true,
-              //                 child: FloatingActionButton(
-              //                   heroTag: "btn${index + 100}",
-              //                   child: Icon(
-              //                     Icons.mic,
-              //                     size: 20,
-              //                   ),
-              //                   onPressed: () {
-              //                     if (assessor == therapist &&
-              //                         role == "therapist") {
-              //                       _listen(index, false);
-              //                       setdatalisten(index);
-              //                     } else if (role != "therapist") {
-              //                       _listen(index, false);
-              //                       setdatalisten(index);
-              //                     } else {
-              //                       _showSnackBar(
-              //                           "You can't change the other fields",
-              //                           context);
-              //                     }
-              //                   },
-              //                 ),
-              //               ),
-              //             ),
-              //           ]),
-              //         ),
-              //         labelText: 'Comments'
-              //         ),
-              //     onChanged: (value) {
-              // if (assessor == therapist && role == "therapist") {
-              //   FocusScope.of(context).requestFocus();
-              //   new TextEditingController().clear();
-              //   // print(widget.accessname);
-              //   setreco(index, value);
-              // } else if (role != "therapist") {
-              //   FocusScope.of(context).requestFocus();
-              //   new TextEditingController().clear();
-              //   // print(widget.accessname);
-              //   setreco(index, value);
-              // } else {
-              //   _showSnackBar(
-              //       "You can't change the other fields", context);
-              // }
-              //     },
-              //   ),
-              // ),
               Container(
-                padding: EdgeInsets.fromLTRB(10, 8, 8, 0),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        // initialValue: getvalue(14),
-                        maxLines: 1,
-                        showCursor: cur,
-                        controller: _controllers["field$index"],
-                        decoration: InputDecoration(
-                            border: InputBorder.none, labelText: 'Comment'),
-
-                        onChanged: (value) {
-                          if (assessor == therapist && role == "therapist") {
-                            FocusScope.of(context).requestFocus();
-                            new TextEditingController().clear();
-                            // print(widget.accessname);
-                            setreco(index, value);
-                          } else if (role != "therapist") {
-                            FocusScope.of(context).requestFocus();
-                            new TextEditingController().clear();
-                            // print(widget.accessname);
-                            setreco(index, value);
-                          } else {
-                            _showSnackBar(
-                                "You can't change the other fields", context);
-                          }
-                        },
+                child: TextFormField(
+                  maxLines: 1,
+                  showCursor: cur,
+                  controller: _controllers["field$index"],
+                  decoration: InputDecoration(
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: colorsset["field$index"], width: 1),
                       ),
-                    ),
-                    AvatarGlow(
-                      animate: isListening["field$index"],
-                      glowColor: Theme.of(context).primaryColor,
-                      endRadius: 35.0,
-                      duration: const Duration(milliseconds: 2000),
-                      repeatPauseDuration: const Duration(milliseconds: 100),
-                      repeat: true,
-                      child: Container(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            width: 1, color: colorsset["field$index"]),
+                      ),
+                      suffix: Container(
+                        // color: Colors.red,
                         width: 40,
                         height: 30,
                         padding: EdgeInsets.all(0),
-                        alignment: Alignment.center,
-                        margin: EdgeInsets.all(0),
-                        child: FloatingActionButton(
-                          heroTag: "btn${index + 100}",
-                          child: Icon(
-                            Icons.mic,
-                            size: 20,
+                        child: Row(children: [
+                          Container(
+                            // color: Colors.green,
+                            alignment: Alignment.center,
+                            width: 40,
+                            height: 60,
+                            margin: EdgeInsets.all(0),
+                            child: AvatarGlow(
+                              animate: isListening['field$index'],
+                              glowColor: Theme.of(context).primaryColor,
+                              endRadius: 35.0,
+                              duration: const Duration(milliseconds: 2000),
+                              repeatPauseDuration:
+                                  const Duration(milliseconds: 100),
+                              repeat: true,
+                              child: FloatingActionButton(
+                                heroTag: "btn${index * 100}",
+                                child: Icon(
+                                  Icons.mic,
+                                  size: 20,
+                                ),
+                                onPressed: () {
+                                  if (assessor == therapist &&
+                                      role == "therapist") {
+                                    _listen(index, false);
+                                    setdatalisten(index);
+                                  } else if (role != "therapist") {
+                                    _listen(index, false);
+                                    setdatalisten(index);
+                                  } else {
+                                    _showSnackBar(
+                                        "You can't change the other fields",
+                                        context);
+                                  }
+                                },
+                              ),
+                            ),
                           ),
-                          onPressed: () {
-                            if (assessor == therapist && role == "therapist") {
-                              _listen(index, false);
-                              setdatalisten(index);
-                              Timer(Duration(seconds: 3), () {
-                                ticklisten(index);
-                              });
-                            } else if (role != "therapist") {
-                              _listen(index, false);
-                              setdatalisten(index);
-                              Timer(Duration(seconds: 3), () {
-                                ticklisten(index);
-                              });
-                            } else {
-                              _showSnackBar(
-                                  "You can't change the other fields", context);
-                            }
-                          },
-                        ),
+                        ]),
                       ),
-                    ),
-                  ],
-                ),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: colorsset["field$index"],
-                    width: 1,
-                  ), //Border.all
-                  borderRadius: BorderRadius.circular(8),
+                      labelText: 'Comments'),
+                  onChanged: (value) {
+                    if (assessor == therapist && role == "therapist") {
+                      FocusScope.of(context).requestFocus();
+                      new TextEditingController().clear();
+                      // print(widget.accessname);
+                      setreco(index, value);
+                    } else if (role != "therapist") {
+                      FocusScope.of(context).requestFocus();
+                      new TextEditingController().clear();
+                      // print(widget.accessname);
+                      setreco(index, value);
+                    } else {
+                      _showSnackBar(
+                          "You can't change the other fields", context);
+                    }
+                  },
                 ),
               ),
+              // Container(
+              //   padding: EdgeInsets.fromLTRB(10, 8, 8, 0),
+              //   child: Row(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       Expanded(
+              //         child: TextFormField(
+              //           // initialValue: getvalue(14),
+              //           maxLines: 1,
+              //           showCursor: cur,
+              //           controller: _controllers["field$index"],
+              //           decoration: InputDecoration(
+              //               border: InputBorder.none, labelText: 'Comment'),
+
+              //           onChanged: (value) {
+              //             if (assessor == therapist && role == "therapist") {
+              //               FocusScope.of(context).requestFocus();
+              //               new TextEditingController().clear();
+              //               // print(widget.accessname);
+              //               setreco(index, value);
+              //             } else if (role != "therapist") {
+              //               FocusScope.of(context).requestFocus();
+              //               new TextEditingController().clear();
+              //               // print(widget.accessname);
+              //               setreco(index, value);
+              //             } else {
+              //               _showSnackBar(
+              //                   "You can't change the other fields", context);
+              //             }
+              //           },
+              //         ),
+              //       ),
+              //       AvatarGlow(
+              //         animate: isListening["field$index"],
+              //         glowColor: Theme.of(context).primaryColor,
+              //         endRadius: 35.0,
+              //         duration: const Duration(milliseconds: 2000),
+              //         repeatPauseDuration: const Duration(milliseconds: 100),
+              //         repeat: true,
+              //         child: Container(
+              //           width: 40,
+              //           height: 30,
+              //           padding: EdgeInsets.all(0),
+              //           alignment: Alignment.center,
+              //           margin: EdgeInsets.all(0),
+              //           child: FloatingActionButton(
+              //             heroTag: "btn${index + 100}",
+              //             child: Icon(
+              //               Icons.mic,
+              //               size: 20,
+              //             ),
+              //             onPressed: () {
+              //               if (assessor == therapist && role == "therapist") {
+              //                 _listen(index, false);
+              //                 setdatalisten(index);
+              //                 Timer(Duration(seconds: 3), () {
+              //                   ticklisten(index);
+              //                 });
+              //               } else if (role != "therapist") {
+              //                 _listen(index, false);
+              //                 setdatalisten(index);
+              //                 Timer(Duration(seconds: 3), () {
+              //                   ticklisten(index);
+              //                 });
+              //               } else {
+              //                 _showSnackBar(
+              //                     "You can't change the other fields", context);
+              //               }
+              //             },
+              //           ),
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              //   decoration: BoxDecoration(
+              //     border: Border.all(
+              //       color: colorsset["field$index"],
+              //       width: 1,
+              //     ), //Border.all
+              //     borderRadius: BorderRadius.circular(8),
+              //   ),
+              // ),
               (role == 'therapist' && isthera)
                   ? getrecowid(index, context)
                   : SizedBox(),
@@ -8898,8 +8932,9 @@ class _PathwayUIState extends State<PathwayUI> {
                                     }),
                               ),
                             ]),
+                        SizedBox(height: 15),
                         (getvalue(9) != "")
-                            ? (double.parse(getvalue(9)) > 5)
+                            ? (double.parse(getvalue(9)) >= 2.5)
                                 ? (role == 'therapist')
                                     ? getrecomain(9, true, context)
                                     : SizedBox()
@@ -8910,7 +8945,7 @@ class _PathwayUIState extends State<PathwayUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .35,
+                              width: MediaQuery.of(context).size.width * .4,
                               child: Text(
                                   'Able to Manage Through Doors/Thresholds/ Door Sills?',
                                   style: TextStyle(

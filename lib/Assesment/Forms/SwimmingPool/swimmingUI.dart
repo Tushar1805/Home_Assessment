@@ -2187,6 +2187,7 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
                                 context, assesspro, 2, 'Pool Accessible?')
                           ],
                         ),
+                        SizedBox(height: 10),
                         (getvalue(2) != '')
                             ? (getvalue(2) == 'No')
                                 ? getrecomain(2, true, context)
@@ -2377,10 +2378,12 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
                                     if (assessor == therapist &&
                                         role == "therapist") {
                                       setreco(5, value);
-                                      setdata(5, value, 'Oberservations');
+                                      assesspro.setdata(
+                                          5, value, 'Oberservations');
                                     } else if (role != "therapist") {
                                       setreco(5, value);
-                                      setdata(5, value, 'Oberservations');
+                                      assesspro.setdata(
+                                          5, value, 'Oberservations');
                                     } else {
                                       _showSnackBar(
                                           "You can't change the other fields",
@@ -2674,15 +2677,23 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
             // });
           },
           controller: _controllerstreco["field$index"],
-          cursorColor: (isColor) ? Colors.green : Colors.red,
+          cursorColor: _controllerstreco["field$index"].text != ""
+              ? Colors.green
+              : Colors.red,
           decoration: InputDecoration(
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    color: (isColor) ? Colors.green : Colors.red, width: 1),
+                    color: _controllerstreco["field$index"].text != ""
+                        ? Colors.green
+                        : Colors.red,
+                    width: 1),
               ),
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    color: (isColor) ? Colors.green : Colors.red, width: 1),
+                    color: _controllerstreco["field$index"].text != ""
+                        ? Colors.green
+                        : Colors.red,
+                    width: 1),
               ),
               suffix: Container(
                 // color: Colors.red,
@@ -2710,8 +2721,10 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
                   ),
                 ]),
               ),
-              labelStyle:
-                  TextStyle(color: (isColor) ? Colors.green : Colors.red),
+              labelStyle: TextStyle(
+                  color: _controllerstreco["field$index"].text != ""
+                      ? Colors.green
+                      : Colors.red),
               labelText: 'Recommendation'),
         ),
         Row(
@@ -2792,6 +2805,7 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
       });
       _speech.stop();
     }
+    setdatalisten(index);
   }
 
   setdatalisten(index) {
@@ -2800,6 +2814,31 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
           ['Recommendation'] = _controllers["field$index"].text;
       cur = !cur;
     });
+    if (index == 5) {
+      if (_controllers["field$index"].text.length == 0) {
+        if (widget
+                .wholelist[11][widget.accessname]['question']["$index"]
+                    ['Answer']
+                .length ==
+            0) {
+        } else {
+          widget.wholelist[11][widget.accessname]['complete'] -= 1;
+          widget.wholelist[11][widget.accessname]['question']["$index"]
+              ['Answer'] = _controllers["field$index"].text;
+        }
+      } else {
+        if (widget
+                .wholelist[11][widget.accessname]['question']["$index"]
+                    ['Answer']
+                .length ==
+            0) {
+          widget.wholelist[11][widget.accessname]['complete'] += 1;
+        }
+
+        widget.wholelist[11][widget.accessname]['question']["$index"]
+            ['Answer'] = _controllers["field$index"].text;
+      }
+    }
   }
 
   void _listenthera(index) async {
@@ -2838,6 +2877,7 @@ class _SwimmingPoolUIState extends State<SwimmingPoolUI> {
       });
       _speech.stop();
     }
+    setdatalistenthera(index);
   }
 
   setdatalistenthera(index) {

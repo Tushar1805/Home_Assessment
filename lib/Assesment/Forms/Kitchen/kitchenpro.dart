@@ -498,11 +498,17 @@ class KitchenPro extends ChangeNotifier {
           decoration: InputDecoration(
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    color: (isColor) ? Colors.green : Colors.red, width: 1),
+                    color: controllerstreco["field$index"].text != ""
+                        ? Colors.green
+                        : Colors.red,
+                    width: 1),
               ),
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    width: 1, color: (isColor) ? Colors.green : Colors.red),
+                    width: 1,
+                    color: controllerstreco["field$index"].text != ""
+                        ? Colors.green
+                        : Colors.red),
               ),
               suffix: Container(
                 // color: Colors.red,
@@ -530,8 +536,10 @@ class KitchenPro extends ChangeNotifier {
                   ),
                 ]),
               ),
-              labelStyle:
-                  TextStyle(color: (isColor) ? Colors.green : Colors.red),
+              labelStyle: TextStyle(
+                  color: controllerstreco["field$index"].text != ""
+                      ? Colors.green
+                      : Colors.red),
               labelText: 'Recommendation'),
           onChanged: (value) {
             // print(accessname);
@@ -627,6 +635,8 @@ class KitchenPro extends ChangeNotifier {
       notifyListeners();
       _speech.stop();
     }
+    setdatalistenthera(index);
+    notifyListeners();
   }
 
   setdatalistenthera(index) {
@@ -671,12 +681,33 @@ class KitchenPro extends ChangeNotifier {
       notifyListeners();
       _speech.stop();
     }
+    setdatalisten(index);
+    notifyListeners();
   }
 
   setdatalisten(index) {
     wholelist[3][accessname]['question']["$index"]['Recommendation'] =
         controllers["field$index"].text;
     cur = !cur;
+    if (index == 18) {
+      if (controllers["field$index"].text.length == 0) {
+        if (wholelist[3][accessname]['question']["$index"]['Answer'].length ==
+            0) {
+        } else {
+          wholelist[3][accessname]['complete'] -= 1;
+          wholelist[3][accessname]['question']["$index"]['Answer'] =
+              controllers["field$index"].text;
+        }
+      } else {
+        if (wholelist[3][accessname]['question']["$index"]['Answer'].length ==
+            0) {
+          wholelist[3][accessname]['complete'] += 1;
+        }
+
+        wholelist[3][accessname]['question']["$index"]['Answer'] =
+            controllers["field$index"].text;
+      }
+    }
     notifyListeners();
   }
 }

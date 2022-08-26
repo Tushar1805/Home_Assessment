@@ -1000,7 +1000,8 @@ class _BathroomUIState extends State<BathroomUI> {
                           ],
                         ),
                         (assesmentprovider.getvalue(1) != '')
-                            ? (double.parse(assesmentprovider.getvalue(1)) > 5)
+                            ? (double.parse(assesmentprovider.getvalue(1)) >=
+                                    2.5)
                                 ? assesmentprovider.getrecomain(
                                     assesmentprovider,
                                     1,
@@ -2261,15 +2262,19 @@ class _BathroomUIState extends State<BathroomUI> {
                                             onChanged: (value) {
                                               if (assessor == therapist &&
                                                   role == "therapist") {
-                                                widget.wholelist[5]
-                                                            [widget.accessname]
-                                                        ['question']["15"]
-                                                    ['ManageInOut'] = value;
+                                                setState(() {
+                                                  widget.wholelist[5][
+                                                              widget.accessname]
+                                                          ['question']["15"]
+                                                      ['ManageInOut'] = value;
+                                                });
                                               } else if (role != "therapist") {
-                                                widget.wholelist[5]
-                                                            [widget.accessname]
-                                                        ['question']["15"]
-                                                    ['ManageInOut'] = value;
+                                                setState(() {
+                                                  widget.wholelist[5][
+                                                              widget.accessname]
+                                                          ['question']["15"]
+                                                      ['ManageInOut'] = value;
+                                                });
                                               } else {
                                                 _showSnackBar(
                                                     "You can't change the other fields",

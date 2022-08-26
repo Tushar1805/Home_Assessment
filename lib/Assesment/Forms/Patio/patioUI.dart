@@ -868,7 +868,8 @@ class _PatioUIState extends State<PatioUI> {
                               ),
                             ]),
                         (assesmentprovider.getvalue(1) != '')
-                            ? (double.parse(assesmentprovider.getvalue(1)) > 5)
+                            ? (double.parse(assesmentprovider.getvalue(1)) >=
+                                    2.5)
                                 ? getrecomain(1, true, 'Comments (if any)',
                                     context, assesmentprovider)
                                 : SizedBox()
@@ -2535,11 +2536,17 @@ class _PatioUIState extends State<PatioUI> {
           decoration: InputDecoration(
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    color: (isColor) ? Colors.green : Colors.red, width: 1),
+                    color: _controllerstreco["field$index"].text != ""
+                        ? Colors.green
+                        : Colors.red,
+                    width: 1),
               ),
               enabledBorder: OutlineInputBorder(
                 borderSide: BorderSide(
-                    width: 1, color: (isColor) ? Colors.green : Colors.red),
+                    width: 1,
+                    color: _controllerstreco["field$index"].text != ""
+                        ? Colors.green
+                        : Colors.red),
               ),
               suffix: Container(
                 // color: Colors.red,
@@ -2567,8 +2574,10 @@ class _PatioUIState extends State<PatioUI> {
                   ),
                 ]),
               ),
-              labelStyle:
-                  TextStyle(color: (isColor) ? Colors.green : Colors.red),
+              labelStyle: TextStyle(
+                  color: _controllerstreco["field$index"].text != ""
+                      ? Colors.green
+                      : Colors.red),
               labelText: 'Recommendation'),
           onChanged: (value) {
             // FocusScope.of(context).requestFocus();
@@ -2770,6 +2779,7 @@ class _PatioUIState extends State<PatioUI> {
       });
       _speech.stop();
     }
+    setdatalistenthera(index);
   }
 
   setdatalistenthera(index) {
@@ -2828,6 +2838,7 @@ class _PatioUIState extends State<PatioUI> {
       });
       _speech.stop();
     }
+    setdatalisten(index);
   }
 
   setdatalisten(index) {
@@ -2836,6 +2847,29 @@ class _PatioUIState extends State<PatioUI> {
           ['Recommendation'] = _controllers["field$index"].text;
       cur = !cur;
     });
+    if (index == 12) {
+      if (_controllers["field$index"].text.length == 0) {
+        if (widget
+                .wholelist[8][widget.accessname]['question']["$index"]['Answer']
+                .length ==
+            0) {
+        } else {
+          widget.wholelist[8][widget.accessname]['complete'] -= 1;
+          widget.wholelist[8][widget.accessname]['question']["$index"]
+              ['Answer'] = _controllers["field$index"].text;
+        }
+      } else {
+        if (widget
+                .wholelist[8][widget.accessname]['question']["$index"]['Answer']
+                .length ==
+            0) {
+          widget.wholelist[8][widget.accessname]['complete'] += 1;
+        }
+
+        widget.wholelist[8][widget.accessname]['question']["$index"]['Answer'] =
+            _controllers["field$index"].text;
+      }
+    }
   }
 }
 
