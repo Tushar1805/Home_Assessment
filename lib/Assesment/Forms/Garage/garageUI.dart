@@ -882,7 +882,7 @@ class _GarageUIState extends State<GarageUI> {
                                         borderSide: BorderSide(width: 1),
                                       ),
                                       labelText: '(Inches)'),
-                                  keyboardType: TextInputType.phone,
+                                  keyboardType: TextInputType.number,
                                   onChanged: (value) {
                                     if (assessor == therapist &&
                                         role == "therapist") {
@@ -1318,7 +1318,7 @@ class _GarageUIState extends State<GarageUI> {
                                       borderSide: BorderSide(width: 1),
                                     ),
                                     labelText: '(Inches)'),
-                                keyboardType: TextInputType.phone,
+                                keyboardType: TextInputType.number,
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
@@ -1572,7 +1572,7 @@ class _GarageUIState extends State<GarageUI> {
                                                               labelText:
                                                                   '(Count)'),
                                                       keyboardType:
-                                                          TextInputType.phone,
+                                                          TextInputType.number,
                                                       onChanged: (value) {
                                                         if (assessor ==
                                                                 therapist &&
@@ -1643,7 +1643,7 @@ class _GarageUIState extends State<GarageUI> {
                                                               'Single Step Width'],
                                                           keyboardType:
                                                               TextInputType
-                                                                  .phone,
+                                                                  .number,
                                                           decoration:
                                                               InputDecoration(
                                                                   focusedBorder:
@@ -1717,7 +1717,7 @@ class _GarageUIState extends State<GarageUI> {
                                                               'Single Step Height'],
                                                           keyboardType:
                                                               TextInputType
-                                                                  .phone,
+                                                                  .number,
                                                           decoration:
                                                               InputDecoration(
                                                                   focusedBorder:
@@ -2554,7 +2554,7 @@ class _GarageUIState extends State<GarageUI> {
                     initialValue: widget.wholelist[9][widget.accessname]
                             ['question']["9"]['MultipleStair']['step$index']
                         ['stepwidth'],
-                    keyboardType: TextInputType.phone,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
@@ -2594,7 +2594,7 @@ class _GarageUIState extends State<GarageUI> {
                     initialValue: widget.wholelist[9][widget.accessname]
                             ['question']["9"]['MultipleStair']['step$index']
                         ['stepheight'],
-                    keyboardType: TextInputType.phone,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(

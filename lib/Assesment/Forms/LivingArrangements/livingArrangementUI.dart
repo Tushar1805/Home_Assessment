@@ -993,7 +993,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                 child: TextFormField(
                   initialValue: widget.wholelist[1][widget.accessname]
                       ['question']["11"]['Flights']["flight$index"]["flight"],
-                  keyboardType: TextInputType.phone,
+                  keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                       focusedBorder: OutlineInputBorder(
                         borderSide:

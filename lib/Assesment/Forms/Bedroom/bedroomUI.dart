@@ -937,7 +937,7 @@ class _BedroomUIState extends State<BedroomUI> {
                                         borderSide: BorderSide(width: 1),
                                       ),
                                       labelText: '(Inches)'),
-                                  keyboardType: TextInputType.phone,
+                                  keyboardType: TextInputType.number,
                                   onChanged: (value) {
                                     if (assessor == therapist &&
                                         role == "therapist") {
@@ -1259,7 +1259,7 @@ class _BedroomUIState extends State<BedroomUI> {
                                 'Able to Operate Switches?')
                           ],
                         ),
-                        (assesmentprovider.getvalue(5) == 'Yes')
+                        (assesmentprovider.getvalue(5) == 'No')
                             ? assesmentprovider.getrecomain(
                                 assesmentprovider,
                                 5,
@@ -1373,7 +1373,7 @@ class _BedroomUIState extends State<BedroomUI> {
                                         borderSide: BorderSide(width: 1),
                                       ),
                                       labelText: '(Inches)'),
-                                  keyboardType: TextInputType.phone,
+                                  keyboardType: TextInputType.number,
                                   onChanged: (value) {
                                     if (assessor == therapist &&
                                         role == "therapist") {

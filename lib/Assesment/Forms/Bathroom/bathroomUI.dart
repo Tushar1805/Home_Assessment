@@ -950,7 +950,7 @@ class _BathroomUIState extends State<BathroomUI> {
                           children: [
                             Container(
                               width: MediaQuery.of(context).size.width * .6,
-                              child: Text('Threshold to Living Room',
+                              child: Text('Threshold to Bathroom',
                                   style: TextStyle(
                                     color: Color.fromRGBO(10, 80, 106, 1),
                                     fontSize: 20,
@@ -971,7 +971,7 @@ class _BathroomUIState extends State<BathroomUI> {
                                         borderSide: BorderSide(width: 1),
                                       ),
                                       labelText: '(Inches)'),
-                                  keyboardType: TextInputType.phone,
+                                  keyboardType: TextInputType.number,
                                   onChanged: (value) {
                                     if (assessor == therapist &&
                                         role == "therapist") {
@@ -980,14 +980,14 @@ class _BathroomUIState extends State<BathroomUI> {
                                       // print(widget.accessname);
 
                                       assesmentprovider.setdata(
-                                          1, value, 'Threshold to Living Room');
+                                          1, value, 'Threshold to Bathroom');
                                     } else if (role != "therapist") {
                                       FocusScope.of(context).requestFocus();
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
 
                                       assesmentprovider.setdata(
-                                          1, value, 'Threshold to Living Room');
+                                          1, value, 'Threshold to Bathroom');
                                     } else {
                                       _showSnackBar(
                                           "You can't change the other fields",
@@ -1414,7 +1414,7 @@ class _BathroomUIState extends State<BathroomUI> {
                                         borderSide: BorderSide(width: 1),
                                       ),
                                       labelText: '(Inches)'),
-                                  keyboardType: TextInputType.phone,
+                                  keyboardType: TextInputType.number,
                                   onChanged: (value) {
                                     if (assessor == therapist &&
                                         role == "therapist") {
@@ -2738,7 +2738,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                                         BorderSide(width: 1),
                                                   ),
                                                   labelText: '(Inches)'),
-                                              keyboardType: TextInputType.phone,
+                                              keyboardType:
+                                                  TextInputType.number,
                                               onChanged: (value) {
                                                 if (assessor == therapist &&
                                                     role == "therapist") {
@@ -2854,7 +2855,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                                         BorderSide(width: 1),
                                                   ),
                                                   labelText: '(Inches)'),
-                                              keyboardType: TextInputType.phone,
+                                              keyboardType:
+                                                  TextInputType.number,
                                               onChanged: (value) {
                                                 if (assessor == therapist &&
                                                     role == "therapist") {
@@ -3956,7 +3958,7 @@ class _BathroomUIState extends State<BathroomUI> {
                         //                 borderSide: BorderSide(width: 1),
                         //               ),
                         //               labelText: '(Inches)'),
-                        //           keyboardType: TextInputType.phone,
+                        //           keyboardType: TextInputType.number,
                         //           onChanged: (value) {
                         //             if (assessor == therapist &&
                         //                 role == "therapist") {
@@ -4026,7 +4028,7 @@ class _BathroomUIState extends State<BathroomUI> {
                         //                 borderSide: BorderSide(width: 1),
                         //               ),
                         //               labelText: '(Inches)'),
-                        //           keyboardType: TextInputType.phone,
+                        //           keyboardType: TextInputType.number,
                         //           onChanged: (value) {
                         //             if (assessor == therapist &&
                         //                 role == "therapist") {
@@ -4611,7 +4613,7 @@ class _BathroomUIState extends State<BathroomUI> {
                                         borderSide: BorderSide(width: 1),
                                       ),
                                       labelText: '(Inches)'),
-                                  keyboardType: TextInputType.phone,
+                                  keyboardType: TextInputType.number,
                                   onChanged: (value) {
                                     if (assessor == therapist &&
                                         role == "therapist") {
@@ -4636,7 +4638,8 @@ class _BathroomUIState extends State<BathroomUI> {
                               ),
                             ]),
 
-                        (assesmentprovider.getvalue(22) != "")
+                        (assesmentprovider.getvalue(22) != "" &&
+                                assesmentprovider.getvalue(22) != ".")
                             ? (double.parse(assesmentprovider.getvalue(22)) >
                                     20)
                                 ? assesmentprovider.getrecomain(

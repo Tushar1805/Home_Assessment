@@ -1212,7 +1212,7 @@
 //                       initialValue: widget.wholelist[0]['room$accessname']
 //                               ['question']["7"]['MultipleStair']['step$index']
 //                           ['stepwidth'],
-//                       keyboardType: TextInputType.phone,
+//                       keyboardType: TextInputType.number,
 //                       decoration: InputDecoration(
 //                           focusedBorder: OutlineInputBorder(
 //                             borderSide: BorderSide(
@@ -1252,7 +1252,7 @@
 //                       initialValue: widget.wholelist[0]['room$accessname']
 //                               ['question']["7"]['MultipleStair']['step$index']
 //                           ['stepheight'],
-//                       keyboardType: TextInputType.phone,
+//                       keyboardType: TextInputType.number,
 //                       decoration: InputDecoration(
 //                           focusedBorder: OutlineInputBorder(
 //                             borderSide: BorderSide(
@@ -2152,7 +2152,7 @@
 //                                                               labelText:
 //                                                                   '(Inches)'),
 //                                                       keyboardType:
-//                                                           TextInputType.phone,
+//                                                           TextInputType.number,
 //                                                       inputFormatters: <
 //                                                           TextInputFormatter>[
 //                                                         FilteringTextInputFormatter
@@ -2434,7 +2434,7 @@
 //                                                                                 borderSide: BorderSide(width: 1),
 //                                                                               ),
 //                                                                               labelText: 'Count'),
-//                                                                           keyboardType: TextInputType.phone,
+//                                                                           keyboardType: TextInputType.number,
 //                                                                           onChanged: (value) {
 //                                                                             if (assessor == therapist &&
 //                                                                                 role == "therapist") {
@@ -2484,7 +2484,7 @@
 //                                                                             child:
 //                                                                                 TextFormField(
 //                                                                               initialValue: widget.wholelist[0]['room${index + 1}']['question']["7"]['Single Step Width'],
-//                                                                               keyboardType: TextInputType.phone,
+//                                                                               keyboardType: TextInputType.number,
 //                                                                               decoration: InputDecoration(
 //                                                                                   focusedBorder: OutlineInputBorder(
 //                                                                                     borderSide: BorderSide(color: colorsset["field${7}"], width: 1),
@@ -2520,7 +2520,7 @@
 //                                                                             child:
 //                                                                                 TextFormField(
 //                                                                               initialValue: widget.wholelist[0]['room${index + 1}']['question']["7"]['Single Step Height'],
-//                                                                               keyboardType: TextInputType.phone,
+//                                                                               keyboardType: TextInputType.number,
 //                                                                               decoration: InputDecoration(
 //                                                                                   focusedBorder: OutlineInputBorder(
 //                                                                                     borderSide: BorderSide(color: colorsset["field${7}"], width: 1),
@@ -2994,7 +2994,7 @@
 //                                                                 labelText:
 //                                                                     '(Inches)'),
 //                                                         keyboardType:
-//                                                             TextInputType.phone,
+//                                                             TextInputType.number,
 //                                                         onChanged: (value) {
 //                                                           if (assessor ==
 //                                                                   therapist &&
@@ -4010,7 +4010,7 @@
 //         //                                 borderSide: BorderSide(width: 1),
 //         //                               ),
 //         //                               labelText: '(Inches)'),
-//         //                           keyboardType: TextInputType.phone,
+//         //                           keyboardType: TextInputType.number,
 //         //                           inputFormatters: <TextInputFormatter>[
 //         //                             FilteringTextInputFormatter.allow(
 //         //                                 RegExp(r'^\d+\.?\d*')),
@@ -4248,7 +4248,7 @@
 //         //                                                       labelText:
 //         //                                                           'Count'),
 //         //                                               keyboardType:
-//         //                                                   TextInputType.phone,
+//         //                                                   TextInputType.number,
 //         //                                               onChanged: (value) {
 //         //                                                 if (assessor ==
 //         //                                                         therapist &&
@@ -4946,7 +4946,7 @@
 //         //                                   borderSide: BorderSide(width: 1),
 //         //                                 ),
 //         //                                 labelText: '(Inches)'),
-//         //                             keyboardType: TextInputType.phone,
+//         //                             keyboardType: TextInputType.number,
 //         //                             onChanged: (value) {
 //         //                               if (assessor == therapist &&
 //         //                                   role == "therapist") {
@@ -5724,7 +5724,7 @@
 //   //                   initialValue: widget.wholelist[0][widget.accessname]
 //   //                           ['question']["7"]['MultipleStair']['step$index']
 //   //                       ['stepwidth'],
-//   //                   keyboardType: TextInputType.phone,
+//   //                   keyboardType: TextInputType.number,
 //   //                   decoration: InputDecoration(
 //   //                       focusedBorder: OutlineInputBorder(
 //   //                         borderSide: BorderSide(
@@ -5764,7 +5764,7 @@
 //   //                   initialValue: widget.wholelist[0][widget.accessname]
 //   //                           ['question']["7"]['MultipleStair']['step$index']
 //   //                       ['stepheight'],
-//   //                   keyboardType: TextInputType.phone,
+//   //                   keyboardType: TextInputType.number,
 //   //                   decoration: InputDecoration(
 //   //                       focusedBorder: OutlineInputBorder(
 //   //                         borderSide: BorderSide(
@@ -7317,7 +7317,7 @@ class _PathwayUIState extends State<PathwayUI> {
                       initialValue: widget.wholelist[0][widget.accessname]
                               ['question']["7"]['MultipleStair']['step$index']
                           ['stepwidth'],
-                      keyboardType: TextInputType.phone,
+                      keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
@@ -7357,7 +7357,7 @@ class _PathwayUIState extends State<PathwayUI> {
                       initialValue: widget.wholelist[0][widget.accessname]
                               ['question']["7"]['MultipleStair']['step$index']
                           ['stepheight'],
-                      keyboardType: TextInputType.phone,
+                      keyboardType: TextInputType.number,
                       decoration: InputDecoration(
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
@@ -7971,7 +7971,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                         borderSide: BorderSide(width: 1),
                                       ),
                                       labelText: '(Inches)'),
-                                  keyboardType: TextInputType.phone,
+                                  keyboardType: TextInputType.number,
                                   inputFormatters: <TextInputFormatter>[
                                     FilteringTextInputFormatter.allow(
                                         RegExp(r'^\d+\.?\d*')),
@@ -8177,8 +8177,10 @@ class _PathwayUIState extends State<PathwayUI> {
                                                       .3,
                                                   child: TextFormField(
                                                       initialValue: widget
-                                                          .wholelist[0][widget
-                                                                  .accessname][
+                                                          .wholelist[
+                                                              0][widget
+                                                                  .accessname]
+                                                              [
                                                               'question']
                                                               [
                                                               "7"]
@@ -8209,7 +8211,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                               labelText:
                                                                   'Count'),
                                                       keyboardType:
-                                                          TextInputType.phone,
+                                                          TextInputType.number,
                                                       onChanged: (value) {
                                                         if (assessor ==
                                                                 therapist &&
@@ -8289,7 +8291,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                               'Single Step Width'],
                                                           keyboardType:
                                                               TextInputType
-                                                                  .phone,
+                                                                  .number,
                                                           decoration:
                                                               InputDecoration(
                                                                   focusedBorder:
@@ -8369,7 +8371,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                                               'Single Step Height'],
                                                           keyboardType:
                                                               TextInputType
-                                                                  .phone,
+                                                                  .number,
                                                           decoration:
                                                               InputDecoration(
                                                                   focusedBorder:
@@ -8907,7 +8909,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                           borderSide: BorderSide(width: 1),
                                         ),
                                         labelText: '(Inches)'),
-                                    keyboardType: TextInputType.phone,
+                                    keyboardType: TextInputType.number,
                                     onChanged: (value) {
                                       if (assessor == therapist &&
                                           role == "therapist") {
@@ -8933,7 +8935,7 @@ class _PathwayUIState extends State<PathwayUI> {
                               ),
                             ]),
                         SizedBox(height: 15),
-                        (getvalue(9) != "")
+                        (getvalue(9) != "" && getvalue(9) != '.')
                             ? (double.parse(getvalue(9)) >= 2.5)
                                 ? (role == 'therapist')
                                     ? getrecomain(9, true, context)
@@ -9689,7 +9691,7 @@ class _PathwayUIState extends State<PathwayUI> {
   //                   initialValue: widget.wholelist[0][widget.accessname]
   //                           ['question']["7"]['MultipleStair']['step$index']
   //                       ['stepwidth'],
-  //                   keyboardType: TextInputType.phone,
+  //                   keyboardType: TextInputType.number,
   //                   decoration: InputDecoration(
   //                       focusedBorder: OutlineInputBorder(
   //                         borderSide: BorderSide(
@@ -9729,7 +9731,7 @@ class _PathwayUIState extends State<PathwayUI> {
   //                   initialValue: widget.wholelist[0][widget.accessname]
   //                           ['question']["7"]['MultipleStair']['step$index']
   //                       ['stepheight'],
-  //                   keyboardType: TextInputType.phone,
+  //                   keyboardType: TextInputType.number,
   //                   decoration: InputDecoration(
   //                       focusedBorder: OutlineInputBorder(
   //                         borderSide: BorderSide(

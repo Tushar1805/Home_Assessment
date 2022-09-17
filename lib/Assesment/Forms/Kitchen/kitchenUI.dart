@@ -772,7 +772,7 @@ class _KitchenUIState extends State<KitchenUI> {
                                         borderSide: BorderSide(width: 1),
                                       ),
                                       labelText: 'Inches'),
-                                  keyboardType: TextInputType.phone,
+                                  keyboardType: TextInputType.number,
                                   onChanged: (value) {
                                     if (assessor == therapist &&
                                         role == "therapist") {
@@ -799,7 +799,8 @@ class _KitchenUIState extends State<KitchenUI> {
                           ],
                         ),
                         (assesmentprovider.getvalue(1) != '0' &&
-                                assesmentprovider.getvalue(1) != '')
+                                assesmentprovider.getvalue(1) != '' &&
+                                assesmentprovider.getvalue(1) != '.')
                             ? (double.parse(assesmentprovider.getvalue(1)) >=
                                     2.5)
                                 ? assesmentprovider.getrecomain(
@@ -1105,7 +1106,7 @@ class _KitchenUIState extends State<KitchenUI> {
                         ),
                         SizedBox(height: 10),
 
-                        (assesmentprovider.getvalue(5) == 'Yes')
+                        (assesmentprovider.getvalue(5) == 'No')
                             ? assesmentprovider.getrecomain(
                                 assesmentprovider,
                                 5,
@@ -1217,7 +1218,7 @@ class _KitchenUIState extends State<KitchenUI> {
                                         borderSide: BorderSide(width: 1),
                                       ),
                                       labelText: 'Inches'),
-                                  keyboardType: TextInputType.phone,
+                                  keyboardType: TextInputType.number,
                                   onChanged: (value) {
                                     if (assessor == therapist &&
                                         role == "therapist") {

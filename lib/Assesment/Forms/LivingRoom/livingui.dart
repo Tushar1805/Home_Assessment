@@ -986,7 +986,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                           borderSide: BorderSide(width: 1),
                                         ),
                                         labelText: '(Inches)'),
-                                    keyboardType: TextInputType.phone,
+                                    keyboardType: TextInputType.number,
                                     onChanged: (value) {
                                       if (assessor == therapist &&
                                           role == "therapist") {
@@ -1399,7 +1399,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                         borderSide: BorderSide(width: 1),
                                       ),
                                       labelText: '(Inches)'),
-                                  keyboardType: TextInputType.phone,
+                                  keyboardType: TextInputType.number,
                                   onChanged: (value) {
                                     if (assessor == therapist &&
                                         role == "therapist") {

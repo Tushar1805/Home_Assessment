@@ -843,7 +843,7 @@ class _PatioUIState extends State<PatioUI> {
                                         borderSide: BorderSide(width: 1),
                                       ),
                                       labelText: '(Inches)'),
-                                  keyboardType: TextInputType.phone,
+                                  keyboardType: TextInputType.number,
                                   onChanged: (value) {
                                     if (assessor == therapist &&
                                         role == "therapist") {
@@ -1243,7 +1243,7 @@ class _PatioUIState extends State<PatioUI> {
                                       borderSide: BorderSide(width: 1),
                                     ),
                                     labelText: '(Inches)'),
-                                keyboardType: TextInputType.phone,
+                                keyboardType: TextInputType.number,
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
@@ -1483,7 +1483,7 @@ class _PatioUIState extends State<PatioUI> {
                                                               labelText:
                                                                   '(Count)'),
                                                       keyboardType:
-                                                          TextInputType.phone,
+                                                          TextInputType.number,
                                                       onChanged: (value) {
                                                         if (assessor ==
                                                                 therapist &&
@@ -1560,7 +1560,7 @@ class _PatioUIState extends State<PatioUI> {
                                                               'Single Step Width'],
                                                           keyboardType:
                                                               TextInputType
-                                                                  .phone,
+                                                                  .number,
                                                           decoration:
                                                               InputDecoration(
                                                                   focusedBorder:
@@ -1634,7 +1634,7 @@ class _PatioUIState extends State<PatioUI> {
                                                               'Single Step Height'],
                                                           keyboardType:
                                                               TextInputType
-                                                                  .phone,
+                                                                  .number,
                                                           decoration:
                                                               InputDecoration(
                                                                   focusedBorder:
@@ -2660,7 +2660,7 @@ class _PatioUIState extends State<PatioUI> {
                     initialValue: widget.wholelist[8][widget.accessname]
                             ['question']["9"]['MultipleStair']['step$index']
                         ['stepwidth'],
-                    keyboardType: TextInputType.phone,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
@@ -2700,7 +2700,7 @@ class _PatioUIState extends State<PatioUI> {
                     initialValue: widget.wholelist[8][widget.accessname]
                             ['question']["9"]['MultipleStair']['step$index']
                         ['stepheight'],
-                    keyboardType: TextInputType.phone,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                         focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide(
