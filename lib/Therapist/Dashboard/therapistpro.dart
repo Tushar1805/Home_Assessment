@@ -139,11 +139,17 @@ class TherapistProvider extends ChangeNotifier {
   String getq;
   bool assessdisplay = false;
   QuerySnapshot dataset;
+  QuerySnapshot scheduledAssessments;
+  QuerySnapshot pendingAssessments;
+  QuerySnapshot closedAssessments;
   QuerySnapshot statusDataset;
   DocumentSnapshot document;
   Map<String, dynamic> datasetorder;
   //  datamain;
   Map<String, dynamic> datasetmain = {};
+  Map<String, dynamic> scheduledDataset = {};
+  Map<String, dynamic> pendingDataset = {};
+  Map<String, dynamic> closedDataset = {};
   Map<String, dynamic> statusDatasetMain = {};
   Map<String, dynamic> datasetFeedback = {};
   List<String> requestedPatientNames = [];
@@ -154,8 +160,14 @@ class TherapistProvider extends ChangeNotifier {
   var docs;
   var data2;
   var data3;
+  var data4;
+  var data5;
+  var data6;
   String curretnassessmentdocref, role;
   bool loading = false;
+  bool scheduledLoading = false;
+  bool pendingLoading = false;
+  bool closedLoading = false;
   bool loading1 = false;
   String sortdata = '';
   bool showRequestedPatientDialog = false;
@@ -175,7 +187,10 @@ class TherapistProvider extends ChangeNotifier {
   }
 
   initialize(role) async {
-    await getdocset(role);
+    // await getdocset(role);
+    await getScheduleddocset(role);
+    await getPendingdocset(role);
+    await getCloseddocset(role);
     await getFeedback();
     // await getStatusDocSet();
     await getRequestedPatientNames();
@@ -185,6 +200,7 @@ class TherapistProvider extends ChangeNotifier {
     loading = true;
     notifyListeners();
     dataset = await therarepo.getAssessments(role);
+
     Map<String, DocumentSnapshot> datasetmaintemp = {};
     for (int i = 0; i < dataset.docs.length; i++) {
       await getfielddata(
@@ -199,6 +215,73 @@ class TherapistProvider extends ChangeNotifier {
     datasetmain = temptry;
     print("Detailed map: $datasetmain");
     loading = false;
+    notifyListeners();
+  }
+
+  getScheduleddocset(role) async {
+    scheduledLoading = true;
+    notifyListeners();
+    scheduledAssessments = await therarepo.getScheduledAssessments(role);
+
+    Map<String, DocumentSnapshot> datasetmaintemp = {};
+    for (int i = 0; i < scheduledAssessments.docs.length; i++) {
+      await getScheduledfielddata(
+        scheduledAssessments.docs[i]['patient'],
+      );
+      datasetmaintemp["$i"] = (data4);
+    }
+    Map<String, dynamic> temptry = {};
+    for (int j = 0; j < datasetmaintemp.length; j++) {
+      temptry["$j"] = datasetmaintemp["$j"].data();
+    }
+    scheduledDataset = temptry;
+    print("Scheduled Detailed map: $scheduledDataset");
+    scheduledLoading = false;
+    notifyListeners();
+  }
+
+  getPendingdocset(role) async {
+    pendingLoading = true;
+    notifyListeners();
+    pendingAssessments = await therarepo.getPendingAssessments(role);
+
+    Map<String, DocumentSnapshot> datasetmaintemp = {};
+    for (int i = 0; i < pendingAssessments.docs.length; i++) {
+      await getPendingfielddata(
+        pendingAssessments.docs[i]['patient'],
+      );
+      datasetmaintemp["$i"] = (data5);
+    }
+
+    Map<String, dynamic> temptry = {};
+    for (int j = 0; j < datasetmaintemp.length; j++) {
+      temptry["$j"] = datasetmaintemp["$j"].data();
+    }
+    pendingDataset = temptry;
+    print("Pending Detailed map: $pendingDataset");
+    pendingLoading = false;
+    notifyListeners();
+  }
+
+  getCloseddocset(role) async {
+    closedLoading = true;
+    notifyListeners();
+    closedAssessments = await therarepo.getClosedAssessments(role);
+
+    Map<String, DocumentSnapshot> datasetmaintemp = {};
+    for (int i = 0; i < closedAssessments.docs.length; i++) {
+      await getClosedfielddata(
+        closedAssessments.docs[i]['patient'],
+      );
+      datasetmaintemp["$i"] = (data6);
+    }
+    Map<String, dynamic> temptry = {};
+    for (int j = 0; j < datasetmaintemp.length; j++) {
+      temptry["$j"] = datasetmaintemp["$j"].data();
+    }
+    closedDataset = temptry;
+    print("Closed Detailed map: $closedDataset");
+    closedLoading = false;
     notifyListeners();
   }
 
@@ -369,6 +452,24 @@ class TherapistProvider extends ChangeNotifier {
     data2 = await therarepo.getfielddata(uid);
     notifyListeners();
     return data2;
+  }
+
+  getScheduledfielddata(String uid) async {
+    data4 = await therarepo.getfielddata(uid);
+    notifyListeners();
+    return data4;
+  }
+
+  getPendingfielddata(String uid) async {
+    data5 = await therarepo.getfielddata(uid);
+    notifyListeners();
+    return data5;
+  }
+
+  getClosedfielddata(String uid) async {
+    data6 = await therarepo.getfielddata(uid);
+    notifyListeners();
+    return data6;
   }
 
   getfielddata2(String uid) async {

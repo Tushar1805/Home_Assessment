@@ -46,6 +46,13 @@ class _LaundryUIState extends State<LaundryUI> {
   File video;
   bool uploading = false;
   List<DropdownMenuItem<dynamic>> items = [];
+
+  FocusNode focusNode = new FocusNode();
+  void dispose() {
+    focusNode.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     getAssessData();
@@ -421,7 +428,7 @@ class _LaundryUIState extends State<LaundryUI> {
                       ['$queIndex']['toggle'][i] = i == select;
                 }
               });
-              assesmentprovider.setdata(
+              assesmentprovider.setdataToggle(
                   queIndex,
                   widget.wholelist[7][widget.accessname]['question']
                           ['$queIndex']['toggle'][0]
@@ -441,7 +448,7 @@ class _LaundryUIState extends State<LaundryUI> {
                       ['$queIndex']['toggle'][i] = i == select;
                 }
               });
-              assesmentprovider.setdata(
+              assesmentprovider.setdataToggle(
                   queIndex,
                   widget.wholelist[7][widget.accessname]['question']
                           ['$queIndex']['toggle'][0]
@@ -917,13 +924,15 @@ class _LaundryUIState extends State<LaundryUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
                                         2, value, 'Flooring Type');
                                   } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
@@ -992,13 +1001,15 @@ class _LaundryUIState extends State<LaundryUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
                                         3, value, 'Floor Coverage');
                                   } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
@@ -1061,13 +1072,15 @@ class _LaundryUIState extends State<LaundryUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
                                         4, value, 'Lighting Type');
                                   } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
@@ -1129,13 +1142,13 @@ class _LaundryUIState extends State<LaundryUI> {
                             //     onChanged: (value) {
                             //       if (assessor == therapist &&
                             //           role == "therapist") {
-                            //         FocusScope.of(context).requestFocus();
+                            //         FocusScope.of(context).requestFocus(focusNode);
                             //         new TextEditingController().clear();
                             //         // print(widget.accessname);
                             //         assesmentprovider.setdata(
                             //             5, value, 'Able to Operate Switches?');
                             //       } else if (role != "therapist") {
-                            //         FocusScope.of(context).requestFocus();
+                            //         FocusScope.of(context).requestFocus(focusNode);
                             //         new TextEditingController().clear();
                             //         // print(widget.accessname);
                             //         assesmentprovider.setdata(
@@ -1217,13 +1230,15 @@ class _LaundryUIState extends State<LaundryUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
                                         6, value, 'Switch Type');
                                   } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
@@ -1366,13 +1381,13 @@ class _LaundryUIState extends State<LaundryUI> {
                             //   onChanged: (value) {
                             //     if (assessor == therapist &&
                             //         role == "therapist") {
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //       assesmentprovider.setdata(
                             //           8, value, 'Obstacle/Clutter Present?');
                             //     } else if (role != "therapist") {
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //       assesmentprovider.setdata(
@@ -1431,13 +1446,13 @@ class _LaundryUIState extends State<LaundryUI> {
                             //   onChanged: (value) {
                             //     if (assessor == therapist &&
                             //         role == "therapist") {
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //       assesmentprovider.setdata(9, value,
                             //           'Able to access washer & dryer?');
                             //     } else if (role != "therapist") {
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //       assesmentprovider.setdata(9, value,
@@ -1507,13 +1522,15 @@ class _LaundryUIState extends State<LaundryUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
                                         10, value, 'Type of washer & dryer');
                                   } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
@@ -1581,13 +1598,15 @@ class _LaundryUIState extends State<LaundryUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(11, value,
                                         'Where are detergent & supplies  stored in?');
                                   } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(11, value,
@@ -1633,13 +1652,13 @@ class _LaundryUIState extends State<LaundryUI> {
                             //   onChanged: (value) {
                             //     if (assessor == therapist &&
                             //         role == "therapist") {
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //       assesmentprovider.setdata(12, value,
                             //           'Able to access laundry cabinets?');
                             //     } else if (role != "therapist") {
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //       assesmentprovider.setdata(12, value,
@@ -1700,13 +1719,13 @@ class _LaundryUIState extends State<LaundryUI> {
                             //   onChanged: (value) {
                             //     if (assessor == therapist &&
                             //         role == "therapist") {
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //       assesmentprovider.setdata(
                             //           13, value, 'Smoke Detector Present?');
                             //     } else if (role != "therapist") {
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //       assesmentprovider.setdata(
@@ -1772,13 +1791,13 @@ class _LaundryUIState extends State<LaundryUI> {
                         //   ),
                         //   onChanged: (value) {
                         //     if (assessor == therapist && role == "therapist") {
-                        //       FocusScope.of(context).requestFocus();
+                        //       FocusScope.of(context).requestFocus(focusNode);
                         //       new TextEditingController().clear();
                         //       // print(widget.accessname);
                         //       assesmentprovider.setdata(
                         //           14, value, 'Observations');
                         //     } else if (role != "therapist") {
-                        //       FocusScope.of(context).requestFocus();
+                        //       FocusScope.of(context).requestFocus(focusNode);
                         //       new TextEditingController().clear();
                         //       // print(widget.accessname);
                         //       assesmentprovider.setdata(
@@ -1828,7 +1847,7 @@ class _LaundryUIState extends State<LaundryUI> {
                               ),
                               AvatarGlow(
                                 animate:
-                                    assesmentprovider.isListening['field14'],
+                                    assesmentprovider.isRecognizing['field14'],
                                 showTwoGlows: true,
                                 glowColor: Colors.blue,
                                 endRadius: 35.0,
@@ -1845,16 +1864,38 @@ class _LaundryUIState extends State<LaundryUI> {
                                   child: FloatingActionButton(
                                     heroTag: "btn14",
                                     child: Icon(
-                                      Icons.mic,
+                                      assesmentprovider.isRecognizing['field14']
+                                          ? Icons.stop_circle
+                                          : Icons.mic,
                                       size: 20,
                                     ),
                                     onPressed: () {
                                       if (assessor == therapist &&
                                           role == "therapist") {
-                                        assesmentprovider.listen(14);
+                                        // assesmentprovider.listen(14);
+                                        assesmentprovider
+                                                .isRecognizing['field14']
+                                            ? assesmentprovider
+                                                .stopRecording(14)
+                                            : assesmentprovider
+                                                .streamingRecognize(
+                                                    14,
+                                                    assesmentprovider
+                                                            .controllers[
+                                                        "field14"]);
                                         assesmentprovider.setdatalisten(14);
                                       } else if (role != "therapist") {
-                                        assesmentprovider.listen(14);
+                                        // assesmentprovider.listen(14);
+                                        assesmentprovider
+                                                .isRecognizing['field14']
+                                            ? assesmentprovider
+                                                .stopRecording(14)
+                                            : assesmentprovider
+                                                .streamingRecognize(
+                                                    14,
+                                                    assesmentprovider
+                                                            .controllers[
+                                                        "field14"]);
                                         assesmentprovider.setdatalisten(14);
                                       } else {
                                         _showSnackBar(

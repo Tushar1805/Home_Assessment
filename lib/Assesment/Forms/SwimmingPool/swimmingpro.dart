@@ -88,6 +88,10 @@ class SwimmingPoolProvider extends ChangeNotifier {
     } else {
       wholelist[11][accessname]["isSave"] = true;
     }
+    if (wholelist[11][accessname].containsKey('isSaveThera')) {
+    } else {
+      wholelist[11][accessname]["isSaveThera"] = false;
+    }
 
     if (wholelist[11][accessname].containsKey('videos')) {
       if (wholelist[11][accessname]['videos'].containsKey('name')) {
@@ -166,27 +170,43 @@ class SwimmingPoolProvider extends ChangeNotifier {
 
     if (wholelist[11][accessname]['question']["2"].containsKey('toggle')) {
       if (wholelist[11][accessname]['question']["2"]['Answer'].length == 0) {
-        setdata(2, 'Yes', 'Pool Accessible?');
+        // setdata(2, 'Yes', 'Pool Accessible?');
+        wholelist[11][accessname]['question']["2"]['Question'] =
+            'Pool Accessible?';
+        wholelist[11][accessname]['question']["2"]['Answer'] = 'Yes';
+        wholelist[11][accessname]['question']["2"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[11][accessname]['question']["2"]
           ['toggle'] = <bool>[true, false];
       if (wholelist[11][accessname]['question']["2"]['Answer'].length == 0) {
-        setdata(2, 'Yes', 'Pool Accessible?');
+        // setdata(2, 'Yes', 'Pool Accessible?');
+        wholelist[11][accessname]['question']["2"]['Question'] =
+            'Pool Accessible?';
+        wholelist[11][accessname]['question']["2"]['Answer'] = 'Yes';
+        wholelist[11][accessname]['question']["2"]['toggled'] = false;
       }
       notifyListeners();
     }
     if (wholelist[11][accessname]['question']["4"].containsKey('toggle')) {
       if (wholelist[11][accessname]['question']["4"]['Answer'].length == 0) {
-        setdata(4, 'Yes', 'Pool Deck Clutter?');
+        // setdata(4, 'Yes', 'Pool Deck Clutter?');
+        wholelist[11][accessname]['question']["4"]['Question'] =
+            'Pool Deck Clutter?';
+        wholelist[11][accessname]['question']["4"]['Answer'] = 'Yes';
+        wholelist[11][accessname]['question']["4"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[11][accessname]['question']["4"]
           ['toggle'] = <bool>[true, false];
       if (wholelist[11][accessname]['question']["4"]['Answer'].length == 0) {
-        setdata(4, 'Yes', 'Pool Deck Clutter?');
+        // setdata(4, 'Yes', 'Pool Deck Clutter?');
+        wholelist[11][accessname]['question']["4"]['Question'] =
+            'Pool Deck Clutter?';
+        wholelist[11][accessname]['question']["4"]['Answer'] = 'Yes';
+        wholelist[11][accessname]['question']["4"]['toggled'] = false;
       }
       notifyListeners();
     }
@@ -290,6 +310,27 @@ class SwimmingPoolProvider extends ChangeNotifier {
     } catch (e) {
       print('  deleteFile(): error: ${e.toString()}');
       throw (e.toString());
+    }
+  }
+
+  setdataToggle(index, String value, que) {
+    wholelist[11][accessname]['question']["$index"]['Question'] = que;
+    if (value.length == 0) {
+      if (wholelist[11][accessname]['question']["$index"]['toggled']) {
+      } else {
+        wholelist[11][accessname]['complete'] -= 1;
+        wholelist[11][accessname]['question']["$index"]['Answer'] = value;
+        notifyListeners();
+      }
+    } else {
+      if (wholelist[11][accessname]['question']["$index"]['toggled'] == false) {
+        wholelist[11][accessname]['complete'] += 1;
+        wholelist[11][accessname]['question']["$index"]['toggled'] = true;
+        notifyListeners();
+      }
+
+      wholelist[11][accessname]['question']["$index"]['Answer'] = value;
+      notifyListeners();
     }
   }
 
@@ -466,21 +507,21 @@ class SwimmingPoolProvider extends ChangeNotifier {
           "") {
         saveToForm = true;
         trueIndex = index;
-        wholelist[3][accessname]["isSave"] = saveToForm;
+        wholelist[3][accessname]["isSaveThera"] = saveToForm;
       } else {
         saveToForm = false;
         falseIndex = index;
-        wholelist[3][accessname]["isSave"] = saveToForm;
+        wholelist[3][accessname]["isSaveThera"] = saveToForm;
       }
     } else {
       if (index == falseIndex) {
         if (wholelist[3][accessname]["question"]["$index"]
                 ["Recommendationthera"] !=
             "") {
-          wholelist[3][accessname]["isSave"] = true;
+          wholelist[3][accessname]["isSaveThera"] = true;
           falseIndex = -1;
         } else {
-          wholelist[3][accessname]["isSave"] = false;
+          wholelist[3][accessname]["isSaveThera"] = false;
         }
       }
     }

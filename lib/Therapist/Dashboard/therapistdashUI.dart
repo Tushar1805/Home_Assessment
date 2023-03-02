@@ -10,6 +10,7 @@ import 'package:tryapp/CompleteAssessment/completeAssessmentBase.dart';
 import 'package:tryapp/Patient_Caregiver_Family/Dashboard/reportui.dart';
 import 'package:tryapp/Therapist/Dashboard/ViewFeedbackBase.dart';
 import 'package:tryapp/Therapist/Dashboard/addPatientDirectly.dart';
+import 'package:tryapp/Therapist/Dashboard/detailedScreen.dart';
 import 'package:tryapp/Therapist/Dashboard/shareApp.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistpro.dart';
 import 'package:tryapp/constants.dart';
@@ -1647,6 +1648,139 @@ class _TherapistUIState extends State<TherapistUI> {
       );
     }
 
+    Widget homepage(TherapistProvider assesspro) {
+      return Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
+        child: Column(
+          children: [
+            Container(
+              width: MediaQuery.of(context).size.width,
+              // height: MediaQuery.of(context).size.height * 0.12,
+              child: GestureDetector(
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    color: Colors.white,
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Scheduled Assessments",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "Lato")),
+                          SizedBox(height: 5),
+                          Text("View scheduled assessments",
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: "Lato"))
+                        ],
+                      ),
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) {
+                        return ChangeNotifierProvider.value(
+                          value: assesspro,
+                          child: DetailedScreen(
+                              'Scheduled Assessments', 'Scheduled'),
+                        );
+                      },
+                    ));
+                  }),
+            ),
+            SizedBox(height: 20),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              // height: MediaQuery.of(context).size.height * 0.12,
+              child: GestureDetector(
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    color: Colors.white,
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Pending Assessments",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "Lato")),
+                          SizedBox(height: 5),
+                          Text("View assessments which are yet to be filled",
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: "Lato"))
+                        ],
+                      ),
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) {
+                        return ChangeNotifierProvider.value(
+                          value: assesspro,
+                          child:
+                              DetailedScreen('Pending Assessments', 'Pending'),
+                        );
+                      },
+                    ));
+                  }),
+            ),
+            SizedBox(height: 20),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              // height: MediaQuery.of(context).size.height * 0.12,
+              child: GestureDetector(
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    color: Colors.white,
+                    child: Container(
+                      padding: EdgeInsets.all(10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Closed Assessments",
+                              style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  fontFamily: "Lato")),
+                          SizedBox(height: 5),
+                          Text("View reports of closed assessments",
+                              style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: "Lato"))
+                        ],
+                      ),
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) {
+                        return ChangeNotifierProvider.value(
+                          value: assesspro,
+                          child: DetailedScreen('Closed Assessments', 'Closed'),
+                        );
+                      },
+                    ));
+                  }),
+            ),
+          ],
+        ),
+      );
+    }
+
     return WillPopScope(
         onWillPop: () async => false,
         child: Scaffold(
@@ -1887,6 +2021,8 @@ class _TherapistUIState extends State<TherapistUI> {
               ],
             ),
             backgroundColor: Colors.grey[300],
-            body: ongoingassess(assesspro, context)));
+            body: homepage(assesspro)
+            // ongoingassess(assesspro, context)
+            ));
   }
 }

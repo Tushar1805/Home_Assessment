@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,8 +7,10 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:google_speech/google_speech.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:sound_stream/sound_stream.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:tryapp/Assesment/Forms/LivingRoom/livingbase.dart';
 import 'package:tryapp/Assesment/Forms/LivingRoom/livingpro.dart';
@@ -16,6 +19,7 @@ import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
 import 'package:tryapp/constants.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
+import 'package:rxdart/rxdart.dart';
 
 final _colorgreen = Color.fromRGBO(10, 80, 106, 1);
 
@@ -51,10 +55,35 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
   File video;
   bool uploading = false;
   var falseIndex = -1, trueIndex = -1;
+
+  // MIC Stram
+  final RecorderStream _recorder = RecorderStream();
+
+  // bool recognizing = false;
+  Map<String, bool> isRecognizing = {};
+  Map<String, bool> isRecognizingThera = {};
+  // bool recognizeFinished = false;
+  Map<String, bool> isRecognizeFinished = {};
+  String text = '';
+  StreamSubscription<List<int>> _audioStreamSubscription;
+  BehaviorSubject<List<int>> _audioStream;
+
   List<DropdownMenuItem<dynamic>> items = [];
+  FocusNode focusNode = new FocusNode();
+  FocusNode focusNode1 = new FocusNode();
+  FocusNode focusNode2 = new FocusNode();
+  FocusNode focusNode3 = new FocusNode();
+  FocusNode focusNode4 = new FocusNode();
+  FocusNode focusNode5 = new FocusNode();
+  FocusNode focusNode6 = new FocusNode();
+  FocusNode focusNode7 = new FocusNode();
+  FocusNode focusNode8 = new FocusNode();
+  FocusNode focusNode9 = new FocusNode();
+
   @override
   void initState() {
     super.initState();
+    _recorder.initialize();
     fillDropItem();
     _speech = stt.SpeechToText();
     for (int i = 0;
@@ -63,6 +92,9 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
       _controllers["field${i + 1}"] = TextEditingController();
       _controllerstreco["field${i + 1}"] = TextEditingController();
       isListening["field${i + 1}"] = false;
+      isRecognizing["field${i + 1}"] = false;
+      isRecognizingThera["field${i + 1}"] = false;
+      isRecognizeFinished["field${i + 1}"] = false;
       _controllers["field${i + 1}"].text = capitalize(widget.wholelist[2]
           [widget.accessname]['question']["${i + 1}"]['Recommendation']);
       _controllerstreco["field${i + 1}"].text =
@@ -73,6 +105,150 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
     getAssessData();
     getRole();
   }
+
+  @override
+  void dispose() {
+    focusNode.dispose();
+    focusNode1.dispose();
+    focusNode2.dispose();
+    focusNode3.dispose();
+    focusNode4.dispose();
+    focusNode5.dispose();
+    focusNode6.dispose();
+    focusNode7.dispose();
+    focusNode8.dispose();
+    focusNode9.dispose();
+    super.dispose();
+  }
+
+  void streamingRecognize(index, TextEditingController text) async {
+    _audioStream = BehaviorSubject<List<int>>();
+    try {
+      _audioStreamSubscription = _recorder.audioStream.listen((event) {
+        _audioStream.add(event);
+      });
+    } catch (e) {
+      print("AUDIO STREAM ERROR: $e");
+    }
+
+    await _recorder.start();
+
+    setState(() {
+      isRecognizing['field$index'] = true;
+    });
+    final serviceAccount = ServiceAccount.fromString(
+        (await rootBundle.loadString('assets/test_service_account.json')));
+    final speechToText = SpeechToText.viaServiceAccount(serviceAccount);
+    final config = _getConfig();
+
+    final responseStream = speechToText.streamingRecognize(
+        StreamingRecognitionConfig(config: config, interimResults: true),
+        _audioStream);
+
+    var responseText = '';
+
+    try {
+      responseStream.listen((data) {
+        final currentText =
+            data.results.map((e) => e.alternatives.first.transcript).join('\n');
+
+        if (data.results.first.isFinal) {
+          responseText += ' ' + currentText;
+          setState(() {
+            text.text = responseText;
+            isRecognizeFinished['field$index'] = true;
+          });
+        } else {
+          setState(() {
+            text.text = responseText + ' ' + currentText;
+            isRecognizeFinished['field$index'] = true;
+          });
+        }
+      }, onDone: () {
+        setState(() {
+          isRecognizing['field$index'] = false;
+        });
+      });
+    } catch (e) {
+      print("RESPONSE STREAM ERROR: $e");
+    }
+  }
+
+  void stopRecording(index) async {
+    await _recorder.stop();
+    await _audioStreamSubscription?.cancel();
+    await _audioStream?.close();
+    setState(() {
+      isRecognizing['field$index'] = false;
+    });
+  }
+
+  // For Therapist
+
+  void streamingRecognizeThera(index, TextEditingController text) async {
+    _audioStream = BehaviorSubject<List<int>>();
+    _audioStreamSubscription = _recorder.audioStream.listen((event) {
+      _audioStream.add(event);
+    });
+
+    await _recorder.start();
+
+    setState(() {
+      isRecognizingThera['field$index'] = true;
+    });
+    final serviceAccount = ServiceAccount.fromString(
+        (await rootBundle.loadString('assets/test_service_account.json')));
+    final speechToText = SpeechToText.viaServiceAccount(serviceAccount);
+    final config = _getConfig();
+
+    final responseStream = speechToText.streamingRecognize(
+        StreamingRecognitionConfig(config: config, interimResults: true),
+        _audioStream);
+
+    var responseText = '';
+
+    try {
+      responseStream.listen((data) {
+        final currentText =
+            data.results.map((e) => e.alternatives.first.transcript).join('\n');
+
+        if (data.results.first.isFinal) {
+          responseText += ' ' + currentText;
+          setState(() {
+            text.text = responseText;
+            isRecognizeFinished['field$index'] = true;
+          });
+        } else {
+          setState(() {
+            text.text = responseText + ' ' + currentText;
+            isRecognizeFinished['field$index'] = true;
+          });
+        }
+      }, onDone: () {
+        setState(() {
+          isRecognizingThera['field$index'] = false;
+        });
+      });
+    } catch (e) {
+      print("THERA RESPONSE STREAM ERROR: $e");
+    }
+  }
+
+  void stopRecordingThera(index) async {
+    await _recorder.stop();
+    await _audioStreamSubscription?.cancel();
+    await _audioStream?.close();
+    setState(() {
+      isRecognizingThera['field$index'] = false;
+    });
+  }
+
+  RecognitionConfig _getConfig() => RecognitionConfig(
+      encoding: AudioEncoding.LINEAR16,
+      model: RecognitionModel.basic,
+      enableAutomaticPunctuation: true,
+      sampleRateHertz: 16000,
+      languageCode: 'en-US');
 
   fillDropItem() {
     List<dynamic> itemList = [];
@@ -320,7 +496,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                     ['toggle'][i] = i == select;
               }
             });
-            provider.setdata(
+            provider.setdataToggle(
                 queIndex,
                 widget.wholelist[2][widget.accessname]['question']['$queIndex']
                         ['toggle'][0]
@@ -340,7 +516,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                     ['toggle'][i] = i == select;
               }
             });
-            provider.setdata(
+            provider.setdataToggle(
                 queIndex,
                 widget.wholelist[2][widget.accessname]['question']['$queIndex']
                         ['toggle'][0]
@@ -1015,7 +1191,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                         (provider.getvalue(1) != "")
                             ? (double.parse(provider.getvalue(1)) >= 2.5)
                                 ? getrecomain(1, true, "Comments (If Any)",
-                                    context, provider)
+                                    context, provider, focusNode1)
                                 : SizedBox()
                             : SizedBox(),
                         SizedBox(
@@ -1069,14 +1245,16 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                         role == "therapist") {
                                       provider.setdata(
                                           2, value, 'Flooring Type');
-                                      FocusScope.of(context).requestFocus();
+                                      FocusScope.of(context)
+                                          .requestFocus(focusNode);
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
 
                                     } else if (role != "therapist") {
                                       provider.setdata(
                                           2, value, 'Flooring Type');
-                                      FocusScope.of(context).requestFocus();
+                                      FocusScope.of(context)
+                                          .requestFocus(focusNode);
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
                                     } else {
@@ -1091,8 +1269,8 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                         ),
                         (provider.getvalue(2) == 'Wood - Smooth Finish' ||
                                 provider.getvalue(2) == 'Tile - Smooth Finish')
-                            ? getrecomain(
-                                2, true, "Comments (if any)", context, provider)
+                            ? getrecomain(2, true, "Comments (if any)", context,
+                                provider, focusNode2)
                             : SizedBox(),
                         SizedBox(height: 15),
                         Row(
@@ -1131,14 +1309,16 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                       role == "therapist") {
                                     provider.setdata(
                                         3, value, 'Floor Coverage');
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
 
                                   } else if (role != "therapist") {
                                     provider.setdata(
                                         3, value, 'Floor Coverage');
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                   } else {
@@ -1154,8 +1334,8 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                         ),
                         (provider.getvalue(3) != 'No covering' &&
                                 provider.getvalue(3) != '')
-                            ? getrecomain(
-                                3, true, 'Comments (if any)', context, provider)
+                            ? getrecomain(3, true, 'Comments (if any)', context,
+                                provider, focusNode3)
                             : SizedBox(),
                         SizedBox(height: 15),
                         Row(
@@ -1190,14 +1370,16 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                         role == "therapist") {
                                       provider.setdata(
                                           4, value, 'Lighting Type');
-                                      FocusScope.of(context).requestFocus();
+                                      FocusScope.of(context)
+                                          .requestFocus(focusNode);
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
 
                                     } else if (role != "therapist") {
                                       provider.setdata(
                                           4, value, 'Lighting Type');
-                                      FocusScope.of(context).requestFocus();
+                                      FocusScope.of(context)
+                                          .requestFocus(focusNode);
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
                                     } else {
@@ -1211,8 +1393,8 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                           ],
                         ),
                         (provider.getvalue(4) == 'Inadequate')
-                            ? getrecomain(
-                                4, true, 'Specify Type', context, provider)
+                            ? getrecomain(4, true, 'Specify Type', context,
+                                provider, focusNode4)
                             : SizedBox(),
                         SizedBox(height: 15),
                         // Divider(
@@ -1251,14 +1433,14 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                             //             role == "therapist") {
                             //           provider.setdata(5, value,
                             //               'Able to Operate Switches?');
-                            //           FocusScope.of(context).requestFocus();
+                            //           FocusScope.of(context).requestFocus(focusNode);
                             //           new TextEditingController().clear();
                             //           // print(widget.accessname);
 
                             //         } else if (role != "therapist") {
                             //           provider.setdata(5, value,
                             //               'Able to Operate Switches?');
-                            //           FocusScope.of(context).requestFocus();
+                            //           FocusScope.of(context).requestFocus(focusNode);
                             //           new TextEditingController().clear();
                             //           // print(widget.accessname);
                             //         } else {
@@ -1275,8 +1457,8 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                         ),
                         SizedBox(height: 10),
                         (provider.getvalue(5) == 'No')
-                            ? getrecomain(
-                                5, true, 'Comments(if any)', context, provider)
+                            ? getrecomain(5, true, 'Comments(if any)', context,
+                                provider, focusNode5)
                             : SizedBox(),
 
                         SizedBox(height: 15),
@@ -1353,13 +1535,15 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                     if (assessor == therapist &&
                                         role == "therapist") {
                                       provider.setdata(6, value, 'Switch Type');
-                                      FocusScope.of(context).requestFocus();
+                                      FocusScope.of(context)
+                                          .requestFocus(focusNode);
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
 
                                     } else if (role != "therapist") {
                                       provider.setdata(6, value, 'Switch Type');
-                                      FocusScope.of(context).requestFocus();
+                                      FocusScope.of(context)
+                                          .requestFocus(focusNode);
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
                                     } else {
@@ -1449,8 +1633,8 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                 widget.wholelist[2][widget.accessname]
                                         ['question']["7"]['doorwidth'] !=
                                     '')
-                            ? getrecomain(
-                                7, true, 'Comments (if any)', context, provider)
+                            ? getrecomain(7, true, 'Comments (if any)', context,
+                                provider, focusNode6)
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -1490,14 +1674,14 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                             //         role == "therapist") {
                             //       provider.setdata(
                             //           8, value, 'Obstacle/Clutter Present?');
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
 
                             //     } else if (role != "therapist") {
                             //       provider.setdata(
                             //           8, value, 'Obstacle/Clutter Present?');
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //     } else {
@@ -1514,8 +1698,8 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                         ),
                         SizedBox(height: 10),
                         (provider.getvalue(8) == 'Yes')
-                            ? getrecomain(
-                                8, true, 'Specify Clutter', context, provider)
+                            ? getrecomain(8, true, 'Specify Clutter', context,
+                                provider, focusNode7)
                             : SizedBox(),
                         SizedBox(height: 15),
                         Row(
@@ -1549,14 +1733,14 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                             //           role == "therapist") {
                             //         provider.setdata(
                             //             9, value, 'Able to Access Telephone?');
-                            //         FocusScope.of(context).requestFocus();
+                            //         FocusScope.of(context).requestFocus(focusNode);
                             //         new TextEditingController().clear();
                             //         // print(widget.accessname);
 
                             //       } else if (role != "therapist") {
                             //         provider.setdata(
                             //             9, value, 'Able to Access Telephone?');
-                            //         FocusScope.of(context).requestFocus();
+                            //         FocusScope.of(context).requestFocus(focusNode);
                             //         new TextEditingController().clear();
                             //         // print(widget.accessname);
                             //       } else {
@@ -1572,8 +1756,8 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                         ),
                         SizedBox(height: 10),
                         (provider.getvalue(9) == 'No')
-                            ? getrecomain(
-                                9, true, 'Comments (if any)', context, provider)
+                            ? getrecomain(9, true, 'Comments (if any)', context,
+                                provider, focusNode8)
                             : Padding(
                                 padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                                 child: Row(
@@ -1618,7 +1802,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                           if (assessor == therapist &&
                                               role == "therapist") {
                                             FocusScope.of(context)
-                                                .requestFocus();
+                                                .requestFocus(focusNode);
                                             new TextEditingController().clear();
                                             // print(widget.accessname);
                                             widget.wholelist[2]
@@ -1627,7 +1811,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                                 ['telephoneType'] = value;
                                           } else if (role != "therapist") {
                                             FocusScope.of(context)
-                                                .requestFocus();
+                                                .requestFocus(focusNode);
                                             new TextEditingController().clear();
                                             // print(widget.accessname);
                                             widget.wholelist[2]
@@ -1678,13 +1862,13 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                             //     onChanged: (value) {
                             //       if (assessor == therapist &&
                             //           role == "therapist") {
-                            //         FocusScope.of(context).requestFocus();
+                            //         FocusScope.of(context).requestFocus(focusNode);
                             //         new TextEditingController().clear();
                             //         // print(widget.accessname);
                             //         provider.setdata(
                             //             10, value, 'Smoke Detector Present?');
                             //       } else if (role != "therapist") {
-                            //         FocusScope.of(context).requestFocus();
+                            //         FocusScope.of(context).requestFocus(focusNode);
                             //         new TextEditingController().clear();
                             //         // print(widget.accessname);
                             //         provider.setdata(
@@ -1702,7 +1886,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                         ),
                         (provider.getvalue(10) == 'No')
                             ? getrecomain(10, true, 'Comments (if any)',
-                                context, provider)
+                                context, provider, focusNode9)
                             : SizedBox(),
                         SizedBox(height: 15),
                         Row(
@@ -1740,18 +1924,18 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                         //   ),
                         //   onChanged: (value) {
                         //     if (assessor == therapist && role == "therapist") {
-                        //       FocusScope.of(context).requestFocus();
+                        //       FocusScope.of(context).requestFocus(focusNode);
                         //       new TextEditingController().clear();
                         //       provider.setdata(11, value, "Observations");
                         //     } else if (role != "therapist") {
-                        //       FocusScope.of(context).requestFocus();
+                        //       FocusScope.of(context).requestFocus(focusNode);
                         //       new TextEditingController().clear();
                         //       provider.setdata(11, value, "Observations");
                         //     } else {
                         //       provider.showSnackBar(
                         //           "You can't change the other fields", context);
                         //     }
-                        //     //   FocusScope.of(context).requestFocus();
+                        //     //   FocusScope.of(context).requestFocus(focusNode);
                         //     //   new TextEditingController().clear();
                         //     //   // print(widget.accessname);
                         //     //   widget.wholelist[2][widget.accessname]['question']
@@ -1826,7 +2010,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                 ),
                               ),
                               AvatarGlow(
-                                animate: isListening["field11"],
+                                animate: isRecognizing['field11'],
                                 glowColor: Colors.blue,
                                 endRadius: 35.0,
                                 duration: const Duration(milliseconds: 2000),
@@ -1842,16 +2026,26 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                                   child: FloatingActionButton(
                                     heroTag: "btn11",
                                     child: Icon(
-                                      Icons.mic,
+                                      isRecognizing['field11']
+                                          ? Icons.stop_circle
+                                          : Icons.mic,
                                       size: 20,
                                     ),
                                     onPressed: () {
                                       if (assessor == therapist &&
                                           role == "therapist") {
-                                        _listen(11);
+                                        // _listen(11);
+                                        isRecognizing['field11']
+                                            ? stopRecording(11)
+                                            : streamingRecognize(
+                                                11, _controllers["field11"]);
                                         setdatalisten(11);
                                       } else if (role != "therapist") {
-                                        _listen(11);
+                                        // _listen(11);
+                                        isRecognizing['field11']
+                                            ? stopRecording(11)
+                                            : streamingRecognize(
+                                                11, _controllers["field11"]);
                                         setdatalisten(11);
                                       } else {
                                         _showSnackBar(
@@ -1945,7 +2139,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
   }
 
   Widget getrecomain(int index, bool isthera, String fieldlabel,
-      BuildContext context, LivingProvider provider) {
+      BuildContext context, LivingProvider provider, FocusNode focusNode) {
     return SingleChildScrollView(
       // reverse: true,
       child: Container(
@@ -1955,6 +2149,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
             SizedBox(height: 5),
             Container(
               child: TextFormField(
+                focusNode: focusNode,
                 maxLines: null,
                 showCursor: cur,
                 controller: _controllers["field$index"],
@@ -1980,26 +2175,45 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                           height: 60,
                           margin: EdgeInsets.all(0),
 
-                          child: FloatingActionButton(
-                            heroTag: "btn$index",
-                            child: Icon(
-                              Icons.mic,
-                              size: 20,
+                          child: AvatarGlow(
+                            animate: isRecognizing['field$index'],
+                            glowColor: Colors.blue,
+                            endRadius: 35.0,
+                            duration: const Duration(milliseconds: 2000),
+                            repeatPauseDuration:
+                                const Duration(milliseconds: 100),
+                            repeat: true,
+                            child: FloatingActionButton(
+                              heroTag: "btn$index",
+                              child: Icon(
+                                isRecognizing['field$index']
+                                    ? Icons.stop_circle
+                                    : Icons.mic,
+                                size: 20,
+                              ),
+                              onPressed: () {
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  // _listen(index);
+                                  isRecognizing['field$index']
+                                      ? stopRecording(index)
+                                      : streamingRecognize(
+                                          index, _controllers["field$index"]);
+                                  setdatalisten(index);
+                                } else if (role != "therapist") {
+                                  // _listen(index);
+                                  isRecognizing['field$index']
+                                      ? stopRecording(index)
+                                      : streamingRecognize(
+                                          index, _controllers["field$index"]);
+                                  setdatalisten(index);
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
+                              },
                             ),
-                            onPressed: () {
-                              if (assessor == therapist &&
-                                  role == "therapist") {
-                                _listen(index);
-                                setdatalisten(index);
-                              } else if (role != "therapist") {
-                                _listen(index);
-                                setdatalisten(index);
-                              } else {
-                                _showSnackBar(
-                                    "You can't change the other fields",
-                                    context);
-                              }
-                            },
                           ),
                         ),
                       ]),
@@ -2007,7 +2221,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                     labelText: fieldlabel),
                 onChanged: (value) {
                   if (assessor == therapist && role == "therapist") {
-                    FocusScope.of(context).requestFocus();
+                    FocusScope.of(context).requestFocus(focusNode);
                     print(
                         "_controllers['field$index']: ${_controllers["field$index"].text}");
                     new TextEditingController().clear();
@@ -2016,7 +2230,7 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                     // print(widget.accessname);
                     provider.setreco(index, _controllers["field$index"].text);
                   } else if (role != "therapist") {
-                    FocusScope.of(context).requestFocus();
+                    FocusScope.of(context).requestFocus(focusNode);
                     new TextEditingController().clear();
                     // print(widget.accessname);
                     provider.setreco(index, _controllers["field$index"].text);
@@ -2054,13 +2268,13 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
         setState(() {
           saveToForm = true;
           trueIndex = index;
-          widget.wholelist[2][widget.accessname]["isSave"] = saveToForm;
+          widget.wholelist[2][widget.accessname]["isSaveThera"] = saveToForm;
         });
       } else {
         setState(() {
           saveToForm = false;
           falseIndex = index;
-          widget.wholelist[2][widget.accessname]["isSave"] = saveToForm;
+          widget.wholelist[2][widget.accessname]["isSaveThera"] = saveToForm;
         });
       }
     } else {
@@ -2069,12 +2283,12 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                 ["Recommendationthera"] !=
             "") {
           setState(() {
-            widget.wholelist[2][widget.accessname]["isSave"] = true;
+            widget.wholelist[2][widget.accessname]["isSaveThera"] = true;
             falseIndex = -1;
           });
         } else {
           setState(() {
-            widget.wholelist[2][widget.accessname]["isSave"] = false;
+            widget.wholelist[2][widget.accessname]["isSaveThera"] = false;
           });
         }
       }
@@ -2111,16 +2325,30 @@ class _LivingRoomUIState extends State<LivingRoomUI> {
                     width: 40,
                     height: 60,
                     margin: EdgeInsets.all(0),
-                    child: FloatingActionButton(
-                      heroTag: "btn${index + 100}",
-                      child: Icon(
-                        Icons.mic,
-                        size: 20,
+                    child: AvatarGlow(
+                      animate: isRecognizingThera['field$index'],
+                      glowColor: Theme.of(context).primaryColor,
+                      endRadius: 500.0,
+                      duration: const Duration(milliseconds: 2000),
+                      repeatPauseDuration: const Duration(milliseconds: 100),
+                      repeat: true,
+                      child: FloatingActionButton(
+                        heroTag: "btn${index + 100}",
+                        child: Icon(
+                          isRecognizingThera['field$index']
+                              ? Icons.stop_circle
+                              : Icons.mic,
+                          size: 20,
+                        ),
+                        onPressed: () {
+                          // _listenthera(index);
+                          isRecognizingThera['field$index']
+                              ? stopRecordingThera(index)
+                              : streamingRecognizeThera(
+                                  index, _controllerstreco["field$index"]);
+                          setdatalistenthera(index);
+                        },
                       ),
-                      onPressed: () {
-                        _listenthera(index);
-                        setdatalistenthera(index);
-                      },
                     ),
                   ),
                 ]),

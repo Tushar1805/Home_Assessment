@@ -37,6 +37,7 @@ class _BathroomUIState extends State<BathroomUI> {
   File video;
   bool uploading = false;
   List<DropdownMenuItem<dynamic>> items = [];
+  FocusNode focusNode = FocusNode();
   @override
   void initState() {
     super.initState();
@@ -44,6 +45,14 @@ class _BathroomUIState extends State<BathroomUI> {
     setinitials();
     getAssessData();
     getRole();
+    print(
+        "Grab Bar Length: ${widget.wholelist[5][widget.accessname]['question']["16"]['Grabbar']['distanceFromFloor']}");
+  }
+
+  @override
+  void dispose() {
+    focusNode.dispose();
+    super.dispose();
   }
 
   fillDropItem() {
@@ -185,12 +194,6 @@ class _BathroomUIState extends State<BathroomUI> {
           ['grabBarLength'] = '';
     }
 
-    if (widget.wholelist[5][widget.accessname]['question']["20"]
-        .containsKey('')) {
-    } else {
-      widget.wholelist[5][widget.accessname]['question']["16"]['Grabbar']
-          ['grabBarLength'] = '';
-    }
     if (widget.wholelist[5][widget.accessname]['question']["20"]
         .containsKey('ManageInOut')) {
     } else {
@@ -381,7 +384,7 @@ class _BathroomUIState extends State<BathroomUI> {
                     ['toggle'][i] = i == select;
               }
             });
-            pro.setdata(
+            pro.setdataToggle(
                 queIndex,
                 widget.wholelist[5][widget.accessname]['question']['$queIndex']
                         ['toggle'][0]
@@ -401,7 +404,7 @@ class _BathroomUIState extends State<BathroomUI> {
                     ['toggle'][i] = i == select;
               }
             });
-            pro.setdata(
+            pro.setdataToggle(
                 queIndex,
                 widget.wholelist[5][widget.accessname]['question']['$queIndex']
                         ['toggle'][0]
@@ -975,14 +978,18 @@ class _BathroomUIState extends State<BathroomUI> {
                                   onChanged: (value) {
                                     if (assessor == therapist &&
                                         role == "therapist") {
-                                      FocusScope.of(context).requestFocus();
+                                      FocusScope.of(context)
+                                          .requestFocus(focusNode);
+
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
 
                                       assesmentprovider.setdata(
                                           1, value, 'Threshold to Bathroom');
                                     } else if (role != "therapist") {
-                                      FocusScope.of(context).requestFocus();
+                                      FocusScope.of(context)
+                                          .requestFocus(focusNode);
+
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
 
@@ -1062,12 +1069,16 @@ class _BathroomUIState extends State<BathroomUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
+
                                     new TextEditingController().clear();
                                     assesmentprovider.setdata(
                                         2, value, 'Flooring Type');
                                   } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
+
                                     new TextEditingController().clear();
                                     assesmentprovider.setdata(
                                         2, value, 'Flooring Type');
@@ -1135,13 +1146,17 @@ class _BathroomUIState extends State<BathroomUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
+
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
                                         3, value, 'Floor Coverage');
                                   } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
+
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
@@ -1204,14 +1219,18 @@ class _BathroomUIState extends State<BathroomUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
+
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
 
                                     assesmentprovider.setdata(
                                         4, value, 'Lighting Type');
                                   } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
+
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
 
@@ -1365,13 +1384,17 @@ class _BathroomUIState extends State<BathroomUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
+
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
                                         6, value, 'Switch Type');
                                   } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
+
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
@@ -1418,7 +1441,9 @@ class _BathroomUIState extends State<BathroomUI> {
                                   onChanged: (value) {
                                     if (assessor == therapist &&
                                         role == "therapist") {
-                                      FocusScope.of(context).requestFocus();
+                                      FocusScope.of(context)
+                                          .requestFocus(focusNode);
+
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
                                       assesmentprovider.setdata(
@@ -1432,7 +1457,9 @@ class _BathroomUIState extends State<BathroomUI> {
                                             double.parse(value);
                                       });
                                     } else if (role != "therapist") {
-                                      FocusScope.of(context).requestFocus();
+                                      FocusScope.of(context)
+                                          .requestFocus(focusNode);
+
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
                                       assesmentprovider.setdata(
@@ -1656,7 +1683,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                           if (assessor == therapist &&
                                               role == "therapist") {
                                             FocusScope.of(context)
-                                                .requestFocus();
+                                                .requestFocus(focusNode);
+
                                             new TextEditingController().clear();
                                             // print(widget.accessname);
                                             widget.wholelist[5]
@@ -1665,7 +1693,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                                 ['telephoneType'] = value;
                                           } else if (role != "therapist") {
                                             FocusScope.of(context)
-                                                .requestFocus();
+                                                .requestFocus(focusNode);
+
                                             new TextEditingController().clear();
                                             // print(widget.accessname);
                                             widget.wholelist[5]
@@ -1822,14 +1851,18 @@ class _BathroomUIState extends State<BathroomUI> {
                               onChanged: (value) {
                                 if (assessor == therapist &&
                                     role == "therapist") {
-                                  FocusScope.of(context).requestFocus();
+                                  FocusScope.of(context)
+                                      .requestFocus(focusNode);
+
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
 
                                   assesmentprovider.setdata(11, value,
                                       'Able to manage through the doorway & in/out of the bathroom?');
                                 } else if (role != "therapist") {
-                                  FocusScope.of(context).requestFocus();
+                                  FocusScope.of(context)
+                                      .requestFocus(focusNode);
+
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
 
@@ -2060,6 +2093,10 @@ class _BathroomUIState extends State<BathroomUI> {
                         (assesmentprovider.getvalue(14) == 'Yes')
                             ? TextFormField(
                                 // null,
+                                maxLines: null,
+                                textCapitalization:
+                                    TextCapitalization.sentences,
+                                showCursor: assesmentprovider.cur,
                                 controller:
                                     assesmentprovider.controllers["field${14}"],
                                 decoration: InputDecoration(
@@ -2130,12 +2167,14 @@ class _BathroomUIState extends State<BathroomUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    // FocusScope.of(context)
+                                    //     .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setreco(14, value);
                                   } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    // FocusScope.of(context)
+                                    //     .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setreco(14, value);
@@ -2564,7 +2603,7 @@ class _BathroomUIState extends State<BathroomUI> {
                                             if (assessor == therapist &&
                                                 role == "therapist") {
                                               FocusScope.of(context)
-                                                  .requestFocus();
+                                                  .requestFocus(focusNode);
                                               new TextEditingController()
                                                   .clear();
                                               // print(widget.accessname);
@@ -2579,7 +2618,7 @@ class _BathroomUIState extends State<BathroomUI> {
                                               //     value, 'Grab Bar Placement');
                                             } else if (role != "therapist") {
                                               FocusScope.of(context)
-                                                  .requestFocus();
+                                                  .requestFocus(focusNode);
                                               new TextEditingController()
                                                   .clear();
                                               // print(widget.accessname);
@@ -2652,7 +2691,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                                   if (assessor == therapist &&
                                                       role == "therapist") {
                                                     FocusScope.of(context)
-                                                        .requestFocus();
+                                                        .requestFocus(
+                                                            focusNode);
                                                     new TextEditingController()
                                                         .clear();
                                                     // print(widget.accessname);
@@ -2666,7 +2706,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                                   } else if (role !=
                                                       "therapist") {
                                                     FocusScope.of(context)
-                                                        .requestFocus();
+                                                        .requestFocus(
+                                                            focusNode);
                                                     new TextEditingController()
                                                         .clear();
                                                     // print(widget.accessname);
@@ -2743,8 +2784,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                               onChanged: (value) {
                                                 if (assessor == therapist &&
                                                     role == "therapist") {
-                                                  FocusScope.of(context)
-                                                      .requestFocus();
+                                                  // FocusScope.of(context)
+                                                  //     .requestFocus(focusNode);
                                                   new TextEditingController()
                                                       .clear();
                                                   setState(() {
@@ -2761,8 +2802,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                                   //     'Grab Bar Distance From Floor');
                                                 } else if (role !=
                                                     "therapist") {
-                                                  FocusScope.of(context)
-                                                      .requestFocus();
+                                                  // FocusScope.of(context)
+                                                  //     .requestFocus(focusNode);
                                                   new TextEditingController()
                                                       .clear();
                                                   // print(widget.accessname);
@@ -2860,34 +2901,40 @@ class _BathroomUIState extends State<BathroomUI> {
                                               onChanged: (value) {
                                                 if (assessor == therapist &&
                                                     role == "therapist") {
-                                                  FocusScope.of(context)
-                                                      .requestFocus();
+                                                  // FocusScope.of(context)
+                                                  //     .requestFocus(focusNode);
                                                   new TextEditingController()
                                                       .clear();
                                                   // print(widget.accessname);
+                                                  print(value);
 
                                                   setState(() {
                                                     widget.wholelist[5][widget
-                                                                    .accessname]
-                                                                ['question']
-                                                            ["16"]['Grabbar'][
-                                                        'grabBarLength'] = value;
+                                                                        .accessname]
+                                                                    ['question']
+                                                                [
+                                                                "16"]['Grabbar']
+                                                            ['grabBarLength'] =
+                                                        value;
                                                   });
                                                   // assesmentprovider.setdata(
                                                   //     19, value, 'Grab Bar Length');
                                                 } else if (role !=
                                                     "therapist") {
-                                                  FocusScope.of(context)
-                                                      .requestFocus();
+                                                  // FocusScope.of(context)
+                                                  //     .requestFocus(focusNode);
                                                   new TextEditingController()
                                                       .clear();
                                                   // print(widget.accessname);
+                                                  print(value);
                                                   setState(() {
                                                     widget.wholelist[5][widget
-                                                                    .accessname]
-                                                                ['question']
-                                                            ["16"]['Grabbar'][
-                                                        'grabBarLength'] = value;
+                                                                        .accessname]
+                                                                    ['question']
+                                                                [
+                                                                "16"]['Grabbar']
+                                                            ['grabBarLength'] =
+                                                        value;
                                                   });
                                                   // assesmentprovider.setdata(
                                                   //     19, value, 'Grab Bar Length');
@@ -3352,7 +3399,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                                                   "therapist") {
                                                             FocusScope.of(
                                                                     context)
-                                                                .requestFocus();
+                                                                .requestFocus(
+                                                                    focusNode);
                                                             new TextEditingController()
                                                                 .clear();
                                                             // print(widget.accessname);
@@ -3373,7 +3421,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                                               "therapist") {
                                                             FocusScope.of(
                                                                     context)
-                                                                .requestFocus();
+                                                                .requestFocus(
+                                                                    focusNode);
                                                             new TextEditingController()
                                                                 .clear();
                                                             // print(widget.accessname);
@@ -3472,7 +3521,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                                                         "therapist") {
                                                                   FocusScope.of(
                                                                           context)
-                                                                      .requestFocus();
+                                                                      .requestFocus(
+                                                                          focusNode);
                                                                   new TextEditingController()
                                                                       .clear();
                                                                   // print(widget.accessname);
@@ -3487,7 +3537,8 @@ class _BathroomUIState extends State<BathroomUI> {
                                                                     "therapist") {
                                                                   FocusScope.of(
                                                                           context)
-                                                                      .requestFocus();
+                                                                      .requestFocus(
+                                                                          focusNode);
                                                                   new TextEditingController()
                                                                       .clear();
                                                                   // print(widget.accessname);
@@ -4088,13 +4139,15 @@ class _BathroomUIState extends State<BathroomUI> {
                               onChanged: (value) {
                                 if (assessor == therapist &&
                                     role == "therapist") {
-                                  FocusScope.of(context).requestFocus();
+                                  FocusScope.of(context)
+                                      .requestFocus(focusNode);
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(
                                       17, value, 'Faucet/Control: Placement');
                                 } else if (role != "therapist") {
-                                  FocusScope.of(context).requestFocus();
+                                  FocusScope.of(context)
+                                      .requestFocus(focusNode);
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(
@@ -4212,13 +4265,15 @@ class _BathroomUIState extends State<BathroomUI> {
                               onChanged: (value) {
                                 if (assessor == therapist &&
                                     role == "therapist") {
-                                  FocusScope.of(context).requestFocus();
+                                  FocusScope.of(context)
+                                      .requestFocus(focusNode);
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(
                                       19, value, 'Type of Wall');
                                 } else if (role != "therapist") {
-                                  FocusScope.of(context).requestFocus();
+                                  FocusScope.of(context)
+                                      .requestFocus(focusNode);
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(
@@ -4617,13 +4672,15 @@ class _BathroomUIState extends State<BathroomUI> {
                                   onChanged: (value) {
                                     if (assessor == therapist &&
                                         role == "therapist") {
-                                      FocusScope.of(context).requestFocus();
+                                      // FocusScope.of(context)
+                                      //     .requestFocus(focusNode);
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
                                       assesmentprovider.setdata(
                                           22, value, 'Commode Height');
                                     } else if (role != "therapist") {
-                                      FocusScope.of(context).requestFocus();
+                                      // FocusScope.of(context)
+                                      //     .requestFocus(focusNode);
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
                                       assesmentprovider.setdata(
@@ -4858,6 +4915,8 @@ class _BathroomUIState extends State<BathroomUI> {
                             children: [
                               Expanded(
                                 child: TextFormField(
+                                  textCapitalization:
+                                      TextCapitalization.sentences,
                                   // initialValue: getvalue(14),
                                   maxLines: 6,
                                   showCursor: assesmentprovider.cur,
@@ -4868,15 +4927,19 @@ class _BathroomUIState extends State<BathroomUI> {
                                   ),
 
                                   onChanged: (value) {
-                                    FocusScope.of(context).requestFocus();
-                                    new TextEditingController().clear();
                                     // print(widget.accessname);
                                     if (assessor == therapist &&
                                         role == "therapist") {
+                                      // FocusScope.of(context)
+                                      //     .requestFocus(focusNode);
+                                      new TextEditingController().clear();
                                       assesmentprovider.setreco(25, value);
                                       assesmentprovider.setdata(
                                           25, value, 'Oberservations');
                                     } else if (role != "therapist") {
+                                      // FocusScope.of(context)
+                                      //     .requestFocus(focusNode);
+                                      new TextEditingController().clear();
                                       assesmentprovider.setreco(25, value);
                                       assesmentprovider.setdata(
                                           25, value, 'Oberservations');
@@ -4890,7 +4953,7 @@ class _BathroomUIState extends State<BathroomUI> {
                               ),
                               AvatarGlow(
                                 animate:
-                                    assesmentprovider.isListening['field25'],
+                                    assesmentprovider.isRecognizing['field25'],
                                 showTwoGlows: true,
                                 glowColor: Colors.blue,
                                 endRadius: 35.0,
@@ -4907,16 +4970,38 @@ class _BathroomUIState extends State<BathroomUI> {
                                   child: FloatingActionButton(
                                     heroTag: "btn25",
                                     child: Icon(
-                                      Icons.mic,
+                                     assesmentprovider.isRecognizing['field25']
+                                          ? Icons.stop_circle
+                                          : Icons.mic,
                                       size: 20,
                                     ),
                                     onPressed: () {
                                       if (assessor == therapist &&
                                           role == "therapist") {
-                                        assesmentprovider.listen(25);
+                                        // assesmentprovider.listen(25);
+                                         assesmentprovider
+                                                .isRecognizing['field25']
+                                            ? assesmentprovider
+                                                .stopRecording(25)
+                                            : assesmentprovider
+                                                .streamingRecognize(
+                                                    25,
+                                                    assesmentprovider
+                                                            .controllers[
+                                                        "field25"]);
                                         assesmentprovider.setdatalisten(25);
                                       } else if (role != "therapist") {
-                                        assesmentprovider.listen(25);
+                                        // assesmentprovider.listen(25);
+                                         assesmentprovider
+                                                .isRecognizing['field25']
+                                            ? assesmentprovider
+                                                .stopRecording(25)
+                                            : assesmentprovider
+                                                .streamingRecognize(
+                                                    25,
+                                                    assesmentprovider
+                                                            .controllers[
+                                                        "field25"]);
                                         assesmentprovider.setdatalisten(25);
                                       } else {
                                         _showSnackBar(

@@ -48,6 +48,13 @@ class _GarageUIState extends State<GarageUI> {
   bool uploading = false;
   List<DropdownMenuItem<dynamic>> items = [];
   var test = TextEditingController();
+
+  FocusNode focusNode = new FocusNode();
+  void dispose() {
+    focusNode.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -471,7 +478,7 @@ class _GarageUIState extends State<GarageUI> {
                       ['$queIndex']['toggle'][i] = i == select;
                 }
               });
-              assesmentprovider.setdata(
+              assesmentprovider.setdataToggle(
                   queIndex,
                   widget.wholelist[9][widget.accessname]['question']
                           ['$queIndex']['toggle'][0]
@@ -491,7 +498,7 @@ class _GarageUIState extends State<GarageUI> {
                       ['$queIndex']['toggle'][i] = i == select;
                 }
               });
-              assesmentprovider.setdata(
+              assesmentprovider.setdataToggle(
                   queIndex,
                   widget.wholelist[9][widget.accessname]['question']
                           ['$queIndex']['toggle'][0]
@@ -972,13 +979,15 @@ class _GarageUIState extends State<GarageUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
                                         2, value, 'Flooring Type');
                                   } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
@@ -1047,13 +1056,15 @@ class _GarageUIState extends State<GarageUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
                                         3, value, 'Floor Coverage');
                                   } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
@@ -1116,13 +1127,15 @@ class _GarageUIState extends State<GarageUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
                                         4, value, 'Lighting Type');
                                   } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
@@ -1180,13 +1193,13 @@ class _GarageUIState extends State<GarageUI> {
                             //     onChanged: (value) {
                             //       if (assessor == therapist &&
                             //           role == "therapist") {
-                            //         FocusScope.of(context).requestFocus();
+                            //         FocusScope.of(context).requestFocus(focusNode);
                             //         new TextEditingController().clear();
                             //         // print(widget.accessname);
                             //         assesmentprovider.setdata(
                             //             5, value, 'Able to Operate Switches?');
                             //       } else if (role != "therapist") {
-                            //         FocusScope.of(context).requestFocus();
+                            //         FocusScope.of(context).requestFocus(focusNode);
                             //         new TextEditingController().clear();
                             //         // print(widget.accessname);
                             //         assesmentprovider.setdata(
@@ -1268,13 +1281,15 @@ class _GarageUIState extends State<GarageUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
                                         6, value, 'Switch Type');
                                   } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
@@ -1417,13 +1432,13 @@ class _GarageUIState extends State<GarageUI> {
                             //   onChanged: (value) {
                             //     if (assessor == therapist &&
                             //         role == "therapist") {
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //       assesmentprovider.setdata(
                             //           8, value, 'Obstacle/Clutter Present?');
                             //     } else if (role != "therapist") {
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //       assesmentprovider.setdata(
@@ -1488,13 +1503,15 @@ class _GarageUIState extends State<GarageUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
                                         9, value, 'Type of steps');
                                   } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
@@ -2048,13 +2065,15 @@ class _GarageUIState extends State<GarageUI> {
                               onChanged: (value) {
                                 if (assessor == therapist &&
                                     role == "therapist") {
-                                  FocusScope.of(context).requestFocus();
+                                  FocusScope.of(context)
+                                      .requestFocus(focusNode);
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(10, value,
                                       'Railing is present on which side?');
                                 } else if (role != "therapist") {
-                                  FocusScope.of(context).requestFocus();
+                                  FocusScope.of(context)
+                                      .requestFocus(focusNode);
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(10, value,
@@ -2257,13 +2276,13 @@ class _GarageUIState extends State<GarageUI> {
                             //   onChanged: (value) {
                             //     if (assessor == therapist &&
                             //         role == "therapist") {
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //       assesmentprovider.setdata(
                             //           11, value, 'Smoke Detector Present?');
                             //     } else if (role != "therapist") {
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //       assesmentprovider.setdata(
@@ -2329,13 +2348,13 @@ class _GarageUIState extends State<GarageUI> {
                         //   ),
                         //   onChanged: (value) {
                         //     if (assessor == therapist && role == "therapist") {
-                        //       FocusScope.of(context).requestFocus();
+                        //       FocusScope.of(context).requestFocus(focusNode);
                         //       new TextEditingController().clear();
                         //       // print(widget.accessname);
                         //       assesmentprovider.setdata(
                         //           12, value, 'Observations');
                         //     } else if (role != "therapist") {
-                        //       FocusScope.of(context).requestFocus();
+                        //       FocusScope.of(context).requestFocus(focusNode);
                         //       new TextEditingController().clear();
                         //       // print(widget.accessname);
                         //       assesmentprovider.setdata(
@@ -2385,7 +2404,7 @@ class _GarageUIState extends State<GarageUI> {
                               ),
                               AvatarGlow(
                                 animate:
-                                    assesmentprovider.isListening["field12"],
+                                    assesmentprovider.isRecognizing["field12"],
                                 glowColor: Colors.blue,
                                 endRadius: 35.0,
                                 duration: const Duration(milliseconds: 2000),
@@ -2401,16 +2420,38 @@ class _GarageUIState extends State<GarageUI> {
                                   child: FloatingActionButton(
                                     heroTag: "btn12",
                                     child: Icon(
-                                      Icons.mic,
+                                      assesmentprovider.isRecognizing['field12']
+                                          ? Icons.stop_circle
+                                          : Icons.mic,
                                       size: 20,
                                     ),
                                     onPressed: () {
                                       if (assessor == therapist &&
                                           role == "therapist") {
-                                        assesmentprovider.listen(12);
+                                        // assesmentprovider.listen(12);
+                                        assesmentprovider
+                                                .isRecognizing['field12']
+                                            ? assesmentprovider
+                                                .stopRecording(12)
+                                            : assesmentprovider
+                                                .streamingRecognize(
+                                                    12,
+                                                    assesmentprovider
+                                                            .controllers[
+                                                        "field12"]);
                                         assesmentprovider.setdatalisten(12);
                                       } else if (role != "therapist") {
-                                        assesmentprovider.listen(12);
+                                        // assesmentprovider.listen(12);
+                                        assesmentprovider
+                                                .isRecognizing['field12']
+                                            ? assesmentprovider
+                                                .stopRecording(12)
+                                            : assesmentprovider
+                                                .streamingRecognize(
+                                                    12,
+                                                    assesmentprovider
+                                                            .controllers[
+                                                        "field12"]);
                                         assesmentprovider.setdatalisten(12);
                                       } else {
                                         _showSnackBar(
@@ -2471,7 +2512,7 @@ class _GarageUIState extends State<GarageUI> {
                         //       labelText:
                         //           'Input the Time at The End of Assessment'),
                         //   onChanged: (value) {
-                        //     FocusScope.of(context).requestFocus();
+                        //     FocusScope.of(context).requestFocus(focusNode);
                         //     new TextEditingController().clear();
                         //     // print(widget.accessname);
                         //     assesmentprovider.setdata(
@@ -2696,7 +2737,7 @@ class _GarageUIState extends State<GarageUI> {
   //                   ),
   //                   labelText: fieldlabel),
   //               onChanged: (value) {
-  //                 FocusScope.of(context).requestFocus();
+  //                 FocusScope.of(context).requestFocus(focusNode);
   //                 new TextEditingController().clear();
   //                 // print(widget.accessname);
   //                 setreco(index, value);
@@ -2752,7 +2793,7 @@ class _GarageUIState extends State<GarageUI> {
   //             ),
   //             labelText: 'Recomendation'),
   //         onChanged: (value) {
-  //           FocusScope.of(context).requestFocus();
+  //           FocusScope.of(context).requestFocus(focusNode);
   //           new TextEditingController().clear();
   //           // print(widget.accessname);
   //           setrecothera(index, value);

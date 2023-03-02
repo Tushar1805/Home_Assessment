@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,6 +7,10 @@ import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tryapp/Assesment/Forms/Formsrepo.dart';
 import 'package:path/path.dart';
+import 'package:flutter/services.dart';
+import 'package:sound_stream/sound_stream.dart';
+import 'package:google_speech/google_speech.dart';
+import 'package:rxdart/rxdart.dart';
 
 class PatioProvider extends ChangeNotifier {
   final FormsRepository formsRepository = FormsRepository();
@@ -35,6 +40,18 @@ class PatioProvider extends ChangeNotifier {
   String roomname;
   var accessname;
   List<Map<String, dynamic>> wholelist;
+
+  // MIC Stram
+  final RecorderStream _recorder = RecorderStream();
+
+  // bool recognizing = false;
+  Map<String, bool> isRecognizing = {};
+  Map<String, bool> isRecognizingThera = {};
+  // bool recognizeFinished = false;
+  Map<String, bool> isRecognizeFinished = {};
+  String text = '';
+  StreamSubscription<List<int>> _audioStreamSubscription;
+  BehaviorSubject<List<int>> _audioStream;
 
   PatioProvider(this.roomname, this.wholelist, this.accessname) {
     speech = stt.SpeechToText();
@@ -78,6 +95,10 @@ class PatioProvider extends ChangeNotifier {
     } else {
       wholelist[8][accessname]["isSave"] = true;
     }
+    if (wholelist[8][accessname].containsKey('isSaveThera')) {
+    } else {
+      wholelist[8][accessname]["isSaveThera"] = false;
+    }
     if (wholelist[8][accessname].containsKey('videos')) {
       if (wholelist[8][accessname]['videos'].containsKey('name')) {
       } else {
@@ -95,40 +116,64 @@ class PatioProvider extends ChangeNotifier {
 
     if (wholelist[8][accessname]['question']["5"].containsKey('toggle')) {
       if (wholelist[8][accessname]['question']["5"]['Answer'].length == 0) {
-        setdata(5, 'Yes', 'Able to Operate Switches?');
+        // setdata(5, 'Yes', 'Able to Operate Switches?');
+        wholelist[8][accessname]['question']["5"]['Question'] =
+            'Able to Operate Switches?';
+        wholelist[8][accessname]['question']["5"]['Answer'] = 'Yes';
+        wholelist[8][accessname]['question']["5"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[8][accessname]['question']["5"]['toggle'] = <bool>[true, false];
       if (wholelist[8][accessname]['question']["5"]['Answer'].length == 0) {
-        setdata(5, 'Yes', 'Able to Operate Switches?');
+        // setdata(5, 'Yes', 'Able to Operate Switches?');
+        wholelist[8][accessname]['question']["5"]['Question'] =
+            'Able to Operate Switches?';
+        wholelist[8][accessname]['question']["5"]['Answer'] = 'Yes';
+        wholelist[8][accessname]['question']["5"]['toggled'] = false;
       }
       notifyListeners();
     }
 
     if (wholelist[8][accessname]['question']["8"].containsKey('toggle')) {
       if (wholelist[8][accessname]['question']["8"]['Answer'].length == 0) {
-        setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+        // setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+        wholelist[8][accessname]['question']["8"]['Question'] =
+            'Obstacle/Clutter Present?';
+        wholelist[8][accessname]['question']["8"]['Answer'] = 'Yes';
+        wholelist[8][accessname]['question']["8"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[8][accessname]['question']["8"]['toggle'] = <bool>[true, false];
       if (wholelist[8][accessname]['question']["8"]['Answer'].length == 0) {
-        setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+        // setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+        wholelist[8][accessname]['question']["8"]['Question'] =
+            'Obstacle/Clutter Present?';
+        wholelist[8][accessname]['question']["8"]['Answer'] = 'Yes';
+        wholelist[8][accessname]['question']["8"]['toggled'] = false;
       }
       notifyListeners();
     }
 
     if (wholelist[8][accessname]['question']["11"].containsKey('toggle')) {
       if (wholelist[8][accessname]['question']["11"]['Answer'].length == 0) {
-        setdata(11, 'Yes', 'Smoke Detector Present?');
+        // setdata(11, 'Yes', 'Smoke Detector Present?');
+        wholelist[8][accessname]['question']["11"]['Question'] =
+            'Smoke Detector Present?';
+        wholelist[8][accessname]['question']["11"]['Answer'] = 'Yes';
+        wholelist[8][accessname]['question']["11"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[8][accessname]['question']["11"]
           ['toggle'] = <bool>[true, false];
       if (wholelist[8][accessname]['question']["11"]['Answer'].length == 0) {
-        setdata(11, 'Yes', 'Smoke Detector Present?');
+        // setdata(11, 'Yes', 'Smoke Detector Present?');
+        wholelist[8][accessname]['question']["11"]['Question'] =
+            'Smoke Detector Present?';
+        wholelist[8][accessname]['question']["11"]['Answer'] = 'Yes';
+        wholelist[8][accessname]['question']["11"]['toggled'] = false;
       }
       notifyListeners();
     }
@@ -155,6 +200,27 @@ class PatioProvider extends ChangeNotifier {
       wholelist[8][accessname]['question']["10"]['Railling'] = {
         'OneSided': {},
       };
+    }
+  }
+
+  setdataToggle(index, String value, que) {
+    wholelist[8][accessname]['question']["$index"]['Question'] = que;
+    if (value.length == 0) {
+      if (wholelist[8][accessname]['question']["$index"]['toggled']) {
+      } else {
+        wholelist[8][accessname]['complete'] -= 1;
+        wholelist[8][accessname]['question']["$index"]['Answer'] = value;
+        notifyListeners();
+      }
+    } else {
+      if (wholelist[8][accessname]['question']["$index"]['toggled'] == false) {
+        wholelist[8][accessname]['complete'] += 1;
+        wholelist[8][accessname]['question']["$index"]['toggled'] = true;
+        notifyListeners();
+      }
+
+      wholelist[8][accessname]['question']["$index"]['Answer'] = value;
+      notifyListeners();
     }
   }
 

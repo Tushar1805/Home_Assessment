@@ -8,6 +8,10 @@ class TherapistRepository {
   QuerySnapshot statusDataset;
   DocumentSnapshot feedback;
   QuerySnapshot datasetorder;
+  QuerySnapshot scheduledAssessments;
+  QuerySnapshot pendingAssessments;
+  QuerySnapshot pendingAssessments2;
+  QuerySnapshot closedAssessments;
 
   Future<String> getcurrentuid() async {
     final User user = await _auth.currentUser;
@@ -44,6 +48,84 @@ class TherapistRepository {
         .orderBy("date", descending: true)
         .get();
     return dataset;
+
+    // return dataset;
+  }
+
+  // Get Scheduled Assessments
+  Future<QuerySnapshot> getScheduledAssessments(role) async {
+    User user = _auth.currentUser;
+
+    scheduledAssessments = await firestore
+        .collection('assessments')
+        .where('therapist', isEqualTo: user.uid)
+        .where('currentStatus', isEqualTo: "Assessment Scheduled")
+        .orderBy("date", descending: true)
+        .get();
+    return scheduledAssessments;
+
+    // return dataset;
+  }
+
+  // Get all pending assessment which are filled by patients and therapist itself
+  Future<QuerySnapshot> getPendingAssessments(role) async {
+    User user = _auth.currentUser;
+
+    pendingAssessments = await firestore
+        .collection('assessments')
+        .where('therapist', isEqualTo: user.uid)
+        .where(
+          'currentStatus',
+          isEqualTo: 'Assessment Finished',
+        )
+        .orderBy("date", descending: true)
+        .get();
+
+    pendingAssessments2 = await firestore
+        .collection('assessments')
+        .where('therapist', isEqualTo: user.uid)
+        .where(
+          'currentStatus',
+          isEqualTo: 'Assessment in Progress',
+        )
+        .orderBy("date", descending: true)
+        .get();
+
+    await pendingAssessments.docs.addAll(pendingAssessments2.docs);
+    return pendingAssessments;
+
+    // return dataset;
+  }
+
+  // Get all pending assessment which are filled by patients and therapist itself
+  Future<QuerySnapshot> getPendingAssessments2(role) async {
+    User user = _auth.currentUser;
+
+    pendingAssessments2 = await firestore
+        .collection('assessments')
+        .where('therapist', isEqualTo: user.uid)
+        .where(
+          'currentStatus',
+          isEqualTo: 'Assessment Finished',
+        )
+        .orderBy("date", descending: true)
+        .get();
+    return pendingAssessments2;
+
+    // return dataset;
+  }
+
+  // Get all the closed assessments for the therapist
+  Future<QuerySnapshot> getClosedAssessments(role) async {
+    User user = _auth.currentUser;
+
+    closedAssessments = await firestore
+        .collection('assessments')
+        .where('therapist', isEqualTo: user.uid)
+        .where('currentStatus', isEqualTo: 'Report Generated')
+        .orderBy("date", descending: true)
+        .get();
+    return closedAssessments;
 
     // return dataset;
   }

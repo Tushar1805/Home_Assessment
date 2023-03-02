@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:avatar_glow/avatar_glow.dart';
+import 'package:google_speech/google_speech.dart';
 import 'package:provider/provider.dart';
+import 'package:sound_stream/sound_stream.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,6 +16,8 @@ import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
 import 'package:tryapp/constants.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:flutter/services.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'package:path/path.dart';
 import 'package:tryapp/productDetails.dart';
@@ -86,9 +90,59 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
   ];
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  // MIC Stram
+  final RecorderStream _recorder = RecorderStream();
+
+  // bool recognizing = false;
+  Map<String, bool> isRecognizing = {};
+  Map<String, bool> isRecognizingThera = {};
+  // bool recognizeFinished = false;
+  Map<String, bool> isRecognizeFinished = {};
+  String text = '';
+  StreamSubscription<List<int>> _audioStreamSubscription;
+  BehaviorSubject<List<int>> _audioStream;
+
+  FocusNode focusNode = new FocusNode();
+  FocusNode focusNode1 = new FocusNode();
+  FocusNode focusNode2 = new FocusNode();
+  FocusNode focusNode3 = new FocusNode();
+  FocusNode focusNode4 = new FocusNode();
+  FocusNode focusNode5 = new FocusNode();
+  FocusNode focusNode6 = new FocusNode();
+  FocusNode focusNode7 = new FocusNode();
+  FocusNode focusNode8 = new FocusNode();
+  FocusNode focusNode9 = new FocusNode();
+  FocusNode focusNode10 = new FocusNode();
+  FocusNode focusNode11 = new FocusNode();
+  FocusNode focusNode12 = new FocusNode();
+  FocusNode focusNode13 = new FocusNode();
+  FocusNode focusNode14 = new FocusNode();
+  FocusNode focusNode15 = new FocusNode();
+  void dispose() {
+    focusNode.dispose();
+    focusNode1.dispose();
+    focusNode2.dispose();
+    focusNode3.dispose();
+    focusNode4.dispose();
+    focusNode5.dispose();
+    focusNode6.dispose();
+    focusNode7.dispose();
+    focusNode8.dispose();
+    focusNode9.dispose();
+    focusNode10.dispose();
+    focusNode11.dispose();
+    focusNode12.dispose();
+    focusNode13.dispose();
+    focusNode14.dispose();
+    focusNode15.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
+    _recorder.initialize();
     time1 = TimeOfDay.now();
     time2 = TimeOfDay.now();
     _speech = stt.SpeechToText();
@@ -98,6 +152,9 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
       _controllers["field${i + 1}"] = TextEditingController();
       _controllerstreco["field${i + 1}"] = TextEditingController();
       isListening["field${i + 1}"] = false;
+      isRecognizing["field${i + 1}"] = false;
+      isRecognizingThera["field${i + 1}"] = false;
+      isRecognizeFinished["field${i + 1}"] = false;
       _controllers["field${i + 1}"].text = capitalize(widget.wholelist[1]
           [widget.accessname]['question']["${i + 1}"]['Recommendation']);
       _controllerstreco["field${i + 1}"].text =
@@ -108,6 +165,131 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
     getAssessData();
     print("RoomName: ${widget.roomname}");
   }
+
+  void streamingRecognize(index, TextEditingController text) async {
+    _audioStream = BehaviorSubject<List<int>>();
+    _audioStreamSubscription = _recorder.audioStream.listen((event) {
+      _audioStream.add(event);
+    });
+
+    await _recorder.start();
+
+    setState(() {
+      isRecognizing['field$index'] = true;
+    });
+    final serviceAccount = ServiceAccount.fromString(
+        (await rootBundle.loadString('assets/test_service_account.json')));
+    final speechToText = SpeechToText.viaServiceAccount(serviceAccount);
+    final config = _getConfig();
+
+    final responseStream = speechToText.streamingRecognize(
+        StreamingRecognitionConfig(config: config, interimResults: true),
+        _audioStream);
+
+    var responseText = '';
+
+    try {
+      responseStream.listen((data) {
+        final currentText =
+            data.results.map((e) => e.alternatives.first.transcript).join('\n');
+
+        if (data.results.first.isFinal) {
+          responseText += ' ' + currentText;
+          setState(() {
+            text.text = responseText;
+            isRecognizeFinished['field$index'] = true;
+          });
+        } else {
+          setState(() {
+            text.text = responseText + ' ' + currentText;
+            isRecognizeFinished['field$index'] = true;
+          });
+        }
+      }, onDone: () {
+        setState(() {
+          isRecognizing['field$index'] = false;
+        });
+      });
+    } catch (e) {
+      print("RESPONSE STREAM ERROR: $e");
+    }
+  }
+
+  void stopRecording(index) async {
+    await _recorder.stop();
+    await _audioStreamSubscription?.cancel();
+    await _audioStream?.close();
+    setState(() {
+      isRecognizing['field$index'] = false;
+    });
+  }
+
+  // For Therapist
+
+  void streamingRecognizeThera(index, TextEditingController text) async {
+    _audioStream = BehaviorSubject<List<int>>();
+    _audioStreamSubscription = _recorder.audioStream.listen((event) {
+      _audioStream.add(event);
+    });
+
+    await _recorder.start();
+
+    setState(() {
+      isRecognizingThera['field$index'] = true;
+    });
+    final serviceAccount = ServiceAccount.fromString(
+        (await rootBundle.loadString('assets/test_service_account.json')));
+    final speechToText = SpeechToText.viaServiceAccount(serviceAccount);
+    final config = _getConfig();
+
+    final responseStream = speechToText.streamingRecognize(
+        StreamingRecognitionConfig(config: config, interimResults: true),
+        _audioStream);
+
+    var responseText = '';
+
+    try {
+      responseStream.listen((data) {
+        final currentText =
+            data.results.map((e) => e.alternatives.first.transcript).join('\n');
+
+        if (data.results.first.isFinal) {
+          responseText += ' ' + currentText;
+          setState(() {
+            text.text = responseText;
+            isRecognizeFinished['field$index'] = true;
+          });
+        } else {
+          setState(() {
+            text.text = responseText + ' ' + currentText;
+            isRecognizeFinished['field$index'] = true;
+          });
+        }
+      }, onDone: () {
+        setState(() {
+          isRecognizingThera['field$index'] = false;
+        });
+      });
+    } catch (e) {
+      print("THERA RESPONSE STREAM ERROR: $e");
+    }
+  }
+
+  void stopRecordingThera(index) async {
+    await _recorder.stop();
+    await _audioStreamSubscription?.cancel();
+    await _audioStream?.close();
+    setState(() {
+      isRecognizingThera['field$index'] = false;
+    });
+  }
+
+  RecognitionConfig _getConfig() => RecognitionConfig(
+      encoding: AudioEncoding.LINEAR16,
+      model: RecognitionModel.basic,
+      enableAutomaticPunctuation: true,
+      sampleRateHertz: 16000,
+      languageCode: 'en-US');
 
   String capitalize(String s) {
     // Each sentence becomes an array element
@@ -295,7 +477,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                     ['toggle'][i] = i == select;
               }
             });
-            assesspro.setdata(
+            assesspro.setdataToggle(
                 queIndex,
                 widget.wholelist[1][widget.accessname]['question']['$queIndex']
                         ['toggle'][0]
@@ -315,7 +497,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                     ['toggle'][i] = i == select;
               }
             });
-            assesspro.setdata(
+            assesspro.setdataToggle(
                 queIndex,
                 widget.wholelist[1][widget.accessname]['question']['$queIndex']
                         ['toggle'][0]
@@ -582,7 +764,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
             ['Recommendation'] = _controllers["field$index"].text;
         cur = !cur;
       });
-      if (index == 10 || index == 14) {
+      if (index == 13) {
         if (_controllers["field$index"].text.length == 0) {
           if (widget
                   .wholelist[1][widget.accessname]['question']["$index"]
@@ -721,13 +903,13 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
           setState(() {
             saveToForm = true;
             trueIndex = index;
-            widget.wholelist[1][widget.accessname]["isSave"] = true;
+            widget.wholelist[1][widget.accessname]["isSaveThera"] = true;
           });
         } else {
           setState(() {
             saveToForm = false;
             falseIndex = index;
-            widget.wholelist[1][widget.accessname]["isSave"] = false;
+            widget.wholelist[1][widget.accessname]["isSaveThera"] = false;
           });
         }
       } else {
@@ -736,12 +918,12 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                   ["Recommendationthera"] !=
               "") {
             setState(() {
-              widget.wholelist[1][widget.accessname]["isSave"] = true;
+              widget.wholelist[1][widget.accessname]["isSaveThera"] = true;
               falseIndex = -1;
             });
           } else {
             setState(() {
-              widget.wholelist[1][widget.accessname]["isSave"] = false;
+              widget.wholelist[1][widget.accessname]["isSaveThera"] = false;
             });
           }
         }
@@ -797,11 +979,17 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                       child: FloatingActionButton(
                         heroTag: null,
                         child: Icon(
-                          Icons.mic,
+                          isRecognizingThera['field$index']
+                              ? Icons.stop_circle
+                              : Icons.mic,
                           size: 20,
                         ),
                         onPressed: () {
-                          _listenthera(index);
+                          // _listenthera(index);
+                          isRecognizingThera['field$index']
+                              ? stopRecordingThera(index)
+                              : streamingRecognizeThera(
+                                  index, _controllerstreco["field$index"]);
                           setdatalistenthera(index);
                         },
                       ),
@@ -856,7 +1044,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
       );
     }
 
-    Widget getrecomain(int index, bool isthera, BuildContext context) {
+    Widget getrecomain(
+        int index, bool isthera, BuildContext context, FocusNode focusNode) {
       return SingleChildScrollView(
         // reverse: true,
         child: Container(
@@ -865,6 +1054,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
             children: [
               Container(
                 child: TextFormField(
+                  focusNode: focusNode,
                   maxLines: null,
                   showCursor: cur,
                   controller: _controllers["field$index"],
@@ -890,7 +1080,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                             height: 60,
                             margin: EdgeInsets.all(0),
                             child: AvatarGlow(
-                              animate: isListening['field$index'],
+                              animate: isRecognizing['field$index'],
                               glowColor: Theme.of(context).primaryColor,
                               endRadius: 500.0,
                               duration: const Duration(milliseconds: 2000),
@@ -900,16 +1090,26 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                               child: FloatingActionButton(
                                 heroTag: "btn$index",
                                 child: Icon(
-                                  Icons.mic,
+                                  isRecognizing['field$index']
+                                      ? Icons.stop_circle
+                                      : Icons.mic,
                                   size: 20,
                                 ),
                                 onPressed: () {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    _listen(index);
+                                    isRecognizing['field$index']
+                                        ? stopRecording(index)
+                                        : streamingRecognize(
+                                            index, _controllers["field$index"]);
+                                    // _listen(index);
                                     setdatalisten(index);
                                   } else if (role != "therapist") {
-                                    _listen(index);
+                                    isRecognizing['field$index']
+                                        ? stopRecording(index)
+                                        : streamingRecognize(
+                                            index, _controllers["field$index"]);
+                                    // _listen(index);
                                     setdatalisten(index);
                                   } else {
                                     _showSnackBar(
@@ -927,11 +1127,11 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                     // print(widget.accessname);
                     if (assessor == therapist && role == "therapist") {
                       assesspro.setreco(index, value);
-                      FocusScope.of(context).requestFocus();
+                      FocusScope.of(context).requestFocus(focusNode);
                       new TextEditingController().clear();
                     } else if (role != "therapist") {
                       assesspro.setreco(index, value);
-                      FocusScope.of(context).requestFocus();
+                      FocusScope.of(context).requestFocus(focusNode);
                       new TextEditingController().clear();
                     } else {
                       _showSnackBar(
@@ -992,7 +1192,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                 width: MediaQuery.of(context).size.width,
                 child: TextFormField(
                   initialValue: widget.wholelist[1][widget.accessname]
-                      ['question']["11"]['Flights']["flight$index"]["flight"],
+                      ['question']["10"]['Flights']["flight$index"]["flight"],
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
                       focusedBorder: OutlineInputBorder(
@@ -1009,12 +1209,12 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                     new TextEditingController().clear();
                     if (assessor == therapist && role == "therapist") {
                       setState(() {
-                        widget.wholelist[1][widget.accessname]['question']["11"]
+                        widget.wholelist[1][widget.accessname]['question']["10"]
                             ['Flights']['flight$index']["flight"] = value;
                       });
                     } else if (role != "therapist") {
                       setState(() {
-                        widget.wholelist[1][widget.accessname]['question']["11"]
+                        widget.wholelist[1][widget.accessname]['question']["10"]
                             ['Flights']['flight$index']["flight"] = value;
                       });
                     } else {
@@ -1113,7 +1313,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                         ),
                       ],
                       onChanged: (value) {
-                        FocusScope.of(context).requestFocus();
+                        FocusScope.of(context).requestFocus(focusNode);
                         new TextEditingController().clear();
                         // print(widget.accessname);
                         if (assessor == therapist && role == "therapist") {
@@ -1162,7 +1362,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                               ),
                               labelText: 'First Name'),
                           onChanged: (value) {
-                            FocusScope.of(context).requestFocus();
+                            FocusScope.of(context).requestFocus(focusNode);
                             new TextEditingController().clear();
                             // print(widget.accessname);
                             if (assessor == therapist && role == "therapist") {
@@ -1212,7 +1412,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                               ),
                               labelText: 'Last Name'),
                           onChanged: (value) {
-                            FocusScope.of(context).requestFocus();
+                            FocusScope.of(context).requestFocus(focusNode);
                             new TextEditingController().clear();
                             // print(widget.accessname);
                             if (assessor == therapist && role == "therapist") {
@@ -1553,7 +1753,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 ),
                               ],
                               onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
+                                FocusScope.of(context).requestFocus(focusNode);
                                 new TextEditingController().clear();
                                 if (assessor == therapist &&
                                     role == "therapist") {
@@ -1574,7 +1774,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                         ],
                       ),
                       (assesspro.getvalue(1) == "Other")
-                          ? getrecomain(1, false, context)
+                          ? getrecomain(1, false, context, focusNode1)
                           : SizedBox(),
                       SizedBox(height: 15),
                       Row(
@@ -1621,7 +1821,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 ),
                               ],
                               onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
+                                FocusScope.of(context).requestFocus(focusNode);
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
                                 if (assessor == therapist &&
@@ -1734,7 +1934,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                                   ['Modetrnas'] ==
                                               'Other' ||
                                           assesspro.getvalue(2) == "Other")
-                                      ? getrecomain(2, false, context)
+                                      ? getrecomain(
+                                          2, false, context, focusNode2)
                                       : SizedBox(),
                                 ],
                               ),
@@ -1790,7 +1991,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 ),
                               ],
                               onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
+                                FocusScope.of(context).requestFocus(focusNode);
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
                                 if (assessor == therapist &&
@@ -1813,7 +2014,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                       ),
                       // SizedBox(height: 5),
                       (assesspro.getvalue(3) == 'Other')
-                          ? getrecomain(3, false, context)
+                          ? getrecomain(3, false, context, focusNode3)
                           : SizedBox(),
                       SizedBox(height: 15),
                       Row(
@@ -1848,7 +2049,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 ),
                               ],
                               onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
+                                FocusScope.of(context).requestFocus(focusNode);
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
                                 if (assessor == therapist &&
@@ -1873,7 +2074,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                       (assesspro.getvalue(4) != 'Never Alone' &&
                               assesspro.getvalue(4) != '')
                           ? (assesspro.getvalue(4) == 'Alone')
-                              ? getrecomain(4, true, context)
+                              ? getrecomain(4, true, context, focusNode4)
                               : Container(
                                   padding: EdgeInsets.fromLTRB(5, 5, 5, 0),
                                   child: Column(
@@ -2034,7 +2235,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           //     ),
                           //   ],
                           //   onChanged: (value) {
-                          //     FocusScope.of(context).requestFocus();
+                          //     FocusScope.of(context).requestFocus(focusNode);
                           //     new TextEditingController().clear();
                           //     // print(widget.accessname);
                           //     if (assessor == therapist &&
@@ -2330,7 +2531,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                     ),
                             ],
                             onChanged: (value) {
-                              FocusScope.of(context).requestFocus();
+                              FocusScope.of(context).requestFocus(focusNode);
                               new TextEditingController().clear();
                               // print(widget.accessname);
                               if (assessor == therapist &&
@@ -2352,7 +2553,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                       ),
                       (assesspro.getvalue(6) != 'Fairly Well' &&
                               assesspro.getvalue(6) != '')
-                          ? getrecomain(6, true, context)
+                          ? getrecomain(6, true, context, focusNode5)
                           : SizedBox(),
                       SizedBox(
                         height: 15,
@@ -2384,7 +2585,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           //     ),
                           //   ],
                           //   onChanged: (value) {
-                          //     FocusScope.of(context).requestFocus();
+                          //     FocusScope.of(context).requestFocus(focusNode);
                           //     new TextEditingController().clear();
                           //     // print(widget.accessname);
                           //     if (assessor == therapist &&
@@ -2495,7 +2696,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                       ),
                                     ],
                                     onChanged: (value) {
-                                      FocusScope.of(context).requestFocus();
+                                      FocusScope.of(context)
+                                          .requestFocus(focusNode);
                                       new TextEditingController().clear();
                                       // print(widget.accessname);
                                       if (assessor == therapist &&
@@ -2567,7 +2769,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 ),
                               ],
                               onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
+                                FocusScope.of(context).requestFocus(focusNode);
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
                                 if (assessor == therapist &&
@@ -2593,7 +2795,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                               assesspro.getvalue(8) ==
                                   'Significant Shuffling' ||
                               assesspro.getvalue(8) == 'Other')
-                          ? getrecomain(8, true, context)
+                          ? getrecomain(8, true, context, focusNode6)
                           : SizedBox(),
                       SizedBox(height: 15),
                       Row(
@@ -2634,7 +2836,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 ),
                               ],
                               onChanged: (value) {
-                                FocusScope.of(context).requestFocus();
+                                FocusScope.of(context).requestFocus(focusNode);
                                 new TextEditingController().clear();
                                 // print(widget.accessname);
                                 if (assessor == therapist &&
@@ -2658,327 +2860,283 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                       (assesspro.getvalue(9) != 'Never goes to the curbside' &&
                               // getvalue(9) != 'Other' &&
                               assesspro.getvalue(9) != '')
-                          ? getrecomain(9, true, context)
+                          ? getrecomain(9, true, context, focusNode7)
                           : SizedBox(),
                       SizedBox(
                         height: 15,
                       ),
+                      // Row(
+                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //   children: [
+                      //     Container(
+                      //       width: MediaQuery.of(context).size.width * .6,
+                      //       child: Text('Access to curbside specify',
+                      //           style: TextStyle(
+                      //             color: Color.fromRGBO(10, 80, 106, 1),
+                      //             fontSize: 20,
+                      //           )),
+                      //     ),
+                      //   ],
+                      // ),
+                      // SizedBox(
+                      //   height: 10,
+                      // ),
+                      // Container(
+                      //     // height: 10000,
+                      //     child: TextFormField(
+                      //   maxLines: null,
+                      //   controller: _controllers["field${10}"],
+                      //   decoration: InputDecoration(
+                      //     focusedBorder: OutlineInputBorder(
+                      //       borderSide: BorderSide(
+                      //           color: colorsset["field${10}"], width: 1),
+                      //     ),
+                      //     enabledBorder: OutlineInputBorder(
+                      //       borderSide: BorderSide(
+                      //           width: 1, color: colorsset["field${10}"]),
+                      //     ),
+                      //     suffix: Container(
+                      //       padding: EdgeInsets.all(0),
+                      //       child: Column(children: [
+                      //         Container(
+                      //           alignment: Alignment.topRight,
+                      //           width: 58,
+                      //           height: 30,
+                      //           margin: EdgeInsets.all(0),
+                      //           child: AvatarGlow(
+                      //             animate: isListening['field${10}'],
+                      //             glowColor: Theme.of(context).primaryColor,
+                      //             endRadius: 300.0,
+                      //             duration: const Duration(milliseconds: 2000),
+                      //             repeatPauseDuration:
+                      //                 const Duration(milliseconds: 100),
+                      //             repeat: true,
+                      //             child: FlatButton(
+                      //               child: Icon(isListening['field${10}']
+                      //                   ? Icons.cancel
+                      //                   : Icons.mic),
+                      //               onPressed: () {
+                      //                 if (assessor == therapist &&
+                      //                     role == "therapist") {
+                      //                   _listen(10);
+                      //                   setdatalisten(10);
+                      //                 } else if (role != "therapist") {
+                      //                   _listen(10);
+                      //                   setdatalisten(10);
+                      //                 } else {
+                      //                   _showSnackBar(
+                      //                       "You can't change the other fields",
+                      //                       context);
+                      //                 }
+                      //               },
+                      //             ),
+                      //           ),
+                      //         ),
+                      //       ]),
+                      //     ),
+                      //   ),
+                      //   onChanged: (value) {
+                      //     FocusScope.of(context).requestFocus(focusNode);
+                      //     new TextEditingController().clear();
+                      //     // print(widget.accessname);
+                      //     if (assessor == therapist && role == "therapist") {
+                      //       assesspro.setdata(
+                      //           10, value, 'Access to curbside specify');
+                      //     } else if (role != "therapist") {
+                      //       assesspro.setdata(
+                      //           10, value, 'Access to curbside specify');
+                      //     } else {
+                      //       _showSnackBar(
+                      //           "You can't change the other fields", context);
+                      //     }
+                      //   },
+                      // )),
+                      // SizedBox(
+                      //   height: 15,
+                      // ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
-                            width: MediaQuery.of(context).size.width * .6,
-                            child: Text('Access to curbside specify',
+                            width: MediaQuery.of(context).size.width * .5,
+                            child: Text('Flight of stairs present?',
                                 style: TextStyle(
                                   color: Color.fromRGBO(10, 80, 106, 1),
                                   fontSize: 20,
                                 )),
                           ),
+                          toggleButton(context, assesspro, 10,
+                              'Flight of stairs present?'),
                         ],
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Container(
-                          // height: 10000,
-                          child: TextFormField(
-                        maxLines: null,
-                        controller: _controllers["field${10}"],
-                        decoration: InputDecoration(
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                color: colorsset["field${10}"], width: 1),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(
-                                width: 1, color: colorsset["field${10}"]),
-                          ),
-                          suffix: Container(
-                            padding: EdgeInsets.all(0),
-                            child: Column(children: [
-                              Container(
-                                alignment: Alignment.topRight,
-                                width: 58,
-                                height: 30,
-                                margin: EdgeInsets.all(0),
-                                child: AvatarGlow(
-                                  animate: isListening['field${10}'],
-                                  glowColor: Theme.of(context).primaryColor,
-                                  endRadius: 300.0,
-                                  duration: const Duration(milliseconds: 2000),
-                                  repeatPauseDuration:
-                                      const Duration(milliseconds: 100),
-                                  repeat: true,
-                                  child: FlatButton(
-                                    child: Icon(isListening['field${10}']
-                                        ? Icons.cancel
-                                        : Icons.mic),
-                                    onPressed: () {
-                                      if (assessor == therapist &&
-                                          role == "therapist") {
-                                        _listen(10);
-                                        setdatalisten(10);
-                                      } else if (role != "therapist") {
-                                        _listen(10);
-                                        setdatalisten(10);
-                                      } else {
-                                        _showSnackBar(
-                                            "You can't change the other fields",
-                                            context);
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ),
-                            ]),
-                          ),
-                        ),
-                        onChanged: (value) {
-                          FocusScope.of(context).requestFocus();
-                          new TextEditingController().clear();
-                          // print(widget.accessname);
-                          if (assessor == therapist && role == "therapist") {
-                            assesspro.setdata(
-                                10, value, 'Access to curbside specify');
-                          } else if (role != "therapist") {
-                            assesspro.setdata(
-                                10, value, 'Access to curbside specify');
-                          } else {
-                            _showSnackBar(
-                                "You can't change the other fields", context);
-                          }
-                        },
-                      )),
-                      SizedBox(
-                        height: 15,
-                      ),
-                      Container(
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Container(
-                                width: MediaQuery.of(context).size.width * .5,
-                                child: Text('Number of Flight of Stairs',
-                                    style: TextStyle(
-                                      color: Color.fromRGBO(10, 80, 106, 1),
-                                      fontSize: 20,
-                                    )),
-                              ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width * .35,
-                                child: NumericStepButton(
-                                  counterval: assesspro.flightcount,
-                                  onChanged: (value) {
-                                    if (assessor == therapist &&
-                                        role == "therapist") {
-                                      assesspro.setFlightData(11, value,
-                                          'Number of flight of stairs');
-                                      setState(() {
-                                        // widget.wholelist[1][widget.accessname]
-                                        //             ['question']["11"]
-                                        //         ['Question'] =
-                                        //     'Number of Flight of Stairs';
-                                        widget.wholelist[1][widget.accessname]
-                                                ['question']["11"]['Flights']
-                                            ["count"] = value;
-                                        // widget.wholelist[1][widget.accessname]
-                                        //         ['question']["11"]['Answer'] =
-                                        //     value;
-                                        assesspro.flightcount = widget
-                                                    .wholelist[1]
-                                                [widget.accessname]['question']
-                                            ["11"]['Flights']["count"];
-                                        print(widget.wholelist[1]
-                                                [widget.accessname]['question']
-                                            ["11"]['Flights']["count"]);
-                                        // if (value == 0) {
-                                        //   if (widget.wholelist[1][widget
-                                        //                       .accessname]
-                                        //                   ['question']["11"]
-                                        //               ["Answer"] ==
-                                        //           0 ||
-                                        //       widget.wholelist[1][widget
-                                        //                       .accessname]
-                                        //                   ['question']["11"]
-                                        //               ["Answer"] ==
-                                        //           "") {
-                                        //   } else {
-                                        //     widget.wholelist[1]
-                                        //             [widget.accessname]
-                                        //         ['complete'] -= 1;
-                                        //     widget.wholelist[1]
-                                        //                 [widget.accessname]
-                                        //             ['question']["11"]
-                                        //         ["Answer"] = value;
-                                        //   }
-                                        // } else {
-                                        //   if (widget.wholelist[1]
-                                        //                   [widget.accessname]
-                                        //               ['question']["11"]
-                                        //           ["Answer"] ==
-                                        //       value) {
-                                        //   } else {
-                                        //     widget.wholelist[1]
-                                        //             [widget.accessname]
-                                        //         ['complete'] += 1;
-                                        //   }
-                                        //   widget.wholelist[1]
-                                        //               [widget.accessname]
-                                        //           ['question']["11"]
-                                        //       ["Answer"] = value;
-                                        // }
-                                        if (value > 0) {
-                                          widget.wholelist[1][widget.accessname]
-                                                  ['question']["11"]['Flights']
-                                              ['flight$value'] = {"flight": ''};
-
-                                          if (widget.wholelist[1]
-                                                  [widget.accessname]
-                                                  ['question']["11"]['Flights']
-                                              .containsKey(
-                                                  'flight${value + 1}')) {
-                                            widget.wholelist[1]
-                                                    [widget.accessname]
-                                                    ['question']["11"]
-                                                    ['Flights']
-                                                .remove('flight${value + 1}');
-                                          }
-                                        } else if (value == 0) {
-                                          if (widget.wholelist[1]
-                                                  [widget.accessname]
-                                                  ['question']["11"]['Flights']
-                                              .containsKey(
-                                                  'flight${value + 1}')) {
-                                            widget.wholelist[1]
-                                                    [widget.accessname]
-                                                    ['question']["11"]
-                                                    ['Flights']
-                                                .remove('flight${value + 1}');
-                                          }
-                                        }
-                                      });
-                                    } else if (role != "therapist") {
-                                      assesspro.setFlightData(11, value,
-                                          'Number of flight of stairs');
-                                      setState(() {
-                                        // widget.wholelist[1][widget.accessname]
-                                        //             ['question']["11"]
-                                        //         ['Question'] =
-                                        //     'Number of Flight of Stairs';
-                                        widget.wholelist[1][widget.accessname]
-                                                ['question']["11"]['Flights']
-                                            ["count"] = value;
-                                        // widget.wholelist[1][widget.accessname]
-                                        //         ['question']["11"]['Answer'] =
-                                        //     value;
-                                        assesspro.flightcount = widget
-                                                    .wholelist[1]
-                                                [widget.accessname]['question']
-                                            ["11"]['Flights']["count"];
-                                        print(widget.wholelist[1]
-                                                [widget.accessname]['question']
-                                            ["11"]['Flights']["count"]);
-                                        // if (value == 0) {
-                                        //   if (widget.wholelist[1]
-                                        //                   [widget.accessname]
-                                        //               ['question']["11"]
-                                        //           ["Answer"] ==
-                                        //       0) {
-                                        //   } else {
-                                        //     widget.wholelist[1]
-                                        //             [widget.accessname]
-                                        //         ['complete'] -= 1;
-                                        //     widget.wholelist[1]
-                                        //                 [widget.accessname]
-                                        //             ['question']["11"]
-                                        //         ["Answer"] = value;
-                                        //   }
-                                        // } else {
-                                        //   if (widget.wholelist[1]
-                                        //                   [widget.accessname]
-                                        //               ['question']["11"]
-                                        //           ["Answer"] !=
-                                        //       0) {
-                                        //   } else {
-                                        //     widget.wholelist[1]
-                                        //             [widget.accessname]
-                                        //         ['complete'] += 1;
-                                        //   }
-                                        //   widget.wholelist[1]
-                                        //               [widget.accessname]
-                                        //           ['question']["11"]
-                                        //       ["Answer"] = value;
-                                        // }
-                                        if (value > 0) {
-                                          widget.wholelist[1][widget.accessname]
-                                                  ['question']["11"]['Flights']
-                                              ['flight$value'] = {"flight": ''};
-
-                                          if (widget.wholelist[1]
-                                                  [widget.accessname]
-                                                  ['question']["11"]['Flights']
-                                              .containsKey(
-                                                  'flight${value + 1}')) {
-                                            widget.wholelist[1]
-                                                    [widget.accessname]
-                                                    ['question']["11"]
-                                                    ['Flights']
-                                                .remove('flight${value + 1}');
-                                          }
-                                          if (widget.wholelist[1]
+                      SizedBox(height: 15),
+                      (assesspro.getvalue(10) == 'Yes')
+                          ? Container(
+                              child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          .5,
+                                      child: Text('Number of Flight of Stairs',
+                                          style: TextStyle(
+                                            color:
+                                                Color.fromRGBO(10, 80, 106, 1),
+                                            fontSize: 20,
+                                          )),
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          .35,
+                                      child: NumericStepButton(
+                                        counterval: assesspro.flightcount,
+                                        onChanged: (value) {
+                                          FocusScope.of(context).requestFocus();
+                                          if (assessor == therapist &&
+                                              role == "therapist") {
+                                            setState(() {
+                                              widget.wholelist[1]
                                                           [widget.accessname]
-                                                      ['question']["11"]
-                                                  ["Answer"] ==
-                                              0) {
-                                            widget.wholelist[1]
-                                                    [widget.accessname]
-                                                ['complete'] += 1;
-                                            widget.wholelist[1]
-                                                        [widget.accessname]
-                                                    ['question']["11"]
-                                                ["Answer"] = value;
-                                          }
-                                        } else if (value == 0) {
-                                          if (widget.wholelist[1]
-                                                  [widget.accessname]
-                                                  ['question']["11"]['Flights']
-                                              .containsKey(
-                                                  'flight${value + 1}')) {
-                                            widget.wholelist[1]
-                                                    [widget.accessname]
-                                                    ['question']["11"]
-                                                    ['Flights']
-                                                .remove('flight${value + 1}');
-                                          }
-                                          if (widget.wholelist[1]
+                                                      ['question']["10"]
+                                                  ['Flights']["count"] = value;
+                                              assesspro.flightcount = widget
+                                                              .wholelist[1]
                                                           [widget.accessname]
-                                                      ['question']["11"]
-                                                  ["Answer"] !=
-                                              0) {
-                                            widget.wholelist[1]
-                                                    [widget.accessname]
-                                                ['complete'] -= 1;
-                                            widget.wholelist[1]
-                                                        [widget.accessname]
-                                                    ['question']["11"]
-                                                ["Answer"] = value;
-                                          }
-                                        }
-                                      });
-                                    } else {
-                                      _showSnackBar(
-                                          "You can't change the other fields",
-                                          context);
-                                    }
+                                                      ['question']["10"]
+                                                  ['Flights']["count"];
+                                              print(widget.wholelist[1]
+                                                          [widget.accessname]
+                                                      ['question']["10"]
+                                                  ['Flights']["count"]);
+                                              if (value > 0) {
+                                                widget.wholelist[1][widget
+                                                                .accessname]
+                                                            ['question']["10"]
+                                                        ['Flights']
+                                                    ['flight$value'] = {
+                                                  "flight": ''
+                                                };
 
-                                    // print(widget.wholelist[1]
-                                    //         [widget.accessname]['question']
-                                    //     ["11"]['Flights']);
-                                  },
-                                ),
-                              ),
-                            ]),
-                      ),
+                                                if (widget.wholelist[1]
+                                                        [widget.accessname]
+                                                        ['question']["10"]
+                                                        ['Flights']
+                                                    .containsKey(
+                                                        'flight${value + 1}')) {
+                                                  widget.wholelist[1]
+                                                          [widget.accessname]
+                                                          ['question']["10"]
+                                                          ['Flights']
+                                                      .remove(
+                                                          'flight${value + 1}');
+                                                }
+                                              } else if (value == 0) {
+                                                if (widget.wholelist[1]
+                                                        [widget.accessname]
+                                                        ['question']["10"]
+                                                        ['Flights']
+                                                    .containsKey(
+                                                        'flight${value + 1}')) {
+                                                  widget.wholelist[1]
+                                                          [widget.accessname]
+                                                          ['question']["10"]
+                                                          ['Flights']
+                                                      .remove(
+                                                          'flight${value + 1}');
+                                                }
+                                              }
+                                            });
+                                          } else if (role != "therapist") {
+                                            setState(() {
+                                              widget.wholelist[1]
+                                                          [widget.accessname]
+                                                      ['question']["10"]
+                                                  ['Flights']["count"] = value;
+                                              assesspro.flightcount = widget
+                                                              .wholelist[1]
+                                                          [widget.accessname]
+                                                      ['question']["10"]
+                                                  ['Flights']["count"];
+                                              print(widget.wholelist[1]
+                                                          [widget.accessname]
+                                                      ['question']["10"]
+                                                  ['Flights']["count"]);
+                                              if (value > 0) {
+                                                widget.wholelist[1][widget
+                                                                .accessname]
+                                                            ['question']["10"]
+                                                        ['Flights']
+                                                    ['flight$value'] = {
+                                                  "flight": ''
+                                                };
+
+                                                if (widget.wholelist[1]
+                                                        [widget.accessname]
+                                                        ['question']["10"]
+                                                        ['Flights']
+                                                    .containsKey(
+                                                        'flight${value + 1}')) {
+                                                  widget.wholelist[1]
+                                                          [widget.accessname]
+                                                          ['question']["10"]
+                                                          ['Flights']
+                                                      .remove(
+                                                          'flight${value + 1}');
+                                                }
+                                                // if (widget.wholelist[1][widget
+                                                //                 .accessname]
+                                                //             ['question']["10"]
+                                                //         ["Answer"] ==
+                                                //     0) {
+                                                //   // widget.wholelist[1]
+                                                //   //         [widget.accessname]
+                                                //   //     ['complete'] += 1;
+                                                //   widget.wholelist[1][
+                                                //               widget.accessname]
+                                                //           ['question']["10"]
+                                                //       ["Answer"] = value;
+                                                // }
+                                              } else if (value == 0) {
+                                                if (widget.wholelist[1]
+                                                        [widget.accessname]
+                                                        ['question']["10"]
+                                                        ['Flights']
+                                                    .containsKey(
+                                                        'flight${value + 1}')) {
+                                                  widget.wholelist[1]
+                                                          [widget.accessname]
+                                                          ['question']["10"]
+                                                          ['Flights']
+                                                      .remove(
+                                                          'flight${value + 1}');
+                                                }
+                                                // if (widget.wholelist[1][widget
+                                                //                 .accessname]
+                                                //             ['question']["10"]
+                                                //         ["Answer"] !=
+                                                //     0) {
+                                                //   // widget.wholelist[1]
+                                                //   //         [widget.accessname]
+                                                //   //     ['complete'] -= 1;
+                                                //   widget.wholelist[1][
+                                                //               widget.accessname]
+                                                //           ['question']["10"]
+                                                //       ["Answer"] = value;
+                                                // }
+                                              }
+                                            });
+                                          } else {
+                                            _showSnackBar(
+                                                "You can't change the other fields",
+                                                context);
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ]),
+                            )
+                          : SizedBox(),
                       // SizedBox(height: 10),
                       (assesspro.flightcount > 0)
                           ? Container(
@@ -3036,7 +3194,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           //     ),
                           //   ],
                           //   onChanged: (value) {
-                          //     FocusScope.of(context).requestFocus();
+                          //     FocusScope.of(context).requestFocus(focusNode);
                           //     new TextEditingController().clear();
                           //     // print(widget.accessname);
                           //     if (assessor == therapist &&
@@ -3054,13 +3212,13 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           //   },
                           //   value: assesspro.getvalue(12),
                           // )
-                          toggleButton(context, assesspro, 12,
+                          toggleButton(context, assesspro, 11,
                               'Smoke detector batteries checked annually/replaced?'),
                         ],
                       ),
                       SizedBox(height: 15),
-                      (assesspro.getvalue(12) == 'No')
-                          ? getrecomain(12, true, context)
+                      (assesspro.getvalue(11) == 'No')
+                          ? getrecomain(11, true, context, focusNode8)
                           : SizedBox(height: 5),
                       SizedBox(height: 15),
                       Row(
@@ -3083,7 +3241,8 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                       Container(
                           // height: 10000,
                           child: TextFormField(
-                        initialValue: assesspro.getvalue(13),
+                        focusNode: focusNode9,
+                        initialValue: assesspro.getvalue(12),
                         maxLines: 1,
                         decoration: InputDecoration(
                             focusedBorder: OutlineInputBorder(
@@ -3101,10 +3260,10 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                           new TextEditingController().clear();
                           // print(widget.accessname);
                           if (assessor == therapist && role == "therapist") {
-                            assesspro.setdata(13, value,
+                            assesspro.setdata(12, value,
                                 'Person responsible to change smoke detector batteries');
                           } else if (role != "therapist") {
-                            assesspro.setdata(13, value,
+                            assesspro.setdata(12, value,
                                 'Person responsible to change smoke detector batteries');
                           } else {
                             _showSnackBar(
@@ -3148,7 +3307,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                       //     // isDense: true,
                       //   ),
                       //   onChanged: (value) {
-                      //     FocusScope.of(context).requestFocus();
+                      //     FocusScope.of(context).requestFocus(focusNode);
                       //     new TextEditingController().clear();
                       //     // print(widget.accessname);
                       //     if (assessor == therapist && role == "therapist") {
@@ -3171,7 +3330,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 // initialValue: getvalue(14),
                                 maxLines: 6,
                                 showCursor: cur,
-                                controller: _controllers["field14"],
+                                controller: _controllers["field13"],
                                 decoration: InputDecoration(
                                   border: InputBorder.none,
                                 ),
@@ -3182,13 +3341,13 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                   // print(widget.accessname);
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    assesspro.setreco(14, value);
+                                    assesspro.setreco(13, value);
                                     assesspro.setdata(
-                                        14, value, 'Oberservations');
+                                        13, value, 'Oberservations');
                                   } else if (role != "therapist") {
-                                    assesspro.setreco(14, value);
+                                    assesspro.setreco(13, value);
                                     assesspro.setdata(
-                                        14, value, 'Oberservations');
+                                        13, value, 'Oberservations');
                                   } else {
                                     _showSnackBar(
                                         "You can't change the other fields",
@@ -3198,7 +3357,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                               ),
                             ),
                             AvatarGlow(
-                              animate: isListening["field14"],
+                              animate: isListening["field13"],
                               glowColor: Colors.blue,
                               endRadius: 35.0,
                               duration: const Duration(milliseconds: 2000),
@@ -3214,17 +3373,27 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                                 child: FloatingActionButton(
                                   heroTag: "btn14",
                                   child: Icon(
-                                    Icons.mic,
+                                    isRecognizing['field13']
+                                        ? Icons.stop_circle
+                                        : Icons.mic,
                                     size: 20,
                                   ),
                                   onPressed: () {
                                     if (assessor == therapist &&
                                         role == "therapist") {
-                                      _listen(14);
-                                      setdatalisten(14);
+                                      // _listen(13);
+                                      isRecognizing['field13']
+                                          ? stopRecording(13)
+                                          : streamingRecognize(
+                                              13, _controllers["field13"]);
+                                      setdatalisten(13);
                                     } else if (role != "therapist") {
-                                      _listen(14);
-                                      setdatalisten(14);
+                                      // _listen(13);
+                                      isRecognizing['field13']
+                                          ? stopRecording(13)
+                                          : streamingRecognize(
+                                              13, _controllers["field13"]);
+                                      setdatalisten(13);
                                     } else {
                                       _showSnackBar(
                                           "You can't change the other fields",
@@ -3242,7 +3411,7 @@ class _LivingArrangementsUIState extends State<LivingArrangementsUI> {
                         ),
                         decoration: BoxDecoration(
                           border: Border.all(
-                            color: colorsset["field${11}"],
+                            color: colorsset["field${13}"],
                             width: 1,
                           ), //Border.all
                           borderRadius: BorderRadius.circular(8),

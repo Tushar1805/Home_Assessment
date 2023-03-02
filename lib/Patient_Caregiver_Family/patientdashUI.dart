@@ -429,7 +429,7 @@ class _PatientUIState extends State<PatientUI> {
             _showSnackBar("Wait for the therapist to provide recommendations");
           },
           child: Text(
-            "Assessment Finished",
+            "Form Filled",
             style: TextStyle(
               color: Colors.white,
               fontSize: 15,
@@ -454,7 +454,7 @@ class _PatientUIState extends State<PatientUI> {
             _showSnackBar("Wait for the therapist to provide recommendations");
           },
           child: Text(
-            "Assessment Finished",
+            "Form Filled",
             style: TextStyle(
               color: Colors.white,
               fontSize: 15,
@@ -785,7 +785,7 @@ class _PatientUIState extends State<PatientUI> {
                                         fontSize: 16, color: Colors.black45),
                                   ),
                                   Text(
-                                    '${assessmentdata.data()["currentStatus"]}',
+                                    '${assessmentdata.data()["currentStatus"] == "Assessment Finished" ? "Form Filled" : assessmentdata.data()["currentStatus"]}',
                                     style: TextStyle(
                                       fontSize: 16,
                                     ),
@@ -825,6 +825,20 @@ class _PatientUIState extends State<PatientUI> {
                       buildContext,
                       assesspro),
                   SizedBox(height: 10),
+                  assessmentdata.data()["currentStatus"] ==
+                          "Assessment Finished"
+                      ? Container(
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                          child: Text(
+                              "Report will be generated once therapist provides the recommendations",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Color.fromRGBO(10, 80, 106, 1),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold)),
+                        )
+                      : SizedBox(),
                 ],
               ))),
           onTap: () async {

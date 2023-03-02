@@ -219,6 +219,9 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
     } else if (innerlist['room${index + 1}']['complete'] ==
         innerlist['room$index']['total']) {
       colors = Color.fromRGBO(127, 176, 54, 1);
+    } else if (innerlist['room${index + 1}']['complete'] >
+        innerlist['room$index']['total']) {
+      colors = Color.fromRGBO(127, 176, 54, 1);
     }
     return colors;
   }
@@ -236,6 +239,9 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
     } else if (innerlist['room$index']['complete'] ==
         innerlist['room$index']['total']) {
       bordercolor = Color.fromRGBO(127, 176, 54, 1);
+    } else if (innerlist['room$index']['complete'] >
+        innerlist['room$index']['total']) {
+      bordercolor = Color.fromRGBO(127, 176, 54, 1);
     }
     return bordercolor;
   }
@@ -248,6 +254,13 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
       topLeft: Radius.circular(20),
     );
     if (innerlist['room$index']['complete'] ==
+        innerlist['room$index']['total']) {
+      bordertype = BorderRadius.only(
+        topRight: Radius.circular(20),
+        topLeft: Radius.circular(20),
+      );
+    }
+    if (innerlist['room$index']['complete'] >
         innerlist['room$index']['total']) {
       bordertype = BorderRadius.only(
         topRight: Radius.circular(20),
@@ -558,9 +571,11 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                                 //   save = true;
                                 // });
                                 if (widget.role == "therapist") {
-                                  if (widget.wholelist[i]["room$j"]["isSave"] !=
+                                  if (widget.wholelist[i]["room$j"]
+                                              ["isSaveThera"] !=
                                           null &&
-                                      widget.wholelist[i]["room$j"]["isSave"] ==
+                                      widget.wholelist[i]["room$j"]
+                                              ["isSaveThera"] ==
                                           true) {
                                     setState(() {
                                       save = true;
@@ -599,16 +614,18 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                             } else {
                               if (widget.wholelist[i]["room$j"]["isUsed"][0]) {
                                 if (widget.wholelist[i]["room$j"]["complete"] ==
-                                    gettotal(widget.wholelist[i]["name"])) {
+                                        gettotal(widget.wholelist[i]["name"]) ||
+                                    widget.wholelist[i]["room$j"]["complete"] >
+                                        gettotal(widget.wholelist[i]["name"])) {
                                   // setState(() {
                                   //   save = true;
                                   // });
                                   if (widget.role == "therapist") {
                                     if (widget.wholelist[i]["room$j"]
-                                                ["isSave"] !=
+                                                ["isSaveThera"] !=
                                             null &&
                                         widget.wholelist[i]["room$j"]
-                                                ["isSave"] ==
+                                                ["isSaveThera"] ==
                                             true) {
                                       setState(() {
                                         save = true;
@@ -1205,7 +1222,7 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
     } else if (classname == 'Living Room') {
       return 11;
     } else if (classname == 'Living Arrangements') {
-      return 14;
+      return 13;
     } else if (classname == 'Pathway') {
       return 12;
     } else if (classname == 'Basement') {
@@ -1265,8 +1282,15 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                                             MediaQuery.of(context).size.height *
                                                 0.03,
                                         width: getwidth(
-                                            innerlist['room${index1 + 1}']
-                                                ['complete'],
+                                            (innerlist['room${index1 + 1}']
+                                                        ['complete'] >
+                                                    innerlist[
+                                                            'room${index1 + 1}']
+                                                        ['total'])
+                                                ? innerlist['room${index1 + 1}']
+                                                    ['total']
+                                                : innerlist['room${index1 + 1}']
+                                                    ['complete'],
                                             innerlist['room${index1 + 1}']
                                                 ['total'],
                                             true),
@@ -1281,8 +1305,15 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                                             MediaQuery.of(context).size.height *
                                                 0.03,
                                         width: getwidth(
-                                            innerlist['room${index1 + 1}']
-                                                ['complete'],
+                                            (innerlist['room${index1 + 1}']
+                                                        ['complete'] >
+                                                    innerlist[
+                                                            'room${index1 + 1}']
+                                                        ['total'])
+                                                ? innerlist['room${index1 + 1}']
+                                                    ['total']
+                                                : innerlist['room${index1 + 1}']
+                                                    ['complete'],
                                             innerlist['room${index1 + 1}']
                                                 ['total'],
                                             false),
@@ -1314,7 +1345,7 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                                   Padding(
                                     padding: const EdgeInsets.all(13),
                                     child: Text(
-                                      '${innerlist['room${index1 + 1}']['complete']}/${innerlist['room${index1 + 1}']['total']}',
+                                      '${(innerlist['room${index1 + 1}']['complete'] > innerlist['room${index1 + 1}']['total']) ? innerlist['room${index1 + 1}']['total'] : innerlist['room${index1 + 1}']['complete']}/${innerlist['room${index1 + 1}']['total']}',
                                       style: TextStyle(
                                           color: Color.fromRGBO(10, 80, 106, 1),
                                           fontSize: 20,
@@ -1370,8 +1401,17 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                                                   .height *
                                               0.03,
                                           width: getwidth(
-                                              innerlist['room${index1 + 1}']
-                                                  ['complete'],
+                                              (innerlist['room${index1 + 1}']
+                                                          ['complete'] >
+                                                      innerlist[
+                                                              'room${index1 + 1}']
+                                                          ['total'])
+                                                  ? innerlist[
+                                                          'room${index1 + 1}']
+                                                      ['total']
+                                                  : innerlist[
+                                                          'room${index1 + 1}']
+                                                      ['complete'],
                                               innerlist['room${index1 + 1}']
                                                   ['total'],
                                               true),
@@ -1421,7 +1461,7 @@ class _CompleteAssessmentState extends State<CompleteAssessmentUI>
                                     Padding(
                                       padding: const EdgeInsets.all(13),
                                       child: Text(
-                                        '${innerlist['room${index1 + 1}']['complete']}/${innerlist['room${index1 + 1}']['total']}',
+                                        '${(innerlist['room${index1 + 1}']['complete'] > innerlist['room${index1 + 1}']['total']) ? innerlist['room${index1 + 1}']['total'] : innerlist['room${index1 + 1}']['complete']}/${innerlist['room${index1 + 1}']['total']}',
                                         style: TextStyle(
                                             color:
                                                 Color.fromRGBO(10, 80, 106, 1),

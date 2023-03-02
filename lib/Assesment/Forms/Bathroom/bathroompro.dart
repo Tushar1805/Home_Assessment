@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -9,6 +10,10 @@ import 'package:avatar_glow/avatar_glow.dart';
 
 import '../../../constants.dart';
 import 'package:path/path.dart';
+import 'package:flutter/services.dart';
+import 'package:sound_stream/sound_stream.dart';
+import 'package:google_speech/google_speech.dart';
+import 'package:rxdart/rxdart.dart';
 
 class BathroomPro extends ChangeNotifier {
   String roomname, docID;
@@ -41,12 +46,28 @@ class BathroomPro extends ChangeNotifier {
   bool isVideoSelected = false;
   var falseIndex = -1, trueIndex = -1;
 
+  // MIC Stram
+  final RecorderStream _recorder = RecorderStream();
+
+  // bool recognizing = false;
+  Map<String, bool> isRecognizing = {};
+  Map<String, bool> isRecognizingThera = {};
+  // bool recognizeFinished = false;
+  Map<String, bool> isRecognizeFinished = {};
+  String text = '';
+  StreamSubscription<List<int>> _audioStreamSubscription;
+  BehaviorSubject<List<int>> _audioStream;
+
   BathroomPro(this.roomname, this.wholelist, this.accessname, this.docID) {
     _speech = stt.SpeechToText();
+    _recorder.initialize();
     for (int i = 0; i < wholelist[5][accessname]['question'].length; i++) {
       controllers["field${i + 1}"] = TextEditingController();
       controllerstreco["field${i + 1}"] = TextEditingController();
       isListening["field${i + 1}"] = false;
+      isRecognizing["field${i + 1}"] = false;
+      isRecognizingThera["field${i + 1}"] = false;
+      isRecognizeFinished["field${i + 1}"] = false;
       controllers["field${i + 1}"].text = capitalize(
           wholelist[5][accessname]['question']["${i + 1}"]['Recommendation']);
       controllerstreco["field${i + 1}"].text =
@@ -56,6 +77,131 @@ class BathroomPro extends ChangeNotifier {
     getRole();
     setinitials();
   }
+
+  void streamingRecognize(index, TextEditingController text) async {
+    _audioStream = BehaviorSubject<List<int>>();
+    try {
+      _audioStreamSubscription = _recorder.audioStream.listen((event) {
+        _audioStream.add(event);
+      });
+    } catch (e) {
+      print("AUDIO STREAM ERROR: $e");
+    }
+
+    await _recorder.start();
+
+    isRecognizing['field$index'] = true;
+    notifyListeners();
+
+    final serviceAccount = ServiceAccount.fromString(
+        (await rootBundle.loadString('assets/test_service_account.json')));
+    final speechToText = SpeechToText.viaServiceAccount(serviceAccount);
+    final config = _getConfig();
+
+    final responseStream = speechToText.streamingRecognize(
+        StreamingRecognitionConfig(config: config, interimResults: true),
+        _audioStream);
+
+    var responseText = '';
+
+    try {
+      responseStream.listen((data) {
+        final currentText =
+            data.results.map((e) => e.alternatives.first.transcript).join('\n');
+
+        if (data.results.first.isFinal) {
+          responseText += ' ' + currentText;
+
+          text.text = responseText;
+          isRecognizeFinished['field$index'] = true;
+          notifyListeners();
+        } else {
+          text.text = responseText + ' ' + currentText;
+          isRecognizeFinished['field$index'] = true;
+          notifyListeners();
+        }
+      }, onDone: () {
+        isRecognizing['field$index'] = false;
+        notifyListeners();
+      });
+    } catch (e) {
+      print("RESPONSE STREAM ERROR: $e");
+    }
+  }
+
+  void stopRecording(index) async {
+    await _recorder.stop();
+    await _audioStreamSubscription?.cancel();
+    await _audioStream?.close();
+
+    isRecognizing['field$index'] = false;
+    notifyListeners();
+  }
+
+  // For Therapist
+
+  void streamingRecognizeThera(index, TextEditingController text) async {
+    _audioStream = BehaviorSubject<List<int>>();
+    _audioStreamSubscription = _recorder.audioStream.listen((event) {
+      _audioStream.add(event);
+    });
+
+    await _recorder.start();
+
+    isRecognizingThera['field$index'] = true;
+    notifyListeners();
+
+    final serviceAccount = ServiceAccount.fromString(
+        (await rootBundle.loadString('assets/test_service_account.json')));
+    final speechToText = SpeechToText.viaServiceAccount(serviceAccount);
+    final config = _getConfig();
+
+    final responseStream = speechToText.streamingRecognize(
+        StreamingRecognitionConfig(config: config, interimResults: true),
+        _audioStream);
+
+    var responseText = '';
+
+    try {
+      responseStream.listen((data) {
+        final currentText =
+            data.results.map((e) => e.alternatives.first.transcript).join('\n');
+
+        if (data.results.first.isFinal) {
+          responseText += ' ' + currentText;
+
+          text.text = responseText;
+          isRecognizeFinished['field$index'] = true;
+          notifyListeners();
+        } else {
+          text.text = responseText + ' ' + currentText;
+          isRecognizeFinished['field$index'] = true;
+          notifyListeners();
+        }
+      }, onDone: () {
+        isRecognizingThera['field$index'] = false;
+        notifyListeners();
+      });
+    } catch (e) {
+      print("THERA RESPONSE STREAM ERROR: $e");
+    }
+  }
+
+  void stopRecordingThera(index) async {
+    await _recorder.stop();
+    await _audioStreamSubscription?.cancel();
+    await _audioStream?.close();
+
+    isRecognizingThera['field$index'] = false;
+    notifyListeners();
+  }
+
+  RecognitionConfig _getConfig() => RecognitionConfig(
+      encoding: AudioEncoding.LINEAR16,
+      model: RecognitionModel.basic,
+      enableAutomaticPunctuation: true,
+      sampleRateHertz: 16000,
+      languageCode: 'en-US');
 
   String capitalize(String s) {
     // Each sentence becomes an array element
@@ -101,6 +247,10 @@ class BathroomPro extends ChangeNotifier {
   }
 
   Future<void> setinitials() async {
+    if (wholelist[5][accessname].containsKey('isSaveThera')) {
+    } else {
+      wholelist[5][accessname]["isSaveThera"] = false;
+    }
     if (wholelist[5][accessname].containsKey('videos')) {
       if (wholelist[5][accessname]['videos'].containsKey('name')) {
       } else {
@@ -118,13 +268,21 @@ class BathroomPro extends ChangeNotifier {
 
     if (wholelist[5][accessname]['question']["5"].containsKey('toggle')) {
       if (wholelist[5][accessname]['question']["5"]['Answer'].length == 0) {
-        setdata(5, 'Yes', 'Able to Operate Switches?');
+        // setdata(5, 'Yes', 'Able to Operate Switches?');
+        wholelist[5][accessname]['question']["5"]['Question'] =
+            'Able to Operate Switches?';
+        wholelist[5][accessname]['question']["5"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["5"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[5][accessname]['question']["5"]['toggle'] = <bool>[true, false];
       if (wholelist[5][accessname]['question']["5"]['Answer'].length == 0) {
-        setdata(5, 'Yes', 'Able to Operate Switches?');
+        // setdata(5, 'Yes', 'Able to Operate Switches?');
+        wholelist[5][accessname]['question']["5"]['Question'] =
+            'Able to Operate Switches?';
+        wholelist[5][accessname]['question']["5"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["5"]['toggled'] = false;
       }
       notifyListeners();
     }
@@ -137,26 +295,42 @@ class BathroomPro extends ChangeNotifier {
 
     if (wholelist[5][accessname]['question']["8"].containsKey('toggle')) {
       if (wholelist[5][accessname]['question']["8"]['Answer'].length == 0) {
-        setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+        // setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+        wholelist[5][accessname]['question']["8"]['Question'] =
+            'Obstacle/Clutter Present?';
+        wholelist[5][accessname]['question']["8"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["8"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[5][accessname]['question']["8"]['toggle'] = <bool>[true, false];
       if (wholelist[5][accessname]['question']["8"]['Answer'].length == 0) {
-        setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+        // setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+        wholelist[5][accessname]['question']["8"]['Question'] =
+            'Obstacle/Clutter Present?';
+        wholelist[5][accessname]['question']["8"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["8"]['toggled'] = false;
       }
       notifyListeners();
     }
 
     if (wholelist[5][accessname]['question']["9"].containsKey('toggle')) {
       if (wholelist[5][accessname]['question']["9"]['Answer'].length == 0) {
-        setdata(9, "Yes", 'Able to Access Telephone?');
+        // setdata(9, "Yes", 'Able to Access Telephone?');
+        wholelist[5][accessname]['question']["9"]['Question'] =
+            'Able to Access Telephone?';
+        wholelist[5][accessname]['question']["9"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["9"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[5][accessname]['question']["9"]['toggle'] = <bool>[true, false];
       if (wholelist[5][accessname]['question']["9"]['Answer'].length == 0) {
-        setdata(9, "Yes", 'Able to Access Telephone?');
+        // setdata(9, "Yes", 'Able to Access Telephone?');
+        wholelist[5][accessname]['question']["9"]['Question'] =
+            'Able to Access Telephone?';
+        wholelist[5][accessname]['question']["9"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["9"]['toggled'] = false;
       }
       notifyListeners();
     }
@@ -169,70 +343,110 @@ class BathroomPro extends ChangeNotifier {
 
     if (wholelist[5][accessname]['question']["10"].containsKey('toggle')) {
       if (wholelist[5][accessname]['question']["10"]['Answer'].length == 0) {
-        setdata(10, "Yes", 'Smoke Detector Present?');
+        // setdata(10, "Yes", 'Smoke Detector Present?');
+        wholelist[5][accessname]['question']["10"]['Question'] =
+            'Smoke Detector Present?';
+        wholelist[5][accessname]['question']["10"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["10"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[5][accessname]['question']["10"]
           ['toggle'] = <bool>[true, false];
       if (wholelist[5][accessname]['question']["10"]['Answer'].length == 0) {
-        setdata(10, "Yes", 'Smoke Detector Present?');
+        // setdata(10, "Yes", 'Smoke Detector Present?');
+        wholelist[5][accessname]['question']["10"]['Question'] =
+            'Smoke Detector Present?';
+        wholelist[5][accessname]['question']["10"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["10"]['toggled'] = false;
       }
       notifyListeners();
     }
 
     if (wholelist[5][accessname]['question']["12"].containsKey('toggle')) {
       if (wholelist[5][accessname]['question']["12"]['Answer'].length == 0) {
-        setdata(12, "Yes", 'Has access to medicine cabinet?');
+        // setdata(12, "Yes", 'Has access to medicine cabinet?');
+        wholelist[5][accessname]['question']["12"]['Question'] =
+            'Has access to medicine cabinet?';
+        wholelist[5][accessname]['question']["12"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["12"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[5][accessname]['question']["12"]
           ['toggle'] = <bool>[true, false];
       if (wholelist[5][accessname]['question']["12"]['Answer'].length == 0) {
-        setdata(12, "Yes", 'Has access to medicine cabinet?');
+        // setdata(12, "Yes", 'Has access to medicine cabinet?');
+        wholelist[5][accessname]['question']["12"]['Question'] =
+            'Has access to medicine cabinet?';
+        wholelist[5][accessname]['question']["12"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["12"]['toggled'] = false;
       }
       notifyListeners();
     }
 
     if (wholelist[5][accessname]['question']["13"].containsKey('toggle')) {
       if (wholelist[5][accessname]['question']["13"]['Answer'].length == 0) {
-        setdata(13, "Yes", 'Has access to cabinet under sink?');
+        // setdata(13, "Yes", 'Has access to cabinet under sink?');
+        wholelist[5][accessname]['question']["13"]['Question'] =
+            'Has access to cabinet under sink?';
+        wholelist[5][accessname]['question']["13"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["13"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[5][accessname]['question']["13"]
           ['toggle'] = <bool>[true, false];
       if (wholelist[5][accessname]['question']["13"]['Answer'].length == 0) {
-        setdata(13, "Yes", 'Has access to cabinet under sink?');
+        // setdata(13, "Yes", 'Has access to cabinet under sink?');
+        wholelist[5][accessname]['question']["13"]['Question'] =
+            'Has access to cabinet under sink?';
+        wholelist[5][accessname]['question']["13"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["13"]['toggled'] = false;
       }
       notifyListeners();
     }
 
     if (wholelist[5][accessname]['question']["14"].containsKey('toggle')) {
       if (wholelist[5][accessname]['question']["14"]['Answer'].length == 0) {
-        setdata(14, "Yes", 'Shower: Present?');
+        // setdata(14, "Yes", 'Shower: Present?');
+        wholelist[5][accessname]['question']["14"]['Question'] =
+            'Shower: Present?';
+        wholelist[5][accessname]['question']["14"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["14"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[5][accessname]['question']["14"]
           ['toggle'] = <bool>[true, false];
       if (wholelist[5][accessname]['question']["14"]['Answer'].length == 0) {
-        setdata(14, "Yes", 'Shower: Present?');
+        // setdata(14, "Yes", 'Shower: Present?');
+        wholelist[5][accessname]['question']["14"]['Question'] =
+            'Shower: Present?';
+        wholelist[5][accessname]['question']["14"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["14"]['toggled'] = false;
       }
       notifyListeners();
     }
 
     if (wholelist[5][accessname]['question']["15"].containsKey('toggle')) {
       if (wholelist[5][accessname]['question']["15"]['Answer'].length == 0) {
-        setdata(15, "Yes", 'Able to manage in & out of the shower?');
+        // setdata(15, "Yes", 'Able to manage in & out of the shower?');
+        wholelist[5][accessname]['question']["15"]['Question'] =
+            'Able to manage in & out of the shower?';
+        wholelist[5][accessname]['question']["15"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["15"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[5][accessname]['question']["15"]
           ['toggle'] = <bool>[true, false];
       if (wholelist[5][accessname]['question']["15"]['Answer'].length == 0) {
-        setdata(15, "Yes", 'Able to manage in & out of the shower?');
+        // setdata(15, "Yes", 'Able to manage in & out of the shower?');
+        wholelist[5][accessname]['question']["15"]['Question'] =
+            'Able to manage in & out of the shower?';
+        wholelist[5][accessname]['question']["15"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["15"]['toggled'] = false;
       }
       notifyListeners();
     }
@@ -244,14 +458,22 @@ class BathroomPro extends ChangeNotifier {
 
     if (wholelist[5][accessname]['question']["16"].containsKey('toggle')) {
       if (wholelist[5][accessname]['question']["16"]['Answer'].length == 0) {
-        setdata(16, "Yes", 'Grab Bars Present?');
+        // setdata(16, "Yes", 'Grab Bars Present?');
+        wholelist[5][accessname]['question']["16"]['Question'] =
+            'Grab Bars Present?';
+        wholelist[5][accessname]['question']["16"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["16"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[5][accessname]['question']["16"]
           ['toggle'] = <bool>[true, false];
       if (wholelist[5][accessname]['question']["16"]['Answer'].length == 0) {
-        setdata(16, "Yes", 'Grab Bars Present?');
+        // setdata(16, "Yes", 'Grab Bars Present?');
+        wholelist[5][accessname]['question']["16"]['Question'] =
+            'Grab Bars Present?';
+        wholelist[5][accessname]['question']["16"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["16"]['toggled'] = false;
       }
       notifyListeners();
     }
@@ -303,28 +525,42 @@ class BathroomPro extends ChangeNotifier {
 
     if (wholelist[5][accessname]['question']["18"].containsKey('toggle')) {
       if (wholelist[5][accessname]['question']["18"]['Answer'].length == 0) {
-        setdata(18, "Yes", "Hand-Held Shower Present?");
+        // setdata(18, "Yes", "Hand-Held Shower Present?");
+        wholelist[5][accessname]['question']["18"]['Question'] =
+            'Hand-Held Shower Present?';
+        wholelist[5][accessname]['question']["18"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["18"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[5][accessname]['question']["18"]
           ['toggle'] = <bool>[true, false];
       if (wholelist[5][accessname]['question']["18"]['Answer'].length == 0) {
-        setdata(18, "Yes", "Hand-Held Shower Present?");
+        // setdata(18, "Yes", "Hand-Held Shower Present?");
+        wholelist[5][accessname]['question']["18"]['Question'] =
+            'Hand-Held Shower Present?';
+        wholelist[5][accessname]['question']["18"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["18"]['toggled'] = false;
       }
       notifyListeners();
     }
 
     if (wholelist[5][accessname]['question']["20"].containsKey('toggle')) {
       if (wholelist[5][accessname]['question']["20"]['Answer'].length == 0) {
-        setdata(20, "Yes", 'Tub Present?');
+        // setdata(20, "Yes", 'Tub Present?');
+        wholelist[5][accessname]['question']["20"]['Question'] = 'Tub Present?';
+        wholelist[5][accessname]['question']["20"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["20"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[5][accessname]['question']["20"]
           ['toggle'] = <bool>[true, false];
       if (wholelist[5][accessname]['question']["20"]['Answer'].length == 0) {
-        setdata(20, "Yes", 'Tub Present?');
+        // setdata(20, "Yes", 'Tub Present?');
+        wholelist[5][accessname]['question']["20"]['Question'] = 'Tub Present?';
+        wholelist[5][accessname]['question']["20"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["20"]['toggled'] = false;
       }
       notifyListeners();
     }
@@ -341,42 +577,66 @@ class BathroomPro extends ChangeNotifier {
 
     if (wholelist[5][accessname]['question']["21"].containsKey('toggle')) {
       if (wholelist[5][accessname]['question']["21"]['Answer'].length == 0) {
-        setdata(21, "Yes", 'Able to access faucets Independently?');
+        // setdata(21, "Yes", 'Able to access faucets Independently?');
+        wholelist[5][accessname]['question']["21"]['Question'] =
+            'Able to access faucets Independently?';
+        wholelist[5][accessname]['question']["21"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["21"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[5][accessname]['question']["21"]
           ['toggle'] = <bool>[true, false];
       if (wholelist[5][accessname]['question']["21"]['Answer'].length == 0) {
-        setdata(21, "Yes", 'Able to access faucets Independently?');
+        // setdata(21, "Yes", 'Able to access faucets Independently?');
+        wholelist[5][accessname]['question']["21"]['Question'] =
+            'Able to access faucets Independently?';
+        wholelist[5][accessname]['question']["21"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["21"]['toggled'] = false;
       }
       notifyListeners();
     }
 
     if (wholelist[5][accessname]['question']["23"].containsKey('toggle')) {
       if (wholelist[5][accessname]['question']["23"]['Answer'].length == 0) {
-        setdata(23, "Yes", 'Can get on/off commode independently?');
+        // setdata(23, "Yes", 'Can get on/off commode independently?');
+        wholelist[5][accessname]['question']["23"]['Question'] =
+            'Can get on/off commode independently?';
+        wholelist[5][accessname]['question']["23"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["23"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[5][accessname]['question']["23"]
           ['toggle'] = <bool>[true, false];
       if (wholelist[5][accessname]['question']["23"]['Answer'].length == 0) {
-        setdata(23, "Yes", 'Can get on/off commode independently?');
+        // setdata(23, "Yes", 'Can get on/off commode independently?');
+        wholelist[5][accessname]['question']["23"]['Question'] =
+            'Can get on/off commode independently?';
+        wholelist[5][accessname]['question']["23"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["23"]['toggled'] = false;
       }
       notifyListeners();
     }
 
     if (wholelist[5][accessname]['question']["24"].containsKey('toggle')) {
       if (wholelist[5][accessname]['question']["24"]['Answer'].length == 0) {
-        setdata(24, "Yes", 'Able to flush commode independently?');
+        // setdata(24, "Yes", 'Able to flush commode independently?');
+        wholelist[5][accessname]['question']["24"]['Question'] =
+            'Able to flush commode independently?';
+        wholelist[5][accessname]['question']["24"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["24"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[5][accessname]['question']["24"]
           ['toggle'] = <bool>[true, false];
       if (wholelist[5][accessname]['question']["24"]['Answer'].length == 0) {
-        setdata(24, "Yes", 'Able to flush commode independently?');
+        // setdata(24, "Yes", 'Able to flush commode independently?');
+        wholelist[5][accessname]['question']["24"]['Question'] =
+            'Able to flush commode independently?';
+        wholelist[5][accessname]['question']["24"]['Answer'] = 'Yes';
+        wholelist[5][accessname]['question']["24"]['toggled'] = false;
       }
       notifyListeners();
     }
@@ -419,6 +679,31 @@ class BathroomPro extends ChangeNotifier {
         notifyListeners();
       },
     );
+  }
+
+  setdataToggle(index, value, que) {
+    if (wholelist[5][accessname].containsKey('isSave')) {
+    } else {
+      wholelist[5][accessname]["isSave"] = true;
+    }
+    wholelist[5][accessname]['question']["$index"]['Question'] = que;
+    if (value.length == 0) {
+      if (wholelist[5][accessname]['question']["$index"]['toggled']) {
+      } else {
+        wholelist[5][accessname]['complete'] -= 1;
+        wholelist[5][accessname]['question']["$index"]['Answer'] = value;
+
+        notifyListeners();
+      }
+    } else {
+      if (wholelist[5][accessname]['question']["$index"]['toggled'] == false) {
+        wholelist[5][accessname]['complete'] += 1;
+        wholelist[5][accessname]['question']["$index"]['toggled'] = true;
+        notifyListeners();
+      }
+      wholelist[5][accessname]['question']["$index"]['Answer'] = value;
+      notifyListeners();
+    }
   }
 
   setdata(index, value, que) {
@@ -499,6 +784,7 @@ class BathroomPro extends ChangeNotifier {
             Container(
               child: TextFormField(
                 maxLines: null,
+                textCapitalization: TextCapitalization.sentences,
                 showCursor: assesmentprovider.cur,
                 controller: assesmentprovider.controllers["field$index"],
                 decoration: InputDecoration(
@@ -526,7 +812,7 @@ class BathroomPro extends ChangeNotifier {
                           margin: EdgeInsets.all(0),
                           child: AvatarGlow(
                             animate:
-                                assesmentprovider.isListening['field$index'],
+                                assesmentprovider.isRecognizing['field$index'],
                             // glowColor: Theme.of().primaryColor,
                             endRadius: 500.0,
                             duration: const Duration(milliseconds: 2000),
@@ -536,16 +822,30 @@ class BathroomPro extends ChangeNotifier {
                             child: FloatingActionButton(
                               heroTag: "btn$index",
                               child: Icon(
-                                Icons.mic,
+                                assesmentprovider.isRecognizing['field$index']
+                                    ? Icons.stop_circle
+                                    : Icons.mic,
                                 size: 20,
                               ),
                               onPressed: () {
                                 if (assessor == therapist &&
                                     role == "therapist") {
-                                  listen(index);
+                                  // listen(index);
+                                  assesmentprovider.isRecognizing['field$index']
+                                      ? assesmentprovider.stopRecording(index)
+                                      : assesmentprovider.streamingRecognize(
+                                          index,
+                                          assesmentprovider
+                                              .controllers["field$index"]);
                                   setdatalisten(index);
                                 } else if (role != "therapist") {
-                                  listen(index);
+                                  // listen(index);
+                                  assesmentprovider.isRecognizing['field$index']
+                                      ? assesmentprovider.stopRecording(index)
+                                      : assesmentprovider.streamingRecognize(
+                                          index,
+                                          assesmentprovider
+                                              .controllers["field$index"]);
                                   setdatalisten(index);
                                 } else {
                                   _showSnackBar(
@@ -598,21 +898,21 @@ class BathroomPro extends ChangeNotifier {
           "") {
         saveToForm = true;
         trueIndex = index;
-        wholelist[5][accessname]["isSave"] = saveToForm;
+        wholelist[5][accessname]["isSaveThera"] = saveToForm;
       } else {
         saveToForm = false;
         falseIndex = index;
-        wholelist[5][accessname]["isSave"] = saveToForm;
+        wholelist[5][accessname]["isSaveThera"] = saveToForm;
       }
     } else {
       if (index == falseIndex) {
         if (wholelist[5][accessname]["question"]["$index"]
                 ["Recommendationthera"] !=
             "") {
-          wholelist[5][accessname]["isSave"] = true;
+          wholelist[5][accessname]["isSaveThera"] = true;
           falseIndex = -1;
         } else {
-          wholelist[5][accessname]["isSave"] = false;
+          wholelist[5][accessname]["isSaveThera"] = false;
         }
       }
     }
@@ -621,6 +921,7 @@ class BathroomPro extends ChangeNotifier {
         SizedBox(height: 8),
         TextFormField(
           controller: controllerstreco["field$index"],
+          textCapitalization: TextCapitalization.sentences,
           decoration: InputDecoration(
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
@@ -651,11 +952,17 @@ class BathroomPro extends ChangeNotifier {
                     child: FloatingActionButton(
                       heroTag: "btn${index + 100}",
                       child: Icon(
-                        Icons.mic,
+                        assesmentprovider.isRecognizingThera['field$index']
+                            ? Icons.stop_circle
+                            : Icons.mic,
                         size: 20,
                       ),
                       onPressed: () {
-                        _listenthera(index);
+                        // _listenthera(index);
+                        isRecognizingThera['field$index']
+                            ? stopRecordingThera(index)
+                            : streamingRecognizeThera(
+                                index, controllerstreco["field$index"]);
                         setdatalistenthera(index);
                       },
                     ),

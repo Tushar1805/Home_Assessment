@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sound_stream/sound_stream.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tryapp/Assesment/Forms/Formsrepo.dart';
@@ -9,6 +11,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:path/path.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/services.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../../../constants.dart';
 
@@ -46,6 +50,16 @@ class LivingArrangementsProvider extends ChangeNotifier {
   String videoUrl;
   File video;
   bool isVideoSelected = false;
+  // MIC Stram
+  final RecorderStream _recorder = RecorderStream();
+
+  bool recognizing = false;
+  Map<String, bool> isRecognizing = {};
+  bool recognizeFinished = false;
+  Map<String, bool> isRecognizeFinished = {};
+  String text = '';
+  StreamSubscription<List<int>> _audioStreamSubscription;
+  BehaviorSubject<List<int>> _audioStream;
 
   LivingArrangementsProvider(this.roomname, this.wholelist, this.accessname) {
     print('helo');
@@ -56,6 +70,8 @@ class LivingArrangementsProvider extends ChangeNotifier {
       _controllers["field${i + 1}"] = TextEditingController();
       _controllerstreco["field${i + 1}"] = TextEditingController();
       isListening["field${i + 1}"] = false;
+      isRecognizing["field${i + 1}"] = false;
+      isRecognizeFinished["field${i + 1}"] = false;
       _controllers["field${i + 1}"].text =
           wholelist[1][accessname]['question']["${i + 1}"]['Recommendation'];
       _controllerstreco["field${i + 1}"].text =
@@ -90,6 +106,10 @@ class LivingArrangementsProvider extends ChangeNotifier {
     if (wholelist[1][accessname].containsKey('isSave')) {
     } else {
       wholelist[1][accessname]["isSave"] = true;
+    }
+    if (wholelist[1][accessname].containsKey('isSaveThera')) {
+    } else {
+      wholelist[1][accessname]["isSaveThera"] = false;
     }
     if (wholelist[1][accessname].containsKey('videos')) {
       if (wholelist[1][accessname]['videos'].containsKey('name')) {
@@ -144,13 +164,21 @@ class LivingArrangementsProvider extends ChangeNotifier {
 
     if (wholelist[1][accessname]['question']['5'].containsKey('toggle')) {
       if (wholelist[1][accessname]['question']["5"]['Answer'].length == 0) {
-        setdata(5, 'Yes', 'Has Room-mate?');
+        // setdata(5, 'Yes', 'Has Room-mate?');
+        wholelist[1][accessname]['question']["5"]['Question'] =
+            'Has Room-mate?';
+        wholelist[1][accessname]['question']["5"]['Answer'] = 'Yes';
+        wholelist[1][accessname]['question']["5"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[1][accessname]['question']['5']['toggle'] = <bool>[true, false];
       if (wholelist[1][accessname]['question']["5"]['Answer'].length == 0) {
-        setdata(5, 'Yes', 'Has Room-mate?');
+        // setdata(5, 'Yes', 'Has Room-mate?');
+        wholelist[1][accessname]['question']["5"]['Question'] =
+            'Has Room-mate?';
+        wholelist[1][accessname]['question']["5"]['Answer'] = 'Yes';
+        wholelist[1][accessname]['question']["5"]['toggled'] = false;
       }
       notifyListeners();
     }
@@ -171,42 +199,80 @@ class LivingArrangementsProvider extends ChangeNotifier {
 
     if (wholelist[1][accessname]['question']['7'].containsKey('toggle')) {
       if (wholelist[1][accessname]['question']["7"]['Answer'].length == 0) {
-        setdata(7, 'Yes', 'Using assistive device?');
+        // setdata(7, 'Yes', 'Using assistive device?');
+        wholelist[1][accessname]['question']["7"]['Question'] =
+            'Using assistive device?';
+        wholelist[1][accessname]['question']["7"]['Answer'] = 'Yes';
+        wholelist[1][accessname]['question']["7"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[1][accessname]['question']['7']['toggle'] = <bool>[true, false];
       if (wholelist[1][accessname]['question']["7"]['Answer'].length == 0) {
-        setdata(7, 'Yes', 'Using assistive device?');
+        // setdata(7, 'Yes', 'Using assistive device?');
+        wholelist[1][accessname]['question']["7"]['Question'] =
+            'Using assistive device?';
+        wholelist[1][accessname]['question']["7"]['Answer'] = 'Yes';
+        wholelist[1][accessname]['question']["7"]['toggled'] = false;
       }
       notifyListeners();
     }
 
-    if (wholelist[1][accessname]['question']["11"].containsKey('Flights')) {
-      if (wholelist[1][accessname]['question']["11"]['Flights']
+    if (wholelist[1][accessname]['question']['10'].containsKey('toggle')) {
+      if (wholelist[1][accessname]['question']["10"]['Answer'].length == 0) {
+        // setdata(10, 'Yes', 'Flight of stairs present?');
+        wholelist[1][accessname]['question']["10"]['Question'] =
+            'Flight of stairs present?';
+        wholelist[1][accessname]['question']["10"]['Answer'] = 'Yes';
+        wholelist[1][accessname]['question']["10"]['toggled'] = false;
+      }
+      notifyListeners();
+    } else {
+      wholelist[1][accessname]['question']['10']
+          ['toggle'] = <bool>[true, false];
+      if (wholelist[1][accessname]['question']["10"]['Answer'].length == 0) {
+        // setdata(10, 'Yes', 'Flight of stairs present?');
+        wholelist[1][accessname]['question']["10"]['Question'] =
+            'Flight of stairs present?';
+        wholelist[1][accessname]['question']["10"]['Answer'] = 'Yes';
+        wholelist[1][accessname]['question']["10"]['toggled'] = false;
+      }
+      notifyListeners();
+    }
+
+    if (wholelist[1][accessname]['question']["10"].containsKey('Flights')) {
+      if (wholelist[1][accessname]['question']["10"]['Flights']
           .containsKey('count')) {
         flightcount =
-            wholelist[1][accessname]['question']["11"]['Flights']["count"];
+            wholelist[1][accessname]['question']["10"]['Flights']["count"];
       }
       notifyListeners();
     } else {
-      wholelist[1][accessname]['question']["11"]['Flights'] = {};
-      wholelist[1][accessname]['question']["11"]['Answer'] = 0;
+      wholelist[1][accessname]['question']["10"]['Flights'] = {};
+      wholelist[1][accessname]['question']["10"]['Flights']['count'] = 0;
       notifyListeners();
     }
 
-    if (wholelist[1][accessname]['question']['12'].containsKey('toggle')) {
-      if (wholelist[1][accessname]['question']["12"]['Answer'].length == 0) {
-        setdata(
-            12, 'Yes', 'Smoke detector batteries checked annually/replaced?');
+    if (wholelist[1][accessname]['question']['11'].containsKey('toggle')) {
+      if (wholelist[1][accessname]['question']["11"]['Answer'].length == 0) {
+        // setdata(
+        //     11, 'Yes', 'Smoke detector batteries checked annually/replaced?');
+        wholelist[1][accessname]['question']["11"]['Question'] =
+            'Smoke detector batteries checked annually/replaced?';
+        wholelist[1][accessname]['question']["11"]['Answer'] = 'Yes';
+        wholelist[1][accessname]['question']["11"]['toggled'] = false;
       }
       notifyListeners();
     } else {
-      wholelist[1][accessname]['question']['12']
+      wholelist[1][accessname]['question']['11']
           ['toggle'] = <bool>[true, false];
-      if (wholelist[1][accessname]['question']["12"]['Answer'].length == 0) {
-        setdata(
-            12, 'Yes', 'Smoke detector batteries checked annually/replaced?');
+      if (wholelist[1][accessname]['question']["11"]['Answer'].length == 0) {
+        // setdata(
+        //     11, 'Yes', 'Smoke detector batteries checked annually/replaced?');
+        wholelist[1][accessname]['question']["11"]['Question'] =
+            'Smoke detector batteries checked annually/replaced?';
+        wholelist[1][accessname]['question']["11"]['Answer'] = 'Yes';
+        wholelist[1][accessname]['question']["11"]['toggled'] = false;
       }
       notifyListeners();
     }
@@ -345,6 +411,27 @@ class LivingArrangementsProvider extends ChangeNotifier {
     } catch (e) {
       print('  deleteFile(): error: ${e.toString()}');
       throw (e.toString());
+    }
+  }
+
+  setdataToggle(index, String value, que) {
+    wholelist[1][accessname]['question']["$index"]['Question'] = que;
+    if (value.length == 0) {
+      if (wholelist[1][accessname]['question']["$index"]['toggled']) {
+      } else {
+        wholelist[1][accessname]['complete'] -= 1;
+        wholelist[1][accessname]['question']["$index"]['Answer'] = value;
+        notifyListeners();
+      }
+    } else {
+      if (wholelist[1][accessname]['question']["$index"]['toggled'] == false) {
+        wholelist[1][accessname]['complete'] += 1;
+        wholelist[1][accessname]['question']["$index"]['toggled'] = true;
+        notifyListeners();
+      }
+
+      wholelist[1][accessname]['question']["$index"]['Answer'] = value;
+      notifyListeners();
     }
   }
 

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -7,6 +8,10 @@ import 'package:tryapp/Assesment/Forms/Formsrepo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistdash.dart';
+import 'package:flutter/services.dart';
+import 'package:sound_stream/sound_stream.dart';
+import 'package:google_speech/google_speech.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../../../constants.dart';
 import 'package:path/path.dart';
@@ -42,12 +47,28 @@ class GaragePro extends ChangeNotifier {
   bool isVideoSelected = false;
   var falseIndex = -1, trueIndex = -1;
 
+  // MIC Stram
+  final RecorderStream _recorder = RecorderStream();
+
+  // bool recognizing = false;
+  Map<String, bool> isRecognizing = {};
+  Map<String, bool> isRecognizingThera = {};
+  // bool recognizeFinished = false;
+  Map<String, bool> isRecognizeFinished = {};
+  String text = '';
+  StreamSubscription<List<int>> _audioStreamSubscription;
+  BehaviorSubject<List<int>> _audioStream;
+
   GaragePro(this.roomname, this.wholelist, this.accessname) {
     _speech = stt.SpeechToText();
+    _recorder.initialize();
     for (int i = 0; i < wholelist[9][accessname]['question'].length; i++) {
       controllers["field${i + 1}"] = TextEditingController();
       controllerstreco["field${i + 1}"] = TextEditingController();
       isListening["field${i + 1}"] = false;
+      isRecognizing["field${i + 1}"] = false;
+      isRecognizingThera["field${i + 1}"] = false;
+      isRecognizeFinished["field${i + 1}"] = false;
       controllers["field${i + 1}"].text = capitalize(
           wholelist[9][accessname]['question']["${i + 1}"]['Recommendation']);
       controllerstreco["field${i + 1}"].text =
@@ -57,6 +78,131 @@ class GaragePro extends ChangeNotifier {
     getRole();
     setinitials();
   }
+
+  void streamingRecognize(index, TextEditingController text) async {
+    _audioStream = BehaviorSubject<List<int>>();
+    try {
+      _audioStreamSubscription = _recorder.audioStream.listen((event) {
+        _audioStream.add(event);
+      });
+    } catch (e) {
+      print("AUDIO STREAM ERROR: $e");
+    }
+
+    await _recorder.start();
+
+    isRecognizing['field$index'] = true;
+    notifyListeners();
+
+    final serviceAccount = ServiceAccount.fromString(
+        (await rootBundle.loadString('assets/test_service_account.json')));
+    final speechToText = SpeechToText.viaServiceAccount(serviceAccount);
+    final config = _getConfig();
+
+    final responseStream = speechToText.streamingRecognize(
+        StreamingRecognitionConfig(config: config, interimResults: true),
+        _audioStream);
+
+    var responseText = '';
+
+    try {
+      responseStream.listen((data) {
+        final currentText =
+            data.results.map((e) => e.alternatives.first.transcript).join('\n');
+
+        if (data.results.first.isFinal) {
+          responseText += ' ' + currentText;
+
+          text.text = responseText;
+          isRecognizeFinished['field$index'] = true;
+          notifyListeners();
+        } else {
+          text.text = responseText + ' ' + currentText;
+          isRecognizeFinished['field$index'] = true;
+          notifyListeners();
+        }
+      }, onDone: () {
+        isRecognizing['field$index'] = false;
+        notifyListeners();
+      });
+    } catch (e) {
+      print("RESPONSE STREAM ERROR: $e");
+    }
+  }
+
+  void stopRecording(index) async {
+    await _recorder.stop();
+    await _audioStreamSubscription?.cancel();
+    await _audioStream?.close();
+
+    isRecognizing['field$index'] = false;
+    notifyListeners();
+  }
+
+  // For Therapist
+
+  void streamingRecognizeThera(index, TextEditingController text) async {
+    _audioStream = BehaviorSubject<List<int>>();
+    _audioStreamSubscription = _recorder.audioStream.listen((event) {
+      _audioStream.add(event);
+    });
+
+    await _recorder.start();
+
+    isRecognizingThera['field$index'] = true;
+    notifyListeners();
+
+    final serviceAccount = ServiceAccount.fromString(
+        (await rootBundle.loadString('assets/test_service_account.json')));
+    final speechToText = SpeechToText.viaServiceAccount(serviceAccount);
+    final config = _getConfig();
+
+    final responseStream = speechToText.streamingRecognize(
+        StreamingRecognitionConfig(config: config, interimResults: true),
+        _audioStream);
+
+    var responseText = '';
+
+    try {
+      responseStream.listen((data) {
+        final currentText =
+            data.results.map((e) => e.alternatives.first.transcript).join('\n');
+
+        if (data.results.first.isFinal) {
+          responseText += ' ' + currentText;
+
+          text.text = responseText;
+          isRecognizeFinished['field$index'] = true;
+          notifyListeners();
+        } else {
+          text.text = responseText + ' ' + currentText;
+          isRecognizeFinished['field$index'] = true;
+          notifyListeners();
+        }
+      }, onDone: () {
+        isRecognizingThera['field$index'] = false;
+        notifyListeners();
+      });
+    } catch (e) {
+      print("THERA RESPONSE STREAM ERROR: $e");
+    }
+  }
+
+  void stopRecordingThera(index) async {
+    await _recorder.stop();
+    await _audioStreamSubscription?.cancel();
+    await _audioStream?.close();
+
+    isRecognizingThera['field$index'] = false;
+    notifyListeners();
+  }
+
+  RecognitionConfig _getConfig() => RecognitionConfig(
+      encoding: AudioEncoding.LINEAR16,
+      model: RecognitionModel.basic,
+      enableAutomaticPunctuation: true,
+      sampleRateHertz: 16000,
+      languageCode: 'en-US');
 
   String capitalize(String s) {
     // Each sentence becomes an array element
@@ -106,6 +252,10 @@ class GaragePro extends ChangeNotifier {
     } else {
       wholelist[9][accessname]["isSave"] = true;
     }
+    if (wholelist[9][accessname].containsKey('isSaveThera')) {
+    } else {
+      wholelist[9][accessname]["isSaveThera"] = false;
+    }
     if (wholelist[9][accessname].containsKey('videos')) {
       if (wholelist[9][accessname]['videos'].containsKey('name')) {
       } else {
@@ -123,40 +273,64 @@ class GaragePro extends ChangeNotifier {
 
     if (wholelist[9][accessname]['question']["5"].containsKey('toggle')) {
       if (wholelist[9][accessname]['question']["5"]['Answer'].length == 0) {
-        setdata(5, 'Yes', 'Able to Operate Switches?');
+        // setdata(5, 'Yes', 'Able to Operate Switches?');
+        wholelist[9][accessname]['question']["5"]['Question'] =
+            'Able to Operate Switches?';
+        wholelist[9][accessname]['question']["5"]['Answer'] = 'Yes';
+        wholelist[9][accessname]['question']["5"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[9][accessname]['question']["5"]['toggle'] = <bool>[true, false];
       if (wholelist[9][accessname]['question']["5"]['Answer'].length == 0) {
-        setdata(5, 'Yes', 'Able to Operate Switches?');
+        // setdata(5, 'Yes', 'Able to Operate Switches?');
+        wholelist[9][accessname]['question']["5"]['Question'] =
+            'Able to Operate Switches?';
+        wholelist[9][accessname]['question']["5"]['Answer'] = 'Yes';
+        wholelist[9][accessname]['question']["5"]['toggled'] = false;
       }
       notifyListeners();
     }
 
     if (wholelist[9][accessname]['question']["8"].containsKey('toggle')) {
       if (wholelist[9][accessname]['question']["8"]['Answer'].length == 0) {
-        setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+        // setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+        wholelist[9][accessname]['question']["8"]['Question'] =
+            'Obstacle/Clutter Present?';
+        wholelist[9][accessname]['question']["8"]['Answer'] = 'Yes';
+        wholelist[9][accessname]['question']["8"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[9][accessname]['question']["8"]['toggle'] = <bool>[true, false];
       if (wholelist[9][accessname]['question']["8"]['Answer'].length == 0) {
-        setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+        // setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+        wholelist[9][accessname]['question']["8"]['Question'] =
+            'Obstacle/Clutter Present?';
+        wholelist[9][accessname]['question']["8"]['Answer'] = 'Yes';
+        wholelist[9][accessname]['question']["8"]['toggled'] = false;
       }
       notifyListeners();
     }
 
     if (wholelist[9][accessname]['question']["11"].containsKey('toggle')) {
       if (wholelist[9][accessname]['question']["11"]['Answer'].length == 0) {
-        setdata(11, 'Yes', 'Smoke Detector Present?');
+        // setdata(11, 'Yes', 'Smoke Detector Present?');
+        wholelist[9][accessname]['question']["11"]['Question'] =
+            'Smoke Detector Present?';
+        wholelist[9][accessname]['question']["11"]['Answer'] = 'Yes';
+        wholelist[9][accessname]['question']["11"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[9][accessname]['question']["11"]
           ['toggle'] = <bool>[true, false];
       if (wholelist[9][accessname]['question']["11"]['Answer'].length == 0) {
-        setdata(11, 'Yes', 'Smoke Detector Present?');
+        // setdata(11, 'Yes', 'Smoke Detector Present?');
+        wholelist[9][accessname]['question']["11"]['Question'] =
+            'Smoke Detector Present?';
+        wholelist[9][accessname]['question']["11"]['Answer'] = 'Yes';
+        wholelist[9][accessname]['question']["11"]['toggled'] = false;
       }
       notifyListeners();
     }
@@ -228,6 +402,31 @@ class GaragePro extends ChangeNotifier {
         notifyListeners();
       },
     );
+  }
+
+  setdataToggle(index, value, que) {
+    if (wholelist[9][accessname].containsKey('isSave')) {
+    } else {
+      wholelist[9][accessname]["isSave"] = true;
+    }
+    wholelist[9][accessname]['question']["$index"]['Question'] = que;
+    if (value.length == 0) {
+      if (wholelist[9][accessname]['question']["$index"]['toggled']) {
+      } else {
+        wholelist[9][accessname]['complete'] -= 1;
+        wholelist[9][accessname]['question']["$index"]['Answer'] = value;
+
+        notifyListeners();
+      }
+    } else {
+      if (wholelist[9][accessname]['question']["$index"]['toggled'] == false) {
+        wholelist[9][accessname]['complete'] += 1;
+        wholelist[9][accessname]['question']["$index"]['toggled'] = true;
+        notifyListeners();
+      }
+      wholelist[9][accessname]['question']["$index"]['Answer'] = value;
+      notifyListeners();
+    }
   }
 
   setdata(index, value, que) {
@@ -331,7 +530,7 @@ class GaragePro extends ChangeNotifier {
                           margin: EdgeInsets.all(0),
                           child: AvatarGlow(
                             animate:
-                                assesmentprovider.isListening['field$index'],
+                                assesmentprovider.isRecognizing['field$index'],
                             // glowColor: Theme.of().primaryColor,
                             endRadius: 500.0,
                             duration: const Duration(milliseconds: 2000),
@@ -341,16 +540,30 @@ class GaragePro extends ChangeNotifier {
                             child: FloatingActionButton(
                               heroTag: "btn$index",
                               child: Icon(
-                                Icons.mic,
+                                assesmentprovider.isRecognizing['field$index']
+                                    ? Icons.stop_circle
+                                    : Icons.mic,
                                 size: 20,
                               ),
                               onPressed: () {
                                 if (assessor == therapist &&
                                     role == "therapist") {
-                                  listen(index);
+                                  // listen(index);
+                                  assesmentprovider.isRecognizing['field$index']
+                                      ? assesmentprovider.stopRecording(index)
+                                      : assesmentprovider.streamingRecognize(
+                                          index,
+                                          assesmentprovider
+                                              .controllers["field$index"]);
                                   setdatalisten(index);
                                 } else if (role != "therapist") {
-                                  listen(index);
+                                  // listen(index);
+                                  assesmentprovider.isRecognizing['field$index']
+                                      ? assesmentprovider.stopRecording(index)
+                                      : assesmentprovider.streamingRecognize(
+                                          index,
+                                          assesmentprovider
+                                              .controllers["field$index"]);
                                   setdatalisten(index);
                                 } else {
                                   _showSnackBar(
@@ -403,21 +616,21 @@ class GaragePro extends ChangeNotifier {
           "") {
         saveToForm = true;
         trueIndex = index;
-        wholelist[9][accessname]["isSave"] = saveToForm;
+        wholelist[9][accessname]["isSaveThera"] = saveToForm;
       } else {
         saveToForm = false;
         falseIndex = index;
-        wholelist[9][accessname]["isSave"] = saveToForm;
+        wholelist[9][accessname]["isSaveThera"] = saveToForm;
       }
     } else {
       if (index == falseIndex) {
         if (wholelist[9][accessname]["question"]["$index"]
                 ["Recommendationthera"] !=
             "") {
-          wholelist[9][accessname]["isSave"] = true;
+          wholelist[9][accessname]["isSaveThera"] = true;
           falseIndex = -1;
         } else {
-          wholelist[9][accessname]["isSave"] = false;
+          wholelist[9][accessname]["isSaveThera"] = false;
         }
       }
     }
@@ -456,11 +669,17 @@ class GaragePro extends ChangeNotifier {
                     child: FloatingActionButton(
                       heroTag: "btn${index + 100}",
                       child: Icon(
-                        Icons.mic,
+                        assesmentprovider.isRecognizingThera['field$index']
+                            ? Icons.stop_circle
+                            : Icons.mic,
                         size: 20,
                       ),
                       onPressed: () {
-                        _listenthera(index);
+                        // _listenthera(index);
+                        isRecognizingThera['field$index']
+                            ? stopRecordingThera(index)
+                            : streamingRecognizeThera(
+                                index, controllerstreco["field$index"]);
                         setdatalistenthera(index);
                       },
                     ),

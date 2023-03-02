@@ -889,7 +889,7 @@
 //           SizedBox(height: 8),
 //           TextFormField(
 //             onChanged: (value) {
-//               FocusScope.of(context).requestFocus();
+//               FocusScope.of(context).requestFocus(focusNode);
 //               new TextEditingController().clear();
 //               // print(widget.accessname);
 //               setrecothera(index, value, accessname);
@@ -1087,12 +1087,12 @@
 //               //         ),
 //               //     onChanged: (value) {
 //               // if (assessor == therapist && role == "therapist") {
-//               //   FocusScope.of(context).requestFocus();
+//               //   FocusScope.of(context).requestFocus(focusNode);
 //               //   new TextEditingController().clear();
 //               //   // print(widget.accessname);
 //               //   setreco(index, value);
 //               // } else if (role != "therapist") {
-//               //   FocusScope.of(context).requestFocus();
+//               //   FocusScope.of(context).requestFocus(focusNode);
 //               //   new TextEditingController().clear();
 //               //   // print(widget.accessname);
 //               //   setreco(index, value);
@@ -1119,12 +1119,12 @@
 
 //                         onChanged: (value) {
 //                           if (assessor == therapist && role == "therapist") {
-//                             FocusScope.of(context).requestFocus();
+//                             FocusScope.of(context).requestFocus(focusNode);
 //                             new TextEditingController().clear();
 //                             // print(widget.accessname);
 //                             setreco(index, value, accessname);
 //                           } else if (role != "therapist") {
-//                             FocusScope.of(context).requestFocus();
+//                             FocusScope.of(context).requestFocus(focusNode);
 //                             new TextEditingController().clear();
 //                             // print(widget.accessname);
 //                             setreco(index, value, accessname);
@@ -1832,7 +1832,7 @@
 //                                                 //     )
 //                                                 //   ],
 //                                                 //   onChanged: (value) {
-//                                                 //     FocusScope.of(context).requestFocus();
+//                                                 //     FocusScope.of(context).requestFocus(focusNode);
 //                                                 //     new TextEditingController().clear();
 //                                                 //     // print(widget.accessname);
 //                                                 //     if (assessor == therapist &&
@@ -1915,7 +1915,7 @@
 //                                                               therapist &&
 //                                                           role == "therapist") {
 //                                                         FocusScope.of(context)
-//                                                             .requestFocus();
+//                                                             .requestFocus(focusNode);
 //                                                         new TextEditingController()
 //                                                             .clear();
 //                                                         // print(widget.accessname);
@@ -1927,7 +1927,7 @@
 //                                                       } else if (role !=
 //                                                           "therapist") {
 //                                                         FocusScope.of(context)
-//                                                             .requestFocus();
+//                                                             .requestFocus(focusNode);
 //                                                         new TextEditingController()
 //                                                             .clear();
 //                                                         // print(widget.accessname);
@@ -2001,7 +2001,7 @@
 //                                                               therapist &&
 //                                                           role == "therapist") {
 //                                                         FocusScope.of(context)
-//                                                             .requestFocus();
+//                                                             .requestFocus(focusNode);
 //                                                         new TextEditingController()
 //                                                             .clear();
 //                                                         // print(widget.accessname);
@@ -2013,7 +2013,7 @@
 //                                                       } else if (role !=
 //                                                           "therapist") {
 //                                                         FocusScope.of(context)
-//                                                             .requestFocus();
+//                                                             .requestFocus(focusNode);
 //                                                         new TextEditingController()
 //                                                             .clear();
 //                                                         // print(widget.accessname);
@@ -2070,13 +2070,13 @@
 //                                                 //   ],
 //                                                 //   onChanged: (value) {
 //                                                 //     if (role != "therapist") {
-//                                                 //       FocusScope.of(context).requestFocus();
+//                                                 //       FocusScope.of(context).requestFocus(focusNode);
 //                                                 //       new TextEditingController().clear();
 //                                                 //       // print(widget.accessname);
 //                                                 //       setdata(4, value, 'Entrance Has Lights?');
 //                                                 //     } else if (assessor == therapist &&
 //                                                 //         role == "therapist") {
-//                                                 //       FocusScope.of(context).requestFocus();
+//                                                 //       FocusScope.of(context).requestFocus(focusNode);
 //                                                 //       new TextEditingController().clear();
 //                                                 //       // print(widget.accessname);
 //                                                 //       setdata(4, value, 'Entrance Has Lights?');
@@ -2165,7 +2165,7 @@
 //                                                             role ==
 //                                                                 "therapist") {
 //                                                           FocusScope.of(context)
-//                                                               .requestFocus();
+//                                                               .requestFocus(focusNode);
 //                                                           new TextEditingController()
 //                                                               .clear();
 //                                                           // print(widget.accessname);
@@ -2177,7 +2177,7 @@
 //                                                         } else if (role !=
 //                                                             "therapist") {
 //                                                           FocusScope.of(context)
-//                                                               .requestFocus();
+//                                                               .requestFocus(focusNode);
 //                                                           new TextEditingController()
 //                                                               .clear();
 //                                                           // print(widget.accessname);
@@ -2265,12 +2265,12 @@
 //                                                 //   onChanged: (value) {
 //                                                 //     if (assessor == therapist &&
 //                                                 //         role == "therapist") {
-//                                                 //       FocusScope.of(context).requestFocus();
+//                                                 //       FocusScope.of(context).requestFocus(focusNode);
 //                                                 //       new TextEditingController().clear();
 //                                                 //       // print(widget.accessname);
 //                                                 //       setdata(6, value, 'Smoke Detector Present?');
 //                                                 //     } else if (role != "therapist") {
-//                                                 //       FocusScope.of(context).requestFocus();
+//                                                 //       FocusScope.of(context).requestFocus(focusNode);
 //                                                 //       new TextEditingController().clear();
 //                                                 //       // print(widget.accessname);
 //                                                 //       setdata(6, value, 'Smoke Detector Present?');
@@ -2348,7 +2348,7 @@
 //                                                               therapist &&
 //                                                           role == "therapist") {
 //                                                         FocusScope.of(context)
-//                                                             .requestFocus();
+//                                                             .requestFocus(focusNode);
 //                                                         new TextEditingController()
 //                                                             .clear();
 //                                                         // print(widget.accessname);
@@ -2360,7 +2360,7 @@
 //                                                       } else if (role !=
 //                                                           "therapist") {
 //                                                         FocusScope.of(context)
-//                                                             .requestFocus();
+//                                                             .requestFocus(focusNode);
 //                                                         new TextEditingController()
 //                                                             .clear();
 //                                                         // print(widget.accessname);
@@ -2733,7 +2733,7 @@
 //                                                     if (assessor == therapist &&
 //                                                         role == "therapist") {
 //                                                       FocusScope.of(context)
-//                                                           .requestFocus();
+//                                                           .requestFocus(focusNode);
 //                                                       new TextEditingController()
 //                                                           .clear();
 //                                                       // print(widget.accessname);
@@ -2745,7 +2745,7 @@
 //                                                     } else if (role !=
 //                                                         "therapist") {
 //                                                       FocusScope.of(context)
-//                                                           .requestFocus();
+//                                                           .requestFocus(focusNode);
 //                                                       new TextEditingController()
 //                                                           .clear();
 //                                                       // print(widget.accessname);
@@ -3002,7 +3002,7 @@
 //                                                                   "therapist") {
 //                                                             FocusScope.of(
 //                                                                     context)
-//                                                                 .requestFocus();
+//                                                                 .requestFocus(focusNode);
 //                                                             new TextEditingController()
 //                                                                 .clear();
 //                                                             // print(widget.accessname);
@@ -3016,7 +3016,7 @@
 //                                                               "therapist") {
 //                                                             FocusScope.of(
 //                                                                     context)
-//                                                                 .requestFocus();
+//                                                                 .requestFocus(focusNode);
 //                                                             new TextEditingController()
 //                                                                 .clear();
 //                                                             // print(widget.accessname);
@@ -3128,7 +3128,7 @@
 //                                                     if (assessor == therapist &&
 //                                                         role == "therapist") {
 //                                                       FocusScope.of(context)
-//                                                           .requestFocus();
+//                                                           .requestFocus(focusNode);
 //                                                       new TextEditingController()
 //                                                           .clear();
 //                                                       // print(widget.accessname);
@@ -3140,7 +3140,7 @@
 //                                                     } else if (role !=
 //                                                         "therapist") {
 //                                                       FocusScope.of(context)
-//                                                           .requestFocus();
+//                                                           .requestFocus(focusNode);
 //                                                       new TextEditingController()
 //                                                           .clear();
 //                                                       // print(widget.accessname);
@@ -3253,7 +3253,7 @@
 //                                                     if (assessor == therapist &&
 //                                                         role == "therapist") {
 //                                                       FocusScope.of(context)
-//                                                           .requestFocus();
+//                                                           .requestFocus(focusNode);
 //                                                       new TextEditingController()
 //                                                           .clear();
 //                                                       // print(widget.accessname);
@@ -3265,7 +3265,7 @@
 //                                                     } else if (role !=
 //                                                         "therapist") {
 //                                                       FocusScope.of(context)
-//                                                           .requestFocus();
+//                                                           .requestFocus(focusNode);
 //                                                       new TextEditingController()
 //                                                           .clear();
 //                                                       // print(widget.accessname);
@@ -3340,13 +3340,13 @@
 //                                             //   ),
 //                                             //   onChanged: (value) {
 //                                             //     if (assessor == therapist && role == "therapist") {
-//                                             //       FocusScope.of(context).requestFocus();
+//                                             //       FocusScope.of(context).requestFocus(focusNode);
 //                                             //       new TextEditingController().clear();
 //                                             //       // print(widget.accessname);
 //                                             //       setreco(12, value);
 //                                             //       setdata(12, value, 'Oberservations');
 //                                             //     } else if (role != "therapist") {
-//                                             //       FocusScope.of(context).requestFocus();
+//                                             //       FocusScope.of(context).requestFocus(focusNode);
 //                                             //       new TextEditingController().clear();
 //                                             //       // print(widget.accessname);
 //                                             //       setreco(12, value);
@@ -3380,7 +3380,7 @@
 
 //                                                       onChanged: (value) {
 //                                                         FocusScope.of(context)
-//                                                             .requestFocus();
+//                                                             .requestFocus(focusNode);
 //                                                         new TextEditingController()
 //                                                             .clear();
 //                                                         // print(widget.accessname);
@@ -3782,7 +3782,7 @@
 //         //                     //     )
 //         //                     //   ],
 //         //                     //   onChanged: (value) {
-//         //                     //     FocusScope.of(context).requestFocus();
+//         //                     //     FocusScope.of(context).requestFocus(focusNode);
 //         //                     //     new TextEditingController().clear();
 //         //                     //     // print(widget.accessname);
 //         //                     //     if (assessor == therapist &&
@@ -3847,12 +3847,12 @@
 //         //                         onChanged: (value) {
 //         //                           if (assessor == therapist &&
 //         //                               role == "therapist") {
-//         //                             FocusScope.of(context).requestFocus();
+//         //                             FocusScope.of(context).requestFocus(focusNode);
 //         //                             new TextEditingController().clear();
 //         //                             // print(widget.accessname);
 //         //                             setdata(2, value, 'Typically Uses');
 //         //                           } else if (role != "therapist") {
-//         //                             FocusScope.of(context).requestFocus();
+//         //                             FocusScope.of(context).requestFocus(focusNode);
 //         //                             new TextEditingController().clear();
 //         //                             // print(widget.accessname);
 //         //                             setdata(2, value, 'Typically Uses');
@@ -3906,12 +3906,12 @@
 //         //                         onChanged: (value) {
 //         //                           if (assessor == therapist &&
 //         //                               role == "therapist") {
-//         //                             FocusScope.of(context).requestFocus();
+//         //                             FocusScope.of(context).requestFocus(focusNode);
 //         //                             new TextEditingController().clear();
 //         //                             // print(widget.accessname);
 //         //                             setdata(3, value, 'Occasionally Uses');
 //         //                           } else if (role != "therapist") {
-//         //                             FocusScope.of(context).requestFocus();
+//         //                             FocusScope.of(context).requestFocus(focusNode);
 //         //                             new TextEditingController().clear();
 //         //                             // print(widget.accessname);
 //         //                             setdata(3, value, 'Occasionally Uses');
@@ -3955,13 +3955,13 @@
 //         //                     //   ],
 //         //                     //   onChanged: (value) {
 //         //                     //     if (role != "therapist") {
-//         //                     //       FocusScope.of(context).requestFocus();
+//         //                     //       FocusScope.of(context).requestFocus(focusNode);
 //         //                     //       new TextEditingController().clear();
 //         //                     //       // print(widget.accessname);
 //         //                     //       setdata(4, value, 'Entrance Has Lights?');
 //         //                     //     } else if (assessor == therapist &&
 //         //                     //         role == "therapist") {
-//         //                     //       FocusScope.of(context).requestFocus();
+//         //                     //       FocusScope.of(context).requestFocus(focusNode);
 //         //                     //       new TextEditingController().clear();
 //         //                     //       // print(widget.accessname);
 //         //                     //       setdata(4, value, 'Entrance Has Lights?');
@@ -4018,12 +4018,12 @@
 //         //                           onChanged: (value) {
 //         //                             if (assessor == therapist &&
 //         //                                 role == "therapist") {
-//         //                               FocusScope.of(context).requestFocus();
+//         //                               FocusScope.of(context).requestFocus(focusNode);
 //         //                               new TextEditingController().clear();
 //         //                               // print(widget.accessname);
 //         //                               setdata(5, value, 'Door Width');
 //         //                             } else if (role != "therapist") {
-//         //                               FocusScope.of(context).requestFocus();
+//         //                               FocusScope.of(context).requestFocus(focusNode);
 //         //                               new TextEditingController().clear();
 //         //                               // print(widget.accessname);
 //         //                               setdata(5, value, 'Door Width');
@@ -4094,12 +4094,12 @@
 //         //                     //   onChanged: (value) {
 //         //                     //     if (assessor == therapist &&
 //         //                     //         role == "therapist") {
-//         //                     //       FocusScope.of(context).requestFocus();
+//         //                     //       FocusScope.of(context).requestFocus(focusNode);
 //         //                     //       new TextEditingController().clear();
 //         //                     //       // print(widget.accessname);
 //         //                     //       setdata(6, value, 'Smoke Detector Present?');
 //         //                     //     } else if (role != "therapist") {
-//         //                     //       FocusScope.of(context).requestFocus();
+//         //                     //       FocusScope.of(context).requestFocus(focusNode);
 //         //                     //       new TextEditingController().clear();
 //         //                     //       // print(widget.accessname);
 //         //                     //       setdata(6, value, 'Smoke Detector Present?');
@@ -4160,12 +4160,12 @@
 //         //                         onChanged: (value) {
 //         //                           if (assessor == therapist &&
 //         //                               role == "therapist") {
-//         //                             FocusScope.of(context).requestFocus();
+//         //                             FocusScope.of(context).requestFocus(focusNode);
 //         //                             new TextEditingController().clear();
 //         //                             // print(widget.accessname);
 //         //                             setdata(7, value, 'Type of Steps');
 //         //                           } else if (role != "therapist") {
-//         //                             FocusScope.of(context).requestFocus();
+//         //                             FocusScope.of(context).requestFocus(focusNode);
 //         //                             new TextEditingController().clear();
 //         //                             // print(widget.accessname);
 //         //                             setdata(7, value, 'Type of Steps');
@@ -4761,12 +4761,12 @@
 //         //                       onChanged: (value) {
 //         //                         if (assessor == therapist &&
 //         //                             role == "therapist") {
-//         //                           FocusScope.of(context).requestFocus();
+//         //                           FocusScope.of(context).requestFocus(focusNode);
 //         //                           new TextEditingController().clear();
 //         //                           // print(widget.accessname);
 //         //                           setdata(8, value, 'Railling');
 //         //                         } else if (role != "therapist") {
-//         //                           FocusScope.of(context).requestFocus();
+//         //                           FocusScope.of(context).requestFocus(focusNode);
 //         //                           new TextEditingController().clear();
 //         //                           // print(widget.accessname);
 //         //                           setdata(8, value, 'Railling');
@@ -4950,14 +4950,14 @@
 //         //                             onChanged: (value) {
 //         //                               if (assessor == therapist &&
 //         //                                   role == "therapist") {
-//         //                                 FocusScope.of(context).requestFocus();
+//         //                                 FocusScope.of(context).requestFocus(focusNode);
 //         //                                 new TextEditingController().clear();
 //         //                                 // print(widget.accessname);
 
 //         //                                 setdata(9, value,
 //         //                                     'Threshold to Front Door');
 //         //                               } else if (role != "therapist") {
-//         //                                 FocusScope.of(context).requestFocus();
+//         //                                 FocusScope.of(context).requestFocus(focusNode);
 //         //                                 new TextEditingController().clear();
 //         //                                 // print(widget.accessname);
 
@@ -5046,13 +5046,13 @@
 //         //                       onChanged: (value) {
 //         //                         if (assessor == therapist &&
 //         //                             role == "therapist") {
-//         //                           FocusScope.of(context).requestFocus();
+//         //                           FocusScope.of(context).requestFocus(focusNode);
 //         //                           new TextEditingController().clear();
 //         //                           // print(widget.accessname);
 //         //                           setdata(10, value,
 //         //                               'Able to Manage Through Doors/Thresholds/ Door Sills?');
 //         //                         } else if (role != "therapist") {
-//         //                           FocusScope.of(context).requestFocus();
+//         //                           FocusScope.of(context).requestFocus(focusNode);
 //         //                           new TextEditingController().clear();
 //         //                           // print(widget.accessname);
 //         //                           setdata(10, value,
@@ -5139,13 +5139,13 @@
 //         //                       onChanged: (value) {
 //         //                         if (assessor == therapist &&
 //         //                             role == "therapist") {
-//         //                           FocusScope.of(context).requestFocus();
+//         //                           FocusScope.of(context).requestFocus(focusNode);
 //         //                           new TextEditingController().clear();
 //         //                           // print(widget.accessname);
 //         //                           setdata(
 //         //                               11, value, 'Able to Lock/Unlock Doors?');
 //         //                         } else if (role != "therapist") {
-//         //                           FocusScope.of(context).requestFocus();
+//         //                           FocusScope.of(context).requestFocus(focusNode);
 //         //                           new TextEditingController().clear();
 //         //                           // print(widget.accessname);
 //         //                           setdata(
@@ -5205,13 +5205,13 @@
 //         //                 //   ),
 //         //                 //   onChanged: (value) {
 //         //                 //     if (assessor == therapist && role == "therapist") {
-//         //                 //       FocusScope.of(context).requestFocus();
+//         //                 //       FocusScope.of(context).requestFocus(focusNode);
 //         //                 //       new TextEditingController().clear();
 //         //                 //       // print(widget.accessname);
 //         //                 //       setreco(12, value);
 //         //                 //       setdata(12, value, 'Oberservations');
 //         //                 //     } else if (role != "therapist") {
-//         //                 //       FocusScope.of(context).requestFocus();
+//         //                 //       FocusScope.of(context).requestFocus(focusNode);
 //         //                 //       new TextEditingController().clear();
 //         //                 //       // print(widget.accessname);
 //         //                 //       setreco(12, value);
@@ -5239,7 +5239,7 @@
 //         //                           ),
 
 //         //                           onChanged: (value) {
-//         //                             FocusScope.of(context).requestFocus();
+//         //                             FocusScope.of(context).requestFocus(focusNode);
 //         //                             new TextEditingController().clear();
 //         //                             // print(widget.accessname);
 //         //                             if (assessor == therapist &&
@@ -5534,12 +5534,12 @@
 //   //                   labelText: 'Comments'),
 //   //               onChanged: (value) {
 //   //                 if (assessor == therapist && role == "therapist") {
-//   //                   FocusScope.of(context).requestFocus();
+//   //                   FocusScope.of(context).requestFocus(focusNode);
 //   //                   new TextEditingController().clear();
 //   //                   // print(widget.accessname);
 //   //                   setreco(index, value);
 //   //                 } else if (role != "therapist") {
-//   //                   FocusScope.of(context).requestFocus();
+//   //                   FocusScope.of(context).requestFocus(focusNode);
 //   //                   new TextEditingController().clear();
 //   //                   // print(widget.accessname);
 //   //                   setreco(index, value);
@@ -5611,7 +5611,7 @@
 //   //       SizedBox(height: 8),
 //   //       TextFormField(
 //   //         onChanged: (value) {
-//   //           FocusScope.of(context).requestFocus();
+//   //           FocusScope.of(context).requestFocus(focusNode);
 //   //           new TextEditingController().clear();
 //   //           // print(widget.accessname);
 //   //           setrecothera(index, value);
@@ -6056,7 +6056,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:google_speech/google_speech.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:sound_stream/sound_stream.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tryapp/Assesment/Forms/Pathway/pathwaybase.dart';
@@ -6066,6 +6068,7 @@ import 'package:provider/provider.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
 import 'package:tryapp/constants.dart';
 import 'package:path/path.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../ViewVideo.dart';
 
@@ -6129,9 +6132,58 @@ class _PathwayUIState extends State<PathwayUI> {
   List<DropdownMenuItem<dynamic>> items = [];
   bool isSubmitPressed;
 
+  // MIC Stram
+  final RecorderStream _recorder = RecorderStream();
+
+  // bool recognizing = false;
+  Map<String, bool> isRecognizing = {};
+  Map<String, bool> isRecognizingThera = {};
+  // bool recognizeFinished = false;
+  Map<String, bool> isRecognizeFinished = {};
+  String text = '';
+  StreamSubscription<List<int>> _audioStreamSubscription;
+  BehaviorSubject<List<int>> _audioStream;
+
+  FocusNode focusNode = new FocusNode();
+  FocusNode focusNode1 = new FocusNode();
+  FocusNode focusNode2 = new FocusNode();
+  FocusNode focusNode3 = new FocusNode();
+  FocusNode focusNode4 = new FocusNode();
+  FocusNode focusNode5 = new FocusNode();
+  FocusNode focusNode6 = new FocusNode();
+  FocusNode focusNode7 = new FocusNode();
+  FocusNode focusNode8 = new FocusNode();
+  FocusNode focusNode9 = new FocusNode();
+  FocusNode focusNode10 = new FocusNode();
+  FocusNode focusNode11 = new FocusNode();
+  FocusNode focusNode12 = new FocusNode();
+  FocusNode focusNode13 = new FocusNode();
+  FocusNode focusNode14 = new FocusNode();
+  FocusNode focusNode15 = new FocusNode();
+  void dispose() {
+    focusNode.dispose();
+    focusNode1.dispose();
+    focusNode2.dispose();
+    focusNode3.dispose();
+    focusNode4.dispose();
+    focusNode5.dispose();
+    focusNode6.dispose();
+    focusNode7.dispose();
+    focusNode8.dispose();
+    focusNode9.dispose();
+    focusNode10.dispose();
+    focusNode11.dispose();
+    focusNode12.dispose();
+    focusNode13.dispose();
+    focusNode14.dispose();
+    focusNode15.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
+    _recorder.initialize();
     fillDropItem();
     getRole();
     getAssessData();
@@ -6148,6 +6200,9 @@ class _PathwayUIState extends State<PathwayUI> {
               ? 'Please install a well functioning Smoke detector Immediately. Most states have free Smoke Detectors available for FREE. Please contact your local Fire Department'
               : 'Recommendation');
       isListening["field${i + 1}"] = false;
+      isRecognizing["field${i + 1}"] = false;
+      isRecognizingThera["field${i + 1}"] = false;
+      isRecognizeFinished["field${i + 1}"] = false;
       _controllers["field${i + 1}"].text = capitalize(widget.wholelist[0]
           [widget.accessname]['question']["${i + 1}"]['Recommendation']);
       _controllerstreco["field${i + 1}"].text =
@@ -6155,9 +6210,136 @@ class _PathwayUIState extends State<PathwayUI> {
       colorsset["field${i + 1}"] = Color.fromRGBO(10, 80, 106, 1);
     }
     // setinitials();
-
-    // activateSpeechRecognizer();
   }
+
+  void streamingRecognize(index, TextEditingController text) async {
+    _audioStream = BehaviorSubject<List<int>>();
+    try {
+      _audioStreamSubscription = _recorder.audioStream.listen((event) {
+        _audioStream.add(event);
+      });
+    } catch (e) {
+      print("AUDIO STREAM ERROR: $e");
+    }
+
+    await _recorder.start();
+
+    setState(() {
+      isRecognizing['field$index'] = true;
+    });
+    final serviceAccount = ServiceAccount.fromString(
+        (await rootBundle.loadString('assets/test_service_account.json')));
+    final speechToText = SpeechToText.viaServiceAccount(serviceAccount);
+    final config = _getConfig();
+
+    final responseStream = speechToText.streamingRecognize(
+        StreamingRecognitionConfig(config: config, interimResults: true),
+        _audioStream);
+
+    var responseText = '';
+
+    try {
+      responseStream.listen((data) {
+        final currentText =
+            data.results.map((e) => e.alternatives.first.transcript).join('\n');
+
+        if (data.results.first.isFinal) {
+          responseText += ' ' + currentText;
+          setState(() {
+            text.text = responseText;
+            isRecognizeFinished['field$index'] = true;
+          });
+        } else {
+          setState(() {
+            text.text = responseText + ' ' + currentText;
+            isRecognizeFinished['field$index'] = true;
+          });
+        }
+      }, onDone: () {
+        setState(() {
+          isRecognizing['field$index'] = false;
+        });
+      });
+    } catch (e) {
+      print("RESPONSE STREAM ERROR: $e");
+    }
+  }
+
+  void stopRecording(index) async {
+    await _recorder.stop();
+    await _audioStreamSubscription?.cancel();
+    await _audioStream?.close();
+    setState(() {
+      isRecognizing['field$index'] = false;
+    });
+  }
+
+  // For Therapist
+
+  void streamingRecognizeThera(index, TextEditingController text) async {
+    _audioStream = BehaviorSubject<List<int>>();
+    _audioStreamSubscription = _recorder.audioStream.listen((event) {
+      _audioStream.add(event);
+    });
+
+    await _recorder.start();
+
+    setState(() {
+      isRecognizingThera['field$index'] = true;
+    });
+    final serviceAccount = ServiceAccount.fromString(
+        (await rootBundle.loadString('assets/test_service_account.json')));
+    final speechToText = SpeechToText.viaServiceAccount(serviceAccount);
+    final config = _getConfig();
+
+    final responseStream = speechToText.streamingRecognize(
+        StreamingRecognitionConfig(config: config, interimResults: true),
+        _audioStream);
+
+    var responseText = '';
+
+    try {
+      responseStream.listen((data) {
+        final currentText =
+            data.results.map((e) => e.alternatives.first.transcript).join('\n');
+
+        if (data.results.first.isFinal) {
+          responseText += ' ' + currentText;
+          setState(() {
+            text.text = responseText;
+            isRecognizeFinished['field$index'] = true;
+          });
+        } else {
+          setState(() {
+            text.text = responseText + ' ' + currentText;
+            isRecognizeFinished['field$index'] = true;
+          });
+        }
+      }, onDone: () {
+        setState(() {
+          isRecognizingThera['field$index'] = false;
+        });
+      });
+    } catch (e) {
+      print("THERA RESPONSE STREAM ERROR: $e");
+    }
+  }
+
+  void stopRecordingThera(index) async {
+    await _recorder.stop();
+    await _audioStreamSubscription?.cancel();
+    await _audioStream?.close();
+    setState(() {
+      isRecognizingThera['field$index'] = false;
+    });
+  }
+
+  RecognitionConfig _getConfig() => RecognitionConfig(
+      encoding: AudioEncoding.LINEAR16,
+      model: RecognitionModel.basic,
+      enableAutomaticPunctuation: true,
+      sampleRateHertz: 16000,
+      languageCode: 'en-US');
 
   fillDropItem() {
     List<dynamic> itemList = [];
@@ -6182,43 +6364,6 @@ class _PathwayUIState extends State<PathwayUI> {
     print("******************${items.toList()}");
   }
 
-  // void activateSpeechRecognizer() {
-  //   print('_MyAppState.activateSpeechRecognizer... ');
-  //   _speechRecognition = new SpeechRecognition();
-  //   _speechRecognition.setAvailabilityHandler(onSpeechAvailability);
-  //   // _speechRecognition.setCurrentLocaleHandler(onCurrentLocale);
-  //   _speechRecognition.setRecognitionStartedHandler(onRecognitionStarted);
-  //   _speechRecognition.setRecognitionResultHandler(onRecognitionResult);
-  //   _speechRecognition.setRecognitionCompleteHandler(onRecognitionComplete);
-  //   _speechRecognition
-  //       .activate()
-  //       .then((res) => setState(() => _speechRecognitionAvailable = res));
-  // }
-
-  // void start(index, isthera) {
-  //   print("starterd");
-  //   _speechRecognition
-  //       .listen()
-  //       .then((result) => print('_MyAppState.start => result $result'));
-  // }
-
-  // void cancel(index) => _speechRecognition
-  //     .cancel()
-  //     .then((result) => setState(() => _isListening = result));
-
-  // void stop(index) => _speechRecognition
-  //     .stop()
-  //     .then((result) => setState(() => _isListening = result));
-
-  // void onSpeechAvailability(bool result) =>
-  //     setState(() => _speechRecognitionAvailable = result);
-
-  // void onCurrentLocale(String locale) {
-  //   print('_MyAppState.onCurrentLocale... $locale');
-  //   setState(
-  //       () => selectedLang = languages.firstWhere((l) => l.code == locale));
-  // }
-
   String capitalize(String s) {
     // Each sentence becomes an array element
     var output = '';
@@ -6241,12 +6386,6 @@ class _PathwayUIState extends State<PathwayUI> {
     }
     return output;
   }
-
-  void onRecognitionStarted() => setState(() => _isListening = true);
-
-  void onRecognitionResult(text) => setState(() => transcription = text);
-
-  void onRecognitionComplete() => setState(() => _isListening = false);
 
   /// This fucntion will help us to get role of the logged in user
   Future<String> getRole() async {
@@ -6454,7 +6593,7 @@ class _PathwayUIState extends State<PathwayUI> {
                     ['toggle'][i] = i == select;
               }
             });
-            pathwaypro.setdata(
+            pathwaypro.setdataToggle(
                 queIndex,
                 widget.wholelist[0][widget.accessname]['question']['$queIndex']
                         ['toggle'][0]
@@ -6474,7 +6613,7 @@ class _PathwayUIState extends State<PathwayUI> {
                     ['toggle'][i] = i == select;
               }
             });
-            pathwaypro.setdata(
+            pathwaypro.setdataToggle(
                 queIndex,
                 widget.wholelist[0][widget.accessname]['question']['$queIndex']
                         ['toggle'][0]
@@ -6965,13 +7104,13 @@ class _PathwayUIState extends State<PathwayUI> {
           setState(() {
             saveToForm = true;
             trueIndex = index;
-            widget.wholelist[0][widget.accessname]["isSave"] = saveToForm;
+            widget.wholelist[0][widget.accessname]["isSaveThera"] = saveToForm;
           });
         } else {
           setState(() {
             saveToForm = false;
             falseIndex = index;
-            widget.wholelist[0][widget.accessname]["isSave"] = saveToForm;
+            widget.wholelist[0][widget.accessname]["isSaveThera"] = saveToForm;
           });
         }
       } else {
@@ -6980,12 +7119,12 @@ class _PathwayUIState extends State<PathwayUI> {
                   ["Recommendationthera"] !=
               "") {
             setState(() {
-              widget.wholelist[0][widget.accessname]["isSave"] = true;
+              widget.wholelist[0][widget.accessname]["isSaveThera"] = true;
               falseIndex = -1;
             });
           } else {
             setState(() {
-              widget.wholelist[0][widget.accessname]["isSave"] = false;
+              widget.wholelist[0][widget.accessname]["isSaveThera"] = false;
             });
           }
         }
@@ -6994,75 +7133,110 @@ class _PathwayUIState extends State<PathwayUI> {
       return Column(
         children: [
           SizedBox(height: 8),
-          TextFormField(
-            onChanged: (value) {
-              FocusScope.of(context).requestFocus();
-              new TextEditingController().clear();
-              // print(widget.accessname);
-              setrecothera(index, value);
-            },
-            controller: _controllerstreco["field$index"],
-            decoration: InputDecoration(
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    color: _controllerstreco["field$index"].text != ""
-                        ? Colors.green
-                        : Colors.red,
-                    width: 1),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(
-                    width: 1,
-                    color: _controllerstreco["field$index"].text != ""
-                        ? Colors.green
-                        : Colors.red),
-              ),
-              suffix: Container(
-                // color: Colors.red,
-                width: 40,
-                height: 30,
-                padding: EdgeInsets.all(0),
-                child: Row(children: [
-                  Container(
-                    // color: Colors.green,
-                    alignment: Alignment.center,
-                    width: 40,
-                    height: 60,
-                    margin: EdgeInsets.all(0),
-                    child: AvatarGlow(
-                      animate: isListening['field$index'],
-                      glowColor: Theme.of(context).primaryColor,
-                      endRadius: 500.0,
-                      duration: const Duration(milliseconds: 2000),
-                      repeatPauseDuration: const Duration(milliseconds: 100),
-                      repeat: true,
-                      child: FloatingActionButton(
-                        heroTag: "btn${index + 100}",
-                        child: Icon(
-                          Icons.mic,
-                          size: 20,
-                        ),
-                        onPressed: () {
-                          _listen(index, true);
-                          setdatalistenThera(index);
-                        },
-                      ),
-                    ),
-                  ),
-                ]),
-              ),
-              labelStyle: TextStyle(
-                  color: _controllerstreco["field$index"].text != ""
-                      ? Colors.green
-                      : Colors.red),
-              labelText: 'Recommendation',
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(0),
+              border: Border.all(color: Colors.black, width: 1),
             ),
-            // initialValue: (index == 6)
-            // ? getprio(index) == '1'
-            //     ? 'Please install a well functioning Smoke detector Immediately. Most states have free Smoke Detectors available for FREE. Please contact your local Fire Department'
-            //     : ''
-            // : ""
+            child: DropdownButton<String>(
+              value: pathwaypro.selectedRecommendation,
+              onChanged: (String newValue) {
+                setState(() {
+                  pathwaypro.selectedRecommendation = newValue;
+                });
+              },
+              items: pathwaypro.recommendations,
+              icon: Padding(
+                padding: const EdgeInsets.fromLTRB(120, 0, 0, 0),
+                child: Icon(Icons.arrow_drop_down),
+              ),
+              iconSize: 30,
+              underline: SizedBox(),
+            ),
           ),
+          SizedBox(height: 8),
+          pathwaypro.selectedRecommendation == "Others"
+              ? TextFormField(
+                  onChanged: (value) {
+                    FocusScope.of(context).requestFocus();
+                    new TextEditingController().clear();
+                    // print(widget.accessname);
+                    setrecothera(index, value);
+                  },
+                  controller: _controllerstreco["field$index"],
+                  decoration: InputDecoration(
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          color: _controllerstreco["field$index"].text != ""
+                              ? Colors.green
+                              : Colors.red,
+                          width: 1),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(
+                          width: 1,
+                          color: _controllerstreco["field$index"].text != ""
+                              ? Colors.green
+                              : Colors.red),
+                    ),
+                    suffix: Container(
+                      // color: Colors.red,
+                      width: 40,
+                      height: 30,
+                      padding: EdgeInsets.all(0),
+                      child: Row(children: [
+                        Container(
+                          // color: Colors.green,
+                          alignment: Alignment.center,
+                          width: 40,
+                          height: 60,
+                          margin: EdgeInsets.all(0),
+                          child: AvatarGlow(
+                            animate: isRecognizingThera['field$index'],
+                            glowColor: Theme.of(context).primaryColor,
+                            endRadius: 500.0,
+                            duration: const Duration(milliseconds: 2000),
+                            repeatPauseDuration:
+                                const Duration(milliseconds: 100),
+                            repeat: true,
+                            child: FloatingActionButton(
+                              heroTag: "btn${index + 100}",
+                              child: Icon(
+                                isRecognizingThera['field$index']
+                                    ? Icons.stop_circle
+                                    : Icons.mic,
+                                size: 20,
+                              ),
+                              onPressed: () {
+                                // _listen(index, true);
+                                isRecognizingThera['field$index']
+                                    ? stopRecordingThera(index)
+                                    : streamingRecognizeThera(index,
+                                        _controllerstreco["field$index"]);
+                                setdatalistenThera(index);
+                              },
+                            ),
+                          ),
+                        ),
+                      ]),
+                    ),
+                    labelStyle: TextStyle(
+                        color: _controllerstreco["field$index"].text != ""
+                            ? Colors.green
+                            : Colors.red),
+                    labelText: 'Recommendation',
+                  ),
+                  // initialValue: (index == 6)
+                  // ? getprio(index) == '1'
+                  //     ? 'Please install a well functioning Smoke detector Immediately. Most states have free Smoke Detectors available for FREE. Please contact your local Fire Department'
+                  //     : ''
+                  // : ""
+                )
+              : SizedBox(),
+          SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -7123,7 +7297,8 @@ class _PathwayUIState extends State<PathwayUI> {
 
     /// This is a widget function which returns is the recommendation fields and the
     /// priority field.
-    Widget getrecomain(int index, bool isthera, BuildContext context) {
+    Widget getrecomain(
+        int index, bool isthera, BuildContext context, FocusNode focusNode) {
       return SingleChildScrollView(
         // reverse: true,
         child: Container(
@@ -7132,6 +7307,7 @@ class _PathwayUIState extends State<PathwayUI> {
             children: [
               Container(
                 child: TextFormField(
+                  focusNode: focusNode,
                   maxLines: 1,
                   showCursor: cur,
                   controller: _controllers["field$index"],
@@ -7157,8 +7333,8 @@ class _PathwayUIState extends State<PathwayUI> {
                             height: 60,
                             margin: EdgeInsets.all(0),
                             child: AvatarGlow(
-                              animate: isListening['field$index'],
-                              glowColor: Theme.of(context).primaryColor,
+                              animate: isRecognizing['field$index'],
+                              glowColor: Colors.blue,
                               endRadius: 35.0,
                               duration: const Duration(milliseconds: 2000),
                               repeatPauseDuration:
@@ -7167,16 +7343,26 @@ class _PathwayUIState extends State<PathwayUI> {
                               child: FloatingActionButton(
                                 heroTag: "btn${index * 100}",
                                 child: Icon(
-                                  Icons.mic,
+                                  isRecognizing['field$index']
+                                      ? Icons.stop_circle
+                                      : Icons.mic,
                                   size: 20,
                                 ),
                                 onPressed: () {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    _listen(index, false);
+                                    // _listen(index, false);
+                                    isRecognizing['field$index']
+                                        ? stopRecording(index)
+                                        : streamingRecognize(
+                                            index, _controllers["field$index"]);
                                     setdatalisten(index);
                                   } else if (role != "therapist") {
-                                    _listen(index, false);
+                                    // _listen(index, false);
+                                    isRecognizing['field$index']
+                                        ? stopRecording(index)
+                                        : streamingRecognize(
+                                            index, _controllers["field$index"]);
                                     setdatalisten(index);
                                   } else {
                                     _showSnackBar(
@@ -7192,12 +7378,12 @@ class _PathwayUIState extends State<PathwayUI> {
                       labelText: 'Comments'),
                   onChanged: (value) {
                     if (assessor == therapist && role == "therapist") {
-                      FocusScope.of(context).requestFocus();
+                      FocusScope.of(context).requestFocus(focusNode);
                       new TextEditingController().clear();
                       // print(widget.accessname);
                       setreco(index, value);
                     } else if (role != "therapist") {
-                      FocusScope.of(context).requestFocus();
+                      FocusScope.of(context).requestFocus(focusNode);
                       new TextEditingController().clear();
                       // print(widget.accessname);
                       setreco(index, value);
@@ -7224,12 +7410,12 @@ class _PathwayUIState extends State<PathwayUI> {
 
               //           onChanged: (value) {
               //             if (assessor == therapist && role == "therapist") {
-              //               FocusScope.of(context).requestFocus();
+              //               FocusScope.of(context).requestFocus(focusNode);
               //               new TextEditingController().clear();
               //               // print(widget.accessname);
               //               setreco(index, value);
               //             } else if (role != "therapist") {
-              //               FocusScope.of(context).requestFocus();
+              //               FocusScope.of(context).requestFocus(focusNode);
               //               new TextEditingController().clear();
               //               // print(widget.accessname);
               //               setreco(index, value);
@@ -7743,7 +7929,7 @@ class _PathwayUIState extends State<PathwayUI> {
                             //     )
                             //   ],
                             //   onChanged: (value) {
-                            //     FocusScope.of(context).requestFocus();
+                            //     FocusScope.of(context).requestFocus(focusNode);
                             //     new TextEditingController().clear();
                             //     // print(widget.accessname);
                             //     if (assessor == therapist &&
@@ -7767,7 +7953,7 @@ class _PathwayUIState extends State<PathwayUI> {
                         ),
                         SizedBox(height: 15),
                         (getvalue(1) == 'Yes')
-                            ? getrecomain(1, true, context)
+                            ? getrecomain(1, true, context, focusNode1)
                             : SizedBox(),
                         SizedBox(height: 15),
                         Row(
@@ -7808,12 +7994,14 @@ class _PathwayUIState extends State<PathwayUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     setdata(2, value, 'Typically Uses');
                                   } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     setdata(2, value, 'Typically Uses');
@@ -7867,12 +8055,14 @@ class _PathwayUIState extends State<PathwayUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     setdata(3, value, 'Occasionally Uses');
                                   } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     setdata(3, value, 'Occasionally Uses');
@@ -7916,13 +8106,13 @@ class _PathwayUIState extends State<PathwayUI> {
                             //   ],
                             //   onChanged: (value) {
                             //     if (role != "therapist") {
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //       setdata(4, value, 'Entrance Has Lights?');
                             //     } else if (assessor == therapist &&
                             //         role == "therapist") {
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //       setdata(4, value, 'Entrance Has Lights?');
@@ -7940,7 +8130,7 @@ class _PathwayUIState extends State<PathwayUI> {
                         ),
                         SizedBox(height: 15),
                         (getvalue(4) == 'No')
-                            ? getrecomain(4, true, context)
+                            ? getrecomain(4, true, context, focusNode2)
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -8003,7 +8193,7 @@ class _PathwayUIState extends State<PathwayUI> {
                         (getvalue(5) != "")
                             ? (double.parse(getvalue(5)) < 30 &&
                                     double.parse(getvalue(5)) > 0)
-                                ? getrecomain(5, true, context)
+                                ? getrecomain(5, true, context, focusNode4)
                                 : SizedBox()
                             : SizedBox(),
                         SizedBox(
@@ -8055,12 +8245,12 @@ class _PathwayUIState extends State<PathwayUI> {
                             //   onChanged: (value) {
                             //     if (assessor == therapist &&
                             //         role == "therapist") {
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //       setdata(6, value, 'Smoke Detector Present?');
                             //     } else if (role != "therapist") {
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //       setdata(6, value, 'Smoke Detector Present?');
@@ -8080,7 +8270,7 @@ class _PathwayUIState extends State<PathwayUI> {
                         ),
                         SizedBox(height: 15),
                         (getvalue(6) == 'No')
-                            ? getrecomain(6, true, context)
+                            ? getrecomain(6, true, context, focusNode3)
                             : SizedBox(),
 
                         SizedBox(
@@ -8121,12 +8311,14 @@ class _PathwayUIState extends State<PathwayUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     setdata(7, value, 'Type of Steps');
                                   } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     setdata(7, value, 'Type of Steps');
@@ -8724,12 +8916,14 @@ class _PathwayUIState extends State<PathwayUI> {
                               onChanged: (value) {
                                 if (assessor == therapist &&
                                     role == "therapist") {
-                                  FocusScope.of(context).requestFocus();
+                                  FocusScope.of(context)
+                                      .requestFocus(focusNode);
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   setdata(8, value, 'Railling');
                                 } else if (role != "therapist") {
-                                  FocusScope.of(context).requestFocus();
+                                  FocusScope.of(context)
+                                      .requestFocus(focusNode);
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   setdata(8, value, 'Railling');
@@ -8744,7 +8938,7 @@ class _PathwayUIState extends State<PathwayUI> {
                           ],
                         ),
                         (getvalue(8) == 'On Neither Side')
-                            ? getrecomain(8, true, context)
+                            ? getrecomain(8, true, context, focusNode5)
                             : (getvalue(8) == 'One Side')
                                 ? Container(
                                     child: Column(
@@ -8874,7 +9068,8 @@ class _PathwayUIState extends State<PathwayUI> {
                                         ),
                                       ),
                                       (role == 'therapist')
-                                          ? getrecomain(8, true, context)
+                                          ? getrecomain(
+                                              8, true, context, focusNode6)
                                           : SizedBox()
                                     ],
                                   ))
@@ -8936,9 +9131,9 @@ class _PathwayUIState extends State<PathwayUI> {
                             ]),
                         SizedBox(height: 15),
                         (getvalue(9) != "" && getvalue(9) != '.')
-                            ? (double.parse(getvalue(9)) >= 2.5)
+                            ? (double.parse(getvalue(9)) >= 0.25)
                                 ? (role == 'therapist')
-                                    ? getrecomain(9, true, context)
+                                    ? getrecomain(9, true, context, focusNode7)
                                     : SizedBox()
                                 : SizedBox()
                             : SizedBox(),
@@ -8947,7 +9142,7 @@ class _PathwayUIState extends State<PathwayUI> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
-                              width: MediaQuery.of(context).size.width * .4,
+                              width: MediaQuery.of(context).size.width * .35,
                               child: Text(
                                   'Able to Manage Through Doors/Thresholds/ Door Sills?',
                                   style: TextStyle(
@@ -9010,13 +9205,15 @@ class _PathwayUIState extends State<PathwayUI> {
                               onChanged: (value) {
                                 if (assessor == therapist &&
                                     role == "therapist") {
-                                  FocusScope.of(context).requestFocus();
+                                  FocusScope.of(context)
+                                      .requestFocus(focusNode);
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   setdata(10, value,
                                       'Able to Manage Through Doors/Thresholds/ Door Sills?');
                                 } else if (role != "therapist") {
-                                  FocusScope.of(context).requestFocus();
+                                  FocusScope.of(context)
+                                      .requestFocus(focusNode);
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   setdata(10, value,
@@ -9032,7 +9229,7 @@ class _PathwayUIState extends State<PathwayUI> {
                           ],
                         ),
                         (getvalue(10) != 'Fairly Well' && getvalue(10) != '')
-                            ? getrecomain(10, true, context)
+                            ? getrecomain(10, true, context, focusNode8)
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -9103,13 +9300,15 @@ class _PathwayUIState extends State<PathwayUI> {
                               onChanged: (value) {
                                 if (assessor == therapist &&
                                     role == "therapist") {
-                                  FocusScope.of(context).requestFocus();
+                                  FocusScope.of(context)
+                                      .requestFocus(focusNode);
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   setdata(
                                       11, value, 'Able to Lock/Unlock Doors?');
                                 } else if (role != "therapist") {
-                                  FocusScope.of(context).requestFocus();
+                                  FocusScope.of(context)
+                                      .requestFocus(focusNode);
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   setdata(
@@ -9125,7 +9324,7 @@ class _PathwayUIState extends State<PathwayUI> {
                           ],
                         ),
                         (getvalue(11) != 'Fairly Well' && getvalue(11) != '')
-                            ? getrecomain(11, true, context)
+                            ? getrecomain(11, true, context, focusNode9)
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -9169,13 +9368,13 @@ class _PathwayUIState extends State<PathwayUI> {
                         //   ),
                         //   onChanged: (value) {
                         //     if (assessor == therapist && role == "therapist") {
-                        //       FocusScope.of(context).requestFocus();
+                        //       FocusScope.of(context).requestFocus(focusNode);
                         //       new TextEditingController().clear();
                         //       // print(widget.accessname);
                         //       setreco(12, value);
                         //       setdata(12, value, 'Oberservations');
                         //     } else if (role != "therapist") {
-                        //       FocusScope.of(context).requestFocus();
+                        //       FocusScope.of(context).requestFocus(focusNode);
                         //       new TextEditingController().clear();
                         //       // print(widget.accessname);
                         //       setreco(12, value);
@@ -9222,7 +9421,7 @@ class _PathwayUIState extends State<PathwayUI> {
                                 ),
                               ),
                               AvatarGlow(
-                                animate: isListening["field12"],
+                                animate: isRecognizing["field12"],
                                 glowColor: Colors.blue,
                                 endRadius: 35.0,
                                 duration: const Duration(milliseconds: 2000),
@@ -9238,7 +9437,9 @@ class _PathwayUIState extends State<PathwayUI> {
                                   child: FloatingActionButton(
                                     heroTag: "btn12",
                                     child: Icon(
-                                      Icons.mic,
+                                      isRecognizing["field12"]
+                                          ? Icons.stop_circle
+                                          : Icons.mic,
                                       size: 20,
                                     ),
                                     onPressed: () async {
@@ -9249,10 +9450,18 @@ class _PathwayUIState extends State<PathwayUI> {
 
                                       if (assessor == therapist &&
                                           role == "therapist") {
-                                        _listen(12, false);
+                                        // _listen(12, false);
+                                        isRecognizing["field12"]
+                                            ? stopRecording(12)
+                                            : streamingRecognize(
+                                                12, _controllers["field12"]);
                                         setdatalisten(12);
                                       } else if (role != "therapist") {
-                                        _listen(12, false);
+                                        // _listen(12, false);
+                                        isRecognizing["field12"]
+                                            ? stopRecording(12)
+                                            : streamingRecognize(
+                                                12, _controllers["field12"]);
                                         setdatalisten(12);
                                       } else {
                                         _showSnackBar(
@@ -9501,12 +9710,12 @@ class _PathwayUIState extends State<PathwayUI> {
   //                   labelText: 'Comments'),
   //               onChanged: (value) {
   //                 if (assessor == therapist && role == "therapist") {
-  //                   FocusScope.of(context).requestFocus();
+  //                   FocusScope.of(context).requestFocus(focusNode);
   //                   new TextEditingController().clear();
   //                   // print(widget.accessname);
   //                   setreco(index, value);
   //                 } else if (role != "therapist") {
-  //                   FocusScope.of(context).requestFocus();
+  //                   FocusScope.of(context).requestFocus(focusNode);
   //                   new TextEditingController().clear();
   //                   // print(widget.accessname);
   //                   setreco(index, value);
@@ -9578,7 +9787,7 @@ class _PathwayUIState extends State<PathwayUI> {
   //       SizedBox(height: 8),
   //       TextFormField(
   //         onChanged: (value) {
-  //           FocusScope.of(context).requestFocus();
+  //           FocusScope.of(context).requestFocus(focusNode);
   //           new TextEditingController().clear();
   //           // print(widget.accessname);
   //           setrecothera(index, value);

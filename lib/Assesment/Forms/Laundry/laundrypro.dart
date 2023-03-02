@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -7,6 +8,10 @@ import 'package:tryapp/Assesment/Forms/Formsrepo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:tryapp/Therapist/Dashboard/therapistdash.dart';
+import 'package:flutter/services.dart';
+import 'package:sound_stream/sound_stream.dart';
+import 'package:google_speech/google_speech.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../../../constants.dart';
 import 'package:path/path.dart';
@@ -53,12 +58,27 @@ class LaundryPro extends ChangeNotifier {
   bool isVideoSelected = false;
   var falseIndex = -1, trueIndex = -1;
 
+  // MIC Stram
+  final RecorderStream _recorder = RecorderStream();
+
+  // bool recognizing = false;
+  Map<String, bool> isRecognizing = {};
+  Map<String, bool> isRecognizingThera = {};
+  // bool recognizeFinished = false;
+  Map<String, bool> isRecognizeFinished = {};
+  String text = '';
+  StreamSubscription<List<int>> _audioStreamSubscription;
+  BehaviorSubject<List<int>> _audioStream;
+
   LaundryPro(this.roomname, this.wholelist, this.accessname) {
     _speech = stt.SpeechToText();
     for (int i = 0; i < wholelist[7][accessname]['question'].length; i++) {
       controllers["field${i + 1}"] = TextEditingController();
       controllerstreco["field${i + 1}"] = TextEditingController();
       isListening["field${i + 1}"] = false;
+      isRecognizing["field${i + 1}"] = false;
+      isRecognizingThera["field${i + 1}"] = false;
+      isRecognizeFinished["field${i + 1}"] = false;
       controllers["field${i + 1}"].text = capitalize(
           wholelist[7][accessname]['question']["${i + 1}"]['Recommendation']);
       controllerstreco["field${i + 1}"].text =
@@ -69,6 +89,131 @@ class LaundryPro extends ChangeNotifier {
     setinitials();
     doorwidth = int.tryParse('$getvalue(7)');
   }
+
+  void streamingRecognize(index, TextEditingController text) async {
+    _audioStream = BehaviorSubject<List<int>>();
+    try {
+      _audioStreamSubscription = _recorder.audioStream.listen((event) {
+        _audioStream.add(event);
+      });
+    } catch (e) {
+      print("AUDIO STREAM ERROR: $e");
+    }
+
+    await _recorder.start();
+
+    isRecognizing['field$index'] = true;
+    notifyListeners();
+
+    final serviceAccount = ServiceAccount.fromString(
+        (await rootBundle.loadString('assets/test_service_account.json')));
+    final speechToText = SpeechToText.viaServiceAccount(serviceAccount);
+    final config = _getConfig();
+
+    final responseStream = speechToText.streamingRecognize(
+        StreamingRecognitionConfig(config: config, interimResults: true),
+        _audioStream);
+
+    var responseText = '';
+
+    try {
+      responseStream.listen((data) {
+        final currentText =
+            data.results.map((e) => e.alternatives.first.transcript).join('\n');
+
+        if (data.results.first.isFinal) {
+          responseText += ' ' + currentText;
+
+          text.text = responseText;
+          isRecognizeFinished['field$index'] = true;
+          notifyListeners();
+        } else {
+          text.text = responseText + ' ' + currentText;
+          isRecognizeFinished['field$index'] = true;
+          notifyListeners();
+        }
+      }, onDone: () {
+        isRecognizing['field$index'] = false;
+        notifyListeners();
+      });
+    } catch (e) {
+      print("RESPONSE STREAM ERROR: $e");
+    }
+  }
+
+  void stopRecording(index) async {
+    await _recorder.stop();
+    await _audioStreamSubscription?.cancel();
+    await _audioStream?.close();
+
+    isRecognizing['field$index'] = false;
+    notifyListeners();
+  }
+
+  // For Therapist
+
+  void streamingRecognizeThera(index, TextEditingController text) async {
+    _audioStream = BehaviorSubject<List<int>>();
+    _audioStreamSubscription = _recorder.audioStream.listen((event) {
+      _audioStream.add(event);
+    });
+
+    await _recorder.start();
+
+    isRecognizingThera['field$index'] = true;
+    notifyListeners();
+
+    final serviceAccount = ServiceAccount.fromString(
+        (await rootBundle.loadString('assets/test_service_account.json')));
+    final speechToText = SpeechToText.viaServiceAccount(serviceAccount);
+    final config = _getConfig();
+
+    final responseStream = speechToText.streamingRecognize(
+        StreamingRecognitionConfig(config: config, interimResults: true),
+        _audioStream);
+
+    var responseText = '';
+
+    try {
+      responseStream.listen((data) {
+        final currentText =
+            data.results.map((e) => e.alternatives.first.transcript).join('\n');
+
+        if (data.results.first.isFinal) {
+          responseText += ' ' + currentText;
+
+          text.text = responseText;
+          isRecognizeFinished['field$index'] = true;
+          notifyListeners();
+        } else {
+          text.text = responseText + ' ' + currentText;
+          isRecognizeFinished['field$index'] = true;
+          notifyListeners();
+        }
+      }, onDone: () {
+        isRecognizingThera['field$index'] = false;
+        notifyListeners();
+      });
+    } catch (e) {
+      print("THERA RESPONSE STREAM ERROR: $e");
+    }
+  }
+
+  void stopRecordingThera(index) async {
+    await _recorder.stop();
+    await _audioStreamSubscription?.cancel();
+    await _audioStream?.close();
+
+    isRecognizingThera['field$index'] = false;
+    notifyListeners();
+  }
+
+  RecognitionConfig _getConfig() => RecognitionConfig(
+      encoding: AudioEncoding.LINEAR16,
+      model: RecognitionModel.basic,
+      enableAutomaticPunctuation: true,
+      sampleRateHertz: 16000,
+      languageCode: 'en-US');
 
   String capitalize(String s) {
     // Each sentence becomes an array element
@@ -120,6 +265,10 @@ class LaundryPro extends ChangeNotifier {
     } else {
       wholelist[7][accessname]["isSave"] = true;
     }
+    if (wholelist[7][accessname].containsKey('isSaveThera')) {
+    } else {
+      wholelist[7][accessname]["isSaveThera"] = false;
+    }
     if (wholelist[7][accessname].containsKey('videos')) {
       if (wholelist[7][accessname]['videos'].containsKey('name')) {
       } else {
@@ -142,67 +291,107 @@ class LaundryPro extends ChangeNotifier {
 
     if (wholelist[7][accessname]['question']["5"].containsKey('toggle')) {
       if (wholelist[7][accessname]['question']["5"]['Answer'].length == 0) {
-        setdata(5, 'Yes', 'Able to Operate Switches?');
+        // setdata(5, 'Yes', 'Able to Operate Switches?');
+        wholelist[7][accessname]['question']["5"]['Question'] =
+            'Able to Operate Switches?';
+        wholelist[7][accessname]['question']["5"]['Answer'] = 'Yes';
+        wholelist[7][accessname]['question']["5"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[7][accessname]['question']["5"]['toggle'] = <bool>[true, false];
       if (wholelist[7][accessname]['question']["5"]['Answer'].length == 0) {
-        setdata(5, 'Yes', 'Able to Operate Switches?');
+        // setdata(5, 'Yes', 'Able to Operate Switches?');
+        wholelist[7][accessname]['question']["5"]['Question'] =
+            'Able to Operate Switches?';
+        wholelist[7][accessname]['question']["5"]['Answer'] = 'Yes';
+        wholelist[7][accessname]['question']["5"]['toggled'] = false;
       }
       notifyListeners();
     }
 
     if (wholelist[7][accessname]['question']["8"].containsKey('toggle')) {
       if (wholelist[7][accessname]['question']["8"]['Answer'].length == 0) {
-        setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+        // setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+        wholelist[7][accessname]['question']["8"]['Question'] =
+            'Obstacle/Clutter Present?';
+        wholelist[7][accessname]['question']["8"]['Answer'] = 'Yes';
+        wholelist[7][accessname]['question']["8"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[7][accessname]['question']["8"]['toggle'] = <bool>[true, false];
       if (wholelist[7][accessname]['question']["8"]['Answer'].length == 0) {
-        setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+        // setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+        wholelist[7][accessname]['question']["8"]['Question'] =
+            'Obstacle/Clutter Present?';
+        wholelist[7][accessname]['question']["8"]['Answer'] = 'Yes';
+        wholelist[7][accessname]['question']["8"]['toggled'] = false;
       }
       notifyListeners();
     }
 
     if (wholelist[7][accessname]['question']["9"].containsKey('toggle')) {
       if (wholelist[7][accessname]['question']["9"]['Answer'].length == 0) {
-        setdata(9, 'Yes', 'Able to access washer & dryer?');
+        // setdata(9, 'Yes', 'Able to access washer & dryer?');
+        wholelist[7][accessname]['question']["9"]['Question'] =
+            'Able to access washer & dryer?';
+        wholelist[7][accessname]['question']["9"]['Answer'] = 'Yes';
+        wholelist[7][accessname]['question']["9"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[7][accessname]['question']["9"]['toggle'] = <bool>[true, false];
       if (wholelist[7][accessname]['question']["9"]['Answer'].length == 0) {
-        setdata(9, 'Yes', 'Able to access washer & dryer?');
+        // setdata(9, 'Yes', 'Able to access washer & dryer?');
+        wholelist[7][accessname]['question']["9"]['Question'] =
+            'Able to access washer & dryer?';
+        wholelist[7][accessname]['question']["9"]['Answer'] = 'Yes';
+        wholelist[7][accessname]['question']["9"]['toggled'] = false;
       }
       notifyListeners();
     }
 
     if (wholelist[7][accessname]['question']["12"].containsKey('toggle')) {
       if (wholelist[7][accessname]['question']["12"]['Answer'].length == 0) {
-        setdata(12, 'Yes', 'Able to access laundry cabinets?');
+        // setdata(12, 'Yes', 'Able to access laundry cabinets?');
+        wholelist[7][accessname]['question']["12"]['Question'] =
+            'Able to access laundry cabinets?';
+        wholelist[7][accessname]['question']["12"]['Answer'] = 'Yes';
+        wholelist[7][accessname]['question']["12"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[7][accessname]['question']["12"]
           ['toggle'] = <bool>[true, false];
       if (wholelist[7][accessname]['question']["12"]['Answer'].length == 0) {
-        setdata(12, 'Yes', 'Able to access laundry cabinets?');
+        // setdata(12, 'Yes', 'Able to access laundry cabinets?');
+        wholelist[7][accessname]['question']["12"]['Question'] =
+            'Able to access laundry cabinets?';
+        wholelist[7][accessname]['question']["12"]['Answer'] = 'Yes';
+        wholelist[7][accessname]['question']["12"]['toggled'] = false;
       }
       notifyListeners();
     }
 
     if (wholelist[7][accessname]['question']["13"].containsKey('toggle')) {
       if (wholelist[7][accessname]['question']["13"]['Answer'].length == 0) {
-        setdata(13, 'Yes', 'Smoke Detector Present?');
+        // setdata(13, 'Yes', 'Smoke Detector Present?');
+        wholelist[7][accessname]['question']["13"]['Question'] =
+            'Smoke Detector Present?';
+        wholelist[7][accessname]['question']["13"]['Answer'] = 'Yes';
+        wholelist[7][accessname]['question']["13"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[7][accessname]['question']["13"]
           ['toggle'] = <bool>[true, false];
       if (wholelist[7][accessname]['question']["13"]['Answer'].length == 0) {
-        setdata(13, 'Yes', 'Smoke Detector Present?');
+        // setdata(13, 'Yes', 'Smoke Detector Present?');
+        wholelist[7][accessname]['question']["13"]['Question'] =
+            'Smoke Detector Present?';
+        wholelist[7][accessname]['question']["13"]['Answer'] = 'Yes';
+        wholelist[7][accessname]['question']["13"]['toggled'] = false;
       }
       notifyListeners();
     }
@@ -236,6 +425,31 @@ class LaundryPro extends ChangeNotifier {
         notifyListeners();
       },
     );
+  }
+
+  setdataToggle(index, value, que) {
+    if (wholelist[7][accessname].containsKey('isSave')) {
+    } else {
+      wholelist[7][accessname]["isSave"] = true;
+    }
+    wholelist[7][accessname]['question']["$index"]['Question'] = que;
+    if (value.length == 0) {
+      if (wholelist[7][accessname]['question']["$index"]['toggled']) {
+      } else {
+        wholelist[7][accessname]['complete'] -= 1;
+        wholelist[7][accessname]['question']["$index"]['Answer'] = value;
+
+        notifyListeners();
+      }
+    } else {
+      if (wholelist[7][accessname]['question']["$index"]['toggled'] == false) {
+        wholelist[7][accessname]['complete'] += 1;
+        wholelist[7][accessname]['question']["$index"]['toggled'] = true;
+        notifyListeners();
+      }
+      wholelist[7][accessname]['question']["$index"]['Answer'] = value;
+      notifyListeners();
+    }
   }
 
   ///This function is used to set data i.e to take data from thr field and feed it in
@@ -348,7 +562,7 @@ class LaundryPro extends ChangeNotifier {
                           margin: EdgeInsets.all(0),
                           child: AvatarGlow(
                             animate:
-                                assesmentprovider.isListening['field$index'],
+                                assesmentprovider.isRecognizing['field$index'],
                             // glowColor: Theme.of().primaryColor,
                             endRadius: 500.0,
                             duration: const Duration(milliseconds: 2000),
@@ -358,16 +572,30 @@ class LaundryPro extends ChangeNotifier {
                             child: FloatingActionButton(
                               heroTag: "btn$index",
                               child: Icon(
-                                Icons.mic,
+                                assesmentprovider.isRecognizing['field$index']
+                                    ? Icons.stop_circle
+                                    : Icons.mic,
                                 size: 20,
                               ),
                               onPressed: () {
                                 if (assessor == therapist &&
                                     role == "therapist") {
-                                  listen(index);
+                                  // listen(index);
+                                  assesmentprovider.isRecognizing['field$index']
+                                      ? assesmentprovider.stopRecording(index)
+                                      : assesmentprovider.streamingRecognize(
+                                          index,
+                                          assesmentprovider
+                                              .controllers["field$index"]);
                                   setdatalisten(index);
                                 } else if (role != "therapist") {
-                                  listen(index);
+                                  // listen(index);
+                                  assesmentprovider.isRecognizing['field$index']
+                                      ? assesmentprovider.stopRecording(index)
+                                      : assesmentprovider.streamingRecognize(
+                                          index,
+                                          assesmentprovider
+                                              .controllers["field$index"]);
                                   setdatalisten(index);
                                 } else {
                                   _showSnackBar(
@@ -420,21 +648,21 @@ class LaundryPro extends ChangeNotifier {
           "") {
         saveToForm = true;
         trueIndex = index;
-        wholelist[7][accessname]["isSave"] = saveToForm;
+        wholelist[7][accessname]["isSaveThera"] = saveToForm;
       } else {
         saveToForm = false;
         falseIndex = index;
-        wholelist[7][accessname]["isSave"] = saveToForm;
+        wholelist[7][accessname]["isSaveThera"] = saveToForm;
       }
     } else {
       if (index == falseIndex) {
         if (wholelist[7][accessname]["question"]["$index"]
                 ["Recommendationthera"] !=
             "") {
-          wholelist[7][accessname]["isSave"] = true;
+          wholelist[7][accessname]["isSaveThera"] = true;
           falseIndex = -1;
         } else {
-          wholelist[7][accessname]["isSave"] = false;
+          wholelist[7][accessname]["isSaveThera"] = false;
         }
       }
     }
@@ -473,11 +701,17 @@ class LaundryPro extends ChangeNotifier {
                     child: FloatingActionButton(
                       heroTag: "btn${index + 100}",
                       child: Icon(
-                        Icons.mic,
+                        assesmentprovider.isRecognizingThera['field$index']
+                            ? Icons.stop_circle
+                            : Icons.mic,
                         size: 20,
                       ),
                       onPressed: () {
-                        _listenthera(index);
+                        // _listenthera(index);
+                        isRecognizingThera['field$index']
+                            ? stopRecordingThera(index)
+                            : streamingRecognizeThera(
+                                index, controllerstreco["field$index"]);
                         setdatalistenthera(index);
                       },
                     ),

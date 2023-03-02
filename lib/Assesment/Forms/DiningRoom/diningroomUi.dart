@@ -47,6 +47,13 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
   File video;
   bool uploading = false;
   List<DropdownMenuItem<dynamic>> items = [];
+
+  FocusNode focusNode = new FocusNode();
+  void dispose() {
+    focusNode.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
@@ -195,7 +202,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                     ['toggle'][i] = i == select;
               }
             });
-            assesmentprovider.setdata(
+            assesmentprovider.setdataToggle(
                 queIndex,
                 widget.wholelist[4][widget.accessname]['question']['$queIndex']
                         ['toggle'][0]
@@ -215,7 +222,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                     ['toggle'][i] = i == select;
               }
             });
-            assesmentprovider.setdata(
+            assesmentprovider.setdataToggle(
                 queIndex,
                 widget.wholelist[4][widget.accessname]['question']['$queIndex']
                         ['toggle'][0]
@@ -934,12 +941,14 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     assesmentprovider.setdata(
                                         2, value, 'Flooring Type');
                                   } else if (role != therapist) {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     assesmentprovider.setdata(
                                         2, value, 'Flooring Type');
@@ -1007,13 +1016,15 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
                                         3, value, 'Floor Coverage');
                                   } else if (role != therapist) {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
@@ -1076,14 +1087,16 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
 
                                     assesmentprovider.setdata(
                                         4, value, 'Lighting Type');
                                   } else if (role != therapist) {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
 
@@ -1147,14 +1160,14 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                             //     onChanged: (value) {
                             //       if (assessor == therapist &&
                             //           role == "therapist") {
-                            //         FocusScope.of(context).requestFocus();
+                            //         FocusScope.of(context).requestFocus(focusNode);
                             //         new TextEditingController().clear();
                             //         // print(widget.accessname);
 
                             //         assesmentprovider.setdata(
                             //             5, value, 'Able to Operate Switches?');
                             //       } else if (role != therapist) {
-                            //         FocusScope.of(context).requestFocus();
+                            //         FocusScope.of(context).requestFocus(focusNode);
                             //         new TextEditingController().clear();
                             //         // print(widget.accessname);
 
@@ -1238,13 +1251,15 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
                                         6, value, 'Switch Type');
                                   } else if (role != therapist) {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
@@ -1385,13 +1400,13 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                             //   onChanged: (value) {
                             //     if (assessor == therapist &&
                             //         role == "therapist") {
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //       assesmentprovider.setdata(
                             //           8, value, 'Obstacle/Clutter Present?');
                             //     } else if (role != therapist) {
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //       assesmentprovider.setdata(
@@ -1452,13 +1467,13 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                             //   onChanged: (value) {
                             //     if (assessor == therapist &&
                             //         role == "therapist") {
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //       assesmentprovider.setdata(
                             //           9, value, 'Smoke Detector Present?');
                             //     } else if (role != therapist) {
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //       assesmentprovider.setdata(
@@ -1528,13 +1543,15 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
                                         10, value, 'Type of Dining Table');
                                   } else if (role != therapist) {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
@@ -1625,13 +1642,15 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
                                         11, value, 'Number of Chairs');
                                   } else if (role != therapist) {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
@@ -1689,7 +1708,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                                 if (assessor == therapist &&
                                                     role == "therapist") {
                                                   FocusScope.of(context)
-                                                      .requestFocus();
+                                                      .requestFocus(focusNode);
                                                   new TextEditingController()
                                                       .clear();
                                                   // print(widget.accessname);
@@ -1699,7 +1718,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                                       ['chairtype'] = value;
                                                 } else if (role != therapist) {
                                                   FocusScope.of(context)
-                                                      .requestFocus();
+                                                      .requestFocus(focusNode);
                                                   new TextEditingController()
                                                       .clear();
                                                   // print(widget.accessname);
@@ -1777,7 +1796,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                             //           "You can't change the other fields",
                             //           context);
                             //     }
-                            //     FocusScope.of(context).requestFocus();
+                            //     FocusScope.of(context).requestFocus(focusNode);
                             //     new TextEditingController().clear();
                             //     // print(widget.accessname);
 
@@ -1843,7 +1862,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                         //       _showSnackBar(
                         //           "You can't change the other fields", context);
                         //     }
-                        //     FocusScope.of(context).requestFocus();
+                        //     FocusScope.of(context).requestFocus(focusNode);
                         //     new TextEditingController().clear();
                         //     // print(widget.accessname);
                         //     assesmentprovider.setdata(
@@ -1889,7 +1908,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                               ),
                               AvatarGlow(
                                 animate:
-                                    assesmentprovider.isListening['field13'],
+                                    assesmentprovider.isRecognizing['field13'],
                                 showTwoGlows: true,
                                 glowColor: Colors.blue,
                                 endRadius: 35.0,
@@ -1906,16 +1925,38 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
                                   child: FloatingActionButton(
                                     heroTag: "btn13",
                                     child: Icon(
-                                      Icons.mic,
+                                      assesmentprovider.isRecognizing['field13']
+                                          ? Icons.stop_circle
+                                          : Icons.mic,
                                       size: 20,
                                     ),
                                     onPressed: () {
                                       if (assessor == therapist &&
                                           role == "therapist") {
-                                        assesmentprovider.listen(13);
+                                        // assesmentprovider.listen(13);
+                                        assesmentprovider
+                                                .isRecognizing['field13']
+                                            ? assesmentprovider
+                                                .stopRecording(13)
+                                            : assesmentprovider
+                                                .streamingRecognize(
+                                                    13,
+                                                    assesmentprovider
+                                                            .controllers[
+                                                        "field13"]);
                                         assesmentprovider.setdatalisten(13);
                                       } else if (role != "therapist") {
-                                        assesmentprovider.listen(13);
+                                        // assesmentprovider.listen(13);
+                                        assesmentprovider
+                                                .isRecognizing['field13']
+                                            ? assesmentprovider
+                                                .stopRecording(13)
+                                            : assesmentprovider
+                                                .streamingRecognize(
+                                                    13,
+                                                    assesmentprovider
+                                                            .controllers[
+                                                        "field13"]);
                                         assesmentprovider.setdatalisten(13);
                                       } else {
                                         _showSnackBar(
@@ -2055,7 +2096,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
   //                   ),
   //                   labelText: fieldlabel),
   //               onChanged: (value) {
-  //                 FocusScope.of(context).requestFocus();
+  //                 FocusScope.of(context).requestFocus(focusNode);
   //                 new TextEditingController().clear();
   //                 // print(widget.accessname);
   //                 setreco(index, value);
@@ -2111,7 +2152,7 @@ class _DiningRoomUIState extends State<DiningRoomUI> {
   //             ),
   //             labelText: 'Recomendation'),
   //         onChanged: (value) {
-  //           FocusScope.of(context).requestFocus();
+  //           FocusScope.of(context).requestFocus(focusNode);
   //           new TextEditingController().clear();
   //           // print(widget.accessname);
   //           setrecothera(index, value);

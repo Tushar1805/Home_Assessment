@@ -67,6 +67,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging:20.0.0'
     implementation 'com.google.firebase:firebase-core:17.2.1'
     implementation 'com.google.firebase:firebase-auth:19.1.0'
+    implementation platform('com.google.cloud:libraries-bom:26.1.4')
 }
 
 apply plugin: 'com.google.gms.google-services'

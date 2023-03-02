@@ -1,5 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tryapp/login/forgotPassword.dart';
 import 'package:tryapp/login/resetPassword.dart';
@@ -88,6 +89,18 @@ class _LoginFormState extends State<LoginForm> {
     } catch (e) {}
   }
 
+  String emailValidator(String value, context) {
+    Pattern pattern =
+        r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regex = new RegExp(pattern);
+    if (!regex.hasMatch(value)) {
+      _showSnackBar('Email format is invalid', context);
+      return 'Email format is invalid';
+    } else {
+      return null;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final loginProvider = Provider.of<LoginProvider>(context);
@@ -134,14 +147,26 @@ class _LoginFormState extends State<LoginForm> {
                           TextFormField(
                             focusNode: myFocusNode,
                             validator: (input) {
+                              // emailValidator(input, context);
                               if (input.isEmpty) {
-                                _showSnackBar('Please type a email', context);
-                                return 'Please type a email';
+                                _showSnackBar('Please enter email', context);
+                                return 'Please enter email';
+                              } else {
+                                return null;
                               }
-                              return '';
                             },
                             cursorColor: Colors.black,
                             controller: _email,
+                            // inputFormatters: [
+                            //   FilteringTextInputFormatter.allow(new RegExp(
+                            //       "[a-zA-Z0-9\+\.\_\%\-\+]{1,256}" +
+                            //           "\\@" +
+                            //           "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +
+                            //           "(" +
+                            //           "\\." +
+                            //           "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,25}" +
+                            //           ")+"))
+                            // ],
                             decoration: new InputDecoration(
                                 // filled: true,
                                 // fillColor: Colors.white,
@@ -226,7 +251,9 @@ class _LoginFormState extends State<LoginForm> {
                               padding: EdgeInsets.all(10),
                               color: Colors.lightGreen[800],
                               onPressed: () async {
-                                String email = _email.text.toLowerCase();
+                                String email = _email.text
+                                    .toLowerCase()
+                                    .replaceAll(RegExp(r"\s+"), "");
                                 String password = widget.pass;
                                 setState(() {
                                   loading = true;

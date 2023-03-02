@@ -1020,8 +1020,8 @@ class _ReportUIState extends State<ReportUI> {
                             Text(
                                 "${widget.assess[index]['room$i']['question']['$j']['Recommendationthera']}",
                                 style: TextStyle(
-                                  decoration: TextDecoration.underline,
-                                  decorationColor: Colors.yellow,
+                                  // decoration: TextDecoration.underline,
+                                  // decorationColor: Colors.yellow,
                                   fontSize: 18,
                                   fontWeight: FontWeight.w200,
                                 )),

@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
@@ -13,6 +15,9 @@ import 'package:tryapp/Assesment/Forms/Patio/patiopro.dart';
 import 'package:tryapp/Assesment/newassesment/newassesmentrepo.dart';
 import 'package:tryapp/constants.dart';
 import 'package:path/path.dart';
+import 'package:google_speech/google_speech.dart';
+import 'package:sound_stream/sound_stream.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../ViewVideo.dart';
 
@@ -48,10 +53,51 @@ class _PatioUIState extends State<PatioUI> {
   bool uploading = false;
   var falseIndex = -1, trueIndex = -1;
   List<DropdownMenuItem<dynamic>> items = [];
+
+  // MIC Stram
+  final RecorderStream _recorder = RecorderStream();
+
+  // bool recognizing = false;
+  Map<String, bool> isRecognizing = {};
+  Map<String, bool> isRecognizingThera = {};
+  // bool recognizeFinished = false;
+  Map<String, bool> isRecognizeFinished = {};
+  String text = '';
+  StreamSubscription<List<int>> _audioStreamSubscription;
+  BehaviorSubject<List<int>> _audioStream;
+
+  FocusNode focusNode = new FocusNode();
+  FocusNode focusNode1 = new FocusNode();
+  FocusNode focusNode2 = new FocusNode();
+  FocusNode focusNode3 = new FocusNode();
+  FocusNode focusNode4 = new FocusNode();
+  FocusNode focusNode5 = new FocusNode();
+  FocusNode focusNode6 = new FocusNode();
+  FocusNode focusNode7 = new FocusNode();
+  FocusNode focusNode8 = new FocusNode();
+  FocusNode focusNode9 = new FocusNode();
+  FocusNode focusNode10 = new FocusNode();
+
+  void dispose() {
+    focusNode.dispose();
+    focusNode1.dispose();
+    focusNode2.dispose();
+    focusNode3.dispose();
+    focusNode4.dispose();
+    focusNode5.dispose();
+    focusNode6.dispose();
+    focusNode7.dispose();
+    focusNode8.dispose();
+    focusNode9.dispose();
+    focusNode10.dispose();
+    super.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
     _speech = stt.SpeechToText();
+    _recorder.initialize();
 
     for (int i = 0;
         i < widget.wholelist[8][widget.accessname]['question'].length;
@@ -59,6 +105,9 @@ class _PatioUIState extends State<PatioUI> {
       _controllers["field${i + 1}"] = TextEditingController();
       _controllerstreco["field${i + 1}"] = TextEditingController();
       isListening["field${i + 1}"] = false;
+      isRecognizing["field${i + 1}"] = false;
+      isRecognizingThera["field${i + 1}"] = false;
+      isRecognizeFinished["field${i + 1}"] = false;
       _controllers["field${i + 1}"].text = capitalize(widget.wholelist[8]
           [widget.accessname]['question']["${i + 1}"]['Recommendation']);
       _controllerstreco["field${i + 1}"].text = capitalize(widget.wholelist[8]
@@ -70,6 +119,135 @@ class _PatioUIState extends State<PatioUI> {
     // setinitials();
     // getAssessData();
   }
+
+  void streamingRecognize(index, TextEditingController text) async {
+    _audioStream = BehaviorSubject<List<int>>();
+    try {
+      _audioStreamSubscription = _recorder.audioStream.listen((event) {
+        _audioStream.add(event);
+      });
+    } catch (e) {
+      print("AUDIO STREAM ERROR: $e");
+    }
+
+    await _recorder.start();
+
+    setState(() {
+      isRecognizing['field$index'] = true;
+    });
+    final serviceAccount = ServiceAccount.fromString(
+        (await rootBundle.loadString('assets/test_service_account.json')));
+    final speechToText = SpeechToText.viaServiceAccount(serviceAccount);
+    final config = _getConfig();
+
+    final responseStream = speechToText.streamingRecognize(
+        StreamingRecognitionConfig(config: config, interimResults: true),
+        _audioStream);
+
+    var responseText = '';
+
+    try {
+      responseStream.listen((data) {
+        final currentText =
+            data.results.map((e) => e.alternatives.first.transcript).join('\n');
+
+        if (data.results.first.isFinal) {
+          responseText += ' ' + currentText;
+          setState(() {
+            text.text = responseText;
+            isRecognizeFinished['field$index'] = true;
+          });
+        } else {
+          setState(() {
+            text.text = responseText + ' ' + currentText;
+            isRecognizeFinished['field$index'] = true;
+          });
+        }
+      }, onDone: () {
+        setState(() {
+          isRecognizing['field$index'] = false;
+        });
+      });
+    } catch (e) {
+      print("RESPONSE STREAM ERROR: $e");
+    }
+  }
+
+  void stopRecording(index) async {
+    await _recorder.stop();
+    await _audioStreamSubscription?.cancel();
+    await _audioStream?.close();
+    setState(() {
+      isRecognizing['field$index'] = false;
+    });
+  }
+
+  // For Therapist
+
+  void streamingRecognizeThera(index, TextEditingController text) async {
+    _audioStream = BehaviorSubject<List<int>>();
+    _audioStreamSubscription = _recorder.audioStream.listen((event) {
+      _audioStream.add(event);
+    });
+
+    await _recorder.start();
+
+    setState(() {
+      isRecognizingThera['field$index'] = true;
+    });
+    final serviceAccount = ServiceAccount.fromString(
+        (await rootBundle.loadString('assets/test_service_account.json')));
+    final speechToText = SpeechToText.viaServiceAccount(serviceAccount);
+    final config = _getConfig();
+
+    final responseStream = speechToText.streamingRecognize(
+        StreamingRecognitionConfig(config: config, interimResults: true),
+        _audioStream);
+
+    var responseText = '';
+
+    try {
+      responseStream.listen((data) {
+        final currentText =
+            data.results.map((e) => e.alternatives.first.transcript).join('\n');
+
+        if (data.results.first.isFinal) {
+          responseText += ' ' + currentText;
+          setState(() {
+            text.text = responseText;
+            isRecognizeFinished['field$index'] = true;
+          });
+        } else {
+          setState(() {
+            text.text = responseText + ' ' + currentText;
+            isRecognizeFinished['field$index'] = true;
+          });
+        }
+      }, onDone: () {
+        setState(() {
+          isRecognizingThera['field$index'] = false;
+        });
+      });
+    } catch (e) {
+      print("THERA RESPONSE STREAM ERROR: $e");
+    }
+  }
+
+  void stopRecordingThera(index) async {
+    await _recorder.stop();
+    await _audioStreamSubscription?.cancel();
+    await _audioStream?.close();
+    setState(() {
+      isRecognizingThera['field$index'] = false;
+    });
+  }
+
+  RecognitionConfig _getConfig() => RecognitionConfig(
+      encoding: AudioEncoding.LINEAR16,
+      model: RecognitionModel.basic,
+      enableAutomaticPunctuation: true,
+      sampleRateHertz: 16000,
+      languageCode: 'en-US');
 
   fillDropItem() {
     List<dynamic> itemList = [];
@@ -428,7 +606,7 @@ class _PatioUIState extends State<PatioUI> {
                       ['$queIndex']['toggle'][i] = i == select;
                 }
               });
-              assesmentprovider.setdata(
+              assesmentprovider.setdataToggle(
                   queIndex,
                   widget.wholelist[8][widget.accessname]['question']
                           ['$queIndex']['toggle'][0]
@@ -448,7 +626,7 @@ class _PatioUIState extends State<PatioUI> {
                       ['$queIndex']['toggle'][i] = i == select;
                 }
               });
-              assesmentprovider.setdata(
+              assesmentprovider.setdataToggle(
                   queIndex,
                   widget.wholelist[8][widget.accessname]['question']
                           ['$queIndex']['toggle'][0]
@@ -871,7 +1049,7 @@ class _PatioUIState extends State<PatioUI> {
                             ? (double.parse(assesmentprovider.getvalue(1)) >=
                                     2.5)
                                 ? getrecomain(1, true, 'Comments (if any)',
-                                    context, assesmentprovider)
+                                    context, assesmentprovider, focusNode1)
                                 : SizedBox()
                             : SizedBox(),
                         SizedBox(height: 15),
@@ -921,13 +1099,15 @@ class _PatioUIState extends State<PatioUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
                                         2, value, 'Flooring Type');
                                   } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
@@ -948,7 +1128,7 @@ class _PatioUIState extends State<PatioUI> {
                                 assesmentprovider.getvalue(2) ==
                                     'Tile - Smooth Finish')
                             ? getrecomain(2, true, 'Comments (if any)', context,
-                                assesmentprovider)
+                                assesmentprovider, focusNode2)
                             : SizedBox(),
                         SizedBox(height: 15),
                         // Divider(
@@ -989,13 +1169,15 @@ class _PatioUIState extends State<PatioUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
                                         3, value, 'Floor Coverage');
                                   } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
@@ -1014,7 +1196,7 @@ class _PatioUIState extends State<PatioUI> {
                         (assesmentprovider.getvalue(3) != 'No covering' &&
                                 assesmentprovider.getvalue(3) != '')
                             ? getrecomain(3, true, 'Comments (if any)', context,
-                                assesmentprovider)
+                                assesmentprovider, focusNode3)
                             : SizedBox(),
                         SizedBox(height: 15),
                         // Divider(
@@ -1051,13 +1233,15 @@ class _PatioUIState extends State<PatioUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
                                         4, value, 'Lighting Type');
                                   } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
@@ -1075,7 +1259,7 @@ class _PatioUIState extends State<PatioUI> {
                         ),
                         (assesmentprovider.getvalue(4) == 'Inadequate')
                             ? getrecomain(4, true, 'Specify Type', context,
-                                assesmentprovider)
+                                assesmentprovider, focusNode4)
                             : SizedBox(),
                         SizedBox(height: 15),
                         // Divider(
@@ -1112,13 +1296,13 @@ class _PatioUIState extends State<PatioUI> {
                             //     onChanged: (value) {
                             //       if (assessor == therapist &&
                             //           role == "therapist") {
-                            //         FocusScope.of(context).requestFocus();
+                            //         FocusScope.of(context).requestFocus(focusNode);
                             //         new TextEditingController().clear();
                             //         // print(widget.accessname);
                             //         setdata(
                             //             5, value, 'Able to Operate Switches?');
                             //       } else if (role != "therapist") {
-                            //         FocusScope.of(context).requestFocus();
+                            //         FocusScope.of(context).requestFocus(focusNode);
                             //         new TextEditingController().clear();
                             //         // print(widget.accessname);
                             //         setdata(
@@ -1139,7 +1323,7 @@ class _PatioUIState extends State<PatioUI> {
                         SizedBox(height: 15),
                         (assesmentprovider.getvalue(5) == 'No')
                             ? getrecomain(5, true, 'Comments(if any)', context,
-                                assesmentprovider)
+                                assesmentprovider, focusNode5)
                             : SizedBox(),
                         SizedBox(height: 15),
 
@@ -1193,13 +1377,15 @@ class _PatioUIState extends State<PatioUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
                                         6, value, 'Switch Type');
                                   } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
@@ -1297,7 +1483,7 @@ class _PatioUIState extends State<PatioUI> {
                                         ['question']["7"]['doorwidth'] !=
                                     '')
                             ? getrecomain(7, true, 'Comments (if any)', context,
-                                assesmentprovider)
+                                assesmentprovider, focusNode6)
                             : SizedBox(),
                         SizedBox(
                           height: 15,
@@ -1335,13 +1521,13 @@ class _PatioUIState extends State<PatioUI> {
                             //   onChanged: (value) {
                             //     if (assessor == therapist &&
                             //         role == "therapist") {
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //       setdata(
                             //           8, value, 'Obstacle/Clutter Present?');
                             //     } else if (role != "therapist") {
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //       setdata(
@@ -1361,7 +1547,7 @@ class _PatioUIState extends State<PatioUI> {
                         SizedBox(height: 15),
                         (assesmentprovider.getvalue(8) == 'Yes')
                             ? getrecomain(8, true, 'Specify Clutter', context,
-                                assesmentprovider)
+                                assesmentprovider, focusNode7)
                             : SizedBox(),
                         SizedBox(height: 15),
                         Row(
@@ -1399,13 +1585,15 @@ class _PatioUIState extends State<PatioUI> {
                                 onChanged: (value) {
                                   if (assessor == therapist &&
                                       role == "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
                                         9, value, 'Type of Steps');
                                   } else if (role != "therapist") {
-                                    FocusScope.of(context).requestFocus();
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                     new TextEditingController().clear();
                                     // print(widget.accessname);
                                     assesmentprovider.setdata(
@@ -1962,13 +2150,15 @@ class _PatioUIState extends State<PatioUI> {
                               onChanged: (value) {
                                 if (assessor == therapist &&
                                     role == "therapist") {
-                                  FocusScope.of(context).requestFocus();
+                                  FocusScope.of(context)
+                                      .requestFocus(focusNode);
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(10, value,
                                       'Railing is present on which side?');
                                 } else if (role != "therapist") {
-                                  FocusScope.of(context).requestFocus();
+                                  FocusScope.of(context)
+                                      .requestFocus(focusNode);
                                   new TextEditingController().clear();
                                   // print(widget.accessname);
                                   assesmentprovider.setdata(10, value,
@@ -1988,7 +2178,7 @@ class _PatioUIState extends State<PatioUI> {
                         ),
                         (assesmentprovider.getvalue(10) == 'On Neither Side')
                             ? getrecomain(10, true, 'Comments (if any)',
-                                context, assesmentprovider)
+                                context, assesmentprovider, focusNode8)
                             : (assesmentprovider.getvalue(10) == 'One Side')
                                 ? Container(
                                     child: Column(
@@ -2166,12 +2356,12 @@ class _PatioUIState extends State<PatioUI> {
                             //   onChanged: (value) {
                             //     if (assessor == therapist &&
                             //         role == "therapist") {
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //       setdata(11, value, 'Smoke Detector Present?');
                             //     } else if (role != "therapist") {
-                            //       FocusScope.of(context).requestFocus();
+                            //       FocusScope.of(context).requestFocus(focusNode);
                             //       new TextEditingController().clear();
                             //       // print(widget.accessname);
                             //       setdata(11, value, 'Smoke Detector Present?');
@@ -2190,7 +2380,7 @@ class _PatioUIState extends State<PatioUI> {
                         SizedBox(height: 15),
                         (assesmentprovider.getvalue(11) == 'No')
                             ? getrecomain(11, true, 'Comments (if any)',
-                                context, assesmentprovider)
+                                context, assesmentprovider, focusNode9)
                             : SizedBox(),
 
                         SizedBox(height: 15),
@@ -2231,12 +2421,12 @@ class _PatioUIState extends State<PatioUI> {
                         //     onChanged: (value) {
                         //       if (assessor == therapist &&
                         //           role == "therapist") {
-                        //         FocusScope.of(context).requestFocus();
+                        //         FocusScope.of(context).requestFocus(focusNode);
                         //         new TextEditingController().clear();
                         //         // print(widget.accessname);
                         //         setdata(12, value, 'Observations');
                         //       } else if (role != "therapist") {
-                        //         FocusScope.of(context).requestFocus();
+                        //         FocusScope.of(context).requestFocus(focusNode);
                         //         new TextEditingController().clear();
                         //         // print(widget.accessname);
                         //         setdata(12, value, 'Observations');
@@ -2285,7 +2475,7 @@ class _PatioUIState extends State<PatioUI> {
                                 ),
                               ),
                               AvatarGlow(
-                                animate: isListening['field12'],
+                                animate: isRecognizing['field12'],
                                 showTwoGlows: true,
                                 glowColor: Colors.blue,
                                 endRadius: 35.0,
@@ -2302,16 +2492,26 @@ class _PatioUIState extends State<PatioUI> {
                                   child: FloatingActionButton(
                                     heroTag: "btn12",
                                     child: Icon(
-                                      Icons.mic,
+                                      isRecognizing["field12"]
+                                          ? Icons.stop_circle
+                                          : Icons.mic,
                                       size: 20,
                                     ),
                                     onPressed: () {
                                       if (assessor == therapist &&
                                           role == "therapist") {
-                                        _listen(12);
+                                        // _listen(12);
+                                        isRecognizing["field12"]
+                                            ? stopRecording(12)
+                                            : streamingRecognize(
+                                                12, _controllers["field12"]);
                                         setdatalisten(12);
                                       } else if (role != "therapist") {
-                                        _listen(12);
+                                        // _listen(12);
+                                        isRecognizing["field12"]
+                                            ? stopRecording(12)
+                                            : streamingRecognize(
+                                                12, _controllers["field12"]);
                                         setdatalisten(12);
                                       } else {
                                         _showSnackBar(
@@ -2396,8 +2596,13 @@ class _PatioUIState extends State<PatioUI> {
     );
   }
 
-  Widget getrecomain(int index, bool isthera, String fieldlabel,
-      BuildContext context, PatioProvider assesmentprovider) {
+  Widget getrecomain(
+      int index,
+      bool isthera,
+      String fieldlabel,
+      BuildContext context,
+      PatioProvider assesmentprovider,
+      FocusNode focusNode) {
     return SingleChildScrollView(
       // reverse: true,
       child: Container(
@@ -2407,6 +2612,7 @@ class _PatioUIState extends State<PatioUI> {
             SizedBox(height: 5),
             Container(
               child: TextFormField(
+                focusNode: focusNode,
                 maxLines: null,
                 showCursor: cur,
                 controller: _controllers["field$index"],
@@ -2432,26 +2638,45 @@ class _PatioUIState extends State<PatioUI> {
                           height: 60,
                           margin: EdgeInsets.all(0),
 
-                          child: FloatingActionButton(
-                            heroTag: "btn$index",
-                            child: Icon(
-                              Icons.mic,
-                              size: 20,
+                          child: AvatarGlow(
+                            animate: isRecognizing['field$index'],
+                            glowColor: Colors.blue,
+                            endRadius: 35.0,
+                            duration: const Duration(milliseconds: 2000),
+                            repeatPauseDuration:
+                                const Duration(milliseconds: 100),
+                            repeat: true,
+                            child: FloatingActionButton(
+                              heroTag: "btn$index",
+                              child: Icon(
+                                isRecognizing['field$index']
+                                    ? Icons.stop_circle
+                                    : Icons.mic,
+                                size: 20,
+                              ),
+                              onPressed: () {
+                                if (assessor == therapist &&
+                                    role == "therapist") {
+                                  // _listen(index);
+                                  isRecognizing['field$index']
+                                      ? stopRecording(index)
+                                      : streamingRecognize(
+                                          index, _controllers["field$index"]);
+                                  setdatalisten(index);
+                                } else if (role != "therapist") {
+                                  isRecognizing['field$index']
+                                      ? stopRecording(index)
+                                      : streamingRecognize(
+                                          index, _controllers["field$index"]);
+                                  // _listen(index);
+                                  setdatalisten(index);
+                                } else {
+                                  _showSnackBar(
+                                      "You can't change the other fields",
+                                      context);
+                                }
+                              },
                             ),
-                            onPressed: () {
-                              if (assessor == therapist &&
-                                  role == "therapist") {
-                                _listen(index);
-                                setdatalisten(index);
-                              } else if (role != "therapist") {
-                                _listen(index);
-                                setdatalisten(index);
-                              } else {
-                                _showSnackBar(
-                                    "You can't change the other fields",
-                                    context);
-                              }
-                            },
                           ),
                         ),
                       ]),
@@ -2459,12 +2684,12 @@ class _PatioUIState extends State<PatioUI> {
                     labelText: fieldlabel),
                 onChanged: (value) {
                   if (assessor == therapist && role == "therapist") {
-                    FocusScope.of(context).requestFocus();
+                    FocusScope.of(context).requestFocus(focusNode);
                     new TextEditingController().clear();
                     // print(widget.accessname);
                     assesmentprovider.setreco(index, value);
                   } else if (role != "therapist") {
-                    FocusScope.of(context).requestFocus();
+                    FocusScope.of(context).requestFocus(focusNode);
                     new TextEditingController().clear();
                     // print(widget.accessname);
                     assesmentprovider.setreco(index, value);
@@ -2503,13 +2728,13 @@ class _PatioUIState extends State<PatioUI> {
         setState(() {
           saveToForm = true;
           trueIndex = index;
-          widget.wholelist[8][widget.accessname]["isSave"] = saveToForm;
+          widget.wholelist[8][widget.accessname]["isSaveThera"] = saveToForm;
         });
       } else {
         setState(() {
           saveToForm = false;
           falseIndex = index;
-          widget.wholelist[8][widget.accessname]["isSave"] = saveToForm;
+          widget.wholelist[8][widget.accessname]["isSaveThera"] = saveToForm;
         });
       }
     } else {
@@ -2518,12 +2743,12 @@ class _PatioUIState extends State<PatioUI> {
                 ["Recommendationthera"] !=
             "") {
           setState(() {
-            widget.wholelist[8][widget.accessname]["isSave"] = true;
+            widget.wholelist[8][widget.accessname]["isSaveThera"] = true;
             falseIndex = -1;
           });
         } else {
           setState(() {
-            widget.wholelist[8][widget.accessname]["isSave"] = false;
+            widget.wholelist[8][widget.accessname]["isSaveThera"] = false;
           });
         }
       }
@@ -2560,16 +2785,30 @@ class _PatioUIState extends State<PatioUI> {
                     width: 40,
                     height: 60,
                     margin: EdgeInsets.all(0),
-                    child: FloatingActionButton(
-                      heroTag: "btn${index + 10}",
-                      child: Icon(
-                        Icons.mic,
-                        size: 20,
+                    child: AvatarGlow(
+                      animate: isRecognizingThera['field$index'],
+                      glowColor: Theme.of(context).primaryColor,
+                      endRadius: 500.0,
+                      duration: const Duration(milliseconds: 2000),
+                      repeatPauseDuration: const Duration(milliseconds: 100),
+                      repeat: true,
+                      child: FloatingActionButton(
+                        heroTag: "btn${index + 10}",
+                        child: Icon(
+                          isRecognizingThera['field$index']
+                              ? Icons.stop_circle
+                              : Icons.mic,
+                          size: 20,
+                        ),
+                        onPressed: () {
+                          // _listenthera(index);
+                          isRecognizingThera['field$index']
+                              ? stopRecordingThera(index)
+                              : streamingRecognizeThera(
+                                  index, _controllerstreco["field$index"]);
+                          setdatalistenthera(index);
+                        },
                       ),
-                      onPressed: () {
-                        _listenthera(index);
-                        setdatalistenthera(index);
-                      },
                     ),
                   ),
                 ]),
@@ -2580,7 +2819,7 @@ class _PatioUIState extends State<PatioUI> {
                       : Colors.red),
               labelText: 'Recommendation'),
           onChanged: (value) {
-            // FocusScope.of(context).requestFocus();
+            // FocusScope.of(context).requestFocus(focusNode);
             // new TextEditingController().clear();
             // print(widget.accessname);
             assesmentprovider.setrecothera(index, value);

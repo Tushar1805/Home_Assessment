@@ -214,6 +214,9 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
     } else if (innerlist['room${index + 1}']['complete'] ==
         innerlist['room$index']['total']) {
       colors = Color.fromRGBO(127, 176, 54, 1);
+    } else if (innerlist['room${index + 1}']['complete'] >
+        innerlist['room$index']['total']) {
+      colors = Color.fromRGBO(127, 176, 54, 1);
     }
     return colors;
   }
@@ -229,6 +232,9 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
             innerlist['room$index']['total']) {
       bordercolor = Color.fromRGBO(221, 216, 0, 1);
     } else if (innerlist['room$index']['complete'] ==
+        innerlist['room$index']['total']) {
+      bordercolor = Color.fromRGBO(127, 176, 54, 1);
+    } else if (innerlist['room$index']['complete'] >
         innerlist['room$index']['total']) {
       bordercolor = Color.fromRGBO(127, 176, 54, 1);
     }
@@ -1222,8 +1228,15 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
                                             MediaQuery.of(context).size.height *
                                                 0.03,
                                         width: getwidth(
-                                            innerlist['room${index1 + 1}']
-                                                ['complete'],
+                                            (innerlist['room${index1 + 1}']
+                                                        ['complete'] >
+                                                    innerlist[
+                                                            'room${index1 + 1}']
+                                                        ['total'])
+                                                ? innerlist['room${index1 + 1}']
+                                                    ['total']
+                                                : innerlist['room${index1 + 1}']
+                                                    ['complete'],
                                             innerlist['room${index1 + 1}']
                                                 ['total'],
                                             true),
@@ -1271,7 +1284,7 @@ class _CardsUINewState extends State<CardsUINew> with TickerProviderStateMixin {
                                   Padding(
                                     padding: const EdgeInsets.all(13),
                                     child: Text(
-                                      '${innerlist['room${index1 + 1}']['complete']}/${innerlist['room${index1 + 1}']['total']}',
+                                      '${(innerlist['room${index1 + 1}']['complete'] > innerlist['room${index1 + 1}']['total']) ? innerlist['room${index1 + 1}']['total'] : innerlist['room${index1 + 1}']['complete']}/${innerlist['room${index1 + 1}']['total']}',
                                       style: TextStyle(
                                           color: Color.fromRGBO(10, 80, 106, 1),
                                           fontSize: 20,

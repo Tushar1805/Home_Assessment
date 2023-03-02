@@ -277,7 +277,7 @@ class _NurseUIState extends State<NurseUI> {
             _showSnackBar("Wait for the therapist to provide recommendations");
           },
           child: Text(
-            "Assessment Finished",
+            "Form Filled",
             style: TextStyle(
               color: Colors.white,
               fontSize: 15,

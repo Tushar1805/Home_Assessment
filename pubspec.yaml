@@ -60,6 +60,8 @@ dependencies:
   ext_storage:
   # camera:
   # image_picker:
+  google_speech:
+  sound_stream:
 
 dev_dependencies:
   flutter_test:

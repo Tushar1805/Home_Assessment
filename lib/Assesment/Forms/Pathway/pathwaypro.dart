@@ -389,15 +389,18 @@
 // old version
 
 import 'dart:io';
+import 'dart:async';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:sound_stream/sound_stream.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tryapp/Assesment/Forms/Formsrepo.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:avatar_glow/avatar_glow.dart';
 import 'package:path/path.dart';
+import 'package:rxdart/rxdart.dart';
 
 class PathwayPro extends ChangeNotifier {
   stt.SpeechToText _speech;
@@ -430,6 +433,19 @@ class PathwayPro extends ChangeNotifier {
   String videoUrl;
   File video;
   bool isVideoSelected = false;
+  List<DropdownMenuItem<String>> recommendations = [];
+  String selectedRecommendation = '-';
+  // MIC Stram
+  final RecorderStream _recorder = RecorderStream();
+
+  // bool recognizing = false;
+  Map<String, bool> isRecognizing = {};
+  Map<String, bool> isRecognizingThera = {};
+  // bool recognizeFinished = false;
+  Map<String, bool> isRecognizeFinished = {};
+  String text = '';
+  StreamSubscription<List<int>> _audioStreamSubscription;
+  BehaviorSubject<List<int>> _audioStream;
 
   PathwayPro(this.roomname, this.wholelist, this.accessname) {
     _speech = stt.SpeechToText();
@@ -439,6 +455,9 @@ class PathwayPro extends ChangeNotifier {
       _controllers["field${i + 1}"] = TextEditingController();
       _controllerstreco["field${i + 1}"] = TextEditingController();
       isListening["field${i + 1}"] = false;
+      isRecognizing["field${i + 1}"] = false;
+      isRecognizingThera["field${i + 1}"] = false;
+      isRecognizeFinished["field${i + 1}"] = false;
       _controllers["field${i + 1}"].text =
           wholelist[0][accessname]['question']["${i + 1}"]['Recommendation'];
       _controllerstreco["field${i + 1}"].text =
@@ -453,6 +472,10 @@ class PathwayPro extends ChangeNotifier {
     if (wholelist[0][accessname].containsKey('isSave')) {
     } else {
       wholelist[0][accessname]["isSave"] = true;
+    }
+    if (wholelist[0][accessname].containsKey('isSaveThera')) {
+    } else {
+      wholelist[0][accessname]["isSaveThera"] = false;
     }
     if (wholelist[0][accessname].containsKey('videos')) {
       if (wholelist[0][accessname]['videos'].containsKey('name')) {
@@ -469,39 +492,63 @@ class PathwayPro extends ChangeNotifier {
 
     if (wholelist[0][accessname]['question']['1'].containsKey('toggle')) {
       if (wholelist[0][accessname]['question']["1"]['Answer'].length == 0) {
-        setdata(1, 'Yes', 'Obstacle/Clutter Present?');
+        // setdata(1, 'Yes', 'Obstacle/Clutter Present?');
+        wholelist[0][accessname]['question']["1"]['Question'] =
+            'Obstacle/Clutter Present?';
+        wholelist[0][accessname]['question']["1"]['Answer'] = 'Yes';
+        wholelist[0][accessname]['question']["1"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[0][accessname]['question']['1']['toggle'] = <bool>[true, false];
       if (wholelist[0][accessname]['question']["1"]['Answer'].length == 0) {
-        setdata(1, 'Yes', 'Obstacle/Clutter Present?');
+        // setdata(1, 'Yes', 'Obstacle/Clutter Present?');
+        wholelist[0][accessname]['question']["1"]['Question'] =
+            'Obstacle/Clutter Present?';
+        wholelist[0][accessname]['question']["1"]['Answer'] = 'Yes';
+        wholelist[0][accessname]['question']["1"]['toggled'] = false;
       }
       notifyListeners();
     }
 
     if (wholelist[0][accessname]['question']['4'].containsKey('toggle')) {
       if (wholelist[0][accessname]['question']["4"]['Answer'].length == 0) {
-        setdata(4, 'Yes', 'Entrance Has Lights?');
+        // setdata(4, 'Yes', 'Entrance Has Lights?');
+        wholelist[0][accessname]['question']["4"]['Question'] =
+            'Entrance Has Lights?';
+        wholelist[0][accessname]['question']["4"]['Answer'] = 'Yes';
+        wholelist[0][accessname]['question']["4"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[0][accessname]['question']['4']['toggle'] = <bool>[true, false];
       if (wholelist[0][accessname]['question']["4"]['Answer'].length == 0) {
-        setdata(4, 'Yes', 'Entrance Has Lights?');
+        // setdata(4, 'Yes', 'Entrance Has Lights?');
+        wholelist[0][accessname]['question']["4"]['Question'] =
+            'Entrance Has Lights?';
+        wholelist[0][accessname]['question']["4"]['Answer'] = 'Yes';
+        wholelist[0][accessname]['question']["4"]['toggled'] = false;
       }
       notifyListeners();
     }
 
     if (wholelist[0][accessname]['question']['6'].containsKey('toggle')) {
       if (wholelist[0][accessname]['question']["6"]['Answer'].length == 0) {
-        setdata(6, 'Yes', 'Smoke Detector Present?');
+        // setdata(6, 'Yes', 'Smoke Detector Present?');
+        wholelist[0][accessname]['question']["6"]['Question'] =
+            'Smoke Detector Present?';
+        wholelist[0][accessname]['question']["6"]['Answer'] = 'Yes';
+        wholelist[0][accessname]['question']["6"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[0][accessname]['question']['6']['toggle'] = <bool>[true, false];
       if (wholelist[0][accessname]['question']["6"]['Answer'].length == 0) {
-        setdata(6, 'Yes', 'Smoke Detector Present?');
+        // setdata(6, 'Yes', 'Smoke Detector Present?');
+        wholelist[0][accessname]['question']["6"]['Question'] =
+            'Smoke Detector Present?';
+        wholelist[0][accessname]['question']["6"]['Answer'] = 'Yes';
+        wholelist[0][accessname]['question']["6"]['toggled'] = false;
       }
       notifyListeners();
     }
@@ -533,6 +580,30 @@ class PathwayPro extends ChangeNotifier {
       };
     }
     print(wholelist[0][accessname]['question']["7"]['stepCount']);
+    getDropdown();
+  }
+
+  void getDropdown() {
+    DropdownMenuItem<String> ddmi = DropdownMenuItem<String>(
+      child: Text('Use Recommendation'),
+      value: '-',
+    );
+    recommendations.add(ddmi);
+    DropdownMenuItem<String> ddmi2 = DropdownMenuItem<String>(
+      child: Text('Option 1'),
+      value: 'Option 1',
+    );
+    recommendations.add(ddmi2);
+    DropdownMenuItem<String> ddmi3 = DropdownMenuItem<String>(
+      child: Text('Option 2'),
+      value: 'Option 2',
+    );
+    recommendations.add(ddmi3);
+    DropdownMenuItem<String> ddmi4 = DropdownMenuItem<String>(
+      child: Text('Others'),
+      value: 'Others',
+    );
+    recommendations.add(ddmi4);
   }
 
   Future<void> addVideo(String path) {
@@ -560,6 +631,27 @@ class PathwayPro extends ChangeNotifier {
         }
       },
     );
+  }
+
+  setdataToggle(index, String value, que) {
+    wholelist[0][accessname]['question']["$index"]['Question'] = que;
+    if (value.length == 0) {
+      if (wholelist[0][accessname]['question']["$index"]['toggled']) {
+      } else {
+        wholelist[0][accessname]['complete'] -= 1;
+        wholelist[0][accessname]['question']["$index"]['Answer'] = value;
+        notifyListeners();
+      }
+    } else {
+      if (wholelist[0][accessname]['question']["$index"]['toggled'] == false) {
+        wholelist[0][accessname]['complete'] += 1;
+        wholelist[0][accessname]['question']["$index"]['toggled'] = true;
+        notifyListeners();
+      }
+
+      wholelist[0][accessname]['question']["$index"]['Answer'] = value;
+      notifyListeners();
+    }
   }
 
   setdata(index, value, que) {

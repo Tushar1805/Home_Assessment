@@ -1,12 +1,15 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:sound_stream/sound_stream.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tryapp/Assesment/Forms/Formsrepo.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'package:path/path.dart';
 
@@ -42,6 +45,17 @@ class LivingProvider extends ChangeNotifier {
   String videoUrl;
   File video;
   bool isVideoSelected = false;
+  // MIC Stram
+  final RecorderStream _recorder = RecorderStream();
+
+  // bool recognizing = false;
+  Map<String, bool> isRecognizing = {};
+  Map<String, bool> isRecognizingThera = {};
+  // bool recognizeFinished = false;
+  Map<String, bool> isRecognizeFinished = {};
+  String text = '';
+  StreamSubscription<List<int>> _audioStreamSubscription;
+  BehaviorSubject<List<int>> _audioStream;
 
   LivingProvider(this.roomname, this.wholelist, this.accessname) {
     _speech = stt.SpeechToText();
@@ -49,6 +63,9 @@ class LivingProvider extends ChangeNotifier {
       controllers["field${i + 1}"] = TextEditingController();
       controllerstreco["field${i + 1}"] = TextEditingController();
       isListening["field${i + 1}"] = false;
+      isRecognizing["field${i + 1}"] = false;
+      isRecognizingThera["field${i + 1}"] = false;
+      isRecognizeFinished["field${i + 1}"] = false;
       controllers["field${i + 1}"].text =
           wholelist[2][accessname]['question']["${i + 1}"]['Recommendation'];
       controllerstreco["field${i + 1}"].text =
@@ -64,6 +81,10 @@ class LivingProvider extends ChangeNotifier {
     if (wholelist[2][accessname].containsKey('isSave')) {
     } else {
       wholelist[2][accessname]["isSave"] = true;
+    }
+    if (wholelist[2][accessname].containsKey('isSaveThera')) {
+    } else {
+      wholelist[2][accessname]["isSaveThera"] = false;
     }
     if (wholelist[2][accessname].containsKey('videos')) {
       if (wholelist[2][accessname]['videos'].containsKey('name')) {
@@ -82,13 +103,21 @@ class LivingProvider extends ChangeNotifier {
 
     if (wholelist[2][accessname]['question']["5"].containsKey('toggle')) {
       if (wholelist[2][accessname]['question']["5"]['Answer'].length == 0) {
-        setdata(5, 'Yes', 'Able to Operate Switches?');
+        // setdata(5, 'Yes', 'Able to Operate Switches?');
+        wholelist[2][accessname]['question']["5"]['Question'] =
+            'Able to Operate Switches?';
+        wholelist[2][accessname]['question']["5"]['Answer'] = 'Yes';
+        wholelist[2][accessname]['question']["5"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[2][accessname]['question']["5"]['toggle'] = <bool>[true, false];
       if (wholelist[2][accessname]['question']["5"]['Answer'].length == 0) {
-        setdata(5, 'Yes', 'Able to Operate Switches?');
+        // setdata(5, 'Yes', 'Able to Operate Switches?');
+        wholelist[2][accessname]['question']["5"]['Question'] =
+            'Able to Operate Switches?';
+        wholelist[2][accessname]['question']["5"]['Answer'] = 'Yes';
+        wholelist[2][accessname]['question']["5"]['toggled'] = false;
       }
       notifyListeners();
     }
@@ -100,40 +129,64 @@ class LivingProvider extends ChangeNotifier {
 
     if (wholelist[2][accessname]['question']["8"].containsKey('toggle')) {
       if (wholelist[2][accessname]['question']["8"]['Answer'].length == 0) {
-        setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+        // setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+        wholelist[2][accessname]['question']["8"]['Question'] =
+            'Obstacle/Clutter Present?';
+        wholelist[2][accessname]['question']["8"]['Answer'] = 'Yes';
+        wholelist[2][accessname]['question']["8"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[2][accessname]['question']["8"]['toggle'] = <bool>[true, false];
       if (wholelist[2][accessname]['question']["8"]['Answer'].length == 0) {
-        setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+        // setdata(8, 'Yes', 'Obstacle/Clutter Present?');
+        wholelist[2][accessname]['question']["8"]['Question'] =
+            'Obstacle/Clutter Present?';
+        wholelist[2][accessname]['question']["8"]['Answer'] = 'Yes';
+        wholelist[2][accessname]['question']["8"]['toggled'] = false;
       }
       notifyListeners();
     }
 
     if (wholelist[2][accessname]['question']["9"].containsKey('toggle')) {
       if (wholelist[2][accessname]['question']["9"]['Answer'].length == 0) {
-        setdata(9, 'Yes', 'Able to Access Telephone?');
+        // setdata(9, 'Yes', 'Able to Access Telephone?');
+        wholelist[2][accessname]['question']["9"]['Question'] =
+            'Able to Access Telephone?';
+        wholelist[2][accessname]['question']["9"]['Answer'] = 'Yes';
+        wholelist[2][accessname]['question']["9"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[2][accessname]['question']["9"]['toggle'] = <bool>[true, false];
       if (wholelist[2][accessname]['question']["9"]['Answer'].length == 0) {
-        setdata(9, 'Yes', 'Able to Access Telephone?');
+        // setdata(9, 'Yes', 'Able to Access Telephone?');
+        wholelist[2][accessname]['question']["9"]['Question'] =
+            'Able to Access Telephone?';
+        wholelist[2][accessname]['question']["9"]['Answer'] = 'Yes';
+        wholelist[2][accessname]['question']["9"]['toggled'] = false;
       }
       notifyListeners();
     }
 
     if (wholelist[2][accessname]['question']["10"].containsKey('toggle')) {
       if (wholelist[2][accessname]['question']["10"]['Answer'].length == 0) {
-        setdata(10, 'Yes', 'Smoke Detector Present?');
+        // setdata(10, 'Yes', 'Smoke Detector Present?');
+        wholelist[2][accessname]['question']["10"]['Question'] =
+            'Smoke Detector Present?';
+        wholelist[2][accessname]['question']["10"]['Answer'] = 'Yes';
+        wholelist[2][accessname]['question']["10"]['toggled'] = false;
       }
       notifyListeners();
     } else {
       wholelist[2][accessname]['question']["10"]
           ['toggle'] = <bool>[true, false];
       if (wholelist[2][accessname]['question']["10"]['Answer'].length == 0) {
-        setdata(10, 'Yes', 'Smoke Detector Present?');
+        // setdata(10, 'Yes', 'Smoke Detector Present?');
+        wholelist[2][accessname]['question']["10"]['Question'] =
+            'Smoke Detector Present?';
+        wholelist[2][accessname]['question']["10"]['Answer'] = 'Yes';
+        wholelist[2][accessname]['question']["10"]['toggled'] = false;
       }
       notifyListeners();
     }
@@ -157,6 +210,27 @@ class LivingProvider extends ChangeNotifier {
         }
       },
     );
+  }
+
+  setdataToggle(index, String value, que) {
+    wholelist[2][accessname]['question']["$index"]['Question'] = que;
+    if (value.length == 0) {
+      if (wholelist[2][accessname]['question']["$index"]['toggled']) {
+      } else {
+        wholelist[2][accessname]['complete'] -= 1;
+        wholelist[2][accessname]['question']["$index"]['Answer'] = value;
+        notifyListeners();
+      }
+    } else {
+      if (wholelist[2][accessname]['question']["$index"]['toggled'] == false) {
+        wholelist[2][accessname]['complete'] += 1;
+        wholelist[2][accessname]['question']["$index"]['toggled'] = true;
+        notifyListeners();
+      }
+
+      wholelist[2][accessname]['question']["$index"]['Answer'] = value;
+      notifyListeners();
+    }
   }
 
   setdata(index, value, que) {
